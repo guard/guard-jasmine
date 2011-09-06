@@ -7,6 +7,8 @@ Tested on MRI Ruby 1.8.7, 1.9.2, REE and the latest versions of JRuby & Rubinius
 If you have any questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
 (irc.freenode.net).
 
+** This Guard is considered in alpha state and the gem has not been officially released! **
+
 ## Highlights
 
 * Continuous testing based on file modifications by [Guard][], manifold configurable rules
@@ -205,20 +207,20 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-[Guard](https://github.com/guard/guard)
-[Guards](https://github.com/guard)
-[Guard Team](https://github.com/guard/guard/contributors)
-[Ariya Hidayat](http://twitter.com/#!/AriyaHidayat)
-[PhantomJS](http://www.phantomjs.org/)
-[the PhantomJS download section](http://code.google.com/p/phantomjs/downloads/list)
-[Roejames12](https://github.com/Roejames12)
-[run-jasmine.coffee](https://github.com/ariya/phantomjs/blob/master/examples/run-jasmine.coffee)
-[Brad Phelan](http://twitter.com/#!/bradgonesurfing)
-[Jasminerice](https://github.com/bradphelan/jasminerice)
-[Pivotal Labs](http://pivotallabs.com/)
-[Jasmine](http://pivotal.github.com/jasmine/)
-[The Jasmine Gem](https://github.com/pivotal/jasmine-gem)
-[Jeremy Ashkenas](http://twitter.com/#!/jashkenas)
-[CoffeeScript](http://jashkenas.github.com/coffee-script/)
-[Rails 3.1 asset pipeline](http://guides.rubyonrails.org/asset_pipeline.html)
-[Homebrew](http://mxcl.github.com/homebrew/)
+[Guard]: https://github.com/guard/guard
+[Guards]: https://github.com/guard
+[Guard Team]: https://github.com/guard/guard/contributors
+[Ariya Hidayat]: http://twitter.com/#!/AriyaHidayat
+[PhantomJS]: http://www.phantomjs.org/
+[the PhantomJS download section](http://code.google.com/p/phantomjs/downloads/list
+[Roejames12]: https://github.com/Roejames12
+[run-jasmine.coffee]: https://github.com/ariya/phantomjs/blob/master/examples/run-jasmine.coffee
+[Brad Phelan]: http://twitter.com/#!/bradgonesurfing
+[Jasminerice]: https://github.com/bradphelan/jasminerice
+[Pivotal Labs]: http://pivotallabs.com/
+[Jasmine]: http://pivotal.github.com/jasmine/
+[The Jasmine Gem]: https://github.com/pivotal/jasmine-gem
+[Jeremy Ashkenas]: http://twitter.com/#!/jashkenas
+[CoffeeScript]: http://jashkenas.github.com/coffee-script/
+[Rails 3.1 asset pipeline](http://guides.rubyonrails.org/asset_pipeline.html
+[Homebrew]: http://mxcl.github.com/homebrew/
