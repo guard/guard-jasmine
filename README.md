@@ -7,7 +7,7 @@ Tested on MRI Ruby 1.8.7, 1.9.2, REE and the latest versions of JRuby & Rubinius
 If you have any questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
 (irc.freenode.net).
 
-** This Guard is considered in alpha state and the gem has not been officially released! **
+**This Guard is considered in alpha state and the gem has not been officially released!**
 
 ## Highlights
 
@@ -66,13 +66,13 @@ Please read the detailed installation and configuration instructions at [Jasmine
 In short, you add it to your `Gemfile`:
 
     group :development, :test do
-      gem 'Jasmine'
+      gem 'jasmine'
     end
 
 and add a route for the Jasmine Test Runner to `config/routes.rb`:
 
     if ["development", "test"].include? Rails.env
-      mount Jasmine::Engine => "/jasmine"
+      mount Jasminerice::Engine => "/jasmine"
     end
 
 Next you create the directory `spec/javascripts` where your CoffeeScript tests go into. You define the Rails 3.1
@@ -90,7 +90,7 @@ detailed installation and configuration instructions at [The Jasmine Gem][].
 You need the PhantomJS browser installed on your system. You can download binaries for Mac OS X and Windows from
 [the PhantomJS download section][].
 
-Alternatively you can install [Homebrew]() on Mac OS X and install it with:
+Alternatively you can install [Homebrew][] on Mac OS X and install it with:
 
     brew install phantomjs
 
@@ -101,7 +101,7 @@ If you are using Ubuntu 10.10, you can install it with apt:
      sudo apt-get install phantomjs
 
 You can also build it from source for several other operating systems, please consult the
-[PhantomJS build instructions](http://code.google.com/p/phantomjs/wiki/BuildInstructions).
+[PhantomJS build instructions][].
 
 ## Usage
 
@@ -212,7 +212,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [Guard Team]: https://github.com/guard/guard/contributors
 [Ariya Hidayat]: http://twitter.com/#!/AriyaHidayat
 [PhantomJS]: http://www.phantomjs.org/
-[the PhantomJS download section](http://code.google.com/p/phantomjs/downloads/list
+[the PhantomJS download section]: http://code.google.com/p/phantomjs/downloads/list
+[PhantomJS build instructions] http://code.google.com/p/phantomjs/wiki/BuildInstructions
 [Roejames12]: https://github.com/Roejames12
 [run-jasmine.coffee]: https://github.com/ariya/phantomjs/blob/master/examples/run-jasmine.coffee
 [Brad Phelan]: http://twitter.com/#!/bradgonesurfing
@@ -222,5 +223,5 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [The Jasmine Gem]: https://github.com/pivotal/jasmine-gem
 [Jeremy Ashkenas]: http://twitter.com/#!/jashkenas
 [CoffeeScript]: http://jashkenas.github.com/coffee-script/
-[Rails 3.1 asset pipeline](http://guides.rubyonrails.org/asset_pipeline.html
+[Rails 3.1 asset pipeline]: http://guides.rubyonrails.org/asset_pipeline.html
 [Homebrew]: http://mxcl.github.com/homebrew/
