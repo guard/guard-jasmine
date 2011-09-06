@@ -7,7 +7,7 @@ module Guard
           paths.uniq!
           paths.compact!
           paths = paths.select { |p| jasmine_spec?(p) }
-          clear_specs_list
+          clear_jasmine_specs_list
           paths
         end
 
