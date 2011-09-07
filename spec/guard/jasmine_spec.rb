@@ -53,16 +53,10 @@ describe Guard::Jasmine do
   end
 
   describe '.run_all' do
-    let(:guard) { Guard::Jasmine.new([Guard::Watcher.new('^spec/javascripts/x/(.+)\.js.coffee')]) }
+    let(:guard) { Guard::Jasmine.new }
 
-    before do
-      Dir.stub(:glob).and_return ['spec/javascripts/x/a.js.coffee',
-                                  'spec/javascripts/x/b.js.coffee',
-                                  'spec/javascripts/y/c.js.coffee']
-    end
-
-    it 'runs the run_on_change with all watched CoffeeScripts' do
-      guard.should_receive(:run_on_change).with(['spec/javascripts/x/a.js.coffee', 'spec/javascripts/x/b.js.coffee'])
+    it 'runs the run_on_change with the spec dir' do
+      guard.should_receive(:run_on_change).with(['spec/javascripts'])
       guard.run_all
     end
   end

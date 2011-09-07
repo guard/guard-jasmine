@@ -20,7 +20,7 @@ module Guard
     end
 
     def run_all
-      run_on_change(Watcher.match_files(self, Dir.glob(File.join('spec', '**', '*.js(.coffee)?'))))
+      run_on_change(['spec/javascripts'])
     end
 
     def run_on_change(paths)
