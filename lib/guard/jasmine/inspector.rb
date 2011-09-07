@@ -18,7 +18,7 @@ module Guard
         end
 
         def jasmine_specs
-          @jasmine_specs ||= Dir.glob('spec/**/*_spec.js(.coffee)?')
+          @jasmine_specs ||= Dir.glob('spec/**/*_spec.{js,js.coffee}')
         end
 
         def clear_jasmine_specs
