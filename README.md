@@ -148,17 +148,17 @@ end
 There following options can be passed to Guard::Jasmine:
 
 ```ruby
-:url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
-                                      # default: http://127.0.0.1/jasmine
+:jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
+                                              # default: http://127.0.0.1/jasmine
 
-:phantomjs_bin => '~/bin/phantomjs'   # Path to phantomjs.
-                                      # default: '/usr/local/bin/phantomjs'
+:phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
+                                              # default: '/usr/local/bin/phantomjs'
 
-:notifications => false               # Show success and error messages.
-                                      # default: true
+:notifications => false                       # Show success and error messages.
+                                              # default: true
 
-:hide_success => true                 # Disable successful compilation messages.
-                                      # default: false
+:hide_success => true                         # Disable successful compilation messages.
+                                              # default: false
 ```
 
 ## Development
