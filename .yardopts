@@ -1,0 +1,6 @@
+--private
+--protected
+--markup markdown
+--readme README.md
+--title 'Guard::Jasmine'
+'lib/**/*.rb'
