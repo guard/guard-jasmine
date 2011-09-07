@@ -5,8 +5,8 @@ require 'guard/watcher'
 module Guard
   class Jasmine < Guard
 
-    autoload :Inspector, 'guard/Jasmine/inspector'
-    autoload :Runner, 'guard/Jasmine/runner'
+    autoload :Inspector, 'guard/jasmine/inspector'
+    autoload :Runner, 'guard/jasmine/runner'
 
     def initialize(watchers = [], options = { })
       defaults = {

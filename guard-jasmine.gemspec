@@ -3,7 +3,7 @@ $:.push File.expand_path('../lib', __FILE__)
 require 'guard/jasmine/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'guard-Jasmine'
+  s.name        = 'guard-jasmine'
   s.version     = Guard::JasmineVersion::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Michael Kessler']

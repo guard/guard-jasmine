@@ -24,7 +24,7 @@ describe Guard::Jasmine::Inspector do
     end
 
     it 'frees up the list of specs' do
-      subject.should_receive(:clear_jasmine_specs_list)
+      subject.should_receive(:clear_jasmine_specs)
       subject.clean(['spec/javascripts/a.js.coffee'])
     end
 
