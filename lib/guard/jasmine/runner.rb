@@ -122,6 +122,7 @@ module Guard
         #
         # @param [Hash] the suite result
         # @param [Hash] options the options for the execution
+        # @option options [Boolean] :notification show notifications
         #
         def notify_runtime_error(result, options)
           message = "An error occurred: #{ result['error'] }"
@@ -134,6 +135,8 @@ module Guard
         #
         # @param [Hash] result the suite result
         # @param [Hash] options the options for the execution
+        # @option options [Boolean] :notification show notifications
+        # @option options [Boolean] :hide_success hide success message notification
         #
         def notify_spec_result(result, options)
           specs    = result['stats']['specs']
@@ -157,6 +160,7 @@ module Guard
         # @param [Hash] result the suite result
         # @param [String] stats the status information
         # @param [Hash] options the options for the execution
+        # @option options [Boolean] :notification show notifications
         #
         def notify_spec_failures(result, stats, options)
           messages = result['suites'].inject('') do |messages, suite|
