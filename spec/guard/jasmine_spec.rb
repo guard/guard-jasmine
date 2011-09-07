@@ -2,15 +2,19 @@ require 'spec_helper'
 
 describe Guard::Jasmine do
 
+  let(:guard) { Guard::Jasmine.new }
+
+  let(:runner) { Guard::Jasmine::Runner }
+  let(:inspector) { Guard::Jasmine::Inspector }
+
   before do
-    Guard::Jasmine::Inspector.stub(:clean)
-    Guard::Jasmine::Runner.stub(:run)
+    inspector.stub(:clean)
+    runner.stub(:run)
+    guard.stub(:notify)
   end
 
   describe '#initialize' do
     context 'when no options are provided' do
-      let(:guard) { Guard::Jasmine.new }
-
       it 'sets a default :jasmine_url option' do
         guard.options[:jasmine_url].should eql 'http://localhost:3000/jasmine'
       end
@@ -34,10 +38,10 @@ describe Guard::Jasmine do
 
     context 'with other options than the default ones' do
       let(:guard) { Guard::Jasmine.new(nil, { :jasmine_url   => 'http://192.168.1.5/jasmine',
-                                                  :phantomjs_bin => '~/bin/phantomjs',
-                                                  :all_on_start => false,
-                                                  :notification => false,
-                                                  :hide_success  => true }) }
+                                              :phantomjs_bin => '~/bin/phantomjs',
+                                              :all_on_start  => false,
+                                              :notification  => false,
+                                              :hide_success  => true }) }
 
       it 'sets the :jasmine_url option' do
         guard.options[:jasmine_url].should eql 'http://192.168.1.5/jasmine'
@@ -82,8 +86,6 @@ describe Guard::Jasmine do
   end
 
   describe '.run_all' do
-    let(:guard) { Guard::Jasmine.new }
-
     it 'runs the run_on_change with the spec dir' do
       guard.should_receive(:run_on_change).with(['spec/javascripts'])
       guard.run_all
@@ -91,26 +93,25 @@ describe Guard::Jasmine do
   end
 
   describe '.run_on_change' do
-    let(:guard) { Guard::Jasmine.new }
-
-    before do
-      guard.stub(:notify)
-    end
-
     it 'passes the paths to the Inspector for cleanup' do
-      Guard::Jasmine::Inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
-      guard.run_on_change(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
+      inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
+                                             'spec/javascripts/b.js.coffee'])
+
+      guard.run_on_change(['spec/javascripts/a.js.coffee',
+                           'spec/javascripts/b.js.coffee'])
     end
 
     it 'starts the Runner with the cleaned files' do
-      Guard::Jasmine::Inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                                                 'spec/javascripts/b.js.coffee']).and_return ['spec/javascripts/a.js.coffee']
-      Guard::Jasmine::Runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], {
+      inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
+                                             'spec/javascripts/b.js.coffee']).and_return ['spec/javascripts/a.js.coffee']
+
+      runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], {
           :jasmine_url   => 'http://localhost:3000/jasmine',
           :phantomjs_bin => '/usr/local/bin/phantomjs',
-          :all_on_start => true,
-          :notification => true,
+          :all_on_start  => true,
+          :notification  => true,
           :hide_success  => false }).and_return [['spec/javascripts/a.js.coffee'], true]
+
       guard.run_on_change(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
     end
 

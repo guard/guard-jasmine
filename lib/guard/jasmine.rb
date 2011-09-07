@@ -13,9 +13,9 @@ module Guard
       defaults = {
           :jasmine_url   => 'http://localhost:3000/jasmine',
           :phantomjs_bin => '/usr/local/bin/phantomjs',
-          :notification => true,
+          :notification  => true,
           :hide_success  => false,
-          :all_on_start => true
+          :all_on_start  => true
       }
       super(watchers, defaults.merge(options))
     end
