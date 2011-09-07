@@ -5,6 +5,7 @@ require 'guard/watcher'
 module Guard
   class Jasmine < Guard
 
+    autoload :Formatter, 'guard/jasmine/formatter'
     autoload :Inspector, 'guard/jasmine/inspector'
     autoload :Runner, 'guard/jasmine/runner'
 
@@ -12,8 +13,8 @@ module Guard
       defaults = {
           :jasmine_url   => 'http://localhost:3000/jasmine',
           :phantomjs_bin => '/usr/local/bin/phantomjs',
-          :notifications => true,
-          :hide_success  => false,
+          :notification => true,
+          :hide_success  => false
       }
       super(watchers, defaults.merge(options))
     end

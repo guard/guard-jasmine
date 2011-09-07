@@ -20,7 +20,7 @@ describe Guard::Jasmine do
       end
 
       it 'sets a default :notifications option' do
-        guard.options[:notifications].should be_true
+        guard.options[:notification].should be_true
       end
 
       it 'sets a default :hide_success option' do
@@ -31,7 +31,7 @@ describe Guard::Jasmine do
     context 'with other options than the default ones' do
       let(:guard) { Guard::Jasmine.new(nil, { :jasmine_url   => 'http://192.168.1.5/jasmine',
                                                   :phantomjs_bin => '~/bin/phantomjs',
-                                                  :notifications => false,
+                                                  :notification => false,
                                                   :hide_success  => true }) }
 
       it 'sets a default :jasmine_url option' do
@@ -43,7 +43,7 @@ describe Guard::Jasmine do
       end
 
       it 'sets a default :notifications option' do
-        guard.options[:notifications].should be_false
+        guard.options[:notification].should be_false
       end
 
       it 'sets a default :hide_success option' do
@@ -85,7 +85,7 @@ describe Guard::Jasmine do
       Guard::Jasmine::Runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], {
           :jasmine_url   => 'http://localhost:3000/jasmine',
           :phantomjs_bin => '/usr/local/bin/phantomjs',
-          :notifications => true,
+          :notification => true,
           :hide_success  => false }).and_return [['spec/javascripts/a.js.coffee'], true]
       guard.run_on_change(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
     end
