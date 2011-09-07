@@ -93,15 +93,15 @@ You need the PhantomJS browser installed on your system. You can download binari
 Alternatively you can install [Homebrew][] on Mac OS X and install it with:
 
 ```bash
-brew install phantomjs
+$ brew install phantomjs
 ```
 
 If you are using Ubuntu 10.10, you can install it with apt:
 
 ```bash
-sudo add-apt-repository ppa:jerome-etienne/neoip
-sudo apt-get update
-sudo apt-get install phantomjs
+$ sudo add-apt-repository ppa:jerome-etienne/neoip
+$ sudo apt-get update
+$ sudo apt-get install phantomjs
 ```
 
 You can also build it from source for several other operating systems, please consult the
