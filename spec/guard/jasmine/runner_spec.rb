@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Guard::Jasmine::Runner do
 
   let(:runner) { Guard::Jasmine::Runner }
+  let(:formatter) { Guard::Jasmine::Formatter }
 
   let(:defaults) do
     {
@@ -59,24 +60,24 @@ describe Guard::Jasmine::Runner do
   end
 
   before do
-    ::Guard::Jasmine::Formatter.stub(:notify)
+    formatter.stub(:notify)
   end
 
   describe '#run' do
-    context "when passed an empty paths list" do
-      it "returns false" do
+    context 'when passed an empty paths list' do
+      it 'returns false' do
         runner.run([]).should be_false
       end
     end
 
-    context "when passed the spec directory" do
+    context 'when passed the spec directory' do
       it 'requests all jasmine specs from the server' do
         IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine").and_return StringIO.new(error_response)
         runner.run(['spec/javascripts'], { :notification => false }.merge(defaults))
       end
     end
 
-    context "for an erroneous Jasmine spec" do
+    context 'for an erroneous Jasmine spec' do
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/a.js.coffee').and_yield 'describe "ErrorTest", ->'
         IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine?spec=ErrorTest").and_return StringIO.new(error_response)
@@ -87,7 +88,7 @@ describe Guard::Jasmine::Runner do
         File.should_receive(:foreach).with('spec/javascripts/a.js.coffee').and_yield 'describe "ErrorTest", ->'
         IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine?spec=ErrorTest").and_return StringIO.new(error_response)
 
-        ::Guard::Jasmine::Formatter.should_receive(:error).with(
+        formatter.should_receive(:error).with(
             "An error occurred: Cannot request Jasmine specs"
         )
 
@@ -99,7 +100,7 @@ describe Guard::Jasmine::Runner do
           File.should_receive(:foreach).with('spec/javascripts/a.js.coffee').and_yield 'describe "ErrorTest", ->'
           IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine?spec=ErrorTest").and_return StringIO.new(error_response)
 
-          ::Guard::Jasmine::Formatter.should_receive(:notify).with(
+          formatter.should_receive(:notify).with(
               "An error occurred: Cannot request Jasmine specs",
               :title    => 'Jasmine error',
               :image    => :failed,
@@ -115,7 +116,7 @@ describe Guard::Jasmine::Runner do
           File.should_receive(:foreach).with('spec/javascripts/a.js.coffee').and_yield 'describe "ErrorTest", ->'
           IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine?spec=ErrorTest").and_return StringIO.new(error_response)
 
-          ::Guard::Jasmine::Formatter.should_not_receive(:notify)
+          formatter.should_not_receive(:notify)
 
           runner.run(['spec/javascripts/a.js.coffee'], defaults.merge({ :notification => false }))
         end
@@ -133,7 +134,7 @@ describe Guard::Jasmine::Runner do
         File.should_receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
         IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine?spec=FailureTest").and_return StringIO.new(failure_response)
 
-        ::Guard::Jasmine::Formatter.should_receive(:error).with(
+        formatter.should_receive(:error).with(
             "Spec 'FailureTest tests something.' failed with 'Expected undefined to be defined.'!\nJasmine ran 4 specs, 1 failure in 0.007s."
         )
 
@@ -145,7 +146,7 @@ describe Guard::Jasmine::Runner do
           File.should_receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
           IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine?spec=FailureTest").and_return StringIO.new(failure_response)
 
-          ::Guard::Jasmine::Formatter.should_receive(:notify).with(
+          formatter.should_receive(:notify).with(
               "Spec 'FailureTest tests something.' failed with 'Expected undefined to be defined.'!\nJasmine ran 4 specs, 1 failure in 0.007s.",
               :title    => 'Jasmine results',
               :image    => :failed,
@@ -161,7 +162,7 @@ describe Guard::Jasmine::Runner do
           File.should_receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
           IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine?spec=FailureTest").and_return StringIO.new(failure_response)
 
-          ::Guard::Jasmine::Formatter.should_not_receive(:notify)
+          formatter.should_not_receive(:notify)
 
           runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :notification => false }))
         end
@@ -179,7 +180,7 @@ describe Guard::Jasmine::Runner do
         File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
         IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine?spec=SuccessTest").and_return StringIO.new(success_response)
 
-        ::Guard::Jasmine::Formatter.should_receive(:success).with(
+        formatter.should_receive(:success).with(
             "Jasmine ran 4 specs, 0 failures in 0.009s."
         )
 
@@ -191,9 +192,9 @@ describe Guard::Jasmine::Runner do
           File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
           IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine?spec=SuccessTest").and_return StringIO.new(success_response)
 
-          ::Guard::Jasmine::Formatter.should_receive(:notify).with(
+          formatter.should_receive(:notify).with(
               "Jasmine ran 4 specs, 0 failures in 0.009s.",
-              :title    => 'Jasmine results'
+              :title => 'Jasmine results'
           )
 
           runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => true }))
@@ -204,7 +205,7 @@ describe Guard::Jasmine::Runner do
             File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
             IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine?spec=SuccessTest").and_return StringIO.new(success_response)
 
-            ::Guard::Jasmine::Formatter.should_not_receive(:notify)
+            formatter.should_not_receive(:notify)
 
             runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => true, :hide_success => true }))
           end
@@ -216,7 +217,7 @@ describe Guard::Jasmine::Runner do
           File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
           IO.should_receive(:popen).with("/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/run-jasmine.coffee http://localhost:3000/jasmine?spec=SuccessTest").and_return StringIO.new(success_response)
 
-          ::Guard::Jasmine::Formatter.should_not_receive(:notify)
+          formatter.should_not_receive(:notify)
 
           runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => false }))
         end
