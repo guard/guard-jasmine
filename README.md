@@ -93,15 +93,15 @@ You need the PhantomJS browser installed on your system. You can download binari
 Alternatively you can install [Homebrew][] on Mac OS X and install it with:
 
 ```bash
-    brew install phantomjs
+brew install phantomjs
 ```
 
 If you are using Ubuntu 10.10, you can install it with apt:
 
 ```bash
-    sudo add-apt-repository ppa:jerome-etienne/neoip
-    sudo apt-get update
-    sudo apt-get install phantomjs
+sudo add-apt-repository ppa:jerome-etienne/neoip
+sudo apt-get update
+sudo apt-get install phantomjs
 ```
 
 You can also build it from source for several other operating systems, please consult the
@@ -119,22 +119,22 @@ Guard::Jasmine can be adapted to all kind of projects. Please read the
 ### Rails 3.1 with Jasminerice
 
 ```ruby
-    guard 'jasmine' do
-      watch(%r{app/assets/javascripts/(.+).(js|js.coffee)}) { |m| "spec/javascripts/#{m[0]}_spec.#{m[1]}" }
-      watch(%r{spec/javascripts/(.+)_spec.(js|js.coffee)})  { "spec/javascripts/#{m[0]}_spec.#{m[1]}" }
-      watch(%r{spec/javascripts/spec.(js|js.coffee)})       { "spec/javascripts" }
-    end
+guard 'jasmine' do
+  watch(%r{app/assets/javascripts/(.+).(js|js.coffee)}) { |m| "spec/javascripts/#{m[0]}_spec.#{m[1]}" }
+  watch(%r{spec/javascripts/(.+)_spec.(js|js.coffee)})  { "spec/javascripts/#{m[0]}_spec.#{m[1]}" }
+  watch(%r{spec/javascripts/spec.(js|js.coffee)})       { "spec/javascripts" }
+end
 ```
 
 ### Rails 2 & 3 with the Jasmine gem
 
 ```ruby
-    guard 'jasmine', :url => 'http://127.0.0.1:8888' do
-      watch(%r{public/javascripts/(.+).js})                  { |m| "spec/javascripts/#{m[0]}_spec.js" }
-      watch(%r{spec/javascripts/(.+)_spec.js})               { "spec/javascripts/#{m[0]}_spec.js" }
-      watch(%r{spec/javascripts/support/jasmine.yml})        { "spec/javascripts" }
-      watch(%r{spec/javascripts/support/jasmine_config.rb})  { "spec/javascripts" }
-    end
+guard 'jasmine', :url => 'http://127.0.0.1:8888' do
+  watch(%r{public/javascripts/(.+).js})                  { |m| "spec/javascripts/#{m[0]}_spec.js" }
+  watch(%r{spec/javascripts/(.+)_spec.js})               { "spec/javascripts/#{m[0]}_spec.js" }
+  watch(%r{spec/javascripts/support/jasmine.yml})        { "spec/javascripts" }
+  watch(%r{spec/javascripts/support/jasmine_config.rb})  { "spec/javascripts" }
+end
 ```
 
 ## Options
