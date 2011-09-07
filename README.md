@@ -38,21 +38,15 @@ Please be sure to have [Guard][] installed.
 
 Install the gem:
 
-```bash
-$ gem install guard-jasmine
-```
+    $ gem install guard-jasmine
 
 Add it to your `Gemfile`, preferably inside the development group:
 
-```ruby
-gem 'guard-jasmine'
-```
+    gem 'guard-jasmine'
 
 Add guard definition to your `Guardfile` by running this command:
 
-```bash
-$ guard init jasmine
-```
+    $ guard init jasmine
 
 ### Rails 3.1
 
@@ -63,26 +57,20 @@ Please read the detailed installation and configuration instructions at [Jasmine
 
 In short, you add it to your `Gemfile`:
 
-```ruby
-group :development, :test do
-  gem 'jasmine'
-end
-```
+    group :development, :test do
+      gem 'jasmine'
+    end
 
 and add a route for the Jasmine Test Runner to `config/routes.rb`:
 
-```ruby
-if ["development", "test"].include? Rails.env
-  mount Jasminerice::Engine => "/jasmine"
-end
-```
+    if ["development", "test"].include? Rails.env
+      mount Jasminerice::Engine => "/jasmine"
+    end
 
 Next you create the directory `spec/javascripts` where your CoffeeScript tests go into. You define the Rails 3.1
 asset pipeline manifest in `spec/javascripts/spec.js.coffee`:
 
-```ruby
-#=require_tree ./
-```
+    #=require_tree ./
 
 ### Rails 2 & 3
 
@@ -96,17 +84,13 @@ You need the PhantomJS browser installed on your system. You can download binari
 
 Alternatively you can install [Homebrew][] on Mac OS X and install it with:
 
-```bash
-$ brew install phantomjs
-```
+    $ brew install phantomjs
 
 If you are using Ubuntu 10.10, you can install it with apt:
 
-```bash
-$ sudo add-apt-repository ppa:jerome-etienne/neoip
-$ sudo apt-get update
-$ sudo apt-get install phantomjs
-```
+    $ sudo add-apt-repository ppa:jerome-etienne/neoip
+    $ sudo apt-get update
+    $ sudo apt-get install phantomjs
 
 You can also build it from source for several other operating systems, please consult the
 [PhantomJS build instructions][].
@@ -122,45 +106,41 @@ Guard::Jasmine can be adapted to all kind of projects. Please read the
 
 ### Rails 3.1 with Jasminerice
 
-```ruby
-guard 'jasmine' do
-  watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
-  watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
-  watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
-end
-```
+    guard 'jasmine' do
+      watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+      watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+      watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
+    end
 
 ### Rails 2 & 3 with the Jasmine gem
 
-```ruby
-guard 'jasmine', :url => 'http://127.0.0.1:8888' do
-  watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
-  watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
-  watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
-  watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
-end
-```
+    guard 'jasmine', :url => 'http://127.0.0.1:8888' do
+      watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
+      watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
+      watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
+      watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
+    end
 
 ## Options
 
 There following options can be passed to Guard::Jasmine:
 
-```ruby
-:jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
-                                              # default: http://127.0.0.1/jasmine
 
-:phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
-                                              # default: '/usr/local/bin/phantomjs'
+    :jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
+                                                  # default: http://127.0.0.1/jasmine
 
-:all_on_start => false                        # Run all specs on start.
-                                              # default: true
+    :phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
+                                                  # default: '/usr/local/bin/phantomjs'
 
-:notifications => false                       # Show success and error messages.
-                                              # default: true
+    :all_on_start => false                        # Run all specs on start.
+                                                  # default: true
 
-:hide_success => true                         # Disable successful compilation messages.
-                                              # default: false
-```
+    :notifications => false                       # Show success and error messages.
+                                                  # default: true
+
+    :hide_success => true                         # Disable successful compilation messages.
+                                                  # default: false
+
 
 ## Alternatives
 
@@ -172,6 +152,7 @@ featured browser environment.
 
 ## Development
 
+- Documentation hosted at [RubyDoc](http://rubydoc.info/gems/guard-jasmine/file/README.md)
 - Source hosted at [GitHub](https://github.com/netzpirat/guard-Jasmine)
 - Report issues and feature requests to [GitHub Issues](https://github.com/netzpirat/guard-Jasmine/issues)
 
