@@ -161,7 +161,7 @@ There following options can be passed to Guard::Jasmine:
 
 ## Alternatives
 
-# [guard-jasmine-headless-webkit][], a Guard for [jasmine-headless-webkit][], but doesn't run in JRuby.
+* [guard-jasmine-headless-webkit][], a Guard for [jasmine-headless-webkit][], but doesn't run in JRuby.
 * [Evergreen][], runs CoffeeScript specs headless, but has no
 continuous testing support.
 * [Jezebel][] a Node.js REPL and continuous test runner for [Jessie][], a Node runner for Jasmine, but has no full
