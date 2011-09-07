@@ -14,9 +14,14 @@ module Guard
           :jasmine_url   => 'http://localhost:3000/jasmine',
           :phantomjs_bin => '/usr/local/bin/phantomjs',
           :notification => true,
-          :hide_success  => false
+          :hide_success  => false,
+          :all_on_start => true
       }
       super(watchers, defaults.merge(options))
+    end
+
+    def start
+      run_all if options[:all_on_start]
     end
 
     def run_all

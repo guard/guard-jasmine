@@ -152,6 +152,9 @@ There following options can be passed to Guard::Jasmine:
 :phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
                                               # default: '/usr/local/bin/phantomjs'
 
+:all_on_start => false                        # Run all specs on start.
+                                              # default: true
+
 :notifications => false                       # Show success and error messages.
                                               # default: true
 
