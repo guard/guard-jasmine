@@ -3,23 +3,23 @@ module Guard
     module Formatter
       class << self
 
-        def info(message, options={ })
+        def info(message, options = { })
           ::Guard::UI.info(message, options)
         end
 
-        def debug(message, options={})
+        def debug(message, options = { })
           ::Guard::UI.debug(message, options)
         end
 
-        def error(message, options={})
+        def error(message, options = { })
           ::Guard::UI.error(color(message, ';31'), options)
         end
 
-        def success(message, options={})
+        def success(message, options = { })
           ::Guard::UI.info(color(message, ';32'), options)
         end
 
-        def notify(message, options={})
+        def notify(message, options = { })
           ::Guard::Notifier.notify(message, options)
         end
 
