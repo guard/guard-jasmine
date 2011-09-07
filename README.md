@@ -65,20 +65,26 @@ Please read the detailed installation and configuration instructions at [Jasmine
 
 In short, you add it to your `Gemfile`:
 
-    group :development, :test do
-      gem 'jasmine'
-    end
+```ruby
+group :development, :test do
+  gem 'jasmine'
+end
+```
 
 and add a route for the Jasmine Test Runner to `config/routes.rb`:
 
-    if ["development", "test"].include? Rails.env
-      mount Jasminerice::Engine => "/jasmine"
-    end
+```ruby
+if ["development", "test"].include? Rails.env
+  mount Jasminerice::Engine => "/jasmine"
+end
+```
 
 Next you create the directory `spec/javascripts` where your CoffeeScript tests go into. You define the Rails 3.1
 asset pipeline manifest in `spec/javascripts/spec.js.coffee`:
 
-    #=require_tree ./
+```ruby
+#=require_tree ./
+```
 
 ### Rails 2 & 3
 
