@@ -126,9 +126,9 @@ Guard::Jasmine can be adapted to all kind of projects. Please read the
 
 ```ruby
 guard 'jasmine' do
-  watch(%r{app/assets/javascripts/(.+).(js|js.coffee)}) { |m| "spec/javascripts/#{m[0]}_spec.#{m[1]}" }
-  watch(%r{spec/javascripts/(.+)_spec.(js|js.coffee)})  { "spec/javascripts/#{m[0]}_spec.#{m[1]}" }
-  watch(%r{spec/javascripts/spec.(js|js.coffee)})       { "spec/javascripts" }
+  watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+  watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+  watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
 end
 ```
 
@@ -136,10 +136,10 @@ end
 
 ```ruby
 guard 'jasmine', :url => 'http://127.0.0.1:8888' do
-  watch(%r{public/javascripts/(.+).js})                  { |m| "spec/javascripts/#{m[0]}_spec.js" }
-  watch(%r{spec/javascripts/(.+)_spec.js})               { "spec/javascripts/#{m[0]}_spec.js" }
-  watch(%r{spec/javascripts/support/jasmine.yml})        { "spec/javascripts" }
-  watch(%r{spec/javascripts/support/jasmine_config.rb})  { "spec/javascripts" }
+  watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
+  watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
+  watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
+  watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
 end
 ```
 
