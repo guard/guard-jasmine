@@ -86,8 +86,14 @@ describe Guard::Jasmine do
   end
 
   describe '.run_all' do
-    it 'runs the run_on_change with the spec dir' do
-      guard.should_receive(:run_on_change).with(['spec/javascripts'])
+    it 'starts the Runner with the spec dir' do
+      runner.should_receive(:run).with(['spec/javascripts'], {
+          :jasmine_url   => 'http://localhost:3000/jasmine',
+          :phantomjs_bin => '/usr/local/bin/phantomjs',
+          :all_on_start  => true,
+          :notification  => true,
+          :hide_success  => false }).and_return [['spec/javascripts/a.js.coffee'], true]
+
       guard.run_all
     end
   end

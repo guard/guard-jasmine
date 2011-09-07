@@ -37,22 +37,31 @@ module Guard
 
     # Gets called once when Guard starts.
     #
+    # @return [Boolean] when the start was successful
+    #
     def start
       run_all if options[:all_on_start]
+
+      true
     end
 
     # Gets called when all specs should be run.
     #
+    # @return [Boolean] when running all specs was successful
+    #
     def run_all
-      run_on_change(['spec/javascripts'])
+      Runner.run(['spec/javascripts'], options)
     end
 
     # Gets called when watched paths and files have changes.
     #
     # @param [Array<String>] paths the changed paths and files
+    # @return [Boolean] when running the changed specs was successful
     #
     def run_on_change(paths)
       Runner.run(Inspector.clean(paths), options)
+
+      #TODO: Evaluate result
     end
 
   end
