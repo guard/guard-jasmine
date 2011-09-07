@@ -83,7 +83,7 @@ asset pipeline manifest in `spec/javascripts/spec.js.coffee`:
 ### Rails 2 & 3
 
 With Rails 3 you write your Jasmine specs in JavaScript, configured and server with the Jasmine gem. Please read the
-detailed installation and configuration instructions at [The Jasmine Gem][].
+detailed installation and configuration instructions at [the Jasmine Gem][].
 
 ### PhantomJS
 
@@ -114,20 +114,24 @@ Guard::Jasmine can be adapted to all kind of projects. Please read the
 
 ### Rails 3.1 with Jasminerice
 
+```ruby
     guard 'jasmine' do
       watch(%r{app/assets/javascripts/(.+).(js|js.coffee)}) { |m| "spec/javascripts/#{m[0]}_spec.#{m[1]}" }
       watch(%r{spec/javascripts/(.+)_spec.(js|js.coffee)})  { "spec/javascripts/#{m[0]}_spec.#{m[1]}" }
       watch(%r{spec/javascripts/spec.(js|js.coffee)})       { "spec/javascripts" }
     end
+```
 
 ### Rails 2 & 3 with the Jasmine gem
 
+```ruby
     guard 'jasmine', :url => 'http://127.0.0.1:8888' do
       watch(%r{public/javascripts/(.+).js})                  { |m| "spec/javascripts/#{m[0]}_spec.js" }
       watch(%r{spec/javascripts/(.+)_spec.js})               { "spec/javascripts/#{m[0]}_spec.js" }
       watch(%r{spec/javascripts/support/jasmine.yml})        { "spec/javascripts" }
       watch(%r{spec/javascripts/support/jasmine_config.rb})  { "spec/javascripts" }
     end
+```
 
 ## Options
 
@@ -213,14 +217,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [Ariya Hidayat]: http://twitter.com/#!/AriyaHidayat
 [PhantomJS]: http://www.phantomjs.org/
 [the PhantomJS download section]: http://code.google.com/p/phantomjs/downloads/list
-[PhantomJS build instructions] http://code.google.com/p/phantomjs/wiki/BuildInstructions
+[PhantomJS build instructions]: http://code.google.com/p/phantomjs/wiki/BuildInstructions
 [Roejames12]: https://github.com/Roejames12
 [run-jasmine.coffee]: https://github.com/ariya/phantomjs/blob/master/examples/run-jasmine.coffee
 [Brad Phelan]: http://twitter.com/#!/bradgonesurfing
 [Jasminerice]: https://github.com/bradphelan/jasminerice
 [Pivotal Labs]: http://pivotallabs.com/
 [Jasmine]: http://pivotal.github.com/jasmine/
-[The Jasmine Gem]: https://github.com/pivotal/jasmine-gem
+[the Jasmine Gem]: https://github.com/pivotal/jasmine-gem
 [Jeremy Ashkenas]: http://twitter.com/#!/jashkenas
 [CoffeeScript]: http://jashkenas.github.com/coffee-script/
 [Rails 3.1 asset pipeline]: http://guides.rubyonrails.org/asset_pipeline.html
