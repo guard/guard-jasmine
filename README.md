@@ -7,8 +7,6 @@ Tested on MRI Ruby 1.8.7, 1.9.2, REE and the latest versions of JRuby & Rubinius
 If you have any questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
 (irc.freenode.net).
 
-**This Guard is considered in alpha state and the gem has not been officially released!**
-
 ## Highlights
 
 * Continuous testing based on file modifications by [Guard][], manifold configurable rules
