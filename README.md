@@ -161,6 +161,14 @@ There following options can be passed to Guard::Jasmine:
                                               # default: false
 ```
 
+## Alternatives
+
+# [guard-jasmine-headless-webkit][], a Guard for [jasmine-headless-webkit][], but doesn't run in JRuby.
+* [Evergreen][], runs CoffeeScript specs headless, but has no
+continuous testing support.
+* [Jezebel][] a Node.js REPL and continuous test runner for [Jessie][], a Node runner for Jasmine, but has no full
+featured browser environment.
+
 ## Development
 
 - Source hosted at [GitHub](https://github.com/netzpirat/guard-Jasmine)
@@ -170,11 +178,6 @@ Pull requests are very welcome! Make sure your patches are well tested.
 
 For questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
 (irc.freenode.net).
-
-## Alternatives
-
-* [Evergreen](https://github.com/jnicklas/evergreen) by Jonas Nicklas
-* [Jessie](https://github.com/futuresimple/jessie) by Future Simple
 
 ## Acknowledgment
 
@@ -239,3 +242,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [CoffeeScript]: http://jashkenas.github.com/coffee-script/
 [Rails 3.1 asset pipeline]: http://guides.rubyonrails.org/asset_pipeline.html
 [Homebrew]: http://mxcl.github.com/homebrew/
+[Jezebel]: https://github.com/benrady/jezebel
+[Jessie]: https://github.com/futuresimple/jessie
+[guard-jasmine-headless-webkit]: https://github.com/johnbintz/guard-jasmine-headless-webkit
+[jasmine-headless-webkit]: https://github.com/johnbintz/jasmine-headless-webkit/
+[Evergreen]: https://github.com/jnicklas/evergreen
