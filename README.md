@@ -174,19 +174,14 @@ For questions please join us on our [Google group](http://groups.google.com/grou
 
 ## Acknowledgment
 
-[Ariya Hidayat][] for [PhantomJS][], a powerfull headless WebKit browser.
-
-[Brad Phelan][] for [Jasminerice][], an elegant solution for [Jasmine][] in the Rails 3.1 asset pipeline.
-
-[Pivotal Labs][] for their beautiful [Jasmine][] BDD testing framework that makes JavaScript testing fun.
-
-[Jeremy Ashkenas][] for [CoffeeScript][], that little language that compiles into JavaScript and makes me enjoy the
+- [Ariya Hidayat][] for [PhantomJS][], a powerfull headless WebKit browser.
+- [Brad Phelan][] for [Jasminerice][], an elegant solution for [Jasmine][] in the Rails 3.1 asset pipeline.
+- [Pivotal Labs][] for their beautiful [Jasmine][] BDD testing framework that makes JavaScript testing fun.
+- [Jeremy Ashkenas][] for [CoffeeScript][], that little language that compiles into JavaScript and makes me enjoy the
 frontend.
-
-The [Guard Team][] for giving us such a nice piece of software that is so easy to extend, one *has* to make a plugin
+- The [Guard Team][] for giving us such a nice piece of software that is so easy to extend, one *has* to make a plugin
 for it!
-
-All the authors of the numerous [Guards][] available for making the Guard ecosystem so much growing and comprehensive.
+- All the authors of the numerous [Guards][] available for making the Guard ecosystem so much growing and comprehensive.
 
 ## License
 
