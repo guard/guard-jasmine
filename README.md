@@ -12,7 +12,7 @@ If you have any questions please join us on our [Google group](http://groups.goo
 * Continuous testing based on file modifications by [Guard][], manifold configurable rules
 with RegEx and Ruby.
 
-* Fast headless testing in [PhantomJS][], a full featured WebKit browser with native support for
+* Fast headless testing on [PhantomJS][], a full featured WebKit browser with native support for
 various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 
 * With Rails 3.1 you can write your [Jasmine][] specs in [CoffeeScript][] also, fully integrated into the
@@ -174,11 +174,11 @@ For questions please join us on our [Google group](http://groups.google.com/grou
 
 ## Acknowledgment
 
-- [Ariya Hidayat][] for [PhantomJS][], a powerfull headless WebKit browser.
+- [Ariya Hidayat][] for [PhantomJS][], a powerful headless WebKit browser.
 - [Brad Phelan][] for [Jasminerice][], an elegant solution for [Jasmine][] in the Rails 3.1 asset pipeline.
 - [Pivotal Labs][] for their beautiful [Jasmine][] BDD testing framework that makes JavaScript testing fun.
 - [Jeremy Ashkenas][] for [CoffeeScript][], that little language that compiles into JavaScript and makes me enjoy the
-frontend.
+front-end.
 - The [Guard Team][] for giving us such a nice piece of software that is so easy to extend, one *has* to make a plugin
 for it!
 - All the authors of the numerous [Guards][] available for making the Guard ecosystem so much growing and comprehensive.
