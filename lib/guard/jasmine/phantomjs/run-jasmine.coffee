@@ -1,60 +1,65 @@
-##
-# Wait until the test condition is true or a timeout occurs. Useful for waiting
-# on a server response or for a ui change (fadeIn, etc.) to occur.
+# Wait until the test condition is true or a timeout occurs.
 #
-# @param testFx javascript condition that evaluates to a boolean,
-# it can be passed in as a string (e.g.: "1 == 1" or "$('#bar').is(':visible')" or
-# as a callback function.
-# @param onReady what to do when testFx condition is fulfilled,
-# it can be passed in as a string (e.g.: "1 == 1" or "$('#bar').is(':visible')" or
-# as a callback function.
-# @param timeOutMillis the max amount of time to wait. If not specified, 3 sec is used.
-##
+# @param [Function] testFx the condition that evaluates to a boolean
+# @param [Function] onReady the action when the condition is fulfilled
+# @param [Number] timeOutMillis the max amount of time to wait
+#
 waitFor = (testFx, onReady, timeOutMillis=3000) ->
   start = new Date().getTime()
   condition = false
-  f = ->
+  wait = ->
     if (new Date().getTime() - start < timeOutMillis) and not condition
-      # If not time-out yet and condition not yet fulfilled
-      condition = (if typeof testFx is 'string' then eval testFx else testFx()) #< defensive code
+      condition = (if typeof testFx is 'string' then eval testFx else testFx())
     else
       if not condition
-        # If condition still not fulfilled (timeout but condition is 'false')
-        console.log JSON.stringify { error: "Timeout requesting Jasmine test runner!" }
+        console.log "JasmineResult: #{ JSON.stringify { error: "Timeout requesting Jasmine test runner!" } }"
         phantom.exit(1)
       else
-        # Condition fulfilled (timeout and/or condition is 'true')
-        if typeof onReady is 'string' then eval onReady else onReady() #< Do what it's supposed to do once the condition is fulfilled
-        clearInterval interval #< Stop this interval
+        if typeof onReady is 'string' then eval onReady else onReady()
+        clearInterval interval
 
-  interval = setInterval f, 100 #< repeat check every 100ms
+  interval = setInterval wait, 100
 
+# Check arguments of the script.
+#
 if phantom.args.length isnt 1
-  console.log JSON.stringify { error: "Wrong usage of PhantomJS script!" }
+  console.log "JasmineResult: #{ JSON.stringify { error: "Wrong usage of PhantomJS script!" } }"
   phantom.exit()
+else
+  url = phantom.args[0]
 
 page = new WebPage()
-page.onConsoleMessage = (msg) -> console.log msg
 
-url = phantom.args[0]
+# Output the Jasmine test runner result as JSON object.
+# Ignore all other calls to console.log
+#
+page.onConsoleMessage = (msg) -> console.log(RegExp.$1) if /^JasmineResult: (.*)$/.test(msg)
 
+# Open web page and run the Jasmine test runner
+#
 page.open url, (status) ->
+
   if status isnt 'success'
-    console.log JSON.stringify { error: "Unable to access Jasmine specs at #{ url }" }
+
+    console.log "JasmineResult: #{ JSON.stringify { error: "Unable to access Jasmine specs at #{ url }" } }"
     phantom.exit()
 
   else
-    waitFor ->
-      page.evaluate ->
-        if document.body.querySelector '.finished-at' then true else false
+    # Wait until the Jasmine test is run
+    waitFor -> page.evaluate -> if document.body.querySelector '.finished-at' then true else false
     , ->
+        # Jasmine test runner has finished, extract the result from the DOM
         page.evaluate ->
+
+          # JSON response to Guard::Jasmine
           result = {
             suites: []
           }
 
           # Extract runner stats from the HTML
           stats = /(\d+) specs, (\d+) failures? in (\d+.\d+)s/.exec document.body.querySelector('.description').innerText
+
+          # Add stats to the result
           result['stats'] = {
             specs: parseInt stats[1]
             failures: parseInt stats[2]
@@ -64,12 +69,15 @@ page.open url, (status) ->
           # Extract failed suites
           for failedSuite in document.body.querySelectorAll 'div.jasmine_reporter > div.suite.failed'
             description = failedSuite.querySelector('a.description')
+
+            # Add suite information to the result
             suite = {
               description: description.innerText
               filter: description.getAttribute('href')
               specs: []
             }
 
+            # Collect information about each **failing** spec
             for failedSpec in failedSuite.querySelectorAll 'div.spec.failed'
               spec = {
                 description: failedSpec.querySelector('a.description').getAttribute 'title'
@@ -79,6 +87,7 @@ page.open url, (status) ->
 
             result['suites'].push suite
 
-          console.log JSON.stringify result, undefined, 2
+          # Write result as JSON string that is parsed by Guard::Jasmine
+          console.log "JasmineResult: #{ JSON.stringify result, undefined, 2 }"
 
         phantom.exit()
