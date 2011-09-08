@@ -110,14 +110,28 @@ describe Guard::Jasmine do
     context 'without the Jasmine runner available' do
       let(:http) { mock('http') }
 
-      before do
-        http.stub_chain(:request, :code).and_return 404
-        Net::HTTP.stub(:start).and_yield http
+      context 'because the connection is refused' do
+        before do
+          http.stub_chain(:request, :code).and_return 404
+          Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED
+        end
+
+        it 'does show that the runner is not available' do
+          formatter.should_receive(:error).with "Jasmine test runner not available at http://localhost:3000/jasmine"
+          guard.start
+        end
       end
 
-      it 'does show that the runner is not available' do
-        formatter.should_receive(:error).with "Jasmine test runner not available at http://localhost:3000/jasmine"
-        guard.start
+      context 'because the http status is not OK' do
+        before do
+          http.stub_chain(:request, :code).and_return 404
+          Net::HTTP.stub(:start).and_yield http
+        end
+
+        it 'does show that the runner is not available' do
+          formatter.should_receive(:error).with "Jasmine test runner not available at http://localhost:3000/jasmine"
+          guard.start
+        end
       end
 
       context 'with notifications enabled' do

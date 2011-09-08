@@ -41,7 +41,7 @@ module Guard
 
       super(watchers, defaults.merge(options))
 
-      self.last_run_failed = false
+      self.last_run_failed   = false
       self.last_failed_paths = []
     end
 
@@ -62,7 +62,7 @@ module Guard
     # @return [Boolean] when the reload was successful
     #
     def reload
-      self.last_run_failed = false
+      self.last_run_failed   = false
       self.last_failed_paths = []
 
       true
@@ -76,7 +76,7 @@ module Guard
       passed, failed_specs = Runner.run(['spec/javascripts'], options)
 
       self.last_failed_paths = failed_specs
-      self.last_run_failed = !passed
+      self.last_run_failed   = !passed
 
       passed
     end
@@ -113,22 +113,37 @@ module Guard
     def jasmine_runner_available?(url)
       url = URI.parse(url)
 
-      Net::HTTP.start(url.host, url.port) do |http|
-        if http.request(Net::HTTP::Head.new(url.path)).code != 200
-          message = "Jasmine test runner not available at #{ url }"
-          Formatter.error(message)
+      begin
+        Net::HTTP.start(url.host, url.port) do |http|
+          response = http.request(Net::HTTP::Head.new(url.path))
 
-          if options[:notification]
-            Formatter.notify(message, :title => 'Jasmine test runner', :image => :failed, :priority => 2)
+          if response.code == 200
+            Formatter.info("Jasmine test runner is available at #{ url }")
+          else
+            notify_jasmine_runner_failure(url) if options[:notification]
           end
 
-          false
-        else
-          Formatter.info("Jasmine test runner is available at #{ url }")
-
-          true
+          response.code == 200
         end
+
+      rescue Errno::ECONNREFUSED => e
+        notify_jasmine_runner_failure(url)
+
+        false
       end
+    end
+
+    # Notify that the Jasmine runner is not available.
+    #
+    # @param [String] url the url of the Jasmine runner
+    #
+    def notify_jasmine_runner_failure(url)
+      message = "Jasmine test runner not available at #{ url }"
+      Formatter.error(message)
+      Formatter.notify(message,
+                       :title    => 'Jasmine test runner',
+                       :image    => :failed,
+                       :priority => 2)
     end
 
   end
