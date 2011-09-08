@@ -134,6 +134,10 @@ describe Guard::Jasmine do
     context 'with :all_on_start set to false' do
       let(:guard) { Guard::Jasmine.new(nil, { :all_on_start => false }) }
 
+      before do
+        guard.stub(:jasmine_runner_available?).and_return true
+      end
+
       it 'does not trigger .run_all' do
         guard.should_not_receive(:run_all)
         guard.start
