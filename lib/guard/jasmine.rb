@@ -117,13 +117,13 @@ module Guard
         Net::HTTP.start(url.host, url.port) do |http|
           response = http.request(Net::HTTP::Head.new(url.path))
 
-          if response.code == 200
+          if response.code.to_i == 200
             Formatter.info("Jasmine test runner is available at #{ url }")
           else
             notify_jasmine_runner_failure(url) if options[:notification]
           end
 
-          response.code == 200
+          response.code.to_i == 200
         end
 
       rescue Errno::ECONNREFUSED => e
