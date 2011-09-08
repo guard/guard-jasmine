@@ -207,7 +207,7 @@ describe Guard::Jasmine::Runner do
         end
 
         context 'with hide success notifications' do
-          it 'des not shows a success notification' do
+          it 'does not shows a success notification' do
             formatter.should_not_receive(:notify)
             runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => true, :hide_success => true }))
           end
