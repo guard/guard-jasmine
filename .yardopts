@@ -1,6 +1,8 @@
---private
+--readme           README.md
+--markup           markdown
+--markup-provider  kramdown
+--title            'Guard::Jasmine Documentation'
+--hide-void-return
 --protected
---markup markdown
---readme README.md
---title 'Guard::Jasmine'
-'lib/**/*.rb'
+--private
+lib/**/*.rb
