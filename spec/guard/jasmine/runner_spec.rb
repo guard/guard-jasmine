@@ -14,7 +14,7 @@ describe Guard::Jasmine::Runner do
     }
   end
 
-  let(:error_response) do
+  let(:phantomjs_error_response) do
     <<-JSON
     {
       "error": "Cannot request Jasmine specs"
@@ -22,10 +22,10 @@ describe Guard::Jasmine::Runner do
     JSON
   end
 
-  let(:failure_response) do
+  let(:phantomjs_failure_response) do
     <<-JSON
     {
-      "suites": [
+      "failed": [
         {
           "description": "FailureTest",
           "filter": "?spec=FailureTest",
@@ -46,10 +46,9 @@ describe Guard::Jasmine::Runner do
     JSON
   end
 
-  let(:success_response) do
+  let(:phantomjs_success_response) do
     <<-JSON
     {
-      "suites": [],
       "stats": {
         "specs": 4,
         "failures": 0,
@@ -70,12 +69,12 @@ describe Guard::Jasmine::Runner do
   describe '#run' do
     before do
       File.stub(:foreach).and_yield 'describe "ErrorTest", ->'
-      IO.stub(:popen).and_return StringIO.new(error_response)
+      IO.stub(:popen).and_return StringIO.new(phantomjs_error_response)
     end
 
     context 'when passed an empty paths list' do
       it 'returns false' do
-        runner.run([]).should be_false
+        runner.run([]).should eql [false, []]
       end
     end
 
@@ -97,6 +96,12 @@ describe Guard::Jasmine::Runner do
             "An error occurred: Cannot request Jasmine specs"
         )
         runner.run(['spec/javascripts/a.js.coffee'], defaults.merge({ :notification => false }))
+      end
+
+      it 'returns the errors' do
+        response = runner.run(['spec/javascripts/a.js.coffee'], { :notification => false }.merge(defaults))
+        response.first.should be_false
+        response.last.should =~ []
       end
 
       context 'with notifications' do
@@ -122,7 +127,7 @@ describe Guard::Jasmine::Runner do
     context "for a failing Jasmine spec" do
       before do
         File.stub(:foreach).and_yield 'describe "FailureTest", ->'
-        IO.stub(:popen).and_return StringIO.new(failure_response)
+        IO.stub(:popen).and_return StringIO.new(phantomjs_failure_response)
       end
 
       it 'requests the jasmine specs from the server' do
@@ -136,6 +141,12 @@ describe Guard::Jasmine::Runner do
             "Spec 'FailureTest tests something.' failed with 'Expected undefined to be defined.'!\nJasmine ran 4 specs, 1 failure in 0.007s."
         )
         runner.run(['spec/javascripts/x/b.js.coffee'], { :notification => false }.merge(defaults))
+      end
+
+      it 'returns the failures' do
+        response = runner.run(['spec/javascripts/x/b.js.coffee'], { :notification => false }.merge(defaults))
+        response.first.should be_false
+        response.last.should =~ ['spec/javascripts/x/b.js.coffee']
       end
 
       context 'with notifications' do
@@ -161,7 +172,7 @@ describe Guard::Jasmine::Runner do
     context "for a successful Jasmine spec" do
       before do
         File.stub(:foreach).and_yield 'describe("SuccessTest", function() {'
-        IO.stub(:popen).and_return StringIO.new(success_response)
+        IO.stub(:popen).and_return StringIO.new(phantomjs_success_response)
       end
 
       it 'requests the jasmine specs from the server' do
@@ -176,6 +187,12 @@ describe Guard::Jasmine::Runner do
             "Jasmine ran 4 specs, 0 failures in 0.009s."
         )
         runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => false }))
+      end
+
+      it 'returns the success' do
+        response = runner.run(['spec/javascripts/x/b.js.coffee'], { :notification => false }.merge(defaults))
+        response.first.should be_true
+        response.last.should =~ []
       end
 
       context 'with notifications' do

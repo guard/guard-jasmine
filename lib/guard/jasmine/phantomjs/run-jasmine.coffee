@@ -55,9 +55,7 @@ page.open url, (status) ->
         page.evaluate ->
 
           # JSON response to Guard::Jasmine
-          result = {
-            suites: []
-          }
+          result = {}
 
           # Extract runner stats from the HTML
           stats = /(\d+) specs, (\d+) failures? in (\d+.\d+)s/.exec document.body.querySelector('.description').innerText
@@ -71,6 +69,8 @@ page.open url, (status) ->
 
           # Extract failed suites
           for failedSuite in document.body.querySelectorAll 'div.jasmine_reporter > div.suite.failed'
+            result['failed'] = [] if not result['failed']
+
             description = failedSuite.querySelector('a.description')
 
             # Add suite information to the result
@@ -88,7 +88,7 @@ page.open url, (status) ->
               }
               suite['specs'].push spec
 
-            result['suites'].push suite
+            result['failed'].push suite
 
           # Write result as JSON string that is parsed by Guard::Jasmine
           console.log "JasmineResult: #{ JSON.stringify result, undefined, 2 }"

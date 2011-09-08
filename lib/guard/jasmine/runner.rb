@@ -18,22 +18,42 @@ module Guard
         # @option options [String] :phantomjs_bin the location of the PhantomJS binary
         # @option options [Boolean] :notification show notifications
         # @option options [Boolean] :hide_success hide success message notification
-        # @return [Array<Object>] the result for each suite
+        # @return [Boolean, Array<String>] the status of the run and the failed files
         #
         def run(paths, options = { })
-          return false if paths.empty?
+          return [false, []] if paths.empty?
 
           message = options[:message] || (paths == ['spec/javascripts'] ? 'Run all specs' : "Run specs #{ paths.join(' ') }")
           UI.info message, :reset => true
 
-          paths.inject([]) do |results, file|
-            results << evaluate_result(run_jasmine_spec(file, options), options)
+          results = paths.inject([]) do |results, file|
+            results << evaluate_result(run_jasmine_spec(file, options), file, options)
 
             results
           end.compact
+
+          [response_status_for(results), failed_paths_from(results)]
         end
 
         private
+
+        # Returns the failed spec file names.
+        #
+        # @param [Array<Object>] results the spec runner results
+        # @return [Array<String>] the list of failed spec files
+        #
+        def failed_paths_from(results)
+          results.map { |r| r.has_key?('failed') ? r['file']: nil }.compact
+        end
+
+        # Returns the response status for the given result set.
+        #
+        # @param [Array<Object>] results the spec runner results
+        # @return [Boolean] whether it has passed or not
+        #
+        def response_status_for(results)
+          results.none? { |r| r.has_key?('error') || r.has_key?('failed') }
+        end
 
         # Run the Jasmine spec by executing the PhantomJS script.
         #
@@ -101,16 +121,18 @@ module Guard
         # actions.
         #
         # @param [String] output the JSON output the spec run
+        # @param [String] file the file name of the spec
         # @param [Hash] options the options for the execution
         # @return [Hash] the suite result
         #
-        def evaluate_result(output, options)
+        def evaluate_result(output, file, options)
           result = MultiJson.decode(output.read)
           output.close
 
           if result['error']
             notify_runtime_error(result, options)
           else
+            result['file'] = file
             notify_spec_result(result, options)
           end
 
@@ -163,7 +185,7 @@ module Guard
         # @option options [Boolean] :notification show notifications
         #
         def notify_spec_failures(result, stats, options)
-          messages = result['suites'].inject('') do |messages, suite|
+          messages = result['failed'].inject('') do |messages, suite|
             suite['specs'].each do |spec|
               messages << "Spec '#{ spec['description'] }' failed with '#{ spec['error_message'] }'!\n"
             end
