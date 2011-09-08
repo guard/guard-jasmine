@@ -112,7 +112,6 @@ describe Guard::Jasmine do
 
       context 'because the connection is refused' do
         before do
-          http.stub_chain(:request, :code).and_return 404
           Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED
         end
 
@@ -135,6 +134,10 @@ describe Guard::Jasmine do
       end
 
       context 'with notifications enabled' do
+        before do
+          Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED
+        end
+
         it 'shows a failing system notification' do
           formatter.should_receive(:notify).with("Jasmine test runner not available at http://localhost:3000/jasmine",
                                                  :title    => 'Jasmine test runner not available',
