@@ -159,7 +159,7 @@ describe Guard::Jasmine::Runner do
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
         IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=FailureTest")
-        runner.run(['spec/javascripts/x/b.js.coffee'], { :notification => false }.merge(defaults))
+        runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :notification => false }))
       end
 
       it 'shows the specs in the console' do
@@ -172,26 +172,41 @@ describe Guard::Jasmine::Runner do
         formatter.should_receive(:spec_failed).with(
             ' ✘ Failure spec tests something ➤ Expected undefined to be defined.'
         )
-        formatter.should_receive(:success).with(
-            ' ✔ Success spec tests something'
-        )
         formatter.should_receive(:info).with(
             "4 specs, 1 failure\nin 0.007 seconds"
         )
-        runner.run(['spec/javascripts/x/b.js.coffee'], { :notification => false }.merge(defaults))
+        runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :notification => false }))
       end
 
       it 'returns the failures' do
-        response = runner.run(['spec/javascripts/x/b.js.coffee'], { :notification => false }.merge(defaults))
+        response = runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
         response.first.should be_false
         response.last.should =~ ['spec/javascripts/x/b.js.coffee']
+      end
+
+      context 'with the :hide_success option disabled' do
+        it 'shows the passing specs in the console' do
+          formatter.should_receive(:success).with(
+              ' ✔ Success spec tests something'
+          )
+          runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :hide_success => false }))
+        end
+      end
+
+      context 'without the :hide_success option enabled' do
+        it 'does not shows the passing specs in the console' do
+          formatter.should_not_receive(:success).with(
+              ' ✔ Success spec tests something'
+          )
+          runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :hide_success => true }))
+        end
       end
 
       context 'with notifications' do
         it 'shows a failure notification' do
           formatter.should_receive(:notify).with(
               "4 specs, 1 failure\nin 0.007 seconds",
-              :title    => 'Jasmine results',
+              :title    => 'Jasmine specs failed',
               :image    => :failed,
               :priority => 2
           )
@@ -237,7 +252,7 @@ describe Guard::Jasmine::Runner do
         it 'shows a success notification' do
           formatter.should_receive(:notify).with(
               "4 specs, 0 failures\nin 0.009 seconds",
-              :title => 'Jasmine results'
+              :title => 'Jasmine specs passed'
           )
           runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => true }))
         end

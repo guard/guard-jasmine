@@ -171,11 +171,11 @@ module Guard
           message = "#{ specs } specs, #{ failures } failure#{ plural }\nin #{ time } seconds"
 
           if failures != 0
-            notify_specdoc(result, message)
-            Formatter.notify(message, :title => 'Jasmine results', :image => :failed, :priority => 2) if options[:notification]
+            notify_specdoc(result, message, options)
+            Formatter.notify(message, :title => 'Jasmine specs failed', :image => :failed, :priority => 2) if options[:notification]
           else
             Formatter.success(message)
-            Formatter.notify(message, :title => 'Jasmine results') if options[:notification] && !options[:hide_success]
+            Formatter.notify(message, :title => 'Jasmine specs passed') if options[:notification] && !options[:hide_success]
           end
         end
 
@@ -183,14 +183,15 @@ module Guard
         #
         # @param [Hash] result the suite result
         # @param [String] stats the status information
+        # @option options [Boolean] :hide_success hide success message notification
         #
-        def notify_specdoc(result, stats)
+        def notify_specdoc(result, stats, options)
           result['suites'].each do |suite|
             Formatter.suite_name("➥ #{ suite['description'] }")
 
             suite['specs'].each do |spec|
               if spec['passed']
-                Formatter.success(" ✔ #{ spec['description'] }")
+                Formatter.success(" ✔ #{ spec['description'] }") if !options[:hide_success]
               else
                 Formatter.spec_failed(" ✘ #{ spec['description'] } ➤ #{ spec['error_message'] }")
               end
