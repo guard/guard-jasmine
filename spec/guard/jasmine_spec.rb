@@ -13,6 +13,12 @@ describe Guard::Jasmine do
     guard.stub(:notify)
   end
 
+  describe 'VERSION' do
+    it 'defines the version' do
+      Guard::Jasmine::VERSION.should match /\d+.\d+.\d+/
+    end
+  end
+
   describe '#initialize' do
     context 'when no options are provided' do
       it 'sets a default :jasmine_url option' do

@@ -9,6 +9,9 @@ module Guard
   #
   class Jasmine < Guard
 
+    # Guard::Jasmine version that is used for the Gem specification
+    VERSION = '0.2.0' unless defined? Guard::Jasmine::VERSION
+
     autoload :Formatter, 'guard/jasmine/formatter'
     autoload :Inspector, 'guard/jasmine/inspector'
     autoload :Runner, 'guard/jasmine/runner'
