@@ -1,6 +1,7 @@
 require 'guard'
 require 'guard/guard'
 require 'guard/watcher'
+require 'net/http'
 
 module Guard
 
@@ -40,7 +41,9 @@ module Guard
     # @return [Boolean] when the start was successful
     #
     def start
-      run_all if options[:all_on_start]
+      if jasmine_runner_available?(options[:jasmine_url])
+        run_all if options[:all_on_start]
+      end
 
       true
     end
@@ -62,6 +65,34 @@ module Guard
       Runner.run(Inspector.clean(paths), options)
 
       #TODO: Evaluate result
+    end
+
+    private
+
+    # Verifies if the Jasmine test runner is available.
+    #
+    # @param [String] url the location of the test runner
+    # @return [Boolean] when the runner is available
+    #
+    def jasmine_runner_available?(url)
+      url = URI.parse(url)
+
+      Net::HTTP.start(url.host, url.port) do |http|
+        if http.request(Net::HTTP::Head.new(url.path)).code != 200
+          message = "Jasmine test runner not available at #{ url }"
+          Formatter.error(message)
+
+          if options[:notification]
+            Formatter.notify(message, :title => 'Jasmine test runner', :image => :failed, :priority => 2)
+          end
+
+          false
+        else
+          Formatter.info("Jasmine test runner is available at #{ url }")
+
+          true
+        end
+      end
     end
 
   end
