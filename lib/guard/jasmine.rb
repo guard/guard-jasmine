@@ -14,6 +14,8 @@ module Guard
     autoload :Inspector, 'guard/jasmine/inspector'
     autoload :Runner, 'guard/jasmine/runner'
 
+    attr_accessor :last_run_failed, :last_failed_paths
+
     # Initialize Guard::Jasmine.
     #
     # @param [Array<Guard::Watcher>] watchers the watchers in the Guard block
@@ -23,17 +25,24 @@ module Guard
     # @option options [Boolean] :notification show notifications
     # @option options [Boolean] :hide_success hide success message notification
     # @option options [Boolean] :all_on_start run all suites on start
+    # @option options [Boolean] :keep_failed keep failed specs and add them the next run again
+    # @option options [Boolean] :all_after_pass run all specs after a single spec has passed
     #
     def initialize(watchers = [], options = { })
       defaults = {
-          :jasmine_url   => 'http://localhost:3000/jasmine',
-          :phantomjs_bin => '/usr/local/bin/phantomjs',
-          :notification  => true,
-          :hide_success  => false,
-          :all_on_start  => true
+          :jasmine_url    => 'http://localhost:3000/jasmine',
+          :phantomjs_bin  => '/usr/local/bin/phantomjs',
+          :notification   => true,
+          :hide_success   => false,
+          :all_on_start   => true,
+          :keep_failed    => true,
+          :all_after_pass => true
       }
 
       super(watchers, defaults.merge(options))
+
+      self.last_run_failed = false
+      self.last_failed_paths = []
     end
 
     # Gets called once when Guard starts.
@@ -48,12 +57,28 @@ module Guard
       true
     end
 
+    # Gets called when the Guard should reload itself.
+    #
+    # @return [Boolean] when the reload was successful
+    #
+    def reload
+      self.last_run_failed = false
+      self.last_failed_paths = []
+
+      true
+    end
+
     # Gets called when all specs should be run.
     #
     # @return [Boolean] when running all specs was successful
     #
     def run_all
-      Runner.run(['spec/javascripts'], options)
+      passed, failed_specs = Runner.run(['spec/javascripts'], options)
+
+      self.last_failed_paths = failed_specs
+      self.last_run_failed = !passed
+
+      passed
     end
 
     # Gets called when watched paths and files have changes.
@@ -62,9 +87,20 @@ module Guard
     # @return [Boolean] when running the changed specs was successful
     #
     def run_on_change(paths)
-      Runner.run(Inspector.clean(paths), options)
+      paths += self.last_failed_paths if options[:keep_failed]
 
-      #TODO: Evaluate result
+      passed, failed_specs = Runner.run(Inspector.clean(paths), options)
+
+      if passed
+        self.last_failed_paths = self.last_failed_paths - paths
+        run_all if self.last_run_failed && options[:all_after_pass]
+      else
+        self.last_failed_paths = self.last_failed_paths + failed_specs
+      end
+
+      self.last_run_failed = !passed
+
+      passed
     end
 
     private

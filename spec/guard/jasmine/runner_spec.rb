@@ -7,10 +7,12 @@ describe Guard::Jasmine::Runner do
 
   let(:defaults) do
     {
-        :jasmine_url   => 'http://localhost:3000/jasmine',
-        :phantomjs_bin => '/usr/local/bin/phantomjs',
-        :notification  => true,
-        :hide_success  => false
+        :jasmine_url    => 'http://localhost:3000/jasmine',
+        :phantomjs_bin  => '/usr/local/bin/phantomjs',
+        :notification   => true,
+        :hide_success   => false,
+        :keep_failed    => true,
+        :all_after_pass => true
     }
   end
 

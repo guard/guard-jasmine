@@ -9,8 +9,8 @@ describe Guard::Jasmine do
   let(:formatter) { Guard::Jasmine::Formatter }
 
   before do
-    inspector.stub(:clean)
-    runner.stub(:run)
+    inspector.stub(:clean).and_return { |specs| specs }
+    runner.stub(:run).and_return [true, []]
     formatter.stub(:notify)
   end
 
@@ -35,14 +35,32 @@ describe Guard::Jasmine do
       it 'sets a default :hide_success option' do
         guard.options[:hide_success].should be_false
       end
+
+      it 'sets a default :keep_failed option' do
+        guard.options[:keep_failed].should be_true
+      end
+
+      it 'sets a default :all_after_pass option' do
+        guard.options[:all_after_pass].should be_true
+      end
+
+      it 'sets last run failed to false' do
+        guard.last_run_failed.should be_false
+      end
+
+      it 'sets last failed paths to empty' do
+        guard.last_failed_paths.should be_empty
+      end
     end
 
     context 'with other options than the default ones' do
-      let(:guard) { Guard::Jasmine.new(nil, { :jasmine_url   => 'http://192.168.1.5/jasmine',
-                                              :phantomjs_bin => '~/bin/phantomjs',
-                                              :all_on_start  => false,
-                                              :notification  => false,
-                                              :hide_success  => true }) }
+      let(:guard) { Guard::Jasmine.new(nil, { :jasmine_url    => 'http://192.168.1.5/jasmine',
+                                              :phantomjs_bin  => '~/bin/phantomjs',
+                                              :all_on_start   => false,
+                                              :notification   => false,
+                                              :hide_success   => true,
+                                              :keep_failed    => false,
+                                              :all_after_pass => false }) }
 
       it 'sets the :jasmine_url option' do
         guard.options[:jasmine_url].should eql 'http://192.168.1.5/jasmine'
@@ -62,6 +80,14 @@ describe Guard::Jasmine do
 
       it 'sets the :hide_success option' do
         guard.options[:hide_success].should be_true
+      end
+
+      it 'sets a default :keep_failed option' do
+        guard.options[:keep_failed].should be_false
+      end
+
+      it 'sets a default :all_after_pass option' do
+        guard.options[:all_after_pass].should be_false
       end
     end
   end
@@ -145,16 +171,57 @@ describe Guard::Jasmine do
     end
   end
 
+  describe '.reload' do
+    before do
+      guard.last_run_failed   = true
+      guard.last_failed_paths = ['spec/javascripts/a.js.coffee']
+    end
+
+    it 'sets last run failed to false' do
+      guard.reload
+      guard.last_run_failed.should be_false
+    end
+
+    it 'sets last failed paths to empty' do
+      guard.reload
+      guard.last_failed_paths.should be_empty
+    end
+  end
+
   describe '.run_all' do
     it 'starts the Runner with the spec dir' do
       runner.should_receive(:run).with(['spec/javascripts'], {
-          :jasmine_url   => 'http://localhost:3000/jasmine',
-          :phantomjs_bin => '/usr/local/bin/phantomjs',
-          :all_on_start  => true,
-          :notification  => true,
-          :hide_success  => false }).and_return [['spec/javascripts/a.js.coffee'], true]
+          :jasmine_url    => 'http://localhost:3000/jasmine',
+          :phantomjs_bin  => '/usr/local/bin/phantomjs',
+          :all_on_start   => true,
+          :notification   => true,
+          :hide_success   => false,
+          :keep_failed    => true,
+          :all_after_pass => true }).and_return [['spec/javascripts/a.js.coffee'], true]
 
       guard.run_all
+    end
+
+    context 'with all specs passing' do
+      before do
+        guard.last_failed_paths = ['spec/javascripts/a.js.coffee']
+        guard.last_run_failed   = true
+        runner.stub(:run).and_return [true, []]
+      end
+
+      it 'returns true' do
+        guard.run_all.should eql true
+      end
+
+      it 'sets the last run failed to false' do
+        guard.run_all
+        guard.last_run_failed.should be_false
+      end
+
+      it 'clears the list of failed paths' do
+        guard.run_all
+        guard.last_failed_paths.should be_empty
+      end
     end
   end
 
@@ -172,13 +239,98 @@ describe Guard::Jasmine do
                                              'spec/javascripts/b.js.coffee']).and_return ['spec/javascripts/a.js.coffee']
 
       runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], {
-          :jasmine_url   => 'http://localhost:3000/jasmine',
-          :phantomjs_bin => '/usr/local/bin/phantomjs',
-          :all_on_start  => true,
-          :notification  => true,
-          :hide_success  => false }).and_return [['spec/javascripts/a.js.coffee'], true]
+          :jasmine_url    => 'http://localhost:3000/jasmine',
+          :phantomjs_bin  => '/usr/local/bin/phantomjs',
+          :all_on_start   => true,
+          :notification   => true,
+          :hide_success   => false,
+          :keep_failed    => true,
+          :all_after_pass => true }).and_return [['spec/javascripts/a.js.coffee'], true]
 
       guard.run_on_change(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
+    end
+
+    context 'with :keep_failed enabled' do
+      let(:guard) { Guard::Jasmine.new(nil, { :keep_failed => true }) }
+
+      before do
+        guard.last_failed_paths = ['spec/javascripts/b.js.coffee']
+      end
+
+      it 'appends the last failed paths to the current run' do
+        runner.should_receive(:run).with(['spec/javascripts/a.js.coffee',
+                                          'spec/javascripts/b.js.coffee'], {
+            :jasmine_url    => 'http://localhost:3000/jasmine',
+            :phantomjs_bin  => '/usr/local/bin/phantomjs',
+            :all_on_start   => true,
+            :notification   => true,
+            :hide_success   => false,
+            :keep_failed    => true,
+            :all_after_pass => true })
+
+        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+      end
+    end
+
+    context 'with only success specs' do
+      before do
+        guard.last_failed_paths = ['spec/javascripts/a.js.coffee']
+        guard.last_run_failed   = true
+        runner.stub(:run).and_return [true, []]
+      end
+
+      it 'returns true' do
+        guard.run_on_change(['spec/javascripts/a.js.coffee']).should eql true
+      end
+
+      it 'sets the last run failed to false' do
+        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        guard.last_run_failed.should be_false
+      end
+
+      it 'removes the passed specs from the list of failed paths' do
+        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        guard.last_failed_paths.should be_empty
+      end
+
+      context 'when :all_after_pass is enabled' do
+        let(:guard) { Guard::Jasmine.new(nil, { :all_after_pass => true }) }
+
+        it 'runs all specs' do
+          guard.should_receive(:run_all)
+          guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        end
+      end
+
+      context 'when :all_after_pass is enabled' do
+        let(:guard) { Guard::Jasmine.new(nil, { :all_after_pass => false }) }
+
+        it 'does not run all specs' do
+          guard.should_not_receive(:run_all)
+          guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        end
+      end
+    end
+
+    context 'with failing specs' do
+      before do
+        guard.last_run_failed = false
+        runner.stub(:run).and_return [false, ['spec/javascripts/a.js.coffee']]
+      end
+
+      it 'returns false' do
+        guard.run_on_change(['spec/javascripts/a.js.coffee']).should eql false
+      end
+
+      it 'sets the last run failed to true' do
+        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        guard.last_run_failed.should be_true
+      end
+
+      it 'appends the failed spec to the list of failed paths' do
+        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        guard.last_failed_paths.should =~ ['spec/javascripts/a.js.coffee']
+      end
     end
 
   end

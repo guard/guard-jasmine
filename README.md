@@ -135,6 +135,12 @@ There following options can be passed to Guard::Jasmine:
     :all_on_start => false                        # Run all specs on start.
                                                   # default: true
 
+    :keep_failed => false                         # Keep failed specs and add them the next run again.
+                                                  # default: true
+
+    :all_after_pass => false                      # Run all specs after a single spec has passed.
+                                                  # default: true
+
     :notifications => false                       # Show success and error messages.
                                                   # default: true
 
