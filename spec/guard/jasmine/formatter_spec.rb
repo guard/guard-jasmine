@@ -27,6 +27,13 @@ describe Guard::Jasmine::Formatter do
     end
   end
 
+  describe '.spec_error' do
+    it 'shows a colorized spec error message' do
+      $stdin.should_receive(:puts).with("\e[0;31mError message\e[0m")
+      formatter.error('Error message', { :reset => true })
+    end
+  end
+
   describe '.success' do
     it 'shows a colorized success message' do
       ui.should_receive(:info).with("\e[0;32mSuccess message\e[0m", { :reset => true })

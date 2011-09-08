@@ -38,6 +38,15 @@ module Guard
           ::Guard::UI.error(color(message, ';31'), options)
         end
 
+        # Print a red error message to the console.
+        #
+        # @param [String] message the message to print
+        # @param [Hash] options the output options
+        #
+        def spec_error(message)
+           puts color(message, ';31')
+        end
+
         # Print a green success message to the console.
         #
         # @param [String] message the message to print

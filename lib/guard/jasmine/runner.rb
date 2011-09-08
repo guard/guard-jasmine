@@ -1,3 +1,5 @@
+# coding: utf-8
+
 require 'multi_json'
 
 module Guard
@@ -61,7 +63,7 @@ module Guard
         #
         def run_jasmine_spec(file, options)
           suite = jasmine_suite(file, options)
-          Formatter.info("Run Jasmine tests: #{ suite }")
+          Formatter.info("Run Jasmine tests at #{ suite }")
           IO.popen(phantomjs_command(options) + ' ' + suite)
         end
 
@@ -166,39 +168,31 @@ module Guard
           time     = result['stats']['time']
           plural   = failures == 1 ? '' : 's'
 
-          message = "Jasmine ran #{ specs } specs, #{ failures } failure#{ plural } in #{ time }s."
+          message = "#{ specs } specs, #{ failures } failure#{ plural }\nin #{ time }s."
 
           if failures != 0
-            notify_spec_failures(result, message, options)
+            notify_specdoc(result, message)
+            Formatter.notify(message, :title => 'Jasmine results', :image => :failed, :priority => 2) if options[:notification]
           else
             Formatter.success(message)
             Formatter.notify(message, :title => 'Jasmine results') if options[:notification] && !options[:hide_success]
           end
         end
 
-        # Notification about spec failures. This combines the suite
-        # error messages into a single notification.
+        # Specdoc like formatting of the result.
         #
         # @param [Hash] result the suite result
         # @param [String] stats the status information
-        # @param [Hash] options the options for the execution
-        # @option options [Boolean] :notification show notifications
         #
-        def notify_spec_failures(result, stats, options)
-          messages = result['failed'].inject('') do |messages, suite|
+        def notify_specdoc(result, stats)
+          result['failed'].each do |suite|
             suite['specs'].each do |spec|
-              messages << "Spec '#{ spec['description'] }' failed with '#{ spec['error_message'] }'!\n"
+              Formatter.spec_error(" ✘ #{ spec['description'] } ➤ #{ spec['error_message'] }")
             end
-
-            messages
           end
 
-          messages << stats
-
-          Formatter.error(messages)
-          Formatter.notify(messages, :title => 'Jasmine results', :image => :failed, :priority => 2) if options[:notification]
+          Formatter.info(stats)
         end
-
       end
     end
   end
