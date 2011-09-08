@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path('../lib', __FILE__)
-require 'guard/jasmine'
+require 'guard/jasmine/version'
 
 Gem::Specification.new do |s|
   s.name        = 'guard-jasmine'
-  s.version     = Guard::Jasmine::VERSION
+  s.version     = Guard::JasmineVersion::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Michael Kessler']
   s.email       = ['michi@netzpiraten.ch']
