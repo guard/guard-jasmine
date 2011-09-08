@@ -29,14 +29,18 @@ describe Guard::Jasmine::Runner do
   let(:phantomjs_failure_response) do
     <<-JSON
     {
-      "failed": [
+      "suites": [
         {
-          "description": "FailureTest",
-          "filter": "?spec=FailureTest",
+          "description": "Failure suite",
           "specs": [
             {
-              "description": "FailureTest tests something",
-              "error_message": "Expected undefined to be defined."
+              "description": "Failure spec tests something",
+              "error_message": "Expected undefined to be defined.",
+              "passed": false
+            },
+            {
+              "description": "Success spec tests something",
+              "passed": true
             }
           ]
         }
@@ -45,7 +49,8 @@ describe Guard::Jasmine::Runner do
         "specs": 4,
         "failures": 1,
         "time": 0.007
-      }
+      },
+      "passed": false
     }
     JSON
   end
@@ -53,11 +58,27 @@ describe Guard::Jasmine::Runner do
   let(:phantomjs_success_response) do
     <<-JSON
     {
+      "suites": [
+        {
+          "description": "Success suite",
+          "specs": [
+            {
+              "description": "Success test tests something",
+              "passed": true
+            },
+            {
+              "description": "Another success test tests something",
+              "passed": true
+            }
+          ]
+        }
+      ],
       "stats": {
         "specs": 4,
         "failures": 0,
         "time": 0.009
-      }
+      },
+      "passed": true
     }
     JSON
   end
@@ -141,15 +162,21 @@ describe Guard::Jasmine::Runner do
         runner.run(['spec/javascripts/x/b.js.coffee'], { :notification => false }.merge(defaults))
       end
 
-      it 'shows the failure in the console' do
-        formatter.should_receive(:spec_error).with(
-            ' ✘ FailureTest tests something ➤ Expected undefined to be defined.'
-        )
+      it 'shows the specs in the console' do
         formatter.should_receive(:info).with(
             'Run Jasmine tests at http://localhost:3000/jasmine?spec=FailureTest'
         )
+        formatter.should_receive(:suite_name).with(
+            '➥ Failure suite'
+        )
+        formatter.should_receive(:spec_failed).with(
+            ' ✘ Failure spec tests something ➤ Expected undefined to be defined.'
+        )
+        formatter.should_receive(:success).with(
+            ' ✔ Success spec tests something'
+        )
         formatter.should_receive(:info).with(
-            "4 specs, 1 failure\nin 0.007s."
+            "4 specs, 1 failure\nin 0.007 seconds"
         )
         runner.run(['spec/javascripts/x/b.js.coffee'], { :notification => false }.merge(defaults))
       end
@@ -163,7 +190,7 @@ describe Guard::Jasmine::Runner do
       context 'with notifications' do
         it 'shows a failure notification' do
           formatter.should_receive(:notify).with(
-              "4 specs, 1 failure\nin 0.007s.",
+              "4 specs, 1 failure\nin 0.007 seconds",
               :title    => 'Jasmine results',
               :image    => :failed,
               :priority => 2
@@ -195,7 +222,7 @@ describe Guard::Jasmine::Runner do
 
       it 'shows the success in the console' do
         formatter.should_receive(:success).with(
-            "4 specs, 0 failures\nin 0.009s."
+            "4 specs, 0 failures\nin 0.009 seconds"
         )
         runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => false }))
       end
@@ -209,7 +236,7 @@ describe Guard::Jasmine::Runner do
       context 'with notifications' do
         it 'shows a success notification' do
           formatter.should_receive(:notify).with(
-              "4 specs, 0 failures\nin 0.009s.",
+              "4 specs, 0 failures\nin 0.009 seconds",
               :title => 'Jasmine results'
           )
           runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => true }))

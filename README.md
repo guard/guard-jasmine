@@ -150,7 +150,7 @@ There following options can be passed to Guard::Jasmine:
 
 ## Alternatives
 
-* [guard-jasmine-headless-webkit][], a Guard for [jasmine-headless-webkit][], but doesn't run in JRuby.
+* [guard-jasmine-headless-webkit][], a Guard for [jasmine-headless-webkit][], but doesn't run on JRuby.
 * [Evergreen][], runs CoffeeScript specs headless, but has no
 continuous testing support.
 * [Jezebel][] a Node.js REPL and continuous test runner for [Jessie][], a Node runner for Jasmine, but has no full
@@ -185,10 +185,6 @@ for it!
 
 ## License
 
-The Jasmine PhantomJS runner file [run-jasmine.coffee][] from [Roejames12][] is licensed under the BSD license.
-
-The Guard::Jasmine itself is released under:
-
 (The MIT License)
 
 Copyright (c) 2011 Michael Kessler
@@ -219,8 +215,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [PhantomJS]: http://www.phantomjs.org/
 [the PhantomJS download section]: http://code.google.com/p/phantomjs/downloads/list
 [PhantomJS build instructions]: http://code.google.com/p/phantomjs/wiki/BuildInstructions
-[Roejames12]: https://github.com/Roejames12
-[run-jasmine.coffee]: https://github.com/ariya/phantomjs/blob/master/examples/run-jasmine.coffee
 [Brad Phelan]: http://twitter.com/#!/bradgonesurfing
 [Jasminerice]: https://github.com/bradphelan/jasminerice
 [Pivotal Labs]: http://pivotallabs.com/

@@ -27,10 +27,10 @@ describe Guard::Jasmine::Formatter do
     end
   end
 
-  describe '.spec_error' do
-    it 'shows a colorized spec error message' do
-      formatter.should_receive(:puts).with("\e[0;31mSpec error message\e[0m")
-      formatter.spec_error('Spec error message')
+  describe '.spec_failed' do
+    it 'shows a colorized spec failed message' do
+      ui.should_receive(:info).with("\e[0;31mSpec failed message\e[0m", { :reset => true })
+      formatter.spec_failed('Spec failed message', { :reset => true })
     end
   end
 

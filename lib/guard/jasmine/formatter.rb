@@ -38,15 +38,6 @@ module Guard
           ::Guard::UI.error(color(message, ';31'), options)
         end
 
-        # Print a red error message to the console.
-        #
-        # @param [String] message the message to print
-        # @param [Hash] options the output options
-        #
-        def spec_error(message)
-           puts color(message, ';31')
-        end
-
         # Print a green success message to the console.
         #
         # @param [String] message the message to print
@@ -55,6 +46,24 @@ module Guard
         #
         def success(message, options = { })
           ::Guard::UI.info(color(message, ';32'), options)
+        end
+
+        # Print a red spec failed message to the console.
+        #
+        # @param [String] message the message to print
+        # @param [Hash] options the output options
+        #
+        def spec_failed(message, options = { })
+           ::Guard::UI.info(color(message, ';31'), options)
+        end
+
+        # Print a red spec failed message to the console.
+        #
+        # @param [String] message the message to print
+        # @param [Hash] options the output options
+        #
+        def suite_name(message, options = { })
+           ::Guard::UI.info(color(message, ';33'), options)
         end
 
         # Outputs a system notification.

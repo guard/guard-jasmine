@@ -45,7 +45,7 @@ module Guard
         # @return [Array<String>] the list of failed spec files
         #
         def failed_paths_from(results)
-          results.map { |r| r.has_key?('failed') ? r['file']: nil }.compact
+          results.map { |r| !r['passed'] ? r['file']: nil }.compact
         end
 
         # Returns the response status for the given result set.
@@ -54,7 +54,7 @@ module Guard
         # @return [Boolean] whether it has passed or not
         #
         def response_status_for(results)
-          results.none? { |r| r.has_key?('error') || r.has_key?('failed') }
+          results.none? { |r| r.has_key?('error') || !r['passed'] }
         end
 
         # Run the Jasmine spec by executing the PhantomJS script.
@@ -168,7 +168,7 @@ module Guard
           time     = result['stats']['time']
           plural   = failures == 1 ? '' : 's'
 
-          message = "#{ specs } specs, #{ failures } failure#{ plural }\nin #{ time }s."
+          message = "#{ specs } specs, #{ failures } failure#{ plural }\nin #{ time } seconds"
 
           if failures != 0
             notify_specdoc(result, message)
@@ -185,9 +185,15 @@ module Guard
         # @param [String] stats the status information
         #
         def notify_specdoc(result, stats)
-          result['failed'].each do |suite|
+          result['suites'].each do |suite|
+            Formatter.suite_name("➥ #{ suite['description'] }")
+
             suite['specs'].each do |spec|
-              Formatter.spec_error(" ✘ #{ spec['description'] } ➤ #{ spec['error_message'] }")
+              if spec['passed']
+                Formatter.success(" ✔ #{ spec['description'] }")
+              else
+                Formatter.spec_failed(" ✘ #{ spec['description'] } ➤ #{ spec['error_message'] }")
+              end
             end
           end
 
