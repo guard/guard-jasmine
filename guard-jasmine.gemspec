@@ -4,7 +4,7 @@ require 'guard/jasmine/version'
 
 Gem::Specification.new do |s|
   s.name        = 'guard-jasmine'
-  s.version     = Guard::JasmineVersion::VERSION
+  s.version     = Guard::Jasmine::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Michael Kessler']
   s.email       = ['michi@netzpiraten.ch']

@@ -1,5 +1,5 @@
 module Guard
-  module JasmineVersion
-    VERSION = '0.2.0'
+  module Jasmine
+    VERSION = '0.2.0' unless defined? Guard::Jasmine::VERSION
   end
 end
