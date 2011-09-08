@@ -12,7 +12,7 @@ waitFor = (testFx, onReady, timeOutMillis=3000) ->
       condition = (if typeof testFx is 'string' then eval testFx else testFx())
     else
       if not condition
-        console.log "JasmineResult: #{ JSON.stringify { error: "Timeout requesting Jasmine test runner!" } }"
+        console.log JSON.stringify { error: "Timeout requesting Jasmine test runner!" }
         phantom.exit(1)
       else
         if typeof onReady is 'string' then eval onReady else onReady()
@@ -23,7 +23,7 @@ waitFor = (testFx, onReady, timeOutMillis=3000) ->
 # Check arguments of the script.
 #
 if phantom.args.length isnt 1
-  console.log "JasmineResult: #{ JSON.stringify { error: "Wrong usage of PhantomJS script!" } }"
+  console.log JSON.stringify { error: "Wrong usage of PhantomJS script!" }
   phantom.exit()
 else
   url = phantom.args[0]
@@ -33,7 +33,8 @@ page = new WebPage()
 # Output the Jasmine test runner result as JSON object.
 # Ignore all other calls to console.log
 #
-page.onConsoleMessage = (msg) -> console.log(RegExp.$1) if /^JasmineResult: (.*)$/.test(msg)
+page.onConsoleMessage = (msg) ->
+  console.log(RegExp.$1) if /^JasmineResult: ([\s\S]*)$/.test(msg)
 
 # Open web page and run the Jasmine test runner
 #
@@ -46,7 +47,9 @@ page.open url, (status) ->
 
   else
     # Wait until the Jasmine test is run
-    waitFor -> page.evaluate -> if document.body.querySelector '.finished-at' then true else false
+    waitFor ->
+      page.evaluate ->
+        if document.body.querySelector '.finished-at' then true else false
     , ->
         # Jasmine test runner has finished, extract the result from the DOM
         page.evaluate ->
