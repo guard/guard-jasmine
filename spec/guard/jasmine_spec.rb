@@ -137,7 +137,7 @@ describe Guard::Jasmine do
       context 'with notifications enabled' do
         it 'shows a failing system notification' do
           formatter.should_receive(:notify).with("Jasmine test runner not available at http://localhost:3000/jasmine",
-                                                 :title    => 'Jasmine test runner',
+                                                 :title    => 'Jasmine test runner not available',
                                                  :image    => :failed,
                                                  :priority => 2)
           guard.start

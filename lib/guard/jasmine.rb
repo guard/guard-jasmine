@@ -141,7 +141,7 @@ module Guard
       message = "Jasmine test runner not available at #{ url }"
       Formatter.error(message)
       Formatter.notify(message,
-                       :title    => 'Jasmine test runner',
+                       :title    => 'Jasmine test runner not available',
                        :image    => :failed,
                        :priority => 2)
     end
