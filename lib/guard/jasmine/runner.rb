@@ -172,7 +172,6 @@ module Guard
 
           if failures != 0
             notify_specdoc(result, message, options)
-            Formatter.notify(message, :title => 'Jasmine specs failed', :image => :failed, :priority => 2) if options[:notification]
           else
             Formatter.success(message)
             Formatter.notify(message, :title => 'Jasmine specs passed') if options[:notification] && !options[:hide_success]
@@ -194,6 +193,7 @@ module Guard
                 Formatter.success(" ✔ #{ spec['description'] }") if !options[:hide_success]
               else
                 Formatter.spec_failed(" ✘ #{ spec['description'] } ➤ #{ spec['error_message'] }")
+                Formatter.notify(stats, :title => "#{ spec['description'] }: #{ spec['error_message'] }", :image => :failed, :priority => 2) if options[:notification]
               end
             end
           end

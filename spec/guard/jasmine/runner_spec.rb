@@ -203,10 +203,10 @@ describe Guard::Jasmine::Runner do
       end
 
       context 'with notifications' do
-        it 'shows a failure notification' do
+        it 'shows the failing spec notification' do
           formatter.should_receive(:notify).with(
               "4 specs, 1 failure\nin 0.007 seconds",
-              :title    => 'Jasmine specs failed',
+              :title    => 'Failure spec tests something: Expected undefined to be defined.',
               :image    => :failed,
               :priority => 2
           )
