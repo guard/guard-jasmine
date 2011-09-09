@@ -110,7 +110,7 @@ module Guard
 
           File.foreach(file) do |line|
             if line =~ /describe\s*[("']+(.*?)["')]+/
-              query_string = "?spec=#{ $1 }"
+              query_string = "?#{ $1 }"
               break
             end
           end

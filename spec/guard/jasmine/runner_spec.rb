@@ -113,7 +113,7 @@ describe Guard::Jasmine::Runner do
 
     context 'for an erroneous Jasmine spec' do
       it 'requests the jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=ErrorTest")
+        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?ErrorTest")
         runner.run(['spec/javascripts/a.js.coffee'], { :notification => false }.merge(defaults))
       end
 
@@ -158,13 +158,13 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
-        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=FailureTest")
+        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?FailureTest")
         runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :notification => false }))
       end
 
       it 'shows the specs in the console' do
         formatter.should_receive(:info).with(
-            'Run Jasmine tests at http://localhost:3000/jasmine?spec=FailureTest'
+            'Run Jasmine tests at http://localhost:3000/jasmine?FailureTest'
         )
         formatter.should_receive(:suite_name).with(
             '➥ Failure suite'
@@ -230,7 +230,7 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
-        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=SuccessTest")
+        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?SuccessTest")
 
         runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => false }))
       end
