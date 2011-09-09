@@ -144,7 +144,7 @@ than running a whole suite.
 
 This readme describes the use of Guard::Jasmine with Jasminerice through the asset pipeline, but it is not really
 a requirement for Guard::Jasmine. As long as you serve the Jasmine test runner under a certain url,
-it's freely up to you how you'll prepare and serve the Jasmine runner.
+it's freely up to you how you'll prepare the assets and serve the Jasmine runner.
 
 You can use [the Jasmine Gem][], configure the test suite in `jasmine.yml` and start the Jasmine test runner with
 the supplied Rake task:
@@ -176,7 +176,7 @@ featured browser environment.
 
 ## Development
 
-- Documentation hosted at [RubyDoc](http://rubydoc.info/gems/guard-jasmine/file/README.md).
+- Documentation hosted at [RubyDoc](http://rubydoc.info/github/guard/guard-jasmine/master/frames).
 - Source hosted at [GitHub](https://github.com/netzpirat/guard-jasmine).
 - Report issues and feature requests to [GitHub Issues](https://github.com/netzpirat/guard-jasmine/issues).
 
