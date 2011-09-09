@@ -46,7 +46,7 @@ Add it to your `Gemfile`, preferably inside the development group:
 
 Add guard definition to your `Guardfile` by running this command:
 
-    $ guard init jasminerice
+    $ guard init jasmine
 
 ### Rails 3.1
 
@@ -58,7 +58,7 @@ Please read the detailed installation and configuration instructions at [Jasmine
 In short, you add it to your `Gemfile`:
 
     group :development, :test do
-      gem 'jasmine'
+      gem 'jasminerice'
     end
 
 and add a route for the Jasmine Test Runner to `config/routes.rb`:
