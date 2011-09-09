@@ -46,7 +46,7 @@ Add it to your `Gemfile`, preferably inside the development group:
 
 Add guard definition to your `Guardfile` by running this command:
 
-    $ guard init jasmine
+    $ guard init jasminerice
 
 ### Rails 3.1
 
