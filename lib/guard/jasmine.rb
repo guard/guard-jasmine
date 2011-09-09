@@ -25,7 +25,7 @@ module Guard
     # @option options [Boolean] :notification show notifications
     # @option options [Boolean] :hide_success hide success message notification
     # @option options [Boolean] :all_on_start run all suites on start
-    # @option options [Boolean] :keep_failed keep failed specs and add them the next run again
+    # @option options [Boolean] :keep_failed keep failed specs and add them to the next run again
     # @option options [Boolean] :all_after_pass run all specs after a single spec has passed
     #
     def initialize(watchers = [], options = { })
