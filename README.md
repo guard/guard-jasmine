@@ -25,14 +25,14 @@ various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 ![Guard Jasmine](https://github.com/netzpirat/guard-jasmine/raw/master/resources/guard-jasmine.png)
 
 1. Guard is triggered by a file modification.
-2. Guard::Jasmine executes the PhantomJS script.
-3. The [PhantomJS script][] requests the Jasmine test runner.
-4. Rails uses the asset pipeline to get the assets, both the code and the specs.
-5. The asset pipeline reads the assets and compiles the CoffeeScripts if necessary.
-6. The asset pipeline returns all prepared assets.
-7. Rails returns the Jasmine runner with all the specs and code to be tested.
-8. PhantomJS runs the Jasmine tests headless.
-9. The PhantomJS the script extracts the result from the DOM and returns a JSON report.
+2. Guard::Jasmine executes the [PhantomJS script][].
+3. The PhantomJS script requests the Jasmine test runner via HTTP.
+4. Rails uses the asset pipeline to get the Jasmine runner, the code to be tested and the specs.
+5. The asset pipeline prepares the assets, compiles the CoffeeScripts if necessary.
+6. The asset pipeline has finished to prepare the needed assets.
+7. Rails returns the Jasmine runner HTML.
+8. PhantomJS requests linked assets and runs the Jasmine tests headless.
+9. The PhantomJS script extracts the result from the DOM and returns a JSON report.
 10. Guard::Jasmine reports the results to the console and system notifications.
 
 ## Install
