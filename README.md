@@ -53,7 +53,7 @@ Add guard definition to your `Guardfile` by running this command:
 
     $ guard init jasmine
 
-### Rails 3.1
+### Jasminerice
 
 With Rails 3.1 you can write your Jasmine specs in addition to JavaScript with CoffeeScript, fully integrated into the
 Rails 3.1 asset pipeline with Jasminerice.
@@ -104,8 +104,6 @@ Please read the [Guard usage documentation](https://github.com/guard/guard#readm
 Guard::Jasmine can be adapted to all kind of projects. Please read the
 [Guard documentation](https://github.com/guard/guard#readme) for more information about the Guardfile DSL.
 
-### Rails 3.1 with Jasminerice
-
     guard 'jasmine' do
       watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
       watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
@@ -144,8 +142,9 @@ than running a whole suite.
 
 ### A note on Rails 2 and 3
 
-This readme describes the use of Guard::Jasmine with Jasminerice through the asset pipeline. But as long as you
-serve the Jasmine test runner under a certain url, it's freely up to you how to prepare and serve the runner.
+This readme describes the use of Guard::Jasmine with Jasminerice through the asset pipeline, but it is not really
+a requirement for Guard::Jasmine. As long as you serve the Jasmine test runner under a certain url,
+it's freely up to you how you'll prepare and serve the Jasmine runner.
 
 You can use [the Jasmine Gem][], configure the test suite in `jasmine.yml` and start the Jasmine test runner with
 the supplied Rake task:
@@ -164,8 +163,8 @@ Next follows an example on how to configure your `Guardfile` with the Jasmine ge
 It is also possible to use CoffeeScript in this setup, by using [Guard::CoffeeScript][] to compile your code and even
 specs. Just add something like this *before* Guard::Jasmine:
 
-  guard 'coffeescript', :input => 'app/coffeescripts', :output => 'public/javascripts'
-  guard 'coffeescript', :input => 'spec/coffeescripts', :output => 'spec/javascripts'
+    guard 'coffeescript', :input => 'app/coffeescripts',  :output => 'public/javascripts'
+    guard 'coffeescript', :input => 'spec/coffeescripts', :output => 'spec/javascripts'
 
 ## Alternatives
 
