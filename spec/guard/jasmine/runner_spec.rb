@@ -35,7 +35,7 @@ describe Guard::Jasmine::Runner do
           "specs": [
             {
               "description": "Failure spec tests something",
-              "error_message": "Expected undefined to be defined.",
+              "error_message": "ReferenceError: Can't find variable: tile in http://localhost:3000/assets/backbone/models/tile_spec.js?body=1 (line 27)",
               "passed": false
             },
             {
@@ -170,7 +170,10 @@ describe Guard::Jasmine::Runner do
             '➥ Failure suite'
         )
         formatter.should_receive(:spec_failed).with(
-            ' ✘ Failure spec tests something ➤ Expected undefined to be defined.'
+            ' ✘ Failure spec tests something'
+        )
+        formatter.should_receive(:spec_failed).with(
+            "   ➤ ReferenceError: Can't find variable: tile in backbone/models/tile_spec.js on line 27"
         )
         formatter.should_receive(:info).with(
             "4 specs, 1 failure\nin 0.007 seconds"
@@ -206,7 +209,7 @@ describe Guard::Jasmine::Runner do
         it 'shows the failing spec notification' do
           formatter.should_receive(:notify).with(
               "4 specs, 1 failure\nin 0.007 seconds",
-              :title    => 'Failure spec tests something: Expected undefined to be defined.',
+              :title    => "Failure spec tests something: ReferenceError: Can't find variable: tile",
               :image    => :failed,
               :priority => 2
           )

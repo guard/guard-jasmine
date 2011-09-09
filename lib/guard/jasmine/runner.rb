@@ -192,14 +192,37 @@ module Guard
               if spec['passed']
                 Formatter.success(" ✔ #{ spec['description'] }") if !options[:hide_success]
               else
-                Formatter.spec_failed(" ✘ #{ spec['description'] } ➤ #{ spec['error_message'] }")
-                Formatter.notify(stats, :title => "#{ spec['description'] }: #{ spec['error_message'] }", :image => :failed, :priority => 2) if options[:notification]
+                Formatter.spec_failed(" ✘ #{ spec['description'] }")
+                Formatter.spec_failed("   ➤ #{ format_error_message(spec['error_message'], false) }")
+                Formatter.notify(stats,
+                                 :title => "#{ spec['description'] }: #{ format_error_message(spec['error_message'], true) }",
+                                 :image => :failed,
+                                 :priority => 2) if options[:notification]
               end
             end
           end
 
           Formatter.info(stats)
         end
+
+        # Formats the error message.
+        #
+        # Known message styles:
+        #
+        # - {message} in http.*assets/{spec}?body=\d ({line})
+        #
+        # @param [String] message the error message
+        # @param [Boolean] short show a short version of the message
+        # @return [String] the cleaned error message
+        #
+        def format_error_message(message, short)
+          if message =~ /(.*?) in http.+?assets\/(.*)\?body=\d+\s\((line\s\d+)/
+            short ? $1 : "#{ $1 } in #{ $2 } on #{ $3 }"
+          else
+            message
+          end
+        end
+
       end
     end
   end
