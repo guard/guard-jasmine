@@ -37,38 +37,39 @@ specsReady = ->
 #
 extractResult = ->
   page.evaluate ->
-    stats = /(\d+) specs, (\d+) failures? in (\d+.\d+)s/.exec document.body.querySelector('.description').innerText
+    stats = /(\d+) specs?, (\d+) failures? in (\d+.\d+)s/.exec(document.body.querySelector('.description').innerText)
+    specs = parseInt stats[1]
+    failures = parseInt stats[2]
+    time = parseFloat stats[3]
+    passed = failures is 0
 
     result = {
-      passed: true
+      passed: passed
       stats: {
-        specs: parseInt stats[1]
-        failures: parseInt stats[2]
-        time: parseFloat stats[3]
+        specs: specs
+        failures: failures
+        time: time
       }
       suites: []
     }
 
     for suite in document.body.querySelectorAll('div.jasmine_reporter > div.suite')
       description = suite.querySelector('a.description')
-
       suite_ = {
         description: description.innerText
         specs: []
       }
 
       for spec in suite.querySelectorAll('div.spec')
-        passed = spec.getAttribute('class').indexOf('passed') isnt -1
-        result['passed'] = false if not passed
-
-        spec_ = {
-          description: spec.querySelector('a.description').getAttribute 'title'
-          passed: passed
-        }
-
-        spec_['error_message'] = spec.querySelector('div.resultMessage').innerText if not passed
-
-        suite_['specs'].push spec_
+        status = spec.getAttribute('class').substring(5)
+        if status isnt 'skipped'
+          passed = status is 'passed'
+          spec_ = {
+            description: spec.querySelector('a.description').getAttribute 'title'
+            passed: passed
+          }
+          spec_['error_message'] = spec.querySelector('div.resultMessage').innerText if not passed
+          suite_['specs'].push spec_
 
       result['suites'].push suite_
 

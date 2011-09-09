@@ -107,25 +107,31 @@ describe Guard::Jasmine::Runner do
     context 'when passed the spec directory' do
       it 'requests all jasmine specs from the server' do
         IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine")
-        runner.run(['spec/javascripts'], { :notification => false }.merge(defaults))
+        runner.run(['spec/javascripts'], defaults.merge({ :notification => false }))
+      end
+
+      it 'shows a start information in the console' do
+        formatter.should_receive(:info).with('Run all Jasmine suites', { :reset => true })
+        formatter.should_receive(:info).with('Run Jasmine suite at http://localhost:3000/jasmine')
+        runner.run(['spec/javascripts'], defaults)
       end
     end
 
     context 'for an erroneous Jasmine spec' do
       it 'requests the jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?ErrorTest")
-        runner.run(['spec/javascripts/a.js.coffee'], { :notification => false }.merge(defaults))
+        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=ErrorTest")
+        runner.run(['spec/javascripts/a.js.coffee'], defaults)
       end
 
       it 'shows the error in the console' do
         formatter.should_receive(:error).with(
             "An error occurred: Cannot request Jasmine specs"
         )
-        runner.run(['spec/javascripts/a.js.coffee'], defaults.merge({ :notification => false }))
+        runner.run(['spec/javascripts/a.js.coffee'], defaults)
       end
 
       it 'returns the errors' do
-        response = runner.run(['spec/javascripts/a.js.coffee'], { :notification => false }.merge(defaults))
+        response = runner.run(['spec/javascripts/a.js.coffee'], defaults)
         response.first.should be_false
         response.last.should =~ []
       end
@@ -138,7 +144,7 @@ describe Guard::Jasmine::Runner do
               :image    => :failed,
               :priority => 2
           )
-          runner.run(['spec/javascripts/a.js.coffee'], defaults.merge({ :notification => true }))
+          runner.run(['spec/javascripts/a.js.coffee'], defaults)
         end
       end
 
@@ -158,13 +164,16 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
-        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?FailureTest")
-        runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :notification => false }))
+        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=FailureTest")
+        runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
       end
 
       it 'shows the specs in the console' do
         formatter.should_receive(:info).with(
-            'Run Jasmine tests at http://localhost:3000/jasmine?FailureTest'
+            'Run Jasmine suite spec/javascripts/x/b.js.coffee', { :reset => true }
+        )
+        formatter.should_receive(:info).with(
+            'Run Jasmine suite at http://localhost:3000/jasmine?spec=FailureTest'
         )
         formatter.should_receive(:suite_name).with(
             '➥ Failure suite'
@@ -192,7 +201,7 @@ describe Guard::Jasmine::Runner do
           formatter.should_receive(:success).with(
               ' ✔ Success spec tests something'
           )
-          runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :hide_success => false }))
+          runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
         end
       end
 
@@ -208,12 +217,18 @@ describe Guard::Jasmine::Runner do
       context 'with notifications' do
         it 'shows the failing spec notification' do
           formatter.should_receive(:notify).with(
-              "4 specs, 1 failure\nin 0.007 seconds",
-              :title    => "Failure spec tests something: ReferenceError: Can't find variable: tile",
+              "Failure spec tests something: ReferenceError: Can't find variable: tile",
+              :title    => 'Jasmine spec failed',
               :image    => :failed,
               :priority => 2
           )
-          runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :notification => true }))
+          formatter.should_receive(:notify).with(
+              "4 specs, 1 failure\nin 0.007 seconds",
+              :title    => 'Jasmine suite failed',
+              :image    => :failed,
+              :priority => 2
+          )
+          runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
         end
       end
 
@@ -233,9 +248,9 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
-        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?SuccessTest")
+        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=SuccessTest")
 
-        runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => false }))
+        runner.run(['spec/javascripts/t.js'], defaults)
       end
 
       it 'shows the success in the console' do
@@ -246,7 +261,7 @@ describe Guard::Jasmine::Runner do
       end
 
       it 'returns the success' do
-        response = runner.run(['spec/javascripts/x/b.js.coffee'], { :notification => false }.merge(defaults))
+        response = runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
         response.first.should be_true
         response.last.should =~ []
       end
@@ -255,9 +270,9 @@ describe Guard::Jasmine::Runner do
         it 'shows a success notification' do
           formatter.should_receive(:notify).with(
               "4 specs, 0 failures\nin 0.009 seconds",
-              :title => 'Jasmine specs passed'
+              :title => 'Jasmine suite passed'
           )
-          runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => true }))
+          runner.run(['spec/javascripts/t.js'], defaults)
         end
 
         context 'with hide success notifications' do
@@ -279,3 +294,4 @@ describe Guard::Jasmine::Runner do
   end
 
 end
+

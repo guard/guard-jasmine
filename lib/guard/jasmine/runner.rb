@@ -25,8 +25,7 @@ module Guard
         def run(paths, options = { })
           return [false, []] if paths.empty?
 
-          message = options[:message] || (paths == ['spec/javascripts'] ? 'Run all specs' : "Run specs #{ paths.join(' ') }")
-          UI.info message, :reset => true
+          notify_start_message(paths)
 
           results = paths.inject([]) do |results, file|
             results << evaluate_result(run_jasmine_spec(file, options), file, options)
@@ -39,13 +38,27 @@ module Guard
 
         private
 
+        # Shows a notification in the console that the runner starts.
+        #
+        # @param [Array<String>] paths the spec files or directories
+        #
+        def notify_start_message(paths)
+          message = if paths == ['spec/javascripts']
+                      'Run all Jasmine suites'
+                    else
+                      "Run Jasmine suite#{ paths.size == 1 ? '' : 's' } #{ paths.join(' ') }"
+                    end
+
+          Formatter.info(message, :reset => true)
+        end
+
         # Returns the failed spec file names.
         #
         # @param [Array<Object>] results the spec runner results
         # @return [Array<String>] the list of failed spec files
         #
         def failed_paths_from(results)
-          results.map { |r| !r['passed'] ? r['file']: nil }.compact
+          results.map { |r| !r['passed'] ? r['file'] : nil }.compact
         end
 
         # Returns the response status for the given result set.
@@ -63,7 +76,7 @@ module Guard
         #
         def run_jasmine_spec(file, options)
           suite = jasmine_suite(file, options)
-          Formatter.info("Run Jasmine tests at #{ suite }")
+          Formatter.info("Run Jasmine suite at #{ suite }")
           IO.popen(phantomjs_command(options) + ' ' + suite)
         end
 
@@ -83,7 +96,7 @@ module Guard
         # @return [String] the Jasmine url
         #
         def jasmine_suite(file, options)
-          options[:jasmine_url] + suite_name_for(file)
+          options[:jasmine_url] + query_string_for_suite(file)
         end
 
         # Get the PhantomJS script that executes the spec and extracts
@@ -103,14 +116,14 @@ module Guard
         # @param [String] file the spec file
         # @return [String] the suite name
         #
-        def suite_name_for(file)
+        def query_string_for_suite(file)
           return '' if file == 'spec/javascripts'
 
           query_string = ''
 
           File.foreach(file) do |line|
             if line =~ /describe\s*[("']+(.*?)["')]+/
-              query_string = "?#{ $1 }"
+              query_string = "?spec=#{ $1 }"
               break
             end
           end
@@ -128,17 +141,26 @@ module Guard
         # @return [Hash] the suite result
         #
         def evaluate_result(output, file, options)
-          result = MultiJson.decode(output.read)
-          output.close
+          json = output.read
 
-          if result['error']
-            notify_runtime_error(result, options)
-          else
-            result['file'] = file
-            notify_spec_result(result, options)
+          begin
+            result = MultiJson.decode(json)
+            output.close
+
+            if result['error']
+              notify_runtime_error(result, options)
+            else
+              result['file'] = file
+              notify_spec_result(result, options)
+            end
+
+            result
+
+          rescue Exception => e
+            Formatter.error("Cannot decode JSON from PhantomJS runner: #{ e.message }")
+            Formatter.error('Please report an issue at: https://github.com/netzpirat/guard-jasmine/issues')
+            Formatter.error(json)
           end
-
-          result
         end
 
         # Notification when a system error happens that
@@ -172,9 +194,10 @@ module Guard
 
           if failures != 0
             notify_specdoc(result, message, options)
+            Formatter.notify(message, :title => 'Jasmine suite failed', :image => :failed, :priority => 2) if options[:notification]
           else
             Formatter.success(message)
-            Formatter.notify(message, :title => 'Jasmine specs passed') if options[:notification] && !options[:hide_success]
+            Formatter.notify(message, :title => 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
           end
         end
 
@@ -194,9 +217,9 @@ module Guard
               else
                 Formatter.spec_failed(" ✘ #{ spec['description'] }")
                 Formatter.spec_failed("   ➤ #{ format_error_message(spec['error_message'], false) }")
-                Formatter.notify(stats,
-                                 :title => "#{ spec['description'] }: #{ format_error_message(spec['error_message'], true) }",
-                                 :image => :failed,
+                Formatter.notify("#{ spec['description'] }: #{ format_error_message(spec['error_message'], true) }",
+                                 :title    => 'Jasmine spec failed',
+                                 :image    => :failed,
                                  :priority => 2) if options[:notification]
               end
             end
