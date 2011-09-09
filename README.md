@@ -15,20 +15,25 @@ with RegEx and Ruby.
 * Fast headless testing on [PhantomJS][], a full featured WebKit browser with native support for
 various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 
-* With Rails 3.1 you can write your [Jasmine][] specs in [CoffeeScript][] also, fully integrated into the
+* You can write your [Jasmine][] specs in [CoffeeScript][], fully integrated into the
 [Rails 3.1 asset pipeline][] with [Jasminerice][].
 
 * Runs on Mac OS X, Linux and Windows.
 
 ## How it works
 
-1. Configure your Jasmine based JavaScript/CoffeeScript specs with Jasminerice in the asset pipeline, serve it over
-the normal Jasmine Spec Runner. (With Rails 2 & 3 you configure your plain JavaScript Jasmine specs with [the Jasmine Gem][].)
+![Guard Jasmine](https://github.com/netzpirat/guard-jasmine/raw/master/resources/guard-jasmine.png)
 
-2. You configure Guard to trigger certain specs based on file modifications.
-
-3. Guard uses PhantomJS to request the Jasmine Spec Runner headless and notifies you of the result in the terminal and
-optionally over system notifications like Growl, Libnotify or Notifu.
+1. Guard is triggered by a file modification.
+2. Guard::Jasmine executes the PhantomJS script.
+3. The [PhantomJS script][] requests the Jasmine test runner.
+4. Rails uses the asset pipeline to get the assets, both the code and the specs.
+5. The asset pipeline reads the assets and compiles the CoffeeScripts if necessary.
+6. The asset pipeline returns all prepared assets.
+7. Rails returns the Jasmine runner with all the specs and code to be tested.
+8. PhantomJS runs the Jasmine tests headless.
+9. The PhantomJS the script extracts the result from the DOM and returns a JSON report.
+10. Guard::Jasmine reports the results to the console and system notifications.
 
 ## Install
 
@@ -72,11 +77,6 @@ asset pipeline manifest in `spec/javascripts/spec.js.coffee`:
 
     #=require_tree ./
 
-### Rails 2 & 3
-
-With Rails 3 you write your Jasmine specs in JavaScript, configured and server with the Jasmine gem. Please read the
-detailed installation and configuration instructions at [the Jasmine Gem][].
-
 ### PhantomJS
 
 You need the PhantomJS browser installed on your system. You can download binaries for Mac OS X and Windows from
@@ -112,15 +112,6 @@ Guard::Jasmine can be adapted to all kind of projects. Please read the
       watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
     end
 
-### Rails 2 & 3 with the Jasmine gem
-
-    guard 'jasmine', :url => 'http://127.0.0.1:8888' do
-      watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
-      watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
-      watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
-      watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
-    end
-
 ## Options
 
 There following options can be passed to Guard::Jasmine:
@@ -132,13 +123,13 @@ There following options can be passed to Guard::Jasmine:
     :phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
                                                   # default: '/usr/local/bin/phantomjs'
 
-    :all_on_start => false                        # Run all specs on start.
+    :all_on_start => false                        # Run all suites on start.
                                                   # default: true
 
-    :keep_failed => false                         # Keep failed specs and add them to the next run again.
+    :keep_failed => false                         # Keep failed suites and add them to the next run again.
                                                   # default: true
 
-    :all_after_pass => false                      # Run all specs after a single spec has passed.
+    :all_after_pass => false                      # Run all suites after a suite has passed again after failing.
                                                   # default: true
 
     :notifications => false                       # Show success and error messages.
@@ -147,6 +138,34 @@ There following options can be passed to Guard::Jasmine:
     :hide_success => true                         # Disable successful compilation messages.
                                                   # default: false
 
+The `:keep_failed` failed option remembers failed suites and not failed specs. The reason for this decision is to
+avoid to much round trip time to request the Jasmine test runner for each single spec, which is mostly more expensive
+than running a whole suite.
+
+### A note on Rails 2 and 3
+
+This readme describes the use of Guard::Jasmine with Jasminerice through the asset pipeline. But as long as you
+serve the Jasmine test runner under a certain url, it's freely up to you how to prepare and serve the runner.
+
+You can use [the Jasmine Gem][], configure the test suite in `jasmine.yml` and start the Jasmine test runner with
+the supplied Rake task:
+
+    $ rake jasmine
+
+Next follows an example on how to configure your `Guardfile` with the Jasmine gem:
+
+    guard 'jasmine', :url => 'http://127.0.0.1:8888' do
+      watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
+      watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
+      watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
+      watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
+    end
+
+It is also possible to use CoffeeScript in this setup, by using [Guard::CoffeeScript][] to compile your code and even
+specs. Just add something like this *before* Guard::Jasmine:
+
+  guard 'coffeescript', :input => 'app/coffeescripts', :output => 'public/javascripts'
+  guard 'coffeescript', :input => 'spec/coffeescripts', :output => 'spec/javascripts'
 
 ## Alternatives
 
@@ -229,3 +248,5 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [guard-jasmine-headless-webkit]: https://github.com/johnbintz/guard-jasmine-headless-webkit
 [jasmine-headless-webkit]: https://github.com/johnbintz/jasmine-headless-webkit/
 [Evergreen]: https://github.com/jnicklas/evergreen
+[PhantomJS script]: https://github.com/netzpirat/guard-jasmine/blob/master/lib/guard/jasmine/phantomjs/run-jasmine.coffee
+[Guard::CoffeeScript]: https://github.com/guard/guard-coffeescript
