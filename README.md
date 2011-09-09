@@ -159,8 +159,8 @@ featured browser environment.
 ## Development
 
 - Documentation hosted at [RubyDoc](http://rubydoc.info/gems/guard-jasmine/file/README.md).
-- Source hosted at [GitHub](https://github.com/netzpirat/guard-Jasmine).
-- Report issues and feature requests to [GitHub Issues](https://github.com/netzpirat/guard-Jasmine/issues).
+- Source hosted at [GitHub](https://github.com/netzpirat/guard-jasmine).
+- Report issues and feature requests to [GitHub Issues](https://github.com/netzpirat/guard-jasmine/issues).
 
 Pull requests are very welcome! Please try to follow these simple "rules", though:
 
