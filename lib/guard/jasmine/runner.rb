@@ -20,6 +20,7 @@ module Guard
         # @option options [String] :phantomjs_bin the location of the PhantomJS binary
         # @option options [Boolean] :notification show notifications
         # @option options [Boolean] :hide_success hide success message notification
+        # @option options [Integer] :max_error_notify maximum error notifications to show
         # @return [Boolean, Array<String>] the status of the run and the failed files
         #
         def run(paths, options = { })
@@ -205,22 +206,25 @@ module Guard
         #
         # @param [Hash] result the suite result
         # @param [String] stats the status information
+        # @option options [Integer] :max_error_notify maximum error notifications to show
         # @option options [Boolean] :hide_success hide success message notification
         #
         def notify_specdoc(result, stats, options)
           result['suites'].each do |suite|
             Formatter.suite_name("➥ #{ suite['description'] }")
 
-            suite['specs'].each do |spec|
+            suite['specs'].each_with_index do |spec, index|
               if spec['passed']
                 Formatter.success(" ✔ #{ spec['description'] }") if !options[:hide_success]
               else
                 Formatter.spec_failed(" ✘ #{ spec['description'] }")
                 Formatter.spec_failed("   ➤ #{ format_error_message(spec['error_message'], false) }")
-                Formatter.notify("#{ spec['description'] }: #{ format_error_message(spec['error_message'], true) }",
-                                 :title    => 'Jasmine spec failed',
-                                 :image    => :failed,
-                                 :priority => 2) if options[:notification]
+                if options[:max_error_notify] > index
+                  Formatter.notify("#{ spec['description'] }: #{ format_error_message(spec['error_message'], true) }",
+                                   :title    => 'Jasmine spec failed',
+                                   :image    => :failed,
+                                   :priority => 2) if options[:notification]
+                end
               end
             end
           end

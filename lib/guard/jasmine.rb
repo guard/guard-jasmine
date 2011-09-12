@@ -24,19 +24,21 @@ module Guard
     # @option options [String] :phantomjs_bin the location of the PhantomJS binary
     # @option options [Boolean] :notification show notifications
     # @option options [Boolean] :hide_success hide success message notification
+    # @option options [Integer] :max_error_notify maximum error notifications to show
     # @option options [Boolean] :all_on_start run all suites on start
     # @option options [Boolean] :keep_failed keep failed suites and add them to the next run again
     # @option options [Boolean] :all_after_pass run all suites after a suite has passed again after failing
     #
     def initialize(watchers = [], options = { })
       defaults = {
-          :jasmine_url    => 'http://localhost:3000/jasmine',
-          :phantomjs_bin  => '/usr/local/bin/phantomjs',
-          :notification   => true,
-          :hide_success   => false,
-          :all_on_start   => true,
-          :keep_failed    => true,
-          :all_after_pass => true
+          :jasmine_url      => 'http://localhost:3000/jasmine',
+          :phantomjs_bin    => '/usr/local/bin/phantomjs',
+          :notification     => true,
+          :hide_success     => false,
+          :all_on_start     => true,
+          :keep_failed      => true,
+          :all_after_pass   => true,
+          :max_error_notify => 3
       }
 
       super(watchers, defaults.merge(options))

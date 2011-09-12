@@ -136,6 +136,9 @@ There following options can be passed to Guard::Jasmine:
     :hide_success => true                         # Disable successful compilation messages.
                                                   # default: false
 
+    :max_error_notify => 5                        # Maximum error notifications to show.
+                                                  # default: 3
+
 The `:keep_failed` failed option remembers failed suites and not failed specs. The reason for this decision is to
 avoid to much round trip time to request the Jasmine test runner for each single spec, which is mostly more expensive
 than running a whole suite.

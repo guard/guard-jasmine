@@ -8,6 +8,19 @@ describe Guard::Jasmine do
   let(:inspector) { Guard::Jasmine::Inspector }
   let(:formatter) { Guard::Jasmine::Formatter }
 
+  let(:defaults) do
+    {
+        :jasmine_url      => 'http://localhost:3000/jasmine',
+        :phantomjs_bin    => '/usr/local/bin/phantomjs',
+        :all_on_start     => true,
+        :notification     => true,
+        :hide_success     => false,
+        :max_error_notify => 3,
+        :keep_failed      => true,
+        :all_after_pass   => true
+    }
+  end
+
   before do
     inspector.stub(:clean).and_return { |specs| specs }
     runner.stub(:run).and_return [true, []]
@@ -36,6 +49,10 @@ describe Guard::Jasmine do
         guard.options[:hide_success].should be_false
       end
 
+      it 'sets a default :max_error_notify option' do
+        guard.options[:max_error_notify].should eql 3
+      end
+
       it 'sets a default :keep_failed option' do
         guard.options[:keep_failed].should be_true
       end
@@ -54,13 +71,14 @@ describe Guard::Jasmine do
     end
 
     context 'with other options than the default ones' do
-      let(:guard) { Guard::Jasmine.new(nil, { :jasmine_url    => 'http://192.168.1.5/jasmine',
-                                              :phantomjs_bin  => '~/bin/phantomjs',
-                                              :all_on_start   => false,
-                                              :notification   => false,
-                                              :hide_success   => true,
-                                              :keep_failed    => false,
-                                              :all_after_pass => false }) }
+      let(:guard) { Guard::Jasmine.new(nil, { :jasmine_url      => 'http://192.168.1.5/jasmine',
+                                              :phantomjs_bin    => '~/bin/phantomjs',
+                                              :all_on_start     => false,
+                                              :notification     => false,
+                                              :max_error_notify => 5,
+                                              :hide_success     => true,
+                                              :keep_failed      => false,
+                                              :all_after_pass   => false }) }
 
       it 'sets the :jasmine_url option' do
         guard.options[:jasmine_url].should eql 'http://192.168.1.5/jasmine'
@@ -80,6 +98,10 @@ describe Guard::Jasmine do
 
       it 'sets the :hide_success option' do
         guard.options[:hide_success].should be_true
+      end
+
+      it 'sets a default :max_error_notify option' do
+        guard.options[:max_error_notify].should eql 5
       end
 
       it 'sets a default :keep_failed option' do
@@ -207,14 +229,7 @@ describe Guard::Jasmine do
 
   describe '.run_all' do
     it 'starts the Runner with the spec dir' do
-      runner.should_receive(:run).with(['spec/javascripts'], {
-          :jasmine_url    => 'http://localhost:3000/jasmine',
-          :phantomjs_bin  => '/usr/local/bin/phantomjs',
-          :all_on_start   => true,
-          :notification   => true,
-          :hide_success   => false,
-          :keep_failed    => true,
-          :all_after_pass => true }).and_return [['spec/javascripts/a.js.coffee'], true]
+      runner.should_receive(:run).with(['spec/javascripts'], defaults).and_return [['spec/javascripts/a.js.coffee'], true]
 
       guard.run_all
     end
@@ -255,14 +270,7 @@ describe Guard::Jasmine do
       inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
                                              'spec/javascripts/b.js.coffee']).and_return ['spec/javascripts/a.js.coffee']
 
-      runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], {
-          :jasmine_url    => 'http://localhost:3000/jasmine',
-          :phantomjs_bin  => '/usr/local/bin/phantomjs',
-          :all_on_start   => true,
-          :notification   => true,
-          :hide_success   => false,
-          :keep_failed    => true,
-          :all_after_pass => true }).and_return [['spec/javascripts/a.js.coffee'], true]
+      runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], defaults).and_return [['spec/javascripts/a.js.coffee'], true]
 
       guard.run_on_change(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
     end
@@ -276,14 +284,7 @@ describe Guard::Jasmine do
 
       it 'appends the last failed paths to the current run' do
         runner.should_receive(:run).with(['spec/javascripts/a.js.coffee',
-                                          'spec/javascripts/b.js.coffee'], {
-            :jasmine_url    => 'http://localhost:3000/jasmine',
-            :phantomjs_bin  => '/usr/local/bin/phantomjs',
-            :all_on_start   => true,
-            :notification   => true,
-            :hide_success   => false,
-            :keep_failed    => true,
-            :all_after_pass => true })
+                                          'spec/javascripts/b.js.coffee'], defaults)
 
         guard.run_on_change(['spec/javascripts/a.js.coffee'])
       end

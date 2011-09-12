@@ -9,12 +9,13 @@ describe Guard::Jasmine::Runner do
 
   let(:defaults) do
     {
-        :jasmine_url    => 'http://localhost:3000/jasmine',
-        :phantomjs_bin  => '/usr/local/bin/phantomjs',
-        :notification   => true,
-        :hide_success   => false,
-        :keep_failed    => true,
-        :all_after_pass => true
+        :jasmine_url      => 'http://localhost:3000/jasmine',
+        :phantomjs_bin    => '/usr/local/bin/phantomjs',
+        :notification     => true,
+        :hide_success     => false,
+        :max_error_notify => 3,
+        :keep_failed      => true,
+        :all_after_pass   => true
     }
   end
 
@@ -35,7 +36,12 @@ describe Guard::Jasmine::Runner do
           "specs": [
             {
               "description": "Failure spec tests something",
-              "error_message": "ReferenceError: Can't find variable: tile in http://localhost:3000/assets/backbone/models/tile_spec.js?body=1 (line 27)",
+              "error_message": "ReferenceError: Can't find variable: a in http://localhost:3000/assets/backbone/models/model_spec.js?body=1 (line 27)",
+              "passed": false
+            },
+            {
+              "description": "Failure spec 2 tests something",
+              "error_message": "ReferenceError: Can't find variable: b in http://localhost:3000/assets/backbone/models/model_spec.js?body=1 (line 27)",
               "passed": false
             },
             {
@@ -46,8 +52,8 @@ describe Guard::Jasmine::Runner do
         }
       ],
       "stats": {
-        "specs": 4,
-        "failures": 1,
+        "specs": 3,
+        "failures": 2,
         "time": 0.007
       },
       "passed": false
@@ -74,7 +80,7 @@ describe Guard::Jasmine::Runner do
         }
       ],
       "stats": {
-        "specs": 4,
+        "specs": 2,
         "failures": 0,
         "time": 0.009
       },
@@ -182,10 +188,16 @@ describe Guard::Jasmine::Runner do
             ' ✘ Failure spec tests something'
         )
         formatter.should_receive(:spec_failed).with(
-            "   ➤ ReferenceError: Can't find variable: tile in backbone/models/tile_spec.js on line 27"
+            "   ➤ ReferenceError: Can't find variable: a in backbone/models/model_spec.js on line 27"
+        )
+        formatter.should_receive(:spec_failed).with(
+            ' ✘ Failure spec 2 tests something'
+        )
+        formatter.should_receive(:spec_failed).with(
+            "   ➤ ReferenceError: Can't find variable: b in backbone/models/model_spec.js on line 27"
         )
         formatter.should_receive(:info).with(
-            "4 specs, 1 failure\nin 0.007 seconds"
+            "3 specs, 2 failures\nin 0.007 seconds"
         )
         runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :notification => false }))
       end
@@ -217,81 +229,110 @@ describe Guard::Jasmine::Runner do
       context 'with notifications' do
         it 'shows the failing spec notification' do
           formatter.should_receive(:notify).with(
-              "Failure spec tests something: ReferenceError: Can't find variable: tile",
+              "Failure spec tests something: ReferenceError: Can't find variable: a",
               :title    => 'Jasmine spec failed',
               :image    => :failed,
               :priority => 2
           )
           formatter.should_receive(:notify).with(
-              "4 specs, 1 failure\nin 0.007 seconds",
+              "Failure spec 2 tests something: ReferenceError: Can't find variable: b",
+              :title    => 'Jasmine spec failed',
+              :image    => :failed,
+              :priority => 2
+          )
+          formatter.should_receive(:notify).with(
+              "3 specs, 2 failures\nin 0.007 seconds",
               :title    => 'Jasmine suite failed',
               :image    => :failed,
               :priority => 2
           )
           runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
         end
-      end
 
-      context 'without notifications' do
-        it 'does not show a failure notification' do
-          formatter.should_not_receive(:notify)
-          runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :notification => false }))
-        end
-      end
-    end
-
-    context "for a successful Jasmine spec" do
-      before do
-        File.stub(:foreach).and_yield 'describe("SuccessTest", function() {'
-        IO.stub(:popen).and_return StringIO.new(phantomjs_success_response)
-      end
-
-      it 'requests the jasmine specs from the server' do
-        File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
-        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=SuccessTest")
-
-        runner.run(['spec/javascripts/t.js'], defaults)
-      end
-
-      it 'shows the success in the console' do
-        formatter.should_receive(:success).with(
-            "4 specs, 0 failures\nin 0.009 seconds"
-        )
-        runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => false }))
-      end
-
-      it 'returns the success' do
-        response = runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
-        response.first.should be_true
-        response.last.should =~ []
-      end
-
-      context 'with notifications' do
-        it 'shows a success notification' do
-          formatter.should_receive(:notify).with(
-              "4 specs, 0 failures\nin 0.009 seconds",
-              :title => 'Jasmine suite passed'
-          )
-          runner.run(['spec/javascripts/t.js'], defaults)
+        context 'with :max_error_notify' do
+          it 'shows the failing spec notification' do
+            formatter.should_receive(:notify).with(
+                "Failure spec tests something: ReferenceError: Can't find variable: a",
+                :title    => 'Jasmine spec failed',
+                :image    => :failed,
+                :priority => 2
+            )
+            formatter.should_not_receive(:notify).with(
+                "Failure spec 2 tests something: ReferenceError: Can't find variable: b",
+                :title    => 'Jasmine spec failed',
+                :image    => :failed,
+                :priority => 2
+            )
+            formatter.should_receive(:notify).with(
+                "3 specs, 2 failures\nin 0.007 seconds",
+                :title    => 'Jasmine suite failed',
+                :image    => :failed,
+                :priority => 2
+            )
+            runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :max_error_notify => 1 }))
+          end
         end
 
-        context 'with hide success notifications' do
-          it 'does not shows a success notification' do
+        context 'without notifications' do
+          it 'does not show a failure notification' do
             formatter.should_not_receive(:notify)
-            runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => true, :hide_success => true }))
+            runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :notification => false }))
           end
         end
       end
 
-      context 'without notifications' do
-        it 'does not shows a success notification' do
-          formatter.should_not_receive(:notify)
+      context "for a successful Jasmine spec" do
+        before do
+          File.stub(:foreach).and_yield 'describe("SuccessTest", function() {'
+          IO.stub(:popen).and_return StringIO.new(phantomjs_success_response)
+        end
+
+        it 'requests the jasmine specs from the server' do
+          File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
+          IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=SuccessTest")
+
+          runner.run(['spec/javascripts/t.js'], defaults)
+        end
+
+        it 'shows the success in the console' do
+          formatter.should_receive(:success).with(
+              "2 specs, 0 failures\nin 0.009 seconds"
+          )
           runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => false }))
         end
+
+        it 'returns the success' do
+          response = runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
+          response.first.should be_true
+          response.last.should =~ []
+        end
+
+        context 'with notifications' do
+          it 'shows a success notification' do
+            formatter.should_receive(:notify).with(
+                "2 specs, 0 failures\nin 0.009 seconds",
+                :title => 'Jasmine suite passed'
+            )
+            runner.run(['spec/javascripts/t.js'], defaults)
+          end
+
+          context 'with hide success notifications' do
+            it 'does not shows a success notification' do
+              formatter.should_not_receive(:notify)
+              runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => true, :hide_success => true }))
+            end
+          end
+        end
+
+        context 'without notifications' do
+          it 'does not shows a success notification' do
+            formatter.should_not_receive(:notify)
+            runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => false }))
+          end
+        end
       end
+
     end
 
   end
-
 end
-
