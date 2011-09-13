@@ -16,7 +16,11 @@ module Guard
         def clean(paths)
           paths.uniq!
           paths.compact!
-          paths = paths.select { |p| jasmine_spec?(p) }
+          if paths.include?('spec/javascripts')
+            paths = ['spec/javascripts']
+          else
+            paths = paths.select { |p| jasmine_spec?(p) }
+          end
           clear_jasmine_specs
           paths
         end

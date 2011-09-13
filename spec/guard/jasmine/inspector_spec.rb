@@ -8,6 +8,10 @@ describe Guard::Jasmine::Inspector do
   subject { Guard::Jasmine::Inspector }
 
   describe 'clean' do
+    it 'allows the Jasmine spec dir' do
+      subject.clean(['spec/javascripts', 'spec/javascripts/a.js.coffee']).should == ['spec/javascripts']
+    end
+
     it 'removes duplicate files' do
       subject.clean(['spec/javascripts/a.js.coffee', 'spec/javascripts/a.js.coffee']).should == ['spec/javascripts/a.js.coffee']
     end
