@@ -27,10 +27,5 @@ describe Guard::Jasmine::Inspector do
                      'b.txt']).should == ['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js']
     end
 
-    it 'frees up the list of specs' do
-      subject.should_receive(:clear_jasmine_specs)
-      subject.clean(['spec/javascripts/a.js.coffee'])
-    end
-
   end
 end

@@ -259,16 +259,26 @@ describe Guard::Jasmine do
 
   describe '.run_on_change' do
     it 'passes the paths to the Inspector for cleanup' do
-      inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                             'spec/javascripts/b.js.coffee'])
+      inspector.should_receive(:clean).twice.with(['spec/javascripts/a.js.coffee',
+                                                   'spec/javascripts/b.js.coffee'])
 
       guard.run_on_change(['spec/javascripts/a.js.coffee',
                            'spec/javascripts/b.js.coffee'])
     end
 
+    it 'clears the inspector' do
+      inspector.should_receive(:clear)
+      guard.run_on_change(['spec/javascripts/b.js.coffee'])
+    end
+
+    it 'returns false when no valid paths are passed' do
+      inspector.should_receive(:clean).and_return []
+      guard.run_on_change(['spec/javascripts/b.js.coffee'])
+    end
+
     it 'starts the Runner with the cleaned files' do
-      inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                             'spec/javascripts/b.js.coffee']).and_return ['spec/javascripts/a.js.coffee']
+      inspector.should_receive(:clean).twice.with(['spec/javascripts/a.js.coffee',
+                                                   'spec/javascripts/b.js.coffee']).and_return ['spec/javascripts/a.js.coffee']
 
       runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], defaults).and_return [['spec/javascripts/a.js.coffee'], true]
 

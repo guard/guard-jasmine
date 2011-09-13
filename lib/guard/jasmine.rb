@@ -89,9 +89,12 @@ module Guard
     # @return [Boolean] when running the changed specs was successful
     #
     def run_on_change(paths)
+      return false if Inspector.clean(paths).empty?
+
       paths += self.last_failed_paths if options[:keep_failed]
 
       passed, failed_specs = Runner.run(Inspector.clean(paths), options)
+      Inspector.clear
 
       if passed
         self.last_failed_paths = self.last_failed_paths - paths

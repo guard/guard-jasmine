@@ -16,13 +16,20 @@ module Guard
         def clean(paths)
           paths.uniq!
           paths.compact!
+
           if paths.include?('spec/javascripts')
             paths = ['spec/javascripts']
           else
             paths = paths.select { |p| jasmine_spec?(p) }
           end
-          clear_jasmine_specs
+
           paths
+        end
+
+        # Clears the list of Jasmine specs in this project.
+        #
+        def clear
+          @jasmine_specs = nil
         end
 
         private
@@ -45,12 +52,6 @@ module Guard
         #
         def jasmine_specs
           @jasmine_specs ||= Dir.glob('spec/**/*_spec.{js,js.coffee}')
-        end
-
-        # Clears the list of Jasmine specs in this project.
-        #
-        def clear_jasmine_specs
-          @jasmine_specs = nil
         end
 
       end
