@@ -154,9 +154,9 @@ be shown in the console:
     :specdoc => :always                           # Specdoc output options, either :always, :never or :failure
                                                   # default: :failure
 
-With the option set to :always, the specdoc is shown with and without errors in your spec, whereas on with the option
-set to :never, there is no output at all, instead just a summary of the spec run is shown. The default option :failure
-shows the specdoc when at least one spec failed.
+With the option set to `:always`, the specdoc is shown with and without errors in your spec, whereas on with the option
+set to `:never`, there is no output at all, instead just a summary of the spec run is shown. The default option
+`:failure` shows the specdoc when at least one spec failed.
 
 ### System notifications options
 
@@ -218,6 +218,9 @@ Pull requests are very welcome! Please try to follow these simple "rules", thoug
 - Update the README (if applicable).
 - Please **do not change** the version number.
 
+For questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
+(irc.freenode.net).
+
 ### The guard-jasmine executable
 
 This Guard comes with a small executable `guard-jasmine` that can be used to run the Jasmine test runner on PhantomJS
@@ -230,11 +233,6 @@ The only argument that the script takes is the URL to the Jasmine runner, which 
 `http://127.0.0.1:3000/Jasmine`. So you can for example just run a subset of the specs by changing the URL:
 
     $ guard-jasmine http://127.0.0.1:3000/Jasmine?spec=YourSpec
-
-### Questions
-
-For questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
-(irc.freenode.net).
 
 ## Acknowledgment
 
