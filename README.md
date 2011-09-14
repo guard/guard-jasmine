@@ -116,7 +116,7 @@ There are many options that can customize Guard::Jasmine to your needs.
 
 ### General options
 
-The general options configures the environment that is needed to run Guard::Jasmine.
+The general options configures the environment that is needed to run Guard::Jasmine:
 
     :jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
                                                   # default: http://127.0.0.1/jasmine
