@@ -8,18 +8,7 @@ describe Guard::Jasmine do
   let(:inspector) { Guard::Jasmine::Inspector }
   let(:formatter) { Guard::Jasmine::Formatter }
 
-  let(:defaults) do
-    {
-        :jasmine_url      => 'http://localhost:3000/jasmine',
-        :phantomjs_bin    => '/usr/local/bin/phantomjs',
-        :all_on_start     => true,
-        :notification     => true,
-        :hide_success     => false,
-        :max_error_notify => 3,
-        :keep_failed      => true,
-        :all_after_pass   => true
-    }
-  end
+  let(:defaults) { Guard::Jasmine::DEFAULT_OPTIONS }
 
   before do
     inspector.stub(:clean).and_return { |specs| specs }
@@ -61,6 +50,10 @@ describe Guard::Jasmine do
         guard.options[:all_after_pass].should be_true
       end
 
+      it 'sets a default :specdoc option' do
+        guard.options[:specdoc].should eql :failure
+      end
+
       it 'sets last run failed to false' do
         guard.last_run_failed.should be_false
       end
@@ -78,7 +71,8 @@ describe Guard::Jasmine do
                                               :max_error_notify => 5,
                                               :hide_success     => true,
                                               :keep_failed      => false,
-                                              :all_after_pass   => false }) }
+                                              :all_after_pass   => false,
+                                              :specdoc          => :always }) }
 
       it 'sets the :jasmine_url option' do
         guard.options[:jasmine_url].should eql 'http://192.168.1.5/jasmine'
@@ -100,16 +94,28 @@ describe Guard::Jasmine do
         guard.options[:hide_success].should be_true
       end
 
-      it 'sets a default :max_error_notify option' do
+      it 'sets the :max_error_notify option' do
         guard.options[:max_error_notify].should eql 5
       end
 
-      it 'sets a default :keep_failed option' do
+      it 'sets the :keep_failed option' do
         guard.options[:keep_failed].should be_false
       end
 
-      it 'sets a default :all_after_pass option' do
+      it 'sets the :all_after_pass option' do
         guard.options[:all_after_pass].should be_false
+      end
+
+      it 'sets the :specdoc option' do
+        guard.options[:specdoc].should eql :always
+      end
+    end
+
+    context 'with illegal options' do
+      let(:guard) { Guard::Jasmine.new(nil, defaults.merge({ :specdoc => :wrong })) }
+
+      it 'sets default :specdoc option' do
+        guard.options[:specdoc].should eql :failure
       end
     end
   end

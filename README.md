@@ -112,14 +112,17 @@ Guard::Jasmine can be adapted to all kind of projects. Please read the
 
 ## Options
 
-There following options can be passed to Guard::Jasmine:
+There are many options that can customize to Guard::Jasmine:
 
+### General options
 
     :jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
                                                   # default: http://127.0.0.1/jasmine
 
     :phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
                                                   # default: '/usr/local/bin/phantomjs'
+
+### Spec runner
 
     :all_on_start => false                        # Run all suites on start.
                                                   # default: true
@@ -130,18 +133,31 @@ There following options can be passed to Guard::Jasmine:
     :all_after_pass => false                      # Run all suites after a suite has passed again after failing.
                                                   # default: true
 
-    :notifications => false                       # Show success and error messages.
+The `:keep_failed` failed option remembers failed suites and not failed specs. The reason for this decision is to
+avoid to much round trip time to request the Jasmine test runner for each single spec, which is mostly more expensive
+than running a whole suite.
+
+### Specdoc notifications
+
+    :specdoc => :always                           # Specdoc output options, either :always, :never or :failure
+                                                  # default: :failure
+
+With the option set to :always, the specdoc is shown with and without errors in your spec, whereas on with the option
+set to :never, there is no output at all, instead just a summary of the spec run is shown. The default option :failure
+shows the specdoc when at least one spec failed.
+
+### System notifications
+
+These settings affects what system notifications (growl, libnotify or notifu) are shown after a spec run.
+
+    :notifications => false                       # Show success and error notifications.
                                                   # default: true
 
-    :hide_success => true                         # Disable successful compilation messages.
+    :hide_success => true                         # Disable successful spec run notification.
                                                   # default: false
 
     :max_error_notify => 5                        # Maximum error notifications to show.
                                                   # default: 3
-
-The `:keep_failed` failed option remembers failed suites and not failed specs. The reason for this decision is to
-avoid to much round trip time to request the Jasmine test runner for each single spec, which is mostly more expensive
-than running a whole suite.
 
 ### A note on Rails 2 and 3
 

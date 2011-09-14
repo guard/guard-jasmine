@@ -16,6 +16,18 @@ module Guard
 
     attr_accessor :last_run_failed, :last_failed_paths
 
+    DEFAULT_OPTIONS = {
+        :jasmine_url      => 'http://localhost:3000/jasmine',
+        :phantomjs_bin    => '/usr/local/bin/phantomjs',
+        :notification     => true,
+        :hide_success     => false,
+        :all_on_start     => true,
+        :keep_failed      => true,
+        :all_after_pass   => true,
+        :max_error_notify => 3,
+        :specdoc          => :failure
+    }
+
     # Initialize Guard::Jasmine.
     #
     # @param [Array<Guard::Watcher>] watchers the watchers in the Guard block
@@ -28,20 +40,13 @@ module Guard
     # @option options [Boolean] :all_on_start run all suites on start
     # @option options [Boolean] :keep_failed keep failed suites and add them to the next run again
     # @option options [Boolean] :all_after_pass run all suites after a suite has passed again after failing
+    # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never or :failure
     #
     def initialize(watchers = [], options = { })
-      defaults = {
-          :jasmine_url      => 'http://localhost:3000/jasmine',
-          :phantomjs_bin    => '/usr/local/bin/phantomjs',
-          :notification     => true,
-          :hide_success     => false,
-          :all_on_start     => true,
-          :keep_failed      => true,
-          :all_after_pass   => true,
-          :max_error_notify => 3
-      }
+      options = DEFAULT_OPTIONS.merge(options)
+      options[:specdoc] = :failure if ![:always, :never, :failure].include? options[:specdoc]
 
-      super(watchers, defaults.merge(options))
+      super(watchers, options)
 
       self.last_run_failed   = false
       self.last_failed_paths = []

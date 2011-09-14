@@ -7,17 +7,7 @@ describe Guard::Jasmine::Runner do
   let(:runner) { Guard::Jasmine::Runner }
   let(:formatter) { Guard::Jasmine::Formatter }
 
-  let(:defaults) do
-    {
-        :jasmine_url      => 'http://localhost:3000/jasmine',
-        :phantomjs_bin    => '/usr/local/bin/phantomjs',
-        :notification     => true,
-        :hide_success     => false,
-        :max_error_notify => 3,
-        :keep_failed      => true,
-        :all_after_pass   => true
-    }
-  end
+  let(:defaults) { Guard::Jasmine::DEFAULT_OPTIONS }
 
   let(:phantomjs_error_response) do
     <<-JSON
@@ -174,38 +164,57 @@ describe Guard::Jasmine::Runner do
         runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
       end
 
-      it 'shows the specs in the console' do
-        formatter.should_receive(:info).with(
-            'Run Jasmine suite spec/javascripts/x/b.js.coffee', { :reset => true }
-        )
-        formatter.should_receive(:info).with(
-            'Run Jasmine suite at http://localhost:3000/jasmine?spec=FailureTest'
-        )
-        formatter.should_receive(:suite_name).with(
-            '➥ Failure suite'
-        )
-        formatter.should_receive(:spec_failed).with(
-            ' ✘ Failure spec tests something'
-        )
-        formatter.should_receive(:spec_failed).with(
-            "   ➤ ReferenceError: Can't find variable: a in backbone/models/model_spec.js on line 27"
-        )
-        formatter.should_receive(:spec_failed).with(
-            ' ✘ Failure spec 2 tests something'
-        )
-        formatter.should_receive(:spec_failed).with(
-            "   ➤ ReferenceError: Can't find variable: b in backbone/models/model_spec.js on line 27"
-        )
-        formatter.should_receive(:info).with(
-            "3 specs, 2 failures\nin 0.007 seconds"
-        )
-        runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :notification => false }))
-      end
-
       it 'returns the failures' do
         response = runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
         response.first.should be_false
         response.last.should =~ ['spec/javascripts/x/b.js.coffee']
+      end
+
+      context 'with the specdoc set to :never' do
+        it 'shows the summary in the console' do
+          formatter.should_receive(:info).with(
+              'Run Jasmine suite spec/javascripts/x/b.js.coffee', { :reset => true }
+          )
+          formatter.should_receive(:info).with(
+              'Run Jasmine suite at http://localhost:3000/jasmine?spec=FailureTest'
+          )
+          formatter.should_not_receive(:suite_name)
+          formatter.should_not_receive(:spec_failed)
+          formatter.should_receive(:error).with(
+              "3 specs, 2 failures\nin 0.007 seconds"
+          )
+          runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :specdoc => :never }))
+        end
+      end
+
+      context 'with the specdoc set either :always or :failure' do
+        it 'shows the specdoc in the console' do
+          formatter.should_receive(:info).with(
+              'Run Jasmine suite spec/javascripts/x/b.js.coffee', { :reset => true }
+          )
+          formatter.should_receive(:info).with(
+              'Run Jasmine suite at http://localhost:3000/jasmine?spec=FailureTest'
+          )
+          formatter.should_receive(:suite_name).with(
+              '➥ Failure suite'
+          )
+          formatter.should_receive(:spec_failed).with(
+              ' ✘ Failure spec tests something'
+          )
+          formatter.should_receive(:spec_failed).with(
+              "   ➤ ReferenceError: Can't find variable: a in backbone/models/model_spec.js on line 27"
+          )
+          formatter.should_receive(:spec_failed).with(
+              ' ✘ Failure spec 2 tests something'
+          )
+          formatter.should_receive(:spec_failed).with(
+              "   ➤ ReferenceError: Can't find variable: b in backbone/models/model_spec.js on line 27"
+          )
+          formatter.should_receive(:error).with(
+              "3 specs, 2 failures\nin 0.007 seconds"
+          )
+          runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :notification => false }))
+        end
       end
 
       context 'with the :hide_success option disabled' do
@@ -294,17 +303,50 @@ describe Guard::Jasmine::Runner do
           runner.run(['spec/javascripts/t.js'], defaults)
         end
 
-        it 'shows the success in the console' do
-          formatter.should_receive(:success).with(
-              "2 specs, 0 failures\nin 0.009 seconds"
-          )
-          runner.run(['spec/javascripts/t.js'], defaults.merge({ :notification => false }))
-        end
-
         it 'returns the success' do
           response = runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
           response.first.should be_true
           response.last.should =~ []
+        end
+
+        context 'with the specdoc set to :always' do
+          it 'shows the specdoc in the console' do
+            formatter.should_receive(:info).with(
+                'Run Jasmine suite spec/javascripts/x/t.js', { :reset => true }
+            )
+            formatter.should_receive(:info).with(
+                'Run Jasmine suite at http://localhost:3000/jasmine?spec=SuccessTest'
+            )
+            formatter.should_receive(:suite_name).with(
+                '➥ Success suite'
+            )
+            formatter.should_receive(:success).with(
+                ' ✔ Success test tests something'
+            )
+            formatter.should_receive(:success).with(
+                ' ✔ Another success test tests something'
+            )
+            formatter.should_receive(:success).with(
+                "2 specs, 0 failures\nin 0.009 seconds"
+            )
+            runner.run(['spec/javascripts/x/t.js'], defaults.merge({ :specdoc => :always }))
+          end
+        end
+
+        context 'with the specdoc set to :never or :failure' do
+          it 'shows the summary in the console' do
+            formatter.should_receive(:info).with(
+                'Run Jasmine suite spec/javascripts/x/t.js', { :reset => true }
+            )
+            formatter.should_receive(:info).with(
+                'Run Jasmine suite at http://localhost:3000/jasmine?spec=SuccessTest'
+            )
+            formatter.should_not_receive(:suite_name)
+            formatter.should_receive(:success).with(
+                "2 specs, 0 failures\nin 0.009 seconds"
+            )
+            runner.run(['spec/javascripts/x/t.js'], defaults.merge({ :specdoc => :never }))
+          end
         end
 
         context 'with notifications' do

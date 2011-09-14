@@ -21,6 +21,7 @@ module Guard
         # @option options [Boolean] :notification show notifications
         # @option options [Boolean] :hide_success hide success message notification
         # @option options [Integer] :max_error_notify maximum error notifications to show
+        # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never
         # @return [Boolean, Array<String>] the status of the run and the failed files
         #
         def run(paths, options = { })
@@ -194,9 +195,12 @@ module Guard
           message = "#{ specs } specs, #{ failures } failure#{ plural }\nin #{ time } seconds"
 
           if failures != 0
-            notify_specdoc(result, message, options)
+            show_specdoc(result) if options[:specdoc] != :never
+            Formatter.error(message)
+            notify_errors(result, options)
             Formatter.notify(message, :title => 'Jasmine suite failed', :image => :failed, :priority => 2) if options[:notification]
           else
+            show_specdoc(result) if options[:specdoc] == :always
             Formatter.success(message)
             Formatter.notify(message, :title => 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
           end
@@ -205,31 +209,39 @@ module Guard
         # Specdoc like formatting of the result.
         #
         # @param [Hash] result the suite result
-        # @param [String] stats the status information
-        # @option options [Integer] :max_error_notify maximum error notifications to show
-        # @option options [Boolean] :hide_success hide success message notification
         #
-        def notify_specdoc(result, stats, options)
+        def show_specdoc(result)
           result['suites'].each do |suite|
             Formatter.suite_name("➥ #{ suite['description'] }")
 
             suite['specs'].each_with_index do |spec, index|
               if spec['passed']
-                Formatter.success(" ✔ #{ spec['description'] }") if !options[:hide_success]
+                Formatter.success(" ✔ #{ spec['description'] }")
               else
                 Formatter.spec_failed(" ✘ #{ spec['description'] }")
                 Formatter.spec_failed("   ➤ #{ format_error_message(spec['error_message'], false) }")
-                if options[:max_error_notify] > index
-                  Formatter.notify("#{ spec['description'] }: #{ format_error_message(spec['error_message'], true) }",
-                                   :title    => 'Jasmine spec failed',
-                                   :image    => :failed,
-                                   :priority => 2) if options[:notification]
-                end
               end
             end
           end
+        end
 
-          Formatter.info(stats)
+        # Specdoc like formatting of the result.
+        #
+        # @param [Hash] result the suite result
+        # @option options [Integer] :max_error_notify maximum error notifications to show
+        # @option options [Boolean] :hide_success hide success message notification
+        #
+        def notify_errors(result, options)
+          result['suites'].each do |suite|
+            suite['specs'].each_with_index do |spec, index|
+              if !spec['passed'] && options[:max_error_notify] > index
+                Formatter.notify("#{ spec['description'] }: #{ format_error_message(spec['error_message'], true) }",
+                                 :title    => 'Jasmine spec failed',
+                                 :image    => :failed,
+                                 :priority => 2) if options[:notification]
+              end
+            end
+          end
         end
 
         # Formats the error message.
