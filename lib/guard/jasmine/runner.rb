@@ -214,7 +214,7 @@ module Guard
           result['suites'].each do |suite|
             Formatter.suite_name("➥ #{ suite['description'] }")
 
-            suite['specs'].each_with_index do |spec, index|
+            suite['specs'].each do |spec|
               if spec['passed']
                 Formatter.success(" ✔ #{ spec['description'] }")
               else
