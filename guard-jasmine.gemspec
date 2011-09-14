@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'yard',        '~> 0.7.2'
   s.add_development_dependency 'kramdown',    '~> 0.13.3'
 
-  s.files        = Dir.glob('{lib}/**/*') + %w[LICENSE.MIT LICENSE.BSD README.md]
+  s.files        = Dir.glob('{bin,lib}/**/*') + %w[LICENSE.MIT LICENSE.BSD README.md]
+  s.executable   = 'guard-jasmine'
   s.require_path = 'lib'
 end
