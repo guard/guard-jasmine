@@ -138,7 +138,7 @@ The spec runner options configures the behavior driven development (or BDD) cycl
                                                   # default: true
 
 The `:keep_failed` failed option remembers failed suites and not failed specs. The reason for this decision is to
-avoid to much round trip time to request the Jasmine test runner for each single spec, which is mostly more expensive
+avoid additional round trip time to request the Jasmine test runner for each single spec, which is mostly more expensive
 than running a whole suite.
 
 ### Specdoc options
