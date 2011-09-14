@@ -112,9 +112,11 @@ Guard::Jasmine can be adapted to all kind of projects. Please read the
 
 ## Options
 
-There are many options that can customize to Guard::Jasmine:
+There are many options that can customize Guard::Jasmine to your needs.
 
 ### General options
+
+The general options configures the environment that is needed to run Guard::Jasmine.
 
     :jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
                                                   # default: http://127.0.0.1/jasmine
@@ -122,7 +124,9 @@ There are many options that can customize to Guard::Jasmine:
     :phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
                                                   # default: '/usr/local/bin/phantomjs'
 
-### Spec runner
+### Spec runner options
+
+The spec runner options configures the behavior driven development (or BDD) cycle:
 
     :all_on_start => false                        # Run all suites on start.
                                                   # default: true
@@ -137,7 +141,10 @@ The `:keep_failed` failed option remembers failed suites and not failed specs. T
 avoid to much round trip time to request the Jasmine test runner for each single spec, which is mostly more expensive
 than running a whole suite.
 
-### Specdoc notifications
+### Specdoc options
+
+Guard::Jasmine can generate an RSpec like specdoc in the console after running the specs and you can set when it will
+be shown in the console:
 
     :specdoc => :always                           # Specdoc output options, either :always, :never or :failure
                                                   # default: :failure
@@ -146,9 +153,9 @@ With the option set to :always, the specdoc is shown with and without errors in 
 set to :never, there is no output at all, instead just a summary of the spec run is shown. The default option :failure
 shows the specdoc when at least one spec failed.
 
-### System notifications
+### System notifications options
 
-These settings affects what system notifications (growl, libnotify or notifu) are shown after a spec run.
+These options affects what system notifications (growl, libnotify or notifu) are shown after a spec run:
 
     :notifications => false                       # Show success and error notifications.
                                                   # default: true
