@@ -112,7 +112,12 @@ Guard::Jasmine can be adapted to all kind of projects. Please read the
 
 ## Options
 
-There are many options that can customize Guard::Jasmine to your needs.
+There are many options that can customize Guard::Jasmine to your needs. Options are simply supplied as hash when
+defining the Guard in your `Guardfile`:
+
+    guard 'jasmine', :all_on_start => false, :specdoc => :always do
+      ...
+    end
 
 ### General options
 
@@ -212,6 +217,21 @@ Pull requests are very welcome! Please try to follow these simple "rules", thoug
 - Make sure your patches are well tested.
 - Update the README (if applicable).
 - Please **do not change** the version number.
+
+### The guard-jasmine executable
+
+This Guard comes with a small executable `guard-jasmine` that can be used to run the Jasmine test runner on PhantomJS
+and see the JSON result that gets evaluated by Guard::Jasmine. This comes handy when there is an issue with your specs
+and you want to see the output of the PhantomJS script.
+
+    $ guard-jasmine
+
+The only argument that the script takes is the URL to the Jasmine runner, which defaults to
+`http://127.0.0.1:3000/Jasmine`. So you can for example just run a subset of the specs by changing the URL:
+
+    $ guard-jasmine http://127.0.0.1:3000/Jasmine?spec=YourSpec
+
+### Questions
 
 For questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
 (irc.freenode.net).
