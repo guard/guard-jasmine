@@ -166,7 +166,7 @@ These options affects what system notifications (growl, libnotify or notifu) are
     :max_error_notify => 5                        # Maximum error notifications to show.
                                                   # default: 3
 
-### A note on Rails 2 and 3
+## A note on Rails 2 and 3
 
 This readme describes the use of Guard::Jasmine with Jasminerice through the asset pipeline, but it is not really
 a requirement for Guard::Jasmine. As long as you serve the Jasmine test runner under a certain url,
