@@ -9,14 +9,14 @@ If you have any questions please join us on our [Google group](http://groups.goo
 
 ## Highlights
 
-* Continuous testing based on file modifications by [Guard][], manifold configurable rules
-with RegEx and Ruby.
+* Continuous testing based on file modifications by [Guard][], manifold configuration by writing rules with RegExp and
+Ruby.
 
 * Fast headless testing on [PhantomJS][], a full featured WebKit browser with native support for
 various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 
-* You can write your [Jasmine][] specs in [CoffeeScript][], fully integrated into the
-[Rails 3.1 asset pipeline][] with [Jasminerice][].
+* Runs the standard Jasmine test runner, so you can use [Jasminerice][] for integrating [Jasmine][] into the
+[Rails 3.1 asset pipeline][] and write your specs in [CoffeeScript][].
 
 * Runs on Mac OS X, Linux and Windows.
 
