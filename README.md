@@ -184,7 +184,7 @@ the supplied Rake task:
 
 Next follows an example on how to configure your `Guardfile` with the Jasmine gem:
 
-    guard 'jasmine', :url => 'http://127.0.0.1:8888' do
+    guard 'jasmine', :jasmine_url => 'http://127.0.0.1:8888' do
       watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
       watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
       watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
