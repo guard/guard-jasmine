@@ -30,7 +30,7 @@ module Guard
           notify_start_message(paths)
 
           results = paths.inject([]) do |results, file|
-            results << evaluate_result(run_jasmine_spec(file, options), file, options)
+            results << evaluate_response(run_jasmine_spec(file, options), file, options)
 
             results
           end.compact
@@ -142,7 +142,7 @@ module Guard
         # @param [Hash] options the options for the execution
         # @return [Hash] the suite result
         #
-        def evaluate_result(output, file, options)
+        def evaluate_response(output, file, options)
           json = output.read
 
           begin
