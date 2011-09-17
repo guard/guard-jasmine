@@ -49,7 +49,7 @@ module Guard
         # JavaScript and CoffeeScript files in the `spec`
         # directory.
         #
-        # @see #clear_jasmine_specs
+        # @see #clear
         # @return [Array<String>] the valid files
         #
         def jasmine_specs
