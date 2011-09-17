@@ -1,8 +1,10 @@
 module Guard
   class Jasmine
 
-    # The inspector verifies of the changed paths are valid
-    # for Guard::Jasmine.
+    # The inspector verifies if the changed paths are valid
+    # for Guard::Jasmine. Please note that request to {#clean}
+    # paths keeps the current valid files cached until #{clear} is
+    # called.
     #
     module Inspector
       class << self
