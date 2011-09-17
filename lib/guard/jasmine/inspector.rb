@@ -3,7 +3,7 @@ module Guard
 
     # The inspector verifies if the changed paths are valid
     # for Guard::Jasmine. Please note that request to {#clean}
-    # paths keeps the current valid files cached until #{clear} is
+    # paths keeps the current valid files cached until {#clear} is
     # called.
     #
     module Inspector
