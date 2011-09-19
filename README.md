@@ -191,6 +191,47 @@ Next follows an example on how to configure your `Guardfile` with the Jasmine ge
       watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
     end
 
+You can also use [guard-process](https://github.com/socialreferral/guard-process) to start the Jasmine Gem server when
+Guard starts:
+
+    guard 'process', :name => 'Jasmine server', :command => 'bundle exec rake jasmine' do
+      watch(%r{spec/javascripts/support/*})
+    end
+
+    JASMINE_HOST = '127.0.0.1'
+    JASMINE_PORT = '8888'
+    JASMINE_URL = "http://#{JASMINE_HOST}:#{JASMINE_PORT}/"
+
+    Thread.new do
+      require 'socket'
+
+      puts "\nWaiting for Jasmine to accept connections on #{JASMINE_URL}..."
+      wait_for_open_connection(JASMINE_HOST, JASMINE_PORT)
+      puts "Jasmine is now ready to accept connections; change a file or press ENTER run your suite."
+      puts "You can also view and run specs by visiting:"
+      puts JASMINE_URL
+
+      guard 'jasmine', :jasmine_url => JASMINE_URL do
+        watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
+        watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
+        watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
+        watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
+      end
+    end
+
+    def wait_for_open_connection(host, port)
+      while true
+        begin
+          TCPSocket.new(host, port).close
+          return
+        rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
+        end
+      end
+    end
+
+This elegant solution is provided by [Jason Morrison](http://twitter.com/#!/jayunit), see his original
+[Gist](https://gist.github.com/1224382).
+
 It is also possible to use CoffeeScript in this setup, by using [Guard::CoffeeScript][] to compile your code and even
 specs. Just add something like this *before* Guard::Jasmine:
 
