@@ -247,10 +247,6 @@ describe Guard::Jasmine do
         runner.stub(:run).and_return [true, []]
       end
 
-      it 'returns true' do
-        guard.run_all.should eql true
-      end
-
       it 'sets the last run failed to false' do
         guard.run_all
         guard.last_run_failed.should be_false
@@ -261,6 +257,17 @@ describe Guard::Jasmine do
         guard.last_failed_paths.should be_empty
       end
     end
+
+    context 'with failing specs' do
+      before do
+        runner.stub(:run).and_return [false, []]
+      end
+
+      it 'throws :task_has_failed' do
+        expect { guard.run_all }.to throw_symbol :task_has_failed
+      end
+    end
+
   end
 
   describe '.run_on_change' do
@@ -313,10 +320,6 @@ describe Guard::Jasmine do
         runner.stub(:run).and_return [true, []]
       end
 
-      it 'returns true' do
-        guard.run_on_change(['spec/javascripts/a.js.coffee']).should eql true
-      end
-
       it 'sets the last run failed to false' do
         guard.run_on_change(['spec/javascripts/a.js.coffee'])
         guard.last_run_failed.should be_false
@@ -352,17 +355,17 @@ describe Guard::Jasmine do
         runner.stub(:run).and_return [false, ['spec/javascripts/a.js.coffee']]
       end
 
-      it 'returns false' do
-        guard.run_on_change(['spec/javascripts/a.js.coffee']).should eql false
+      it 'throws :task_has_failed' do
+        expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
       end
 
       it 'sets the last run failed to true' do
-        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
         guard.last_run_failed.should be_true
       end
 
       it 'appends the failed spec to the list of failed paths' do
-        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
         guard.last_failed_paths.should =~ ['spec/javascripts/a.js.coffee']
       end
     end

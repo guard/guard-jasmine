@@ -54,30 +54,26 @@ module Guard
 
     # Gets called once when Guard starts.
     #
-    # @return [Boolean] when the start was successful
+    # @raise [:task_has_failed] when run_on_change has failed
     #
     def start
       if jasmine_runner_available?(options[:jasmine_url])
         run_all if options[:all_on_start]
       end
-
-      true
     end
 
     # Gets called when the Guard should reload itself.
     #
-    # @return [Boolean] when the reload was successful
+    # @raise [:task_has_failed] when run_on_change has failed
     #
     def reload
       self.last_run_failed   = false
       self.last_failed_paths = []
-
-      true
     end
 
     # Gets called when all specs should be run.
     #
-    # @return [Boolean] when running all specs was successful
+    # @raise [:task_has_failed] when run_on_change has failed
     #
     def run_all
       passed, failed_specs = Runner.run(['spec/javascripts'], options)
@@ -85,13 +81,13 @@ module Guard
       self.last_failed_paths = failed_specs
       self.last_run_failed   = !passed
 
-      passed
+      throw :task_has_failed unless passed
     end
 
     # Gets called when watched paths and files have changes.
     #
     # @param [Array<String>] paths the changed paths and files
-    # @return [Boolean] when running the changed specs was successful
+    # @raise [:task_has_failed] when run_on_change has failed
     #
     def run_on_change(paths)
       return false if Inspector.clean(paths).empty?
@@ -110,7 +106,7 @@ module Guard
 
       self.last_run_failed = !passed
 
-      passed
+      throw :task_has_failed unless passed
     end
 
     private
