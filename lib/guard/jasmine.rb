@@ -81,7 +81,7 @@ module Guard
       self.last_failed_paths = failed_specs
       self.last_run_failed   = !passed
 
-      throw :task_has_failed unless passed
+      #throw :task_has_failed unless passed
     end
 
     # Gets called when watched paths and files have changes.
@@ -106,7 +106,7 @@ module Guard
 
       self.last_run_failed = !passed
 
-      throw :task_has_failed unless passed
+      #throw :task_has_failed unless passed
     end
 
     private
