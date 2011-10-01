@@ -258,15 +258,15 @@ describe Guard::Jasmine do
       end
     end
 
-    #context 'with failing specs' do
-    #  before do
-    #    runner.stub(:run).and_return [false, []]
-    #  end
-    #
-    #  it 'throws :task_has_failed' do
-    #    expect { guard.run_all }.to throw_symbol :task_has_failed
-    #  end
-    #end
+    context 'with failing specs' do
+      before do
+        runner.stub(:run).and_return [false, []]
+      end
+
+      it 'throws :task_has_failed' do
+        expect { guard.run_all }.to throw_symbol :task_has_failed
+      end
+    end
 
   end
 
@@ -355,19 +355,17 @@ describe Guard::Jasmine do
         runner.stub(:run).and_return [false, ['spec/javascripts/a.js.coffee']]
       end
 
-      #it 'throws :task_has_failed' do
-      #  expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
-      #end
+      it 'throws :task_has_failed' do
+        expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
+      end
 
       it 'sets the last run failed to true' do
-        #expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
-        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
         guard.last_run_failed.should be_true
       end
 
       it 'appends the failed spec to the list of failed paths' do
-        #expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
-        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
         guard.last_failed_paths.should =~ ['spec/javascripts/a.js.coffee']
       end
     end
