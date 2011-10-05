@@ -1,13 +1,7 @@
-# This file is the script that runs within PhantomJS and requests the Jasmine specs,
-# waits until they are ready, extracts the result form the dom and outputs a JSON
-# structure that is the parsed by Guard::Jasmine.
+# This file is the script that runs within PhantomJS, requests the Jasmine specs
+# and waits until they are ready.
 #
-# This scripts needs the TrivialReporter to report the results.
-#
-# This file is inspired by the Jasmine runner that comes with the PhantomJS examples:
-# https://github.com/ariya/phantomjs/blob/master/examples/run-jasmine.coffee, by https://github.com/Roejames12
-#
-# This file is licensed under the BSD license.
+# A console reporter is injected into Jasmine to stream status messages as they occur.
 
 # Wait until the test condition is true or a timeout occurs.
 #
@@ -15,11 +9,11 @@
 # @param [Function] ready the action when the condition is fulfilled
 # @param [Number] timeout the max amount of time to wait
 #
-waitFor = (condition, ready, timeout = 3000) ->
+waitFor = (condition, ready, timeout = 5000) ->
   start = new Date().getTime()
   wait = ->
     if new Date().getTime() - start > timeout
-      console.log JSON.stringify({ error: "Timeout requesting Jasmine test runner!" })
+      console.log JSON.stringify({ error: 'Timeout requesting Jasmine test runner!' })
       phantom.exit(1)
     else
       if condition()
@@ -33,71 +27,64 @@ waitFor = (condition, ready, timeout = 3000) ->
 specsReady = ->
   page.evaluate -> if document.body.querySelector('.finished-at') then true else false
 
-# Extract the data from a Jasmine TrivialReporter generated DOM
-#
-extractResult = ->
-  page.evaluate ->
-    stats = /(\d+) specs?, (\d+) failures? in (\d+.\d+)s/.exec(document.body.querySelector('.description').innerText)
-    specs = parseInt stats[1]
-    failures = parseInt stats[2]
-    time = parseFloat stats[3]
-    passed = failures is 0
-
-    result = {
-      passed: passed
-      stats: {
-        specs: specs
-        failures: failures
-        time: time
-      }
-      suites: []
-    }
-
-    for suite in document.body.querySelectorAll('div.jasmine_reporter > div.suite')
-      description = suite.querySelector('a.description')
-      suite_ = {
-        description: description.innerText
-        specs: []
-      }
-
-      for spec in suite.querySelectorAll('div.spec')
-        status = spec.getAttribute('class').substring(5)
-        if status isnt 'skipped'
-          passed = status is 'passed'
-          spec_ = {
-            description: spec.querySelector('a.description').getAttribute 'title'
-            passed: passed
-          }
-          spec_['error_message'] = spec.querySelector('div.resultMessage').innerText if not passed
-          suite_['specs'].push spec_
-
-      result['suites'].push suite_
-
-    console.log "JSON_RESULT: #{ JSON.stringify(result, undefined, 2) }"
-
-  phantom.exit()
-
 # Check arguments of the script.
 #
 if phantom.args.length isnt 1
-  console.log JSON.stringify({ error: "Wrong usage of PhantomJS script!" })
+  console.log JSON.stringify({ error: 'Wrong usage of PhantomJS script!' })
   phantom.exit()
 else
   url = phantom.args[0]
 
-page = new WebPage()
-
-# Output the Jasmine test runner result as JSON object.
-# Ignore all other calls to console.log that may come from the specs.
+# Create the web page.
 #
-page.onConsoleMessage = (msg) ->
-  console.log(RegExp.$1) if /^JSON_RESULT: ([\s\S]*)$/.test(msg)
+page = require('webpage').create()
+
+# Capture console.log output to wrap the output
+# from the specs into a JSON message.
+#
+page.onConsoleMessage = (msg, line, source) ->
+  console.log JSON.stringify({ log: msg, line: line, source: source })
+
+# The console reporter sends its response as alert.
+#
+page.onAlert = (msg) -> console.log msg
+
+# Initialize the page before the JavaScript is run.
+#
+page.onInitialized = ->
+  page.evaluate ->
+
+    # Jasmine Reporter that logs results through an alert.
+    #
+    class ConsoleReporter
+
+      reportSpecResults: (spec) ->
+        @report { spec: spec.description, failed: spec.results().failedCount, skiped: spec.results().skipped }
+
+      reportSuiteResults: (suite) ->
+        @report { suite: suite.getFullName(), failed: suite.results().failedCount, skiped: suite.results().skipped  }
+
+      reportRunnerResults: (runner) ->
+        @report { finish: runner.description, total: runner.results().totalCount, failed: runner.results().failedCount }
+
+      reportRunnerStarting: (runner) ->
+      reportSpecStarting: (spec) ->
+      log: (str) ->
+
+      report: (response) ->
+        alert JSON.stringify(response)
+
+    # Attach the console reporter when the document is ready.
+    #
+    window.onload = ->
+      jasmine.getEnv().addReporter(new ConsoleReporter())
 
 # Open web page and run the Jasmine test runner
 #
 page.open url, (status) ->
   if status isnt 'success'
-    console.log "JSON_RESULT: #{ JSON.stringify({ error: "Unable to access Jasmine specs at #{ url }" }) }"
+    console.log JSON.stringify({ error: "Unable to access Jasmine specs at #{ url }" })
     phantom.exit()
   else
-    waitFor specsReady, extractResult
+    waitFor specsReady, -> phantom.exit()
+
