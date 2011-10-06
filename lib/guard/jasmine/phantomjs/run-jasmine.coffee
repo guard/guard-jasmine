@@ -218,7 +218,7 @@ page.onInitialized = ->
 #
 page.open url, (status) ->
   if status isnt 'success'
-    console.log JSON.stringify({ 'error': "Unable to access Jasmine specs at #{ url }" })
+    console.log JSON.stringify({ error: "Unable to access Jasmine specs at #{ url }" })
     phantom.exit()
   else
     waitFor specsReady, -> phantom.exit()
