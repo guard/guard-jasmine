@@ -155,10 +155,10 @@ module Guard
 
       if !version
         notify_failure('PhantomJS binary missing', "PhantomJS binary doesn't exist at #{ bin }")
+      elsif version.to_version < '1.3.0'.to_version
+        notify_failure('Wrong PhantomJS version', "PhantomJS binary at #{ bin } must be at least version 1.3.0")
       else
-        if version.to_version < '1.3.0'.to_version
-          notify_failure('Wrong PhantomJS version', "PhantomJS binary at #{ bin } must be at least version 1.3.0")
-        end
+        true
       end
     end
 
@@ -173,6 +173,7 @@ module Guard
                        :title    => title,
                        :image    => :failed,
                        :priority => 2) if options[:notification]
+      false
     end
 
   end
