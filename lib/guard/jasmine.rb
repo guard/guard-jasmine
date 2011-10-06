@@ -2,6 +2,7 @@ require 'guard'
 require 'guard/guard'
 require 'guard/watcher'
 require 'net/http'
+require 'version'
 
 module Guard
 
@@ -57,8 +58,12 @@ module Guard
     # @raise [:task_has_failed] when run_on_change has failed
     #
     def start
-      if jasmine_runner_available?(options[:jasmine_url])
-        run_all if options[:all_on_start]
+      if phantomjs_bin_valid?(options[:phantomjs_bin])
+        if jasmine_runner_available?(options[:jasmine_url])
+          run_all if options[:all_on_start]
+        end
+      else
+        throw :task_has_failed
       end
     end
 
@@ -126,30 +131,48 @@ module Guard
           if response.code.to_i == 200
             Formatter.info("Jasmine test runner is available at #{ url }")
           else
-            notify_jasmine_runner_failure(url) if options[:notification]
+            notify_failure("Jasmine test runner isn't available", "Jasmine test runner isn't available at #{ url }")
           end
 
           response.code.to_i == 200
         end
 
       rescue Errno::ECONNREFUSED => e
-        notify_jasmine_runner_failure(url)
+        notify_failure("Jasmine test runner isn't available", "Jasmine test runner isn't available at #{ url }")
 
         false
       end
     end
 
-    # Notify that the Jasmine runner is not available.
+    # Verifies that the phantomjs bin is available and the
+    # right version is installed.
     #
-    # @param [String] url the url of the Jasmine runner
+    # @param [String] bin the location of the phantomjs bin
+    # @return [Boolean] when the runner is available
     #
-    def notify_jasmine_runner_failure(url)
-      message = "Jasmine test runner not available at #{ url }"
+    def phantomjs_bin_valid?(bin)
+      version = `#{ bin } --version`
+
+      if !version
+        notify_failure('PhantomJS binary missing', "PhantomJS binary doesn't exist at #{ bin }")
+      else
+        if version.to_version < '1.3.0'.to_version
+          notify_failure('Wrong PhantomJS version', "PhantomJS binary at #{ bin } must be at least version 1.3.0")
+        end
+      end
+    end
+
+    # Notify a failure.
+    #
+    # @param title [String] the failure title
+    # @param message [String] the failure message
+    #
+    def notify_failure(title, message)
       Formatter.error(message)
       Formatter.notify(message,
-                       :title    => 'Jasmine test runner not available',
+                       :title    => title,
                        :image    => :failed,
-                       :priority => 2)
+                       :priority => 2) if options[:notification]
     end
 
   end

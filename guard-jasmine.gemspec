@@ -17,12 +17,14 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'guard', '>= 0.8.3'
   s.add_dependency 'multi_json', '~> 1.0.3'
+  s.add_dependency 'version', '~> 1.0.0'
 
   s.add_development_dependency 'bundler',     '~> 1.0'
   s.add_development_dependency 'guard-rspec', '~> 0.4'
   s.add_development_dependency 'rspec',       '~> 2.6'
   s.add_development_dependency 'yard',        '~> 0.7.2'
   s.add_development_dependency 'kramdown',    '~> 0.13.3'
+  s.add_development_dependency 'pry',         '~> 0.9.6.2'
 
   s.files        = Dir.glob('{bin,lib}/**/*') + %w[LICENSE.MIT LICENSE.BSD README.md]
   s.executable   = 'guard-jasmine'

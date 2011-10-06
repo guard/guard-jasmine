@@ -121,97 +121,153 @@ describe Guard::Jasmine do
   end
 
   describe '.start' do
-    context 'with the Jasmine runner available' do
-      let(:http) { mock('http') }
-
+    context 'with a missing PhantomJS binary' do
       before do
-        http.stub_chain(:request, :code).and_return 200
-        Net::HTTP.stub(:start).and_yield http
+        guard.stub(:`).and_return nil
       end
 
-      it 'does show that the runner is available' do
-        formatter.should_receive(:info).with "Jasmine test runner is available at http://localhost:3000/jasmine"
-        guard.start
+      it 'shows a message that the binary is missing' do
+        formatter.should_receive(:error).with "PhantomJS binary doesn't exist at /usr/local/bin/phantomjs"
+        expect { guard.start }.to throw_symbol :task_has_failed
+      end
+
+      it 'throws :task_has_failed' do
+        expect { guard.start }.to throw_symbol :task_has_failed
+      end
+
+      context 'with enabled notifications' do
+        it 'shows a notification that the binary is missing' do
+          formatter.should_receive(:notify).with("PhantomJS binary doesn't exist at /usr/local/bin/phantomjs",
+                                                 :title    => 'PhantomJS binary missing',
+                                                 :image    => :failed,
+                                                 :priority => 2)
+          expect { guard.start }.to throw_symbol :task_has_failed
+        end
       end
     end
 
-    context 'without the Jasmine runner available' do
-      let(:http) { mock('http') }
-
-      context 'because the connection is refused' do
-        before do
-          Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED
-        end
-
-        it 'does show that the runner is not available' do
-          formatter.should_receive(:error).with "Jasmine test runner not available at http://localhost:3000/jasmine"
-          guard.start
-        end
+    context 'with a wrong PhantomJS version' do
+      before do
+        guard.stub(:`).and_return '1.2.0'
       end
 
-      context 'because the http status is not OK' do
+      it 'shows a message that the version is wrong' do
+        formatter.should_receive(:error).with "PhantomJS binary at /usr/local/bin/phantomjs must be at least version 1.3.0"
+        expect { guard.start }.to throw_symbol :task_has_failed
+      end
+
+      it 'throws :task_has_failed' do
+        expect { guard.start }.to throw_symbol :task_has_failed
+      end
+
+      context 'with enabled notifications' do
+        it 'shows a notification that the version is wrong' do
+          formatter.should_receive(:notify).with("PhantomJS binary at /usr/local/bin/phantomjs must be at least version 1.3.0",
+                                                 :title    => 'Wrong PhantomJS version',
+                                                 :image    => :failed,
+                                                 :priority => 2)
+          expect { guard.start }.to throw_symbol :task_has_failed
+        end
+      end
+    end
+
+    context 'with a valid PhantomJS binary' do
+      before do
+        guard.stub(:phantomjs_bin_valid?).and_return true
+      end
+
+      context 'with the Jasmine runner available' do
+        let(:http) { mock('http') }
+
         before do
-          http.stub_chain(:request, :code).and_return 404
+          http.stub_chain(:request, :code).and_return 200
           Net::HTTP.stub(:start).and_yield http
         end
 
-        it 'does show that the runner is not available' do
-          formatter.should_receive(:error).with "Jasmine test runner not available at http://localhost:3000/jasmine"
-          guard.start
-        end
-      end
-
-      context 'with notifications enabled' do
-        before do
-          Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED
-        end
-
-        it 'shows a failing system notification' do
-          formatter.should_receive(:notify).with("Jasmine test runner not available at http://localhost:3000/jasmine",
-                                                 :title    => 'Jasmine test runner not available',
-                                                 :image    => :failed,
-                                                 :priority => 2)
-          guard.start
-        end
-      end
-    end
-
-    context 'with :all_on_start set to true' do
-      let(:guard) { Guard::Jasmine.new(nil, { :all_on_start => true }) }
-
-      context 'with the Jasmine runner available' do
-        before do
-          guard.stub(:jasmine_runner_available?).and_return true
-        end
-
-        it 'triggers .run_all' do
-          guard.should_receive(:run_all)
+        it 'does show that the runner is available' do
+          formatter.should_receive(:info).with "Jasmine test runner is available at http://localhost:3000/jasmine"
           guard.start
         end
       end
 
       context 'without the Jasmine runner available' do
-        before do
-          guard.stub(:jasmine_runner_available?).and_return false
+        let(:http) { mock('http') }
+
+        context 'because the connection is refused' do
+          before do
+            Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED
+          end
+
+          it 'does show that the runner is not available' do
+            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:3000/jasmine"
+            guard.start
+          end
         end
 
-        it 'does not triggers .run_all' do
+        context 'because the http status is not OK' do
+          before do
+            http.stub_chain(:request, :code).and_return 404
+            Net::HTTP.stub(:start).and_yield http
+          end
+
+          it 'does show that the runner is not available' do
+            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:3000/jasmine"
+            guard.start
+          end
+        end
+
+        context 'with notifications enabled' do
+          before do
+            Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED
+          end
+
+          it 'shows a failing system notification' do
+            formatter.should_receive(:notify).with("Jasmine test runner isn't available at http://localhost:3000/jasmine",
+                                                   :title    => "Jasmine test runner isn't available",
+                                                   :image    => :failed,
+                                                   :priority => 2)
+            guard.start
+          end
+        end
+      end
+
+      context 'with :all_on_start set to true' do
+        let(:guard) { Guard::Jasmine.new(nil, { :all_on_start => true }) }
+
+        context 'with the Jasmine runner available' do
+          before do
+            guard.stub(:jasmine_runner_available?).and_return true
+          end
+
+          it 'triggers .run_all' do
+            guard.should_receive(:run_all)
+            guard.start
+          end
+        end
+
+        context 'without the Jasmine runner available' do
+          before do
+            guard.stub(:jasmine_runner_available?).and_return false
+          end
+
+          it 'does not triggers .run_all' do
+            guard.should_not_receive(:run_all)
+            guard.start
+          end
+        end
+      end
+
+      context 'with :all_on_start set to false' do
+        let(:guard) { Guard::Jasmine.new(nil, { :all_on_start => false }) }
+
+        before do
+          guard.stub(:jasmine_runner_available?).and_return true
+        end
+
+        it 'does not trigger .run_all' do
           guard.should_not_receive(:run_all)
           guard.start
         end
-      end
-    end
-
-    context 'with :all_on_start set to false' do
-      let(:guard) { Guard::Jasmine.new(nil, { :all_on_start => false }) }
-
-      before do
-        guard.stub(:jasmine_runner_available?).and_return true
-      end
-
-      it 'does not trigger .run_all' do
-        guard.should_not_receive(:run_all)
-        guard.start
       end
     end
   end
