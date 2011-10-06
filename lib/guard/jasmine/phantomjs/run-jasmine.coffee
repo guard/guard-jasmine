@@ -43,18 +43,17 @@ page = require('webpage').create()
 # from the specs into a JSON message.
 #
 page.onConsoleMessage = (msg, line, source) ->
-  console.log JSON.stringify({ log: msg, line: line, source: source })
-
-# The console reporter sends its response as alert.
-#
-page.onAlert = (msg) -> console.log msg
+  if /^ConsoleReporter: ([\s\S]*)$/.test(msg)
+    console.log RegExp.$1
+  else
+    console.log JSON.stringify({ log: msg, line: line, source: source })
 
 # Initialize the page before the JavaScript is run.
 #
 page.onInitialized = ->
   page.evaluate ->
 
-    # Jasmine Reporter that logs results through an alert.
+    # Jasmine Reporter that logs reporter steps.
     #
     class ConsoleReporter
 
@@ -72,7 +71,7 @@ page.onInitialized = ->
       log: (str) ->
 
       report: (response) ->
-        alert JSON.stringify(response)
+        console.log "ConsoleReporter: #{ JSON.stringify(response) }"
 
     # Attach the console reporter when the document is ready.
     #
