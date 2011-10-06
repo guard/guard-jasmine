@@ -26,7 +26,8 @@ module Guard
         :keep_failed      => true,
         :all_after_pass   => true,
         :max_error_notify => 3,
-        :specdoc          => :failure
+        :specdoc          => :failure,
+        :console          => :failure
     }
 
     # Initialize Guard::Jasmine.
@@ -42,6 +43,7 @@ module Guard
     # @option options [Boolean] :keep_failed keep failed suites and add them to the next run again
     # @option options [Boolean] :all_after_pass run all suites after a suite has passed again after failing
     # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never or :failure
+    # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
     #
     def initialize(watchers = [], options = { })
       options = DEFAULT_OPTIONS.merge(options)

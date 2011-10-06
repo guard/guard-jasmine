@@ -54,6 +54,10 @@ describe Guard::Jasmine do
         guard.options[:specdoc].should eql :failure
       end
 
+      it 'sets a default :console option' do
+        guard.options[:console].should eql :failure
+      end
+
       it 'sets last run failed to false' do
         guard.last_run_failed.should be_false
       end
@@ -72,7 +76,8 @@ describe Guard::Jasmine do
                                               :hide_success     => true,
                                               :keep_failed      => false,
                                               :all_after_pass   => false,
-                                              :specdoc          => :always }) }
+                                              :specdoc          => :always,
+                                              :console          => :always }) }
 
       it 'sets the :jasmine_url option' do
         guard.options[:jasmine_url].should eql 'http://192.168.1.5/jasmine'
@@ -108,6 +113,10 @@ describe Guard::Jasmine do
 
       it 'sets the :specdoc option' do
         guard.options[:specdoc].should eql :always
+      end
+
+      it 'sets the :console option' do
+        guard.options[:console].should eql :always
       end
     end
 
