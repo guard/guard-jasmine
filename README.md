@@ -154,12 +154,17 @@ be shown in the console:
     :specdoc => :always                           # Specdoc output options, either :always, :never or :failure
                                                   # default: :failure
 
+    :focus => false                               # Specdoc focus to hide successful specs when at least one spec fails.
+                                                  # default: true
+
     :console => :always                           # Console.log output options, either :always, :never or :failure
                                                   # default: :failure
 
 With the option set to `:always`, the specdoc is shown with and without errors in your spec, whereas on with the option
 set to `:never`, there is no output at all, instead just a summary of the spec run is shown. The default option
 `:failure` shows the specdoc when at least one spec failed.
+
+When `:focus` is enabled, only the failing specs are shown in the specdoc when at least one spec is failing.
 
 The `:console` options adds captured console logs from the spec runner and adds them to the specdoc. Please note
 that PhantomJS only support capturing of `console.log`, so the other log functions like `debug`, `warn`, `info` and

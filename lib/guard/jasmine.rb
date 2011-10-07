@@ -27,7 +27,8 @@ module Guard
         :all_after_pass   => true,
         :max_error_notify => 3,
         :specdoc          => :failure,
-        :console          => :failure
+        :console          => :failure,
+        :focus            => true
     }
 
     # Initialize Guard::Jasmine.
@@ -44,6 +45,7 @@ module Guard
     # @option options [Boolean] :all_after_pass run all suites after a suite has passed again after failing
     # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never or :failure
     # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
+    # @option options [Symbol] :focus options for focus on failures in the specdoc
     #
     def initialize(watchers = [], options = { })
       options = DEFAULT_OPTIONS.merge(options)

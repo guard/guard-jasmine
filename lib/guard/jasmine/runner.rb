@@ -195,59 +195,76 @@ module Guard
           plural   = failures == 1 ? '' : 's'
 
           message = "#{ specs } specs, #{ failures } failure#{ plural }\nin #{ time } seconds"
+          passed  = failures == 0
 
-          if failures != 0
-            show_specdoc(result, options) if options[:specdoc] != :never
+          if passed
+            report_specdoc(result, passed, options) if options[:specdoc] == :always
+            Formatter.success(message)
+            Formatter.notify(message, :title => 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
+          else
+            report_specdoc(result, passed, options) if options[:specdoc] != :never
             Formatter.error(message)
             notify_errors(result, options)
             Formatter.notify(message, :title => 'Jasmine suite failed', :image => :failed, :priority => 2) if options[:notification]
-          else
-            show_specdoc(result, options) if options[:specdoc] == :always
-            Formatter.success(message)
-            Formatter.notify(message, :title => 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
           end
         end
 
         # Specdoc like formatting of the result.
         #
         # @param [Hash] result the suite result
+        # @param [Boolean] passed status
         # @param [Hash] options the options
         # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
         #
-        def show_specdoc(result, options)
+        def report_specdoc(result, passed, options)
           result['suites'].each do |suite|
-            show_suite(suite, options)
+            report_specdoc_suite(suite, passed, options)
           end
         end
 
         # Show the suite result.
         #
         # @param [Hash] suite the suite
+        # @param [Boolean] passed status
         # @param [Hash] options the options
         # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
+        # @option options [Symbol] :focus options for focus on failures in the specdoc
         # @param [Number] level the indention level
         #
-        def show_suite(suite, options, level = 0)
-          Formatter.suite_name((' ' * level) + suite['description'])
+        def report_specdoc_suite(suite, passed, options, level = 0)
+          Formatter.suite_name((' ' * level) + suite['description']) if contains_failed_spec?(suite)
 
           suite['specs'].each do |spec|
             if spec['passed']
-              Formatter.success(indent("  ✔ #{ spec['description'] }", level)) unless options[:hide_success]
+              if passed || !options[:focus]
+                Formatter.success(indent("  ✔ #{ spec['description'] }", level))
+                report_specdoc_logs(spec, options, level)
+              end
             else
               Formatter.spec_failed(indent("  ✘ #{ spec['description'] }", level))
               spec['messages'].each do |message|
                 Formatter.spec_failed(indent("    ➤ #{ format_message(message, false) }", level))
               end
-            end
-
-            if options[:console] == :always || (options[:console] == :failure && !spec['passed'])
-              spec['logs'].each do |log|
-                Formatter.info(indent("    • #{ format_message(log, true) }", level))
-              end if spec['logs']
+              report_specdoc_logs(spec, options, level)
             end
           end
 
-          suite['suites'].each { |suite| show_suite(suite, options, level + 2) } if suite['suites']
+          suite['suites'].each { |suite| report_specdoc_suite(suite, passed, options, level + 2) } if suite['suites']
+        end
+
+        # Shows the logs for a given spec.
+        #
+        # @param [Hash] spec the spec result
+        # @param [Hash] options the options
+        # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
+        # @param [Number] level the indention level
+        #
+        def report_specdoc_logs(spec, options, level)
+          if spec['logs'] && (options[:console] == :always || (options[:console] == :failure && !spec['passed']))
+            spec['logs'].each do |log|
+              Formatter.info(indent("    • #{ format_message(log, true) }", level))
+            end
+          end
         end
 
         # Indent a message.
@@ -267,7 +284,7 @@ module Guard
         # @option options [Boolean] :notification show notifications
         #
         def notify_errors(result, options)
-          all_specs(result['suites']).each_with_index do |spec, index|
+          collect_specs(result['suites']).each_with_index do |spec, index|
             if !spec['passed'] && options[:max_error_notify] > index
               msg = spec['messages'].map { |message| format_message(message, true) }.join(', ')
               Formatter.notify("#{ spec['description'] }: #{ msg }",
@@ -278,15 +295,24 @@ module Guard
           end
         end
 
+        # Tests if the given suite has a failing spec underneath.
+        #
+        # @param [Hash] suite the suite result
+        # @return [Boolean] the search result
+        #
+        def contains_failed_spec?(suite)
+          collect_specs([suite]).any? { |spec| !spec['passed'] }
+        end
+
         # Get all specs from the suites and its nested suites.
         #
         # @param suites [Array<Hash>] the suites results
         # @param [Array<Hash>] all specs
         #
-        def all_specs(suites)
+        def collect_specs(suites)
           suites.inject([]) do |specs, suite|
             specs = (specs | suite['specs']) if suite['specs']
-            specs = (specs | all_specs(suite['suites'])) if suite['suites']
+            specs = (specs | collect_specs(suite['suites'])) if suite['suites']
             specs
           end
         end

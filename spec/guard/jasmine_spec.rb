@@ -58,6 +58,10 @@ describe Guard::Jasmine do
         guard.options[:console].should eql :failure
       end
 
+      it 'sets a default :focus option' do
+        guard.options[:focus].should eql true
+      end
+
       it 'sets last run failed to false' do
         guard.last_run_failed.should be_false
       end
@@ -77,6 +81,7 @@ describe Guard::Jasmine do
                                               :keep_failed      => false,
                                               :all_after_pass   => false,
                                               :specdoc          => :always,
+                                              :focus            => false,
                                               :console          => :always }) }
 
       it 'sets the :jasmine_url option' do
@@ -117,6 +122,10 @@ describe Guard::Jasmine do
 
       it 'sets the :console option' do
         guard.options[:console].should eql :always
+      end
+
+      it 'sets the :focus option' do
+        guard.options[:focus].should eql false
       end
     end
 
