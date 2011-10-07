@@ -232,7 +232,7 @@ module Guard
         # @param [Number] level the indention level
         #
         def report_specdoc_suite(suite, passed, options, level = 0)
-          Formatter.suite_name((' ' * level) + suite['description']) if contains_failed_spec?(suite)
+          Formatter.suite_name((' ' * level) + suite['description']) if passed || options[:focus] && contains_failed_spec?(suite)
 
           suite['specs'].each do |spec|
             if spec['passed']
