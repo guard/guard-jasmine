@@ -154,9 +154,28 @@ be shown in the console:
     :specdoc => :always                           # Specdoc output options, either :always, :never or :failure
                                                   # default: :failure
 
+    :console => :always                           # Console.log output options, either :always, :never or :failure
+                                                  # default: :failure
+
 With the option set to `:always`, the specdoc is shown with and without errors in your spec, whereas on with the option
 set to `:never`, there is no output at all, instead just a summary of the spec run is shown. The default option
 `:failure` shows the specdoc when at least one spec failed.
+
+The `:console` options adds captured console logs from the spec runner and adds them to the specdoc. Please note
+that PhantomJS only support capturing of `console.log`, so the other log functions like `debug`, `warn`, `info` and
+`error` are missing. Please vote on [Issue 232](http://code.google.com/p/phantomjs/issues/detail?id=232) if you like
+to see support for more console methods coming to PhantomJS.
+
+Another restriction on console logging is that currently only the first log parameter is passed. So instead of writing
+
+    console.log('Debug of %o with %s', object, string)
+
+your should write
+
+    console.log('Debug of ' + object.toString() + ' width ' + string)
+
+You can also give your vote on [Issue 36](http://code.google.com/p/phantomjs/issues/detail?id=36) to see support for
+multiple console arguments.
 
 ### System notifications options
 
