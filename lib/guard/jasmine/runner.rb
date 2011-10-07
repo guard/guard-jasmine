@@ -22,6 +22,7 @@ module Guard
         # @option options [Boolean] :hide_success hide success message notification
         # @option options [Integer] :max_error_notify maximum error notifications to show
         # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never
+        # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
         # @return [Boolean, Array<String>] the status of the run and the failed files
         #
         def run(paths, options = { })
@@ -144,25 +145,26 @@ module Guard
         #
         def evaluate_response(output, file, options)
           json = output.read
+          result = {}
 
           begin
             result = MultiJson.decode(json)
-            output.close
-
-            if result['error']
-              notify_runtime_error(result, options)
-            else
-              result['file'] = file
-              notify_spec_result(result, options)
-            end
-
-            result
-
           rescue Exception => e
             Formatter.error("Cannot decode JSON from PhantomJS runner: #{ e.message }")
             Formatter.error('Please report an issue at: https://github.com/netzpirat/guard-jasmine/issues')
             Formatter.error(json)
+          ensure
+            output.close
           end
+
+          if result['error']
+            notify_runtime_error(result, options)
+          else
+            result['file'] = file
+            notify_spec_result(result, options)
+          end
+
+          result
         end
 
         # Notification when a system error happens that
@@ -195,12 +197,12 @@ module Guard
           message = "#{ specs } specs, #{ failures } failure#{ plural }\nin #{ time } seconds"
 
           if failures != 0
-            show_specdoc(result) if options[:specdoc] != :never
+            show_specdoc(result, options) if options[:specdoc] != :never
             Formatter.error(message)
             notify_errors(result, options)
             Formatter.notify(message, :title => 'Jasmine suite failed', :image => :failed, :priority => 2) if options[:notification]
           else
-            show_specdoc(result) if options[:specdoc] == :always
+            show_specdoc(result, options) if options[:specdoc] == :always
             Formatter.success(message)
             Formatter.notify(message, :title => 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
           end
@@ -209,42 +211,87 @@ module Guard
         # Specdoc like formatting of the result.
         #
         # @param [Hash] result the suite result
+        # @param [Hash] options the options
+        # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
         #
-        def show_specdoc(result)
+        def show_specdoc(result, options)
           result['suites'].each do |suite|
-            Formatter.suite_name("➥ #{ suite['description'] }")
-
-            suite['specs'].each do |spec|
-              if spec['passed']
-                Formatter.success(" ✔ #{ spec['description'] }")
-              else
-                Formatter.spec_failed(" ✘ #{ spec['description'] }")
-                Formatter.spec_failed("   ➤ #{ format_error_message(spec['error_message'], false) }")
-              end
-            end
+            show_suite(suite, options)
           end
         end
 
-        # Specdoc like formatting of the result.
+        # Show the suite result.
+        #
+        # @param [Hash] suite the suite
+        # @param [Hash] options the options
+        # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
+        # @param [Number] level the indention level
+        #
+        def show_suite(suite, options, level = 0)
+          Formatter.suite_name((' ' * level) + suite['description'])
+
+          suite['specs'].each do |spec|
+            if spec['passed']
+              Formatter.success(indent("  ✔ #{ spec['description'] }", level)) unless options[:hide_success]
+            else
+              Formatter.spec_failed(indent("  ✘ #{ spec['description'] }", level))
+              spec['messages'].each do |message|
+                Formatter.spec_failed(indent("    ➤ #{ format_message(message, false) }", level))
+              end
+            end
+
+            if options[:console] == :always || (options[:console] == :failure && !spec['passed'])
+              spec['logs'].each do |log|
+                Formatter.info(indent("    • #{ format_message(log, true) }", level))
+              end if spec['logs']
+            end
+          end
+
+          suite['suites'].each { |suite| show_suite(suite, options, level + 2) } if suite['suites']
+        end
+
+        # Indent a message.
+        #
+        # @param [String] message the message
+        # @param [Number] level the indention level
+        #
+        def indent(message, level)
+          (' ' * level) + message
+        end
+
+        # Show system notifications about the occurred errors.
         #
         # @param [Hash] result the suite result
+        # @param [Hash] options the options
         # @option options [Integer] :max_error_notify maximum error notifications to show
-        # @option options [Boolean] :hide_success hide success message notification
+        # @option options [Boolean] :notification show notifications
         #
         def notify_errors(result, options)
-          result['suites'].each do |suite|
-            suite['specs'].each_with_index do |spec, index|
-              if !spec['passed'] && options[:max_error_notify] > index
-                Formatter.notify("#{ spec['description'] }: #{ format_error_message(spec['error_message'], true) }",
-                                 :title    => 'Jasmine spec failed',
-                                 :image    => :failed,
-                                 :priority => 2) if options[:notification]
-              end
+          all_specs(result['suites']).each_with_index do |spec, index|
+            if !spec['passed'] && options[:max_error_notify] > index
+              msg = spec['messages'].map { |message| format_message(message, true) }.join(', ')
+              Formatter.notify("#{ spec['description'] }: #{ msg }",
+                               :title    => 'Jasmine spec failed',
+                               :image    => :failed,
+                               :priority => 2) if options[:notification]
             end
           end
         end
 
-        # Formats the error message.
+        # Get all specs from the suites and its nested suites.
+        #
+        # @param suites [Array<Hash>] the suites results
+        # @param [Array<Hash>] all specs
+        #
+        def all_specs(suites)
+          suites.inject([]) do |specs, suite|
+            specs = (specs | suite['specs']) if suite['specs']
+            specs = (specs | all_specs(suite['suites'])) if suite['suites']
+            specs
+          end
+        end
+
+        # Formats a message.
         #
         # Known message styles:
         #
@@ -254,7 +301,7 @@ module Guard
         # @param [Boolean] short show a short version of the message
         # @return [String] the cleaned error message
         #
-        def format_error_message(message, short)
+        def format_message(message, short)
           if message =~ /(.*?) in http.+?assets\/(.*)\?body=\d+\s\((line\s\d+)/
             short ? $1 : "#{ $1 } in #{ $2 } on #{ $3 }"
           else
