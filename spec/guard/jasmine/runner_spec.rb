@@ -33,7 +33,7 @@ describe Guard::Jasmine::Runner do
             {
               "description": "Failure spec tests something",
               "messages": [
-                "ReferenceError: Can't find variable: a in http://localhost:3000/assets/backbone/models/model_spec.js?body=1 (line 27)"
+                "ReferenceError: Can't find variable: a in http://localhost:3001/assets/backbone/models/model_spec.js?body=1 (line 27)"
               ],
               "logs": [
                 "console.log message"
@@ -48,7 +48,7 @@ describe Guard::Jasmine::Runner do
                 {
                   "description": "Failure spec 2 tests something",
                   "messages": [
-                    "ReferenceError: Can't find variable: b in http://localhost:3000/assets/backbone/models/model_spec.js?body=1 (line 27)"
+                    "ReferenceError: Can't find variable: b in http://localhost:3001/assets/backbone/models/model_spec.js?body=1 (line 27)"
                   ],
                   "passed": false
                 },
@@ -139,20 +139,20 @@ describe Guard::Jasmine::Runner do
 
     context 'when passed the spec directory' do
       it 'requests all jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine")
+        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3001/jasmine")
         runner.run(['spec/javascripts'], defaults.merge({ :notification => false }))
       end
 
       it 'shows a start information in the console' do
         formatter.should_receive(:info).with('Run all Jasmine suites', { :reset => true })
-        formatter.should_receive(:info).with('Run Jasmine suite at http://localhost:3000/jasmine')
+        formatter.should_receive(:info).with('Run Jasmine suite at http://localhost:3001/jasmine')
         runner.run(['spec/javascripts'], defaults)
       end
     end
 
     context 'for an erroneous Jasmine runner' do
       it 'requests the jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=ErrorTest")
+        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3001/jasmine?spec=ErrorTest")
         runner.run(['spec/javascripts/a.js.coffee'], defaults)
       end
 
@@ -197,7 +197,7 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
-        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=FailureTest")
+        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3001/jasmine?spec=FailureTest")
         runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
       end
 
@@ -213,7 +213,7 @@ describe Guard::Jasmine::Runner do
               'Run Jasmine suite spec/javascripts/x/b.js.coffee', { :reset => true }
           )
           formatter.should_receive(:info).with(
-              'Run Jasmine suite at http://localhost:3000/jasmine?spec=FailureTest'
+              'Run Jasmine suite at http://localhost:3001/jasmine?spec=FailureTest'
           )
           formatter.should_not_receive(:suite_name)
           formatter.should_not_receive(:spec_failed)
@@ -381,7 +381,7 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
-        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3000/jasmine?spec=SuccessTest")
+        IO.should_receive(:popen).with("#{ phantomjs_command } http://localhost:3001/jasmine?spec=SuccessTest")
 
         runner.run(['spec/javascripts/t.js'], defaults)
       end
@@ -398,7 +398,7 @@ describe Guard::Jasmine::Runner do
               'Run Jasmine suite spec/javascripts/x/t.js', { :reset => true }
           )
           formatter.should_receive(:info).with(
-              'Run Jasmine suite at http://localhost:3000/jasmine?spec=SuccessTest'
+              'Run Jasmine suite at http://localhost:3001/jasmine?spec=SuccessTest'
           )
           formatter.should_receive(:suite_name).with(
               'Success suite'
@@ -427,7 +427,7 @@ describe Guard::Jasmine::Runner do
                 'Run Jasmine suite spec/javascripts/x/b.js.coffee', { :reset => true }
             )
             formatter.should_receive(:info).with(
-                'Run Jasmine suite at http://localhost:3000/jasmine?spec=SuccessTest'
+                'Run Jasmine suite at http://localhost:3001/jasmine?spec=SuccessTest'
             )
             formatter.should_receive(:info).with(
                 "    • I can haz console.logs"
@@ -452,7 +452,7 @@ describe Guard::Jasmine::Runner do
               'Run Jasmine suite spec/javascripts/x/t.js', { :reset => true }
           )
           formatter.should_receive(:info).with(
-              'Run Jasmine suite at http://localhost:3000/jasmine?spec=SuccessTest'
+              'Run Jasmine suite at http://localhost:3001/jasmine?spec=SuccessTest'
           )
           formatter.should_not_receive(:suite_name)
           formatter.should_receive(:success).with(
