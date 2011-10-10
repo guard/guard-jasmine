@@ -124,7 +124,7 @@ defining the Guard in your `Guardfile`:
 The general options configures the environment that is needed to run Guard::Jasmine:
 
     :jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
-                                                  # default: http://localhost:3001/jasmine
+                                                  # default: http://127.0.0.1/jasmine
 
     :phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
                                                   # default: '/usr/local/bin/phantomjs'
@@ -297,7 +297,7 @@ and you want to see the output of the PhantomJS script.
 The only argument that the script takes is the URL to the Jasmine runner, which defaults to
 `http://127.0.0.1:3000/Jasmine`. So you can for example just run a subset of the specs by changing the URL:
 
-    $ guard-jasmine http://127.0.0.1:3001/Jasmine?spec=YourSpec
+    $ guard-jasmine http://127.0.0.1:3000/Jasmine?spec=YourSpec
 
 ## Acknowledgment
 

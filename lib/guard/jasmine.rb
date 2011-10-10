@@ -18,7 +18,7 @@ module Guard
     attr_accessor :last_run_failed, :last_failed_paths
 
     DEFAULT_OPTIONS = {
-        :jasmine_url      => 'http://localhost:3001/jasmine',
+        :jasmine_url      => 'http://localhost:3000/jasmine',
         :phantomjs_bin    => '/usr/local/bin/phantomjs',
         :notification     => true,
         :hide_success     => false,

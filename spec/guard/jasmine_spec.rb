@@ -19,7 +19,7 @@ describe Guard::Jasmine do
   describe '#initialize' do
     context 'when no options are provided' do
       it 'sets a default :jasmine_url option' do
-        guard.options[:jasmine_url].should eql 'http://localhost:3001/jasmine'
+        guard.options[:jasmine_url].should eql 'http://localhost:3000/jasmine'
       end
 
       it 'sets a default :phantomjs_bin option' do
@@ -203,7 +203,7 @@ describe Guard::Jasmine do
         end
 
         it 'does show that the runner is available' do
-          formatter.should_receive(:info).with "Jasmine test runner is available at http://localhost:3001/jasmine"
+          formatter.should_receive(:info).with "Jasmine test runner is available at http://localhost:3000/jasmine"
           guard.start
         end
       end
@@ -217,7 +217,7 @@ describe Guard::Jasmine do
           end
 
           it 'does show that the runner is not available' do
-            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:3001/jasmine"
+            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:3000/jasmine"
             guard.start
           end
         end
@@ -229,7 +229,7 @@ describe Guard::Jasmine do
           end
 
           it 'does show that the runner is not available' do
-            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:3001/jasmine"
+            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:3000/jasmine"
             guard.start
           end
         end
@@ -240,7 +240,7 @@ describe Guard::Jasmine do
           end
 
           it 'shows a failing system notification' do
-            formatter.should_receive(:notify).with("Jasmine test runner isn't available at http://localhost:3001/jasmine",
+            formatter.should_receive(:notify).with("Jasmine test runner isn't available at http://localhost:3000/jasmine",
                                                    :title    => "Jasmine test runner isn't available",
                                                    :image    => :failed,
                                                    :priority => 2)
