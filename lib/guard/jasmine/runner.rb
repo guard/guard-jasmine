@@ -145,26 +145,26 @@ module Guard
         #
         def evaluate_response(output, file, options)
           json = output.read
-          result = {}
 
           begin
             result = MultiJson.decode(json)
+
+            if result['error']
+              notify_runtime_error(result, options)
+            else
+              result['file'] = file
+              notify_spec_result(result, options)
+            end
+
+            result
+
           rescue Exception => e
             Formatter.error("Cannot decode JSON from PhantomJS runner: #{ e.message }")
             Formatter.error('Please report an issue at: https://github.com/netzpirat/guard-jasmine/issues')
-            Formatter.error(json)
+            Formatter.error("JSON response: #{ json }")
           ensure
             output.close
           end
-
-          if result['error']
-            notify_runtime_error(result, options)
-          else
-            result['file'] = file
-            notify_spec_result(result, options)
-          end
-
-          result
         end
 
         # Notification when a system error happens that
