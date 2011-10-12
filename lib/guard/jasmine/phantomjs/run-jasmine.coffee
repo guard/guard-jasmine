@@ -39,7 +39,7 @@ page = require('webpage').create()
 
 # Used to collect log messages for later assignment to the spec
 #
-currentSpecId = 0
+currentSpecId = -1
 logs = {}
 
 # Add logs to the given suite
@@ -75,7 +75,7 @@ page.onConsoleMessage = (msg, line, source) ->
     logs[currentSpecId] = []
 
   else
-    logs[currentSpecId].push "#{ msg } in #{ source } (line #{ line })"
+    logs[currentSpecId].push("#{ msg } in #{ source } (line #{ line })") if currentSpecId isnt -1
 
 # Initialize the page before the JavaScript is run.
 #
