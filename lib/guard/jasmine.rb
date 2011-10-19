@@ -20,6 +20,7 @@ module Guard
     DEFAULT_OPTIONS = {
         :jasmine_url      => 'http://localhost:3000/jasmine',
         :phantomjs_bin    => '/usr/local/bin/phantomjs',
+        :timeout          => 10000,
         :notification     => true,
         :hide_success     => false,
         :all_on_start     => true,
@@ -37,6 +38,7 @@ module Guard
     # @param [Hash] options the options for the Guard
     # @option options [String] :jasmine_url the url of the Jasmine test runner
     # @option options [String] :phantomjs_bin the location of the PhantomJS binary
+    # @option options [Integer] :timeout the maximum time in milliseconds to wait for the spec runner to finish
     # @option options [Boolean] :notification show notifications
     # @option options [Boolean] :hide_success hide success message notification
     # @option options [Integer] :max_error_notify maximum error notifications to show

@@ -26,6 +26,10 @@ describe Guard::Jasmine do
         guard.options[:phantomjs_bin].should eql '/usr/local/bin/phantomjs'
       end
 
+      it 'sets a default :timeout option' do
+        guard.options[:timeout].should eql 10000
+      end
+
       it 'sets a default :all_on_start option' do
         guard.options[:all_on_start].should be_true
       end
@@ -74,6 +78,7 @@ describe Guard::Jasmine do
     context 'with other options than the default ones' do
       let(:guard) { Guard::Jasmine.new(nil, { :jasmine_url      => 'http://192.168.1.5/jasmine',
                                               :phantomjs_bin    => '~/bin/phantomjs',
+                                              :timeout          => 20000,
                                               :all_on_start     => false,
                                               :notification     => false,
                                               :max_error_notify => 5,
@@ -90,6 +95,10 @@ describe Guard::Jasmine do
 
       it 'sets the :phantomjs_bin option' do
         guard.options[:phantomjs_bin].should eql '~/bin/phantomjs'
+      end
+
+      it 'sets the :phantomjs_bin option' do
+        guard.options[:timeout].should eql 20000
       end
 
       it 'sets the :all_on_start option' do

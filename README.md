@@ -129,6 +129,9 @@ The general options configures the environment that is needed to run Guard::Jasm
     :phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
                                                   # default: '/usr/local/bin/phantomjs'
 
+    :timeout => 20000                             # The time in ms to wait for the spec runner to finish.
+                                                  # default: 10000
+
 ### Spec runner options
 
 The spec runner options configures the behavior driven development (or BDD) cycle:
