@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-url = ARGV[0] || 'http://127.0.0.1:3000/jasmine'
 script = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'guard', 'jasmine', 'phantomjs', 'run-jasmine.coffee'))
 
-puts "Run Jasmine at #{ url }"
-puts `phantomjs #{ script } #{ url }`
+puts `phantomjs #{ script } #{ ARGV[0] } #{ ARGV[1] }`

@@ -3,35 +3,39 @@
 
 # Wait until the test condition is true or a timeout occurs.
 #
-# @param [Function] condition the condition that evaluates to a boolean
+# @param [Function] test the test that returns true if condition is met
 # @param [Function] ready the action when the condition is fulfilled
-# @param [Number] timeout the max amount of time to wait
+# @param [Number] timeout the max amount of time to wait in milliseconds
 #
-waitFor = (condition, ready, timeout = 5000) ->
-  start = new Date().getTime()
-  wait = ->
-    if new Date().getTime() - start > timeout
-      console.log JSON.stringify({ error: 'Timeout requesting Jasmine test runner!' })
-      phantom.exit(1)
-    else
-      if condition()
-        ready()
-        clearInterval interval
+waitFor = (test, ready, timeout = 5000) ->
+    start = new Date().getTime()
+    condition = false
 
-  interval = setInterval wait, 100
+    wait = ->
+      if (new Date().getTime() - start < timeout) and not condition
+        condition = test()
+      else
+        if not condition
+          console.log JSON.stringify({ error: 'Timeout requesting Jasmine test runner!' })
+          phantom.exit(1)
+        else
+          ready()
+          clearInterval interval
+
+    interval = setInterval wait, 250
 
 # Test if the specs have finished.
 #
 specsReady = ->
   page.evaluate -> if document.body.querySelector('.finished-at') then true else false
 
-# Check arguments of the script.
 #
-if phantom.args.length isnt 1
-  console.log JSON.stringify({ error: 'Wrong usage of PhantomJS script!' })
-  phantom.exit()
-else
-  url = phantom.args[0]
+# SCRIPT START
+#
+
+# Set default values
+url = phantom.args[0] || 'http://127.0.0.1:3000/jasmine'
+timeout = parseInt(phantom.args[1] || 5000)
 
 # Create the web page.
 #
@@ -221,5 +225,5 @@ page.open url, (status) ->
     console.log JSON.stringify({ error: "Unable to access Jasmine specs at #{ url }" })
     phantom.exit()
   else
-    waitFor specsReady, -> phantom.exit()
-
+    done = -> phantom.exit()
+    waitFor specsReady, done, timeout
