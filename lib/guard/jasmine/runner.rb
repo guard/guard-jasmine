@@ -83,7 +83,7 @@ module Guard
         def run_jasmine_spec(file, options)
           suite = jasmine_suite(file, options)
           Formatter.info("Run Jasmine suite at #{ suite }")
-          IO.popen("#{ phantomjs_command(options) } #{ suite } #{ options[:timeout] }")
+          IO.popen("#{ phantomjs_command(options) } \"#{ suite }\" #{ options[:timeout] }")
         end
 
         # Get the PhantomJS binary and script to execute.
