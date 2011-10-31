@@ -41,21 +41,18 @@ various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 
 ### Guard and Guard::Jasmine
 
-Please be sure to have [Guard][] installed.
+The simplest way to install Guard is to use [Bundler](http://gembundler.com/).
+Please make sure to have [Guard][] installed.
 
-Install the gem:
-
-```bash
-$ gem install guard-jasmine
-```
-
-Add it to your `Gemfile`, preferably inside the development group:
+Add Guard::Jasmine to your `Gemfile`:
 
 ```ruby
-gem 'guard-jasmine'
+group :development do
+  gem 'guard-jasmine'
+end
 ```
 
-Add guard definition to your `Guardfile` by running this command:
+Add the default Guard::Jasmine template to your `Guardfile` by running:
 
 ```bash
 $ guard init jasmine
@@ -362,25 +359,40 @@ continuous testing support.
 * [Jezebel][] a Node.js REPL and continuous test runner for [Jessie][], a Node runner for Jasmine, but has no full
 featured browser environment.
 
+## Issues
+
+You can report issues and feature requests to [GitHub Issues](https://github.com/netzpirat/guard-jasmine/issues). Try to figure out
+where the issue belongs to: Is it an issue with Guard itself or with Guard::Jasmine? Please don't
+ask question in the issue tracker, instead join us in our [Google group](http://groups.google.com/group/guard-dev) or on
+`#guard` (irc.freenode.net).
+
+When you file an issue, please try to follow to these simple rules if applicable:
+
+* Make sure you run Guard with `bundle exec` first.
+* Add debug information to the issue by running Guard with the `--debug` option.
+* Add your `Guardfile` and `Gemfile` to the issue.
+* Make sure that the issue is reproducible with your description.
+
 ## Development
 
 - Documentation hosted at [RubyDoc](http://rubydoc.info/github/guard/guard-jasmine/master/frames).
 - Source hosted at [GitHub](https://github.com/netzpirat/guard-jasmine).
-- Report issues and feature requests to [GitHub Issues](https://github.com/netzpirat/guard-jasmine/issues).
 
-Pull requests are very welcome! Please try to follow these simple "rules", though:
+Pull requests are very welcome! Please try to follow these simple rules if applicable:
 
-- Please create a topic branch for every separate change you make.
-- Make sure your patches are well tested.
-- Update the README (if applicable).
-- Please **do not change** the version number.
+* Please create a topic branch for every separate change you make.
+* Make sure your patches are well tested.
+* Update the [Yard](http://yardoc.org/) documentation.
+* Update the README.
+* Update the CHANGELOG for noteworthy changes.
+* Please **do not change** the version number.
 
-For questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
-(irc.freenode.net).
+For questions please join us in our [Google group](http://groups.google.com/group/guard-dev) or on
+`#guard` (irc.freenode.net).
 
 ### The guard-jasmine-debug executable
 
-This Guard comes with a small executable `guard-jasmine` that can be used to run the Jasmine test runner on PhantomJS
+This Guard comes with a small executable `guard-jasmine-debug` that can be used to run the Jasmine test runner on PhantomJS
 and see the JSON result that gets evaluated by Guard::Jasmine. This comes handy when there is an issue with your specs
 and you want to see the output of the PhantomJS script.
 
