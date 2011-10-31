@@ -18,6 +18,8 @@ various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 * Runs the standard Jasmine test runner, so you can use [Jasminerice][] for integrating [Jasmine][] into the
 [Rails 3.1 asset pipeline][] and write your specs in [CoffeeScript][].
 
+* Command line helper for CI server integration.
+
 * Runs on Mac OS X, Linux and Windows.
 
 ## How it works
@@ -265,6 +267,43 @@ specs. Just add something like this *before* Guard::Jasmine:
     guard 'coffeescript', :input => 'app/coffeescripts',  :output => 'public/javascripts'
     guard 'coffeescript', :input => 'spec/coffeescripts', :output => 'spec/javascripts'
 
+## Guard::Jasmine for your CI server
+
+Guard::Jasmine includes a little command line utility to run your specs once and output the specdoc to the console.
+
+    $ guard-jasmine
+
+You can get help on the available options with the `help` task:
+
+    $ guard-jasmine help start
+      Usage:
+        guard-jasmine start
+
+      Options:
+        -u, [--url=URL]          # The url of the Jasmine test runner
+                                 # Default: http://127.0.0.1:3000/jasmine
+        -b, [--bin=BIN]          # The location of the PhantomJS binary
+                                 # Default: /usr/local/bin/phantomjs
+        -t, [--timeout=N]        # The maximum time in milliseconds to wait for the spec runner to finish
+                                 # Default: 10000
+        -c, [--console=CONSOLE]  # Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`
+                                 # Default: failure
+
+By default all specs are run, but you can supply multiple paths to your specs to run only a subset:
+
+    $ guard-jasmine spec/javascripts/a_spec.js.coffee spec/javascripts/another_spec.js.coffee
+
+### Travis CI integration
+
+With the given `guard-jasmine` script you're able to configure [Travis CI](http://travis-ci.org/) to run Guard::Jasmine.
+Simply use the `script` setting in your `.travis.yml`:
+
+    script: 'bundle exec guard-jasmine'
+
+You can also run your Guard::Jasmine specs after your specs that are ran with `rake` by using `after_script`:
+
+    after_script: 'bundle exec guard-jasmine'
+
 ## Alternatives
 
 * [guard-jasmine-headless-webkit][], a Guard for [jasmine-headless-webkit][], but doesn't run on JRuby.
@@ -289,18 +328,18 @@ Pull requests are very welcome! Please try to follow these simple "rules", thoug
 For questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
 (irc.freenode.net).
 
-### The guard-jasmine executable
+### The guard-jasmine-debug executable
 
 This Guard comes with a small executable `guard-jasmine` that can be used to run the Jasmine test runner on PhantomJS
 and see the JSON result that gets evaluated by Guard::Jasmine. This comes handy when there is an issue with your specs
 and you want to see the output of the PhantomJS script.
 
-    $ guard-jasmine
+    $ guard-jasmine-debug
 
 The only argument that the script takes is the URL to the Jasmine runner, which defaults to
 `http://127.0.0.1:3000/Jasmine`. So you can for example just run a subset of the specs by changing the URL:
 
-    $ guard-jasmine http://127.0.0.1:3000/Jasmine?spec=YourSpec
+    $ guard-jasmine-debug http://127.0.0.1:3000/Jasmine?spec=YourSpec
 
 ## Acknowledgment
 

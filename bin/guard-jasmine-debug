@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+script = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'guard', 'jasmine', 'phantomjs', 'run-jasmine.coffee'))
+puts `phantomjs #{ script } #{ ARGV[0] } #{ ARGV[1] }`
