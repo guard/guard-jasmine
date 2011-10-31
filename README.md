@@ -45,15 +45,21 @@ Please be sure to have [Guard][] installed.
 
 Install the gem:
 
-    $ gem install guard-jasmine
+```bash
+$ gem install guard-jasmine
+```
 
 Add it to your `Gemfile`, preferably inside the development group:
 
-    gem 'guard-jasmine'
+```ruby
+gem 'guard-jasmine'
+```
 
 Add guard definition to your `Guardfile` by running this command:
 
-    $ guard init jasmine
+```bash
+$ guard init jasmine
+```
 
 ### Jasminerice
 
@@ -64,20 +70,26 @@ Please read the detailed installation and configuration instructions at [Jasmine
 
 In short, you add it to your `Gemfile`:
 
-    group :development, :test do
-      gem 'jasminerice'
-    end
+```ruby
+group :development, :test do
+  gem 'jasminerice'
+end
+```
 
 and add a route for the Jasmine Test Runner to `config/routes.rb`:
 
-    if ["development", "test"].include? Rails.env
-      mount Jasminerice::Engine => "/jasmine"
-    end
+```ruby
+if ["development", "test"].include? Rails.env
+  mount Jasminerice::Engine => "/jasmine"
+end
+```
 
 Next you create the directory `spec/javascripts` where your CoffeeScript tests go into. You define the Rails 3.1
 asset pipeline manifest in `spec/javascripts/spec.js.coffee`:
 
-    #=require_tree ./
+```coffeescript
+#=require_tree ./
+```
 
 ### PhantomJS
 
@@ -86,13 +98,17 @@ You need the PhantomJS browser installed on your system. You can download binari
 
 Alternatively you can install [Homebrew][] on Mac OS X and install it with:
 
-    $ brew install phantomjs
+```bash
+$ brew install phantomjs
+```
 
 If you are using Ubuntu 10.10, you can install it with apt:
 
-    $ sudo add-apt-repository ppa:jerome-etienne/neoip
-    $ sudo apt-get update
-    $ sudo apt-get install phantomjs
+```bash
+$ sudo add-apt-repository ppa:jerome-etienne/neoip
+$ sudo apt-get update
+$ sudo apt-get install phantomjs
+```
 
 You can also build it from source for several other operating systems, please consult the
 [PhantomJS build instructions][].
@@ -106,46 +122,54 @@ Please read the [Guard usage documentation](https://github.com/guard/guard#readm
 Guard::Jasmine can be adapted to all kind of projects. Please read the
 [Guard documentation](https://github.com/guard/guard#readme) for more information about the Guardfile DSL.
 
-    guard 'jasmine' do
-      watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
-      watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
-      watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
-    end
+```ruby
+guard 'jasmine' do
+  watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+  watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+  watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
+end
+```
 
 ## Options
 
 There are many options that can customize Guard::Jasmine to your needs. Options are simply supplied as hash when
 defining the Guard in your `Guardfile`:
 
-    guard 'jasmine', :all_on_start => false, :specdoc => :always do
-      ...
-    end
+```ruby
+guard 'jasmine', :all_on_start => false, :specdoc => :always do
+  ...
+end
+```
 
 ### General options
 
 The general options configures the environment that is needed to run Guard::Jasmine:
 
-    :jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
-                                                  # default: http://127.0.0.1/jasmine
+```ruby
+:jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
+                                              # default: http://127.0.0.1/jasmine
 
-    :phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
-                                                  # default: '/usr/local/bin/phantomjs'
+:phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
+                                              # default: '/usr/local/bin/phantomjs'
 
-    :timeout => 20000                             # The time in ms to wait for the spec runner to finish.
-                                                  # default: 10000
+:timeout => 20000                             # The time in ms to wait for the spec runner to finish.
+                                              # default: 10000
+```
 
 ### Spec runner options
 
 The spec runner options configures the behavior driven development (or BDD) cycle:
 
-    :all_on_start => false                        # Run all suites on start.
-                                                  # default: true
+```ruby
+:all_on_start => false                        # Run all suites on start.
+                                              # default: true
 
-    :keep_failed => false                         # Keep failed suites and add them to the next run again.
-                                                  # default: true
+:keep_failed => false                         # Keep failed suites and add them to the next run again.
+                                              # default: true
 
-    :all_after_pass => false                      # Run all suites after a suite has passed again after failing.
-                                                  # default: true
+:all_after_pass => false                      # Run all suites after a suite has passed again after failing.
+                                              # default: true
+```
 
 The `:keep_failed` failed option remembers failed suites and not failed specs. The reason for this decision is to
 avoid additional round trip time to request the Jasmine test runner for each single spec, which is mostly more expensive
@@ -156,14 +180,16 @@ than running a whole suite.
 Guard::Jasmine can generate an RSpec like specdoc in the console after running the specs and you can set when it will
 be shown in the console:
 
-    :specdoc => :always                           # Specdoc output options, either :always, :never or :failure
-                                                  # default: :failure
+```ruby
+:specdoc => :always                           # Specdoc output options, either :always, :never or :failure
+                                              # default: :failure
 
-    :focus => false                               # Specdoc focus to hide successful specs when at least one spec fails.
-                                                  # default: true
+:focus => false                               # Specdoc focus to hide successful specs when at least one spec fails.
+                                              # default: true
 
-    :console => :always                           # Console.log output options, either :always, :never or :failure
-                                                  # default: :failure
+:console => :always                           # Console.log output options, either :always, :never or :failure
+                                              # default: :failure
+```
 
 With the option set to `:always`, the specdoc is shown with and without errors in your spec, whereas on with the option
 set to `:never`, there is no output at all, instead just a summary of the spec run is shown. The default option
@@ -178,11 +204,15 @@ to see support for more console methods coming to PhantomJS.
 
 Another restriction on console logging is that currently only the first log parameter is passed. So instead of writing
 
-    console.log('Debug of %o with %s', object, string)
+```javascript
+console.log('Debug of %o with %s', object, string)
+```
 
 your should write
 
-    console.log('Debug of ' + object.toString() + ' width ' + string)
+```javascript
+console.log('Debug of ' + object.toString() + ' width ' + string)
+```
 
 You can also give your vote on [Issue 36](http://code.google.com/p/phantomjs/issues/detail?id=36) to see support for
 multiple console arguments.
@@ -191,14 +221,16 @@ multiple console arguments.
 
 These options affects what system notifications (growl, libnotify or notifu) are shown after a spec run:
 
-    :notifications => false                       # Show success and error notifications.
-                                                  # default: true
+```ruby
+:notifications => false                       # Show success and error notifications.
+                                              # default: true
 
-    :hide_success => true                         # Disable successful spec run notification.
-                                                  # default: false
+:hide_success => true                         # Disable successful spec run notification.
+                                              # default: false
 
-    :max_error_notify => 5                        # Maximum error notifications to show.
-                                                  # default: 3
+:max_error_notify => 5                        # Maximum error notifications to show.
+                                              # default: 3
+```
 
 ## A note on Rails 2 and 3
 
@@ -209,54 +241,60 @@ it's freely up to you how you'll prepare the assets and serve the Jasmine runner
 You can use [the Jasmine Gem][], configure the test suite in `jasmine.yml` and start the Jasmine test runner with
 the supplied Rake task:
 
-    $ rake jasmine
+```bash
+$ rake jasmine
+```
 
 Next follows an example on how to configure your `Guardfile` with the Jasmine gem:
 
-    guard 'jasmine', :jasmine_url => 'http://127.0.0.1:8888' do
-      watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
-      watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
-      watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
-      watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
-    end
+```ruby
+guard 'jasmine', :jasmine_url => 'http://127.0.0.1:8888' do
+  watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
+  watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
+  watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
+  watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
+end
+```
 
 You can also use [guard-process](https://github.com/socialreferral/guard-process) to start the Jasmine Gem server when
 Guard starts:
 
-    guard 'process', :name => 'Jasmine server', :command => 'bundle exec rake jasmine' do
-      watch(%r{spec/javascripts/support/*})
+```ruby
+guard 'process', :name => 'Jasmine server', :command => 'bundle exec rake jasmine' do
+  watch(%r{spec/javascripts/support/*})
+end
+
+JASMINE_HOST = '127.0.0.1'
+JASMINE_PORT = '8888'
+JASMINE_URL = "http://#{JASMINE_HOST}:#{JASMINE_PORT}/"
+
+Thread.new do
+  require 'socket'
+
+  puts "\nWaiting for Jasmine to accept connections on #{JASMINE_URL}..."
+  wait_for_open_connection(JASMINE_HOST, JASMINE_PORT)
+  puts "Jasmine is now ready to accept connections; change a file or press ENTER run your suite."
+  puts "You can also view and run specs by visiting:"
+  puts JASMINE_URL
+
+  guard 'jasmine', :jasmine_url => JASMINE_URL do
+    watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
+    watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
+    watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
+    watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
+  end
+end
+
+def wait_for_open_connection(host, port)
+  while true
+    begin
+      TCPSocket.new(host, port).close
+      return
+    rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
     end
-
-    JASMINE_HOST = '127.0.0.1'
-    JASMINE_PORT = '8888'
-    JASMINE_URL = "http://#{JASMINE_HOST}:#{JASMINE_PORT}/"
-
-    Thread.new do
-      require 'socket'
-
-      puts "\nWaiting for Jasmine to accept connections on #{JASMINE_URL}..."
-      wait_for_open_connection(JASMINE_HOST, JASMINE_PORT)
-      puts "Jasmine is now ready to accept connections; change a file or press ENTER run your suite."
-      puts "You can also view and run specs by visiting:"
-      puts JASMINE_URL
-
-      guard 'jasmine', :jasmine_url => JASMINE_URL do
-        watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
-        watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
-        watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
-        watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
-      end
-    end
-
-    def wait_for_open_connection(host, port)
-      while true
-        begin
-          TCPSocket.new(host, port).close
-          return
-        rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
-        end
-      end
-    end
+  end
+end
+```
 
 This elegant solution is provided by [Jason Morrison](http://twitter.com/#!/jayunit), see his original
 [Gist](https://gist.github.com/1224382).
@@ -264,45 +302,57 @@ This elegant solution is provided by [Jason Morrison](http://twitter.com/#!/jayu
 It is also possible to use CoffeeScript in this setup, by using [Guard::CoffeeScript][] to compile your code and even
 specs. Just add something like this *before* Guard::Jasmine:
 
-    guard 'coffeescript', :input => 'app/coffeescripts',  :output => 'public/javascripts'
-    guard 'coffeescript', :input => 'spec/coffeescripts', :output => 'spec/javascripts'
+```ruby
+guard 'coffeescript', :input => 'app/coffeescripts',  :output => 'public/javascripts'
+guard 'coffeescript', :input => 'spec/coffeescripts', :output => 'spec/javascripts'
+```
 
 ## Guard::Jasmine for your CI server
 
 Guard::Jasmine includes a little command line utility to run your specs once and output the specdoc to the console.
 
-    $ guard-jasmine
+```bash
+$ guard-jasmine
+```
 
 You can get help on the available options with the `help` task:
 
-    $ guard-jasmine help start
-      Usage:
-        guard-jasmine start
+```bash
+$ guard-jasmine help start
+  Usage:
+    guard-jasmine start
 
-      Options:
-        -u, [--url=URL]          # The url of the Jasmine test runner
-                                 # Default: http://127.0.0.1:3000/jasmine
-        -b, [--bin=BIN]          # The location of the PhantomJS binary
-                                 # Default: /usr/local/bin/phantomjs
-        -t, [--timeout=N]        # The maximum time in milliseconds to wait for the spec runner to finish
-                                 # Default: 10000
-        -c, [--console=CONSOLE]  # Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`
-                                 # Default: failure
+  Options:
+    -u, [--url=URL]          # The url of the Jasmine test runner
+                             # Default: http://127.0.0.1:3000/jasmine
+    -b, [--bin=BIN]          # The location of the PhantomJS binary
+                             # Default: /usr/local/bin/phantomjs
+    -t, [--timeout=N]        # The maximum time in milliseconds to wait for the spec runner to finish
+                             # Default: 10000
+    -c, [--console=CONSOLE]  # Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`
+                             # Default: failure
+```
 
 By default all specs are run, but you can supply multiple paths to your specs to run only a subset:
 
-    $ guard-jasmine spec/javascripts/a_spec.js.coffee spec/javascripts/another_spec.js.coffee
+```bash
+$ guard-jasmine spec/javascripts/a_spec.js.coffee spec/javascripts/another_spec.js.coffee
+```
 
 ### Travis CI integration
 
 With the given `guard-jasmine` script you're able to configure [Travis CI](http://travis-ci.org/) to run Guard::Jasmine.
 Simply use the `script` setting in your `.travis.yml`:
 
-    script: 'bundle exec guard-jasmine'
+```yaml
+script: 'bundle exec guard-jasmine'
+```
 
 You can also run your Guard::Jasmine specs after your specs that are ran with `rake` by using `after_script`:
 
-    after_script: 'bundle exec guard-jasmine'
+```yaml
+after_script: 'bundle exec guard-jasmine'
+```
 
 ## Alternatives
 
@@ -334,12 +384,16 @@ This Guard comes with a small executable `guard-jasmine` that can be used to run
 and see the JSON result that gets evaluated by Guard::Jasmine. This comes handy when there is an issue with your specs
 and you want to see the output of the PhantomJS script.
 
-    $ guard-jasmine-debug
+```bash
+$ guard-jasmine-debug
+```
 
 The only argument that the script takes is the URL to the Jasmine runner, which defaults to
 `http://127.0.0.1:3000/Jasmine`. So you can for example just run a subset of the specs by changing the URL:
 
-    $ guard-jasmine-debug http://127.0.0.1:3000/Jasmine?spec=YourSpec
+```bash
+$ guard-jasmine-debug http://127.0.0.1:3000/Jasmine?spec=YourSpec
+```
 
 ## Acknowledgment
 

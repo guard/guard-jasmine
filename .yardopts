@@ -1,6 +1,6 @@
 --readme           README.md
 --markup           markdown
---markup-provider  kramdown
+--markup-provider  redcarpet
 --title            'Guard::Jasmine Documentation'
 --hide-void-return
 --protected
