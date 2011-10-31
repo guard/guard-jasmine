@@ -63,10 +63,11 @@ module Guard
         runner[:specdoc] = :always
 
         result = ::Guard::Jasmine::Runner.run(paths, runner)
-        Kernel.exit (result.first ? 0 : 1)
+        result = result.first ? 0 : 1
 
-      rescue Exception => e
-        ::Guard::UI.error e.message
+        #::Guard::UI.error e.message
+
+        Process.exit! result
       end
 
       desc 'version', 'Show the Guard::Jasmine version'
