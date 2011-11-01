@@ -207,7 +207,7 @@ end
 The general options configures the environment that is needed to run Guard::Jasmine:
 
 ```ruby
-:server => :jasmine                           # Jasmine server to use, either :auto, :rack, :jasmine_gem or :none
+:server => :jasmine_gem                       # Jasmine server to use, either :auto, :rack, :jasmine_gem or :none
                                               # default: :auto
 
 :port => 9292                                 # Jasmine server port to use.
