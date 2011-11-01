@@ -3,6 +3,7 @@ require 'guard/ui'
 require 'guard/jasmine/version'
 require 'guard/jasmine/runner'
 require 'guard/jasmine/formatter'
+require 'guard/jasmine/server'
 
 module Guard
   class Jasmine
@@ -19,10 +20,22 @@ module Guard
 
       desc 'spec', 'Run the Jasmine spec runner'
 
+      method_option :server,
+                    :type => :string,
+                    :aliases => '-s',
+                    :default => 'auto',
+                    :desc => 'Server to start, either `auto`, `rack`, `jasmine_gem` or `none`'
+
+      method_option :port,
+                    :type => :numeric,
+                    :aliases => '-p',
+                    :default => 8888,
+                    :desc => 'Server port to use'
+
       method_option :url,
                     :type => :string,
                     :aliases => '-u',
-                    :default => 'http://127.0.0.1:3000/jasmine',
+                    :default => 'http://127.0.0.1:8888/jasmine',
                     :desc => 'The url of the Jasmine test runner'
 
       method_option :bin,
@@ -55,15 +68,22 @@ module Guard
         runner[:jasmine_url] = options.url
         runner[:phantomjs_bin] = options.bin
         runner[:timeout] = options.timeout
+        runner[:port] = options.port
         runner[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
+        runner[:server] = [:auto, :rack, :jasmine_gem].include?(options.server.to_sym) ? options.server.to_sym : :auto
 
         runner[:notification] = false
         runner[:hide_success] = true
         runner[:max_error_notify] = 0
         runner[:specdoc] = :always
 
+        ::Guard::Jasmine::Server.start(runner[:server], runner[:port]) unless runner[:server] == :none
         result = ::Guard::Jasmine::Runner.run(paths, runner)
-        Process.exit (result.first ? 0 : 1)
+
+        ::Guard::Jasmine::Server.stop
+
+        exit_code = result.first ? 0 : 1
+        Process.exit exit_code
 
       rescue Exception => e
         raise e if e.is_a?(SystemExit)

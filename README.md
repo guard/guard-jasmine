@@ -1,6 +1,6 @@
 # Guard::Jasmine [![Build Status](https://secure.travis-ci.org/netzpirat/guard-jasmine.png)](http://travis-ci.org/netzpirat/guard-jasmine)
 
-Guard::Jasmine automatically tests your Jasmine specs when files are modified.
+Guard::Jasmine automatically tests your Jasmine specs on Rails when files are modified.
 
 Tested on MRI Ruby 1.8.7, 1.9.2, 1.9.3, REE and the latest versions of JRuby & Rubinius.
 
@@ -22,21 +22,6 @@ various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 
 * Runs on Mac OS X, Linux and Windows.
 
-## How it works
-
-![Guard Jasmine](https://github.com/netzpirat/guard-jasmine/raw/master/resources/guard-jasmine.png)
-
-1. Guard is triggered by a file modification.
-2. Guard::Jasmine executes the [PhantomJS script][].
-3. The PhantomJS script requests the Jasmine test runner via HTTP.
-4. Rails uses the asset pipeline to get the Jasmine runner, the code to be tested and the specs.
-5. The asset pipeline prepares the assets, compiles the CoffeeScripts if necessary.
-6. The asset pipeline has finished to prepare the needed assets.
-7. Rails returns the Jasmine runner HTML.
-8. PhantomJS requests linked assets and runs the Jasmine tests headless.
-9. The PhantomJS script extracts the result from the DOM and returns a JSON report.
-10. Guard::Jasmine reports the results to the console and system notifications.
-
 ## Install
 
 ### Guard and Guard::Jasmine
@@ -47,7 +32,7 @@ Please make sure to have [Guard][] installed.
 Add Guard::Jasmine to your `Gemfile`:
 
 ```ruby
-group :development do
+group :development, :test do
   gem 'guard-jasmine'
 end
 ```
@@ -58,10 +43,52 @@ Add the default Guard::Jasmine template to your `Guardfile` by running:
 $ guard init jasmine
 ```
 
-### Jasminerice
+### PhantomJS
+
+You need the PhantomJS browser installed on your system. You can download binaries for Mac OS X and Windows from
+[the PhantomJS download section][].
+
+Alternatively you can install [Homebrew][] on Mac OS X and install it with:
+
+```bash
+$ brew install phantomjs
+```
+
+If you are using Ubuntu 10.10, you can install it with apt:
+
+```bash
+$ sudo add-apt-repository ppa:jerome-etienne/neoip
+$ sudo apt-get update
+$ sudo apt-get install phantomjs
+```
+
+You can also build it from source for several other operating systems, please consult the
+[PhantomJS build instructions][].
+
+## Rails 3.1 setup
 
 With Rails 3.1 you can write your Jasmine specs in addition to JavaScript with CoffeeScript, fully integrated into the
-Rails 3.1 asset pipeline with Jasminerice.
+Rails 3.1 asset pipeline with [Jasminerice][]. You have full access to your running Rails app, but it's a good practice
+to fake the server response. Check out the excellent [Sinon.JS][] documentation to learn more about this topic.
+
+Guard::Jasmine will start a Rails Rack server to run your specs.
+
+### How it works
+
+![Guard Jasmine](https://github.com/netzpirat/guard-jasmine/raw/master/resources/guard-jasmine-rails31.jpg)
+
+1. Guard is triggered by a file modification.
+2. Guard::Jasmine executes the [PhantomJS script][].
+3. The PhantomJS script requests the Jasmine test runner via HTTP.
+4. Rails uses the asset pipeline to get the Jasmine runner, the code to be tested and the specs.
+5. The asset pipeline prepares the assets, compiles the CoffeeScripts if necessary.
+6. The asset pipeline has finished to prepare the needed assets.
+7. Rails returns the Jasmine runner HTML.
+8. PhantomJS requests linked assets and runs the Jasmine tests headless.
+9. The PhantomJS script collects the Jasmine runner results and returns a JSON report.
+10. Guard::Jasmine reports the results to the console and system notifications.
+
+### Jasminerice
 
 Please read the detailed installation and configuration instructions at [Jasminerice][].
 
@@ -88,27 +115,64 @@ asset pipeline manifest in `spec/javascripts/spec.js.coffee`:
 #=require_tree ./
 ```
 
-### PhantomJS
+## Rails 2 & Rails 3 setup
 
-You need the PhantomJS browser installed on your system. You can download binaries for Mac OS X and Windows from
-[the PhantomJS download section][].
+With Rails 2 or Rails 3 you can use [the Jasmine Gem][] to configure your Jasmine specs and server the Jasmine
+runner. You don't have full access to your running Rails app, but it's anyway a good practice to fake the server
+response. Check out the excellent [Sinon.JS][] documentation to learn more about this topic.
 
-Alternatively you can install [Homebrew][] on Mac OS X and install it with:
+Guard::Jasmine will start a Jasmine Gem Rack server to run your specs.
 
-```bash
-$ brew install phantomjs
+### How it works
+
+![Guard Jasmine](https://github.com/netzpirat/guard-jasmine/raw/master/resources/guard-jasmine-rails23.jpg)
+
+1. Guard is triggered by a file modification.
+2. Guard::Jasmine executes the [PhantomJS script][].
+3. The PhantomJS script requests the Jasmine test runner via HTTP.
+4. The Jasmine Gem reads your configuration and get the assets.
+5. The Jasmine Gem serves the the code to be tested and the specs.
+6. PhantomJS runs the Jasmine tests headless.
+7. The PhantomJS script collects the Jasmine runner results and returns a JSON report.
+8. Guard::Jasmine reports the results to the console and system notifications.
+
+### Jasmine Gem
+
+Please read the detailed installation and configuration instructions at [the Jasmine Gem][].
+
+In short, you add it to your `Gemfile`:
+
+```ruby
+group :development, :test do
+  gem 'jasmine'
+end
 ```
 
-If you are using Ubuntu 10.10, you can install it with apt:
+and generate the configuration files:
+
+#### for Rails 3
 
 ```bash
-$ sudo add-apt-repository ppa:jerome-etienne/neoip
-$ sudo apt-get update
-$ sudo apt-get install phantomjs
+$ rails g jasmine:install
 ```
 
-You can also build it from source for several other operating systems, please consult the
-[PhantomJS build instructions][].
+#### for Rails 2
+
+```bash
+$ script/generate jasmine
+```
+
+Now you can configure your spec suite in the Jasmine configuration file `specs/javascripts/support/jasmine.yml`.
+
+#### Writing CoffeeScript specs
+
+It is also possible to use CoffeeScript in this setup, by using [Guard::CoffeeScript][] to compile your code and even
+specs. Just add something like this *before* Guard::Jasmine:
+
+```ruby
+guard 'coffeescript', :input => 'app/coffeescripts',  :output => 'public/javascripts'
+guard 'coffeescript', :input => 'spec/coffeescripts', :output => 'spec/javascripts'
+```
 
 ## Usage
 
@@ -143,14 +207,24 @@ end
 The general options configures the environment that is needed to run Guard::Jasmine:
 
 ```ruby
-:jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
-                                              # default: http://127.0.0.1/jasmine
+:server => :jasmine                           # Jasmine server to use, either :auto, :rack, :jasmine_gem or :none
+                                              # default: :auto
+
+:port => 9292                                 # Jasmine server port to use.
+                                              # default: 8888
 
 :phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
                                               # default: '/usr/local/bin/phantomjs'
 
 :timeout => 20000                             # The time in ms to wait for the spec runner to finish.
                                               # default: 10000
+```
+
+If you're setting the `:server` option to `:none`, you can supply the Jasmine runner url manually:
+
+```ruby
+:jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
+                                              # default: http://127.0.0.1:8888/jasmine
 ```
 
 ### Spec runner options
@@ -229,81 +303,6 @@ These options affects what system notifications (growl, libnotify or notifu) are
                                               # default: 3
 ```
 
-## A note on Rails 2 and 3
-
-This readme describes the use of Guard::Jasmine with Jasminerice through the asset pipeline, but it is not really
-a requirement for Guard::Jasmine. As long as you serve the Jasmine test runner under a certain url,
-it's freely up to you how you'll prepare the assets and serve the Jasmine runner.
-
-You can use [the Jasmine Gem][], configure the test suite in `jasmine.yml` and start the Jasmine test runner with
-the supplied Rake task:
-
-```bash
-$ rake jasmine
-```
-
-Next follows an example on how to configure your `Guardfile` with the Jasmine gem:
-
-```ruby
-guard 'jasmine', :jasmine_url => 'http://127.0.0.1:8888' do
-  watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
-  watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
-  watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
-  watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
-end
-```
-
-You can also use [guard-process](https://github.com/socialreferral/guard-process) to start the Jasmine Gem server when
-Guard starts:
-
-```ruby
-guard 'process', :name => 'Jasmine server', :command => 'bundle exec rake jasmine' do
-  watch(%r{spec/javascripts/support/*})
-end
-
-JASMINE_HOST = '127.0.0.1'
-JASMINE_PORT = '8888'
-JASMINE_URL = "http://#{JASMINE_HOST}:#{JASMINE_PORT}/"
-
-Thread.new do
-  require 'socket'
-
-  puts "\nWaiting for Jasmine to accept connections on #{JASMINE_URL}..."
-  wait_for_open_connection(JASMINE_HOST, JASMINE_PORT)
-  puts "Jasmine is now ready to accept connections; change a file or press ENTER run your suite."
-  puts "You can also view and run specs by visiting:"
-  puts JASMINE_URL
-
-  guard 'jasmine', :jasmine_url => JASMINE_URL do
-    watch(%r{public/javascripts/(.+)\.js})                  { |m| "spec/javascripts/#{m[1]}_spec.js" }
-    watch(%r{spec/javascripts/(.+)_spec\.js})               { |m| "spec/javascripts/#{m[1]}_spec.js" }
-    watch(%r{spec/javascripts/support/jasmine\.yml})        { "spec/javascripts" }
-    watch(%r{spec/javascripts/support/jasmine_config\.rb})  { "spec/javascripts" }
-  end
-end
-
-def wait_for_open_connection(host, port)
-  while true
-    begin
-      TCPSocket.new(host, port).close
-      return
-    rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
-    end
-  end
-end
-```
-
-This elegant solution is provided by [Jason Morrison](http://twitter.com/#!/jayunit), see his original
-[Gist](https://gist.github.com/1224382).
-
-It is also possible to use CoffeeScript in this setup, by using [Guard::CoffeeScript][] to compile your code and even
-specs. Just add something like this *before* Guard::Jasmine:
-
-```ruby
-guard 'coffeescript', :input => 'app/coffeescripts',  :output => 'public/javascripts'
-guard 'coffeescript', :input => 'spec/coffeescripts', :output => 'spec/javascripts'
-```
-
 ## Guard::Jasmine for your CI server
 
 Guard::Jasmine includes a little command line utility to run your specs once and output the specdoc to the console.
@@ -315,19 +314,24 @@ $ guard-jasmine
 You can get help on the available options with the `help` task:
 
 ```bash
-$ guard-jasmine help start
-  Usage:
-    guard-jasmine start
+Usage:
+  guard-jasmine spec
 
-  Options:
-    -u, [--url=URL]          # The url of the Jasmine test runner
-                             # Default: http://127.0.0.1:3000/jasmine
-    -b, [--bin=BIN]          # The location of the PhantomJS binary
-                             # Default: /usr/local/bin/phantomjs
-    -t, [--timeout=N]        # The maximum time in milliseconds to wait for the spec runner to finish
-                             # Default: 10000
-    -c, [--console=CONSOLE]  # Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`
-                             # Default: failure
+Options:
+  -s, [--server=SERVER]    # Server to start, either `auto`, `rack`, `jasmine_gem` or `none`
+                           # Default: auto
+  -p, [--port=N]           # Server port to use
+                           # Default: 8888
+  -u, [--url=URL]          # The url of the Jasmine test runner
+                           # Default: http://127.0.0.1:8888/jasmine
+  -b, [--bin=BIN]          # The location of the PhantomJS binary
+                           # Default: /usr/local/bin/phantomjs
+  -t, [--timeout=N]        # The maximum time in milliseconds to wait for the spec runner to finish
+                           # Default: 10000
+  -c, [--console=CONSOLE]  # Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`
+                           # Default: failure
+
+Run the Jasmine spec runner
 ```
 
 By default all specs are run, but you can supply multiple paths to your specs to run only a subset:
@@ -466,3 +470,4 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [Evergreen]: https://github.com/jnicklas/evergreen
 [PhantomJS script]: https://github.com/netzpirat/guard-jasmine/blob/master/lib/guard/jasmine/phantomjs/run-jasmine.coffee
 [Guard::CoffeeScript]: https://github.com/guard/guard-coffeescript
+[Sinon.JS]: http://sinonjs.org

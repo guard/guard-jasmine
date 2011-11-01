@@ -7,6 +7,7 @@ describe Guard::Jasmine do
   let(:runner) { Guard::Jasmine::Runner }
   let(:inspector) { Guard::Jasmine::Inspector }
   let(:formatter) { Guard::Jasmine::Formatter }
+  let(:server) { Guard::Jasmine::Server }
 
   let(:defaults) { Guard::Jasmine::DEFAULT_OPTIONS }
 
@@ -14,12 +15,22 @@ describe Guard::Jasmine do
     inspector.stub(:clean).and_return { |specs| specs }
     runner.stub(:run).and_return [true, []]
     formatter.stub(:notify)
+    server.stub(:start)
+    server.stub(:stop)
   end
 
   describe '#initialize' do
     context 'when no options are provided' do
+      it 'sets a default :server option' do
+        guard.options[:server].should eql :auto
+      end
+
+      it 'sets a default :port option' do
+        guard.options[:port].should eql 8888
+      end
+
       it 'sets a default :jasmine_url option' do
-        guard.options[:jasmine_url].should eql 'http://localhost:3000/jasmine'
+        guard.options[:jasmine_url].should eql 'http://localhost:8888/jasmine'
       end
 
       it 'sets a default :phantomjs_bin option' do
@@ -76,7 +87,9 @@ describe Guard::Jasmine do
     end
 
     context 'with other options than the default ones' do
-      let(:guard) { Guard::Jasmine.new(nil, { :jasmine_url      => 'http://192.168.1.5/jasmine',
+      let(:guard) { Guard::Jasmine.new(nil, { :server           => :jasmine_gem,
+                                              :port             => 4321,
+                                              :jasmine_url      => 'http://192.168.1.5/jasmine',
                                               :phantomjs_bin    => '~/bin/phantomjs',
                                               :timeout          => 20000,
                                               :all_on_start     => false,
@@ -88,6 +101,14 @@ describe Guard::Jasmine do
                                               :specdoc          => :always,
                                               :focus            => false,
                                               :console          => :always }) }
+
+      it 'sets the :server option' do
+        guard.options[:server].should eql :jasmine_gem
+      end
+
+      it 'sets the :jasmine_url option' do
+        guard.options[:port].should eql 4321
+      end
 
       it 'sets the :jasmine_url option' do
         guard.options[:jasmine_url].should eql 'http://192.168.1.5/jasmine'
@@ -139,10 +160,14 @@ describe Guard::Jasmine do
     end
 
     context 'with illegal options' do
-      let(:guard) { Guard::Jasmine.new(nil, defaults.merge({ :specdoc => :wrong })) }
+      let(:guard) { Guard::Jasmine.new(nil, defaults.merge({ :specdoc => :wrong, :server => :thin })) }
 
       it 'sets default :specdoc option' do
         guard.options[:specdoc].should eql :failure
+      end
+
+      it 'sets default :server option' do
+        guard.options[:server].should eql :auto
       end
     end
   end
@@ -203,6 +228,27 @@ describe Guard::Jasmine do
         guard.stub(:phantomjs_bin_valid?).and_return true
       end
 
+      context 'with the server set to :none' do
+        before { guard.options[:server] = :none }
+
+        it 'does not start a server' do
+          server.should_not_receive(:start)
+          guard.start
+        end
+      end
+
+      context 'with the server set to something other than :none' do
+        before do
+          guard.options[:server] = :jasmine_gem
+          guard.options[:port] = 3333
+        end
+
+        it 'does start a server' do
+          server.should_receive(:start).with(:jasmine_gem, 3333)
+          guard.start
+        end
+      end
+
       context 'with the Jasmine runner available' do
         let(:http) { mock('http') }
 
@@ -212,7 +258,7 @@ describe Guard::Jasmine do
         end
 
         it 'does show that the runner is available' do
-          formatter.should_receive(:info).with "Jasmine test runner is available at http://localhost:3000/jasmine"
+          formatter.should_receive(:info).with "Jasmine test runner is available at http://localhost:8888/jasmine"
           guard.start
         end
       end
@@ -226,7 +272,7 @@ describe Guard::Jasmine do
           end
 
           it 'does show that the runner is not available' do
-            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:3000/jasmine"
+            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:8888/jasmine"
             guard.start
           end
         end
@@ -238,7 +284,7 @@ describe Guard::Jasmine do
           end
 
           it 'does show that the runner is not available' do
-            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:3000/jasmine"
+            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:8888/jasmine"
             guard.start
           end
         end
@@ -249,7 +295,7 @@ describe Guard::Jasmine do
           end
 
           it 'shows a failing system notification' do
-            formatter.should_receive(:notify).with("Jasmine test runner isn't available at http://localhost:3000/jasmine",
+            formatter.should_receive(:notify).with("Jasmine test runner isn't available at http://localhost:8888/jasmine",
                                                    :title    => "Jasmine test runner isn't available",
                                                    :image    => :failed,
                                                    :priority => 2)
@@ -296,6 +342,13 @@ describe Guard::Jasmine do
           guard.start
         end
       end
+    end
+  end
+
+  describe '.stop' do
+    it 'stops the server' do
+      server.should_receive(:stop)
+      guard.stop
     end
   end
 

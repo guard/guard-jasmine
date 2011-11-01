@@ -14,11 +14,14 @@ module Guard
     autoload :Formatter, 'guard/jasmine/formatter'
     autoload :Inspector, 'guard/jasmine/inspector'
     autoload :Runner, 'guard/jasmine/runner'
+    autoload :Server, 'guard/jasmine/server'
 
     attr_accessor :last_run_failed, :last_failed_paths
 
     DEFAULT_OPTIONS = {
-        :jasmine_url      => 'http://localhost:3000/jasmine',
+        :server           => :auto,
+        :port             => 8888,
+        :jasmine_url      => 'http://localhost:8888/jasmine',
         :phantomjs_bin    => '/usr/local/bin/phantomjs',
         :timeout          => 10000,
         :notification     => true,
@@ -36,6 +39,8 @@ module Guard
     #
     # @param [Array<Guard::Watcher>] watchers the watchers in the Guard block
     # @param [Hash] options the options for the Guard
+    # @option options [String] :server the server to use, either :rails or :jasmine
+    # @option options [String] :port the port for the Jasmine test server
     # @option options [String] :jasmine_url the url of the Jasmine test runner
     # @option options [String] :phantomjs_bin the location of the PhantomJS binary
     # @option options [Integer] :timeout the maximum time in milliseconds to wait for the spec runner to finish
@@ -52,6 +57,7 @@ module Guard
     def initialize(watchers = [], options = { })
       options = DEFAULT_OPTIONS.merge(options)
       options[:specdoc] = :failure if ![:always, :never, :failure].include? options[:specdoc]
+      options[:server] = :auto if ![:auto, :none, :rack, :jasmine_gem].include? options[:server]
 
       super(watchers, options)
 
@@ -65,12 +71,23 @@ module Guard
     #
     def start
       if phantomjs_bin_valid?(options[:phantomjs_bin])
+
+        Server.start(options[:server], options[:port]) unless options[:server] == :none
+
         if jasmine_runner_available?(options[:jasmine_url])
           run_all if options[:all_on_start]
         end
       else
         throw :task_has_failed
       end
+    end
+
+    # Gets called once when Guard stops.
+    #
+    # @raise [:task_has_failed] when stop has failed
+    #
+    def stop
+      Server.stop
     end
 
     # Gets called when the Guard should reload itself.
