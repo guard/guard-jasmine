@@ -159,6 +159,14 @@ describe Guard::Jasmine do
       end
     end
 
+    context 'with a port but no jasmine_url option set' do
+      let(:guard) { Guard::Jasmine.new(nil, { :port => 4321 }) }
+
+      it 'sets the port on the jasmine_url' do
+        guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
+      end
+    end
+
     context 'with illegal options' do
       let(:guard) { Guard::Jasmine.new(nil, defaults.merge({ :specdoc => :wrong, :server => :thin })) }
 

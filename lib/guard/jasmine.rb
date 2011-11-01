@@ -55,6 +55,7 @@ module Guard
     # @option options [Symbol] :focus options for focus on failures in the specdoc
     #
     def initialize(watchers = [], options = { })
+      options[:jasmine_url] = "http://localhost:#{ options[:port] }/jasmine" if options[:port] && !options[:jasmine_url]
       options = DEFAULT_OPTIONS.merge(options)
       options[:specdoc] = :failure if ![:always, :never, :failure].include? options[:specdoc]
       options[:server] = :auto if ![:auto, :none, :rack, :jasmine_gem].include? options[:server]
