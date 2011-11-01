@@ -357,9 +357,18 @@ after_script: 'bundle exec guard-jasmine'
 
 ## Alternatives
 
+There are many ways to get your Jasmine specs run within a headless environment. If Guard::Jasmine isn't for you,
+I recommend to check out these other brilliant Jasmine runners:
+
+### Guards
+
 * [guard-jasmine-headless-webkit][], a Guard for [jasmine-headless-webkit][], but doesn't run on JRuby.
-* [Evergreen][], runs CoffeeScript specs headless, but has no
-continuous testing support.
+* [guard-jasmine-node][] automatically & intelligently executes Jasmine Node.js specs when files are modified.
+* [guard-jessie][] allows to automatically run you Jasmine specs under Node.js using Jessie runner.
+
+### Standalone
+
+* [Evergreen][], runs CoffeeScript specs headless, but has no continuous testing support.
 * [Jezebel][] a Node.js REPL and continuous test runner for [Jessie][], a Node runner for Jasmine, but has no full
 featured browser environment.
 
@@ -471,3 +480,5 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [PhantomJS script]: https://github.com/netzpirat/guard-jasmine/blob/master/lib/guard/jasmine/phantomjs/run-jasmine.coffee
 [Guard::CoffeeScript]: https://github.com/guard/guard-coffeescript
 [Sinon.JS]: http://sinonjs.org
+[guard-jasmine-node]: https://github.com/guard/guard-jasmine-node
+[guard-jessie]: https://github.com/guard/guard-jessie
