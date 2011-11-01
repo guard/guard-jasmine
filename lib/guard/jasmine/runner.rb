@@ -324,10 +324,6 @@ module Guard
 
         # Formats a message.
         #
-        # Known message styles:
-        #
-        # - {message} in http.*assets/{spec}?body=\d ({line})
-        #
         # @param [String] message the error message
         # @param [Boolean] short show a short version of the message
         # @return [String] the cleaned error message
