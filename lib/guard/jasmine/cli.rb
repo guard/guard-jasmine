@@ -70,7 +70,7 @@ module Guard
         runner[:timeout] = options.timeout
         runner[:port] = options.port
         runner[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
-        runner[:server] = [:auto, :rack, :jasmine_gem].include?(options.server.to_sym) ? options.server.to_sym : :auto
+        runner[:server] = [:auto, :rack, :jasmine_gem, :none].include?(options.server.to_sym) ? options.server.to_sym : :auto
 
         runner[:notification] = false
         runner[:hide_success] = true
