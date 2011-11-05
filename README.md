@@ -218,7 +218,7 @@ The general options configures the environment that is needed to run Guard::Jasm
                                               # default: 8888
 
 :phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
-                                              # default: '/usr/local/bin/phantomjs'
+                                              # default: auto-detect 'phantomjs'
 
 :timeout => 20000                             # The time in ms to wait for the spec runner to finish.
                                               # default: 10000
