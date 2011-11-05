@@ -17,6 +17,7 @@ describe Guard::Jasmine do
     formatter.stub(:notify)
     server.stub(:start)
     server.stub(:stop)
+    Guard::Jasmine.stub(:which).and_return '/usr/local/bin/phantomjs'
   end
 
   describe '#initialize' do
@@ -31,10 +32,6 @@ describe Guard::Jasmine do
 
       it 'sets a default :jasmine_url option' do
         guard.options[:jasmine_url].should eql 'http://localhost:8888/jasmine'
-      end
-
-      it 'sets a default :phantomjs_bin option' do
-        guard.options[:phantomjs_bin].should eql `which phantomjs`.chomp
       end
 
       it 'sets a default :timeout option' do
@@ -83,6 +80,11 @@ describe Guard::Jasmine do
 
       it 'sets last failed paths to empty' do
         guard.last_failed_paths.should be_empty
+      end
+
+      it 'tries to auto detect the :phantomjs_bin' do
+        ::Guard::Jasmine.should_receive(:which).and_return '/bin/phantomjs'
+        guard.options[:phantomjs_bin].should eql '/bin/phantomjs'
       end
     end
 
@@ -181,13 +183,14 @@ describe Guard::Jasmine do
   end
 
   describe '.start' do
-    context 'with a missing PhantomJS binary' do
+    context 'when not able to detect the PhantomJS executable' do
+
       before do
-        guard.stub(:`).and_return nil
+        Guard::Jasmine.stub(:which).and_return nil
       end
 
-      it 'shows a message that the binary is missing' do
-        formatter.should_receive(:error).with "PhantomJS binary doesn't exist at /usr/local/bin/phantomjs"
+      it 'shows a message that the executable is missing' do
+        formatter.should_receive(:error).with "PhantomJS executable couldn't be auto detected."
         expect { guard.start }.to throw_symbol :task_has_failed
       end
 
@@ -196,9 +199,36 @@ describe Guard::Jasmine do
       end
 
       context 'with enabled notifications' do
-        it 'shows a notification that the binary is missing' do
-          formatter.should_receive(:notify).with("PhantomJS binary doesn't exist at /usr/local/bin/phantomjs",
-                                                 :title    => 'PhantomJS binary missing',
+        it 'shows a notification that the executable is missing' do
+          formatter.should_receive(:notify).with("PhantomJS executable couldn't be auto detected.",
+                                                 :title    => 'PhantomJS executable missing',
+                                                 :image    => :failed,
+                                                 :priority => 2)
+          expect { guard.start }.to throw_symbol :task_has_failed
+        end
+      end
+    end
+
+    context 'with a missing PhantomJS executable' do
+      let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/tmp' }) }
+
+      before do
+        guard.stub(:`).and_return nil
+      end
+
+      it 'shows a message that the executable is missing' do
+        formatter.should_receive(:error).with "PhantomJS executable doesn't exist at /tmp"
+        expect { guard.start }.to throw_symbol :task_has_failed
+      end
+
+      it 'throws :task_has_failed' do
+        expect { guard.start }.to throw_symbol :task_has_failed
+      end
+
+      context 'with enabled notifications' do
+        it 'shows a notification that the executable is missing' do
+          formatter.should_receive(:notify).with("PhantomJS executable doesn't exist at /tmp",
+                                                 :title    => 'PhantomJS executable missing',
                                                  :image    => :failed,
                                                  :priority => 2)
           expect { guard.start }.to throw_symbol :task_has_failed
@@ -207,12 +237,14 @@ describe Guard::Jasmine do
     end
 
     context 'with a wrong PhantomJS version' do
+      let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/usr/local/bin/phantomjs' }) }
+
       before do
         guard.stub(:`).and_return '1.2.0'
       end
 
       it 'shows a message that the version is wrong' do
-        formatter.should_receive(:error).with "PhantomJS binary at /usr/local/bin/phantomjs must be at least version 1.3.0"
+        formatter.should_receive(:error).with "PhantomJS executable at /usr/local/bin/phantomjs must be at least version 1.3.0"
         expect { guard.start }.to throw_symbol :task_has_failed
       end
 
@@ -222,7 +254,7 @@ describe Guard::Jasmine do
 
       context 'with enabled notifications' do
         it 'shows a notification that the version is wrong' do
-          formatter.should_receive(:notify).with("PhantomJS binary at /usr/local/bin/phantomjs must be at least version 1.3.0",
+          formatter.should_receive(:notify).with("PhantomJS executable at /usr/local/bin/phantomjs must be at least version 1.3.0",
                                                  :title    => 'Wrong PhantomJS version',
                                                  :image    => :failed,
                                                  :priority => 2)
@@ -231,7 +263,9 @@ describe Guard::Jasmine do
       end
     end
 
-    context 'with a valid PhantomJS binary' do
+    context 'with a valid PhantomJS executable' do
+      let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/bin/phantomjs' }) }
+
       before do
         guard.stub(:phantomjs_bin_valid?).and_return true
       end
@@ -378,8 +412,10 @@ describe Guard::Jasmine do
   end
 
   describe '.run_all' do
+    let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/bin/phantomjs' }) }
+
     it 'starts the Runner with the spec dir' do
-      runner.should_receive(:run).with(['spec/javascripts'], defaults).and_return [['spec/javascripts/a.js.coffee'], true]
+      runner.should_receive(:run).with(['spec/javascripts'], defaults.merge(:phantomjs_bin => '/bin/phantomjs')).and_return [['spec/javascripts/a.js.coffee'], true]
 
       guard.run_all
     end
@@ -415,6 +451,8 @@ describe Guard::Jasmine do
   end
 
   describe '.run_on_change' do
+    let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/Users/michi/.bin/phantomjs' }) }
+
     it 'passes the paths to the Inspector for cleanup' do
       inspector.should_receive(:clean).twice.with(['spec/javascripts/a.js.coffee',
                                                    'spec/javascripts/b.js.coffee'])
@@ -437,13 +475,13 @@ describe Guard::Jasmine do
       inspector.should_receive(:clean).twice.with(['spec/javascripts/a.js.coffee',
                                                    'spec/javascripts/b.js.coffee']).and_return ['spec/javascripts/a.js.coffee']
 
-      runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], defaults).and_return [['spec/javascripts/a.js.coffee'], true]
+      runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], defaults.merge({ :phantomjs_bin => '/Users/michi/.bin/phantomjs' })).and_return [['spec/javascripts/a.js.coffee'], true]
 
       guard.run_on_change(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
     end
 
     context 'with :keep_failed enabled' do
-      let(:guard) { Guard::Jasmine.new(nil, { :keep_failed => true }) }
+      let(:guard) { Guard::Jasmine.new(nil, { :keep_failed => true, :phantomjs_bin => '/usr/bin/phantomjs' }) }
 
       before do
         guard.last_failed_paths = ['spec/javascripts/b.js.coffee']
@@ -451,7 +489,7 @@ describe Guard::Jasmine do
 
       it 'appends the last failed paths to the current run' do
         runner.should_receive(:run).with(['spec/javascripts/a.js.coffee',
-                                          'spec/javascripts/b.js.coffee'], defaults)
+                                          'spec/javascripts/b.js.coffee'], defaults.merge({ :phantomjs_bin => '/usr/bin/phantomjs' }))
 
         guard.run_on_change(['spec/javascripts/a.js.coffee'])
       end

@@ -7,7 +7,7 @@ describe Guard::Jasmine::Runner do
   let(:runner) { Guard::Jasmine::Runner }
   let(:formatter) { Guard::Jasmine::Formatter }
 
-  let(:defaults) { Guard::Jasmine::DEFAULT_OPTIONS }
+  let(:defaults) { Guard::Jasmine::DEFAULT_OPTIONS.merge({ :phantomjs_bin => '/usr/local/bin/phantomjs' }) }
 
   let(:phantomjs_error_response) do
     <<-JSON

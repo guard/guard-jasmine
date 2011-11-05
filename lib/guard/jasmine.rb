@@ -22,7 +22,6 @@ module Guard
         :server           => :auto,
         :port             => 8888,
         :jasmine_url      => 'http://localhost:8888/jasmine',
-        :phantomjs_bin    => `which phantomjs`.chomp,
         :timeout          => 10000,
         :notification     => true,
         :hide_success     => false,
@@ -59,6 +58,7 @@ module Guard
       options = DEFAULT_OPTIONS.merge(options)
       options[:specdoc] = :failure if ![:always, :never, :failure].include? options[:specdoc]
       options[:server] = :auto if ![:auto, :none, :rack, :jasmine_gem].include? options[:server]
+      options[:phantomjs_bin] = Jasmine.which('phantomjs') unless options[:phantomjs_bin]
 
       super(watchers, options)
 
@@ -175,14 +175,18 @@ module Guard
     # @return [Boolean] when the runner is available
     #
     def phantomjs_bin_valid?(bin)
-      version = `#{ bin } --version`
+      if bin && !bin.empty?
+        version = `#{ bin } --version`
 
-      if !version
-        notify_failure('PhantomJS binary missing', "PhantomJS binary doesn't exist at #{ bin }")
-      elsif version.to_version < '1.3.0'.to_version
-        notify_failure('Wrong PhantomJS version', "PhantomJS binary at #{ bin } must be at least version 1.3.0")
+        if !version
+          notify_failure('PhantomJS executable missing', "PhantomJS executable doesn't exist at #{ bin }")
+        elsif version.to_version < '1.3.0'.to_version
+          notify_failure('Wrong PhantomJS version', "PhantomJS executable at #{ bin } must be at least version 1.3.0")
+        else
+          true
+        end
       else
-        true
+        notify_failure('PhantomJS executable missing', "PhantomJS executable couldn't be auto detected.")
       end
     end
 
@@ -198,6 +202,28 @@ module Guard
                        :image    => :failed,
                        :priority => 2) if options[:notification]
       false
+    end
+
+    # Cross-platform way of finding an executable in the $PATH.
+    # http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
+    #
+    # @example
+    #   which('ruby') #=> /usr/bin/ruby
+    #
+    # @param cmd [String] the executable to find
+    # @return [String, nil] the path to the executable
+    #
+    def self.which(cmd)
+      exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+
+      ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+        exts.each do |ext|
+          exe = "#{ path }/#{ cmd }#{ ext }"
+          return exe if File.executable?(exe)
+        end
+      end
+
+      nil
     end
 
   end
