@@ -117,7 +117,7 @@ asset pipeline manifest in `spec/javascripts/spec.js.coffee`:
 
 It also creates an empty `spec/javascripts/spec.css` file as it is always requested when running specs.
 
-Now you can access to `/jasmine` url when you start rails server normally.
+Now you can access `/jasmine` url when you start rails server normally.
 
 ## Rails 2 & Rails 3 setup
 
