@@ -423,6 +423,9 @@ The only argument that the script takes is the URL to the Jasmine runner, which 
 ```bash
 $ guard-jasmine-debug http://127.0.0.1:3000/Jasmine?spec=YourSpec
 ```
+## Contributors
+
+* [Dmytrii Nagirniak](https://github.com/dnagir)
 
 ## Acknowledgment
 
