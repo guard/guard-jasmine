@@ -22,7 +22,7 @@ module Guard
         :server           => :auto,
         :port             => 8888,
         :jasmine_url      => 'http://localhost:8888/jasmine',
-        :phantomjs_bin    => '/usr/local/bin/phantomjs',
+        :phantomjs_bin    => `which phantomjs`.chomp,
         :timeout          => 10000,
         :notification     => true,
         :hide_success     => false,
