@@ -100,20 +100,24 @@ group :development, :test do
 end
 ```
 
-and add a route for the Jasmine Test Runner to `config/routes.rb`:
-
-```ruby
-if ["development", "test"].include? Rails.env
-  mount Jasminerice::Engine => "/jasmine"
-end
+And run following from the Terminal:
+```bash
+mkdir -p spec/javascripts
+echo -e "#=require application\n#=require_tree ./" > spec/javascripts/spec.js.coffee
+echo -e "/*\n * add css using =require application\n */" > spec/javascripts/spec.css
 ```
 
-Next you create the directory `spec/javascripts` where your CoffeeScript tests go into. You define the Rails 3.1
+This creates the directory `spec/javascripts` where your CoffeeScript tests go into. You define the Rails 3.1
 asset pipeline manifest in `spec/javascripts/spec.js.coffee`:
 
 ```coffeescript
+#=require application
 #=require_tree ./
 ```
+
+It also creates an empty `spec/javascripts/spec.css` file as it is always requested when running specs.
+
+Now you can access `/jasmine` url when you start rails server normally.
 
 ## Rails 2 & Rails 3 setup
 
