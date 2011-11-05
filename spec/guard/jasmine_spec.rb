@@ -34,7 +34,7 @@ describe Guard::Jasmine do
       end
 
       it 'sets a default :phantomjs_bin option' do
-        guard.options[:phantomjs_bin].should eql '/usr/local/bin/phantomjs'
+        guard.options[:phantomjs_bin].should eql `which phantomjs`.chomp
       end
 
       it 'sets a default :timeout option' do
