@@ -16,7 +16,18 @@ waitFor = (test, ready, timeout = 5000) ->
         condition = test()
       else
         if not condition
-          console.log JSON.stringify({ error: 'Timeout requesting Jasmine test runner!' })
+          text = page.evaluate -> document.getElementsByTagName('body')[0]?.innerText
+
+          if text
+            error = """
+                    Timeout waiting for the Jasmine test results!
+
+                    #{ text }
+                    """
+            console.log JSON.stringify({ error: error })
+          else
+            console.log JSON.stringify({ error: 'Timeout waiting for the Jasmine test results!' })
+
           phantom.exit(1)
         else
           ready()
