@@ -101,7 +101,6 @@ end
 ```
 
 And run following from the Terminal:
-Or here's do a quick setup:
 ```bash
 mkdir -p spec/javascripts
 echo -e "#=require application\n#=require_tree ./" > spec/javascripts/spec.js.coffee
