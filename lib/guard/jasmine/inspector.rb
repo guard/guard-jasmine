@@ -53,7 +53,7 @@ module Guard
         # @return [Array<String>] the valid files
         #
         def jasmine_specs
-          @jasmine_specs ||= Dir.glob('spec/**/*_spec.{js,js.coffee}')
+          @jasmine_specs ||= Dir.glob('spec/**/*_spec.{js,coffee,js.coffee}')
         end
 
       end
