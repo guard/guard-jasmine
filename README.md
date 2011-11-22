@@ -2,7 +2,7 @@
 
 Guard::Jasmine automatically tests your Jasmine specs on Rails when files are modified.
 
-Tested on MRI Ruby 1.8.7, 1.9.2, 1.9.3, REE and the latest versions of JRuby & Rubinius.
+Tested on MRI Ruby 1.8.7, 1.9.2, 1.9.3, REE, JRuby 1.6.5 & Rubinius 1.2.4.
 
 If you have any questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
 (irc.freenode.net).
@@ -426,6 +426,7 @@ $ guard-jasmine-debug http://127.0.0.1:3000/Jasmine?spec=YourSpec
 ```
 ## Contributors
 
+* [Damien Mathieu](https://github.com/dmathieu)
 * [Dmytrii Nagirniak](https://github.com/dnagir)
 
 ## Acknowledgment
