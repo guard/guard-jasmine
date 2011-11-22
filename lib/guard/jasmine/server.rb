@@ -50,7 +50,7 @@ module Guard
 
           self.thread = Thread.new {
             ENV['RAILS_ENV'] = 'test'
-            Rack::Server.start(:config => 'config.ru', :Port => port, :AccessLog => [], :environment => 'test')
+            Rack::Server.start(:config => 'config.ru', :Port => port, :AccessLog => [])
           }
 
         rescue Exception => e
