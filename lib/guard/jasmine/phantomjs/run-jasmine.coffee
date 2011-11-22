@@ -38,7 +38,7 @@ waitFor = (test, ready, timeout = 5000) ->
 # Test if the specs have finished.
 #
 specsReady = ->
-  page.evaluate -> if document.body.querySelector('.finished-at') then true else false
+  page.evaluate -> window.resultReceived
 
 #
 # SCRIPT START
@@ -84,6 +84,7 @@ page.onConsoleMessage = (msg, line, source) ->
       page.addLogs(suite)
 
     console.log JSON.stringify(result, undefined, 2)
+    page.evaluate -> window.resultReceived = true
 
   else if /^SPEC_START: (\d+)$/.test(msg)
     currentSpecId = Number(RegExp.$1)
@@ -227,6 +228,7 @@ page.onInitialized = ->
     # Attach the console reporter when the document is ready.
     #
     window.onload = ->
+      window.resultReceived = false
       jasmine.getEnv().addReporter(new ConsoleReporter())
 
 # Open web page and run the Jasmine test runner
