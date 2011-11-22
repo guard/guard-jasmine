@@ -164,9 +164,13 @@ module Guard
             result
 
           rescue Exception => e
-            Formatter.error("Cannot decode JSON from PhantomJS runner: #{ e.message }")
-            Formatter.error('Please report an issue at: https://github.com/netzpirat/guard-jasmine/issues')
-            Formatter.error("JSON response: #{ json }")
+            if json == ''
+              Formatter.error("No response from the Jasmine runner!")
+            else
+              Formatter.error("Cannot decode JSON from PhantomJS runner: #{ e.message }")
+              Formatter.error('Please report an issue at: https://github.com/netzpirat/guard-jasmine/issues')
+              Formatter.error("JSON response: #{ json }")
+            end
           ensure
             output.close
           end
