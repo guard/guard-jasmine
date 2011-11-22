@@ -1,6 +1,6 @@
 module Guard
   module JasmineVersion
     # Guard::Jasmine version that is used for the Gem specification
-    VERSION = '0.8.3'
+    VERSION = '0.8.4'
   end
 end
