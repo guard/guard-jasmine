@@ -48,7 +48,10 @@ module Guard
 
           ::Guard::UI.info "Guard::Jasmine starts Rack test server on port #{ port }."
 
-          self.thread = Thread.new { Rack::Server.start(:config => 'config.ru', :Port => port, :AccessLog   => []) }
+          self.thread = Thread.new {
+            ENV['RAILS_ENV'] = 'test'
+            Rack::Server.start(:config => 'config.ru', :Port => port, :AccessLog   => [], :environment => 'test')
+          }
 
         rescue Exception => e
           ::Guard::UI.error "Cannot start Rack server: #{ e.message }"
