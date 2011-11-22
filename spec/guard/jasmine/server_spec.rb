@@ -20,12 +20,12 @@ describe Guard::Jasmine::Server do
 
       it 'chooses the rack server strategy' do
         server.should_receive(:start_rack_server)
-        server.start(:auto, 8888)
+        server.start(:auto, 8888, 'test')
       end
 
       it 'does wait for the server' do
         server.should_receive(:wait_for_server)
-        server.start(:auto, 8888)
+        server.start(:auto, 8888, 'test')
       end
     end
 
@@ -37,12 +37,12 @@ describe Guard::Jasmine::Server do
 
       it 'chooses the jasmine_gem server strategy' do
         server.should_receive(:start_jasmine_gem_server)
-        server.start(:auto, 8888)
+        server.start(:auto, 8888, 'test')
       end
 
       it 'does wait for the server' do
         server.should_receive(:wait_for_server)
-        server.start(:auto, 8888)
+        server.start(:auto, 8888, 'test')
       end
     end
 
@@ -56,7 +56,7 @@ describe Guard::Jasmine::Server do
         server.should_not_receive(:start_rack_server)
         server.should_not_receive(:start_jasmine_gem_server)
         server.should_not_receive(:wait_for_server)
-        server.start(:auto, 8888)
+        server.start(:auto, 8888, 'test')
       end
     end
   end
@@ -64,38 +64,38 @@ describe Guard::Jasmine::Server do
   context 'with the :rack strategy' do
     it 'does not auto detect a server' do
       server.should_not_receive(:detect_server)
-      server.start(:rack, 8888)
+      server.start(:rack, 8888, 'test')
     end
 
     it 'does wait for the server' do
       server.should_receive(:wait_for_server)
-      server.start(:rack, 8888)
+      server.start(:rack, 8888, 'test')
     end
   end
 
   context 'with the :jasmine_gem strategy' do
     it 'does not auto detect a server' do
       server.should_not_receive(:detect_server)
-      server.start(:jasmine_gem, 8888)
+      server.start(:jasmine_gem, 8888, 'test')
     end
 
     it 'does wait for the server' do
       server.should_receive(:wait_for_server)
-      server.start(:jasmine_gem, 8888)
+      server.start(:jasmine_gem, 8888, 'test')
     end
   end
 
   context 'with the :none strategy' do
     it 'does not auto detect a server' do
       server.should_not_receive(:detect_server)
-      server.start(:none, 8888)
+      server.start(:none, 8888, 'test')
     end
 
     it 'does not start a server' do
       server.should_not_receive(:start_rack_server)
       server.should_not_receive(:start_jasmine_gem_server)
       server.should_not_receive(:wait_for_server)
-      server.start(:none, 8888)
+      server.start(:none, 8888, 'test')
     end
   end
 

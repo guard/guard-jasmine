@@ -215,6 +215,9 @@ The general options configures the environment that is needed to run Guard::Jasm
 :server => :jasmine_gem                       # Jasmine server to use, either :auto, :rack, :jasmine_gem or :none
                                               # default: :auto
 
+:server_env => :development                   # Jasmine server Rails environment to set, e.g. :development or :test
+                                              # default: :test
+
 :port => 9292                                 # Jasmine server port to use.
                                               # default: 8888
 

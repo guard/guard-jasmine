@@ -15,13 +15,14 @@ module Guard
         #
         # @param [String] strategy the server strategy to use
         # @param [Number] port the server port
+        # @param [String] environment the Rails environment
         #
-        def start(strategy, port)
+        def start(strategy, port, environment)
           strategy = detect_server if strategy == :auto
 
           case strategy
           when :rack
-            start_rack_server(port)
+            start_rack_server(port, environment)
           when :jasmine_gem
             start_jasmine_gem_server(port)
           end
@@ -42,14 +43,15 @@ module Guard
         # in the current directory.
         #
         # @param [Number] port the server port
+        # @param [String] environment the Rails environment
         #
-        def start_rack_server(port)
+        def start_rack_server(port, environment)
           require 'rack'
 
           ::Guard::UI.info "Guard::Jasmine starts Rack test server on port #{ port }."
 
           self.thread = Thread.new {
-            ENV['RAILS_ENV'] = 'test'
+            ENV['RAILS_ENV'] = environment.to_s
             Rack::Server.start(:config => 'config.ru', :Port => port, :AccessLog => [])
           }
 
