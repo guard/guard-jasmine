@@ -27,7 +27,7 @@ describe Guard::Jasmine do
       end
 
       it 'sets a default :server option' do
-        guard.options[:server_env].should eql 'test'
+        guard.options[:server_env].should eql 'development'
       end
 
       it 'sets a default :port option' do
@@ -94,7 +94,7 @@ describe Guard::Jasmine do
 
     context 'with other options than the default ones' do
       let(:guard) { Guard::Jasmine.new(nil, { :server           => :jasmine_gem,
-                                              :server_env       => 'development',
+                                              :server_env       => 'test',
                                               :port             => 4321,
                                               :jasmine_url      => 'http://192.168.1.5/jasmine',
                                               :phantomjs_bin    => '~/bin/phantomjs',
@@ -114,7 +114,7 @@ describe Guard::Jasmine do
       end
 
       it 'sets the :server_env option' do
-        guard.options[:server_env].should eql 'development'
+        guard.options[:server_env].should eql 'test'
       end
 
       it 'sets the :jasmine_url option' do

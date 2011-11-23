@@ -20,7 +20,7 @@ module Guard
 
     DEFAULT_OPTIONS = {
         :server           => :auto,
-        :server_env       => 'test',
+        :server_env       => 'development',
         :port             => 8888,
         :jasmine_url      => 'http://localhost:8888/jasmine',
         :timeout          => 10000,

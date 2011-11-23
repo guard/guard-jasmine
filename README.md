@@ -215,8 +215,8 @@ The general options configures the environment that is needed to run Guard::Jasm
 :server => :jasmine_gem                       # Jasmine server to use, either :auto, :rack, :jasmine_gem or :none
                                               # default: :auto
 
-:server_env => :development                   # Jasmine server Rails environment to set, e.g. :development or :test
-                                              # default: :test
+:server_env => :test                          # Jasmine server Rails environment to set, e.g. :development or :test
+                                              # default: :development
 
 :port => 9292                                 # Jasmine server port to use.
                                               # default: 8888
@@ -234,6 +234,10 @@ If you're setting the `:server` option to `:none`, you can supply the Jasmine ru
 :jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
                                               # default: http://127.0.0.1:8888/jasmine
 ```
+
+The reason why the Server environment is set to `development` by default is that in development mode
+the asset pipeline doesn't concatenate the JavaScripts and you'll see the line number in the real file,
+instead of a ridiculous high line number in a single, very large JavaScript.
 
 ### Spec runner options
 
