@@ -315,6 +315,20 @@ These options affects what system notifications (growl, libnotify or notifu) are
                                               # default: 3
 ```
 
+## Mapping file changes to the spec filter
+
+Jasmine doesn't know anything about your test files, it only knows the name of your specs that you specify in the
+`describe` function. When a file change is detected, Guard::Jasmine extracts the first spec name of the file and uses
+that spec description as spec filter.
+
+So if you want to have a precise spec detection, you should:
+
+* Use only one top-level description per spec file.
+* Make each top-level description unique.
+
+To get a feeling how your naming strategy works, play with the web based Jasmine runner and modify the `spec` query
+parameter.
+
 ## Guard::Jasmine for your CI server
 
 Guard::Jasmine includes a little command line utility to run your specs once and output the specdoc to the console.
