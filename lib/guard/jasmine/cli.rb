@@ -56,6 +56,12 @@ module Guard
                     :default => 'failure',
                     :desc => 'Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`'
 
+      method_option :server_env,
+                    :type => :string,
+                    :aliases => '-e',
+                    :default => 'development',
+                    :desc => 'The server environment to use, for example `development`, `test` etc.'
+
       # Run the Guard::Jasmine::Runner with options from
       # the command line.
       #
@@ -69,6 +75,7 @@ module Guard
         runner[:phantomjs_bin] = options.bin
         runner[:timeout] = options.timeout
         runner[:port] = options.port
+        runner[:server_env] = options.server_env
         runner[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
         runner[:server] = [:auto, :rack, :jasmine_gem, :none].include?(options.server.to_sym) ? options.server.to_sym : :auto
 
@@ -77,7 +84,7 @@ module Guard
         runner[:max_error_notify] = 0
         runner[:specdoc] = :always
 
-        ::Guard::Jasmine::Server.start(runner[:server], runner[:port]) unless runner[:server] == :none
+        ::Guard::Jasmine::Server.start(runner[:server], runner[:port], runner[:server_env]) unless runner[:server] == :none
         result = ::Guard::Jasmine::Runner.run(paths, runner)
 
         ::Guard::Jasmine::Server.stop
