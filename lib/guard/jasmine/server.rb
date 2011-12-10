@@ -1,5 +1,7 @@
 # coding: utf-8
 
+require 'jasmine'
+
 module Guard
   class Jasmine
 
