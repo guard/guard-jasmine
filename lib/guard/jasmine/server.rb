@@ -1,7 +1,5 @@
 # coding: utf-8
 
-require 'jasmine'
-
 module Guard
   class Jasmine
 
@@ -66,6 +64,7 @@ module Guard
         # @param [Number] port the server port
         #
         def start_jasmine_gem_server(port)
+          require 'jasmine'
           require 'jasmine/config'
 
           jasmine_config_overrides = File.join(::Jasmine::Config.new.project_root, 'spec', 'javascripts' ,'support' ,'jasmine_config.rb')
