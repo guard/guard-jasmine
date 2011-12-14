@@ -234,6 +234,7 @@ page.onInitialized = ->
 # Open web page and run the Jasmine test runner
 #
 page.open url, (status) ->
+  page.onLoadFinished = ->
   if status isnt 'success'
     console.log JSON.stringify({ error: "Unable to access Jasmine specs at #{ url }" })
     phantom.exit()
