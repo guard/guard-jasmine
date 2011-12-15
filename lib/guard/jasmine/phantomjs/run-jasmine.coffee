@@ -234,7 +234,9 @@ page.onInitialized = ->
 # Open web page and run the Jasmine test runner
 #
 page.open url, (status) ->
+  # Avoid that a failed iframe load breaks the runner, see https://github.com/netzpirat/guard-jasmine/pull/19
   page.onLoadFinished = ->
+
   if status isnt 'success'
     console.log JSON.stringify({ error: "Unable to access Jasmine specs at #{ url }" })
     phantom.exit()
