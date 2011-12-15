@@ -447,6 +447,7 @@ $ guard-jasmine-debug http://127.0.0.1:3000/Jasmine?spec=YourSpec
 ```
 ## Contributors
 
+* [Aaron Pfeifer](https://github.com/obrie)
 * [Damien Mathieu](https://github.com/dmathieu)
 * [David Cuddeback](https://github.com/dcuddeback)
 * [Dmytrii Nagirniak](https://github.com/dnagir)
