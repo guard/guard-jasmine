@@ -212,7 +212,7 @@ end
 The general options configures the environment that is needed to run Guard::Jasmine:
 
 ```ruby
-:server => :jasmine_gem                       # Jasmine server to use, either :auto, :rack, :jasmine_gem or :none
+:server => :jasmine_gem                       # Jasmine server to use, either :auto, :none, :webrick, :mongrel, :thin, :jasmine_gem
                                               # default: :auto
 
 :server_env => :test                          # Jasmine server Rails environment to set, e.g. :development or :test
@@ -234,6 +234,9 @@ If you're setting the `:server` option to `:none`, you can supply the Jasmine ru
 :jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
                                               # default: http://127.0.0.1:8888/jasmine
 ```
+
+Detecting the server with the `auto` option does only detect the jasmine gem or webrick. If you want to use mongrel or
+thins, you have to set it explicit in the server option.
 
 The reason why the Server environment is set to `development` by default is that in development mode
 the asset pipeline doesn't concatenate the JavaScripts and you'll see the line number in the real file,
@@ -344,7 +347,7 @@ Usage:
   guard-jasmine spec
 
 Options:
-  -s, [--server=SERVER]    # Server to start, either `auto`, `rack`, `jasmine_gem` or `none`
+  -s, [--server=SERVER]    # Server to start, either `auto`, `none`, `webrick`, `mongrel`, `thin`, `jasmine_gem`
                            # Default: auto
   -p, [--port=N]           # Server port to use
                            # Default: 8888

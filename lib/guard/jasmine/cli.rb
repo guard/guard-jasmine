@@ -77,7 +77,7 @@ module Guard
         runner[:port] = options.port
         runner[:server_env] = options.server_env
         runner[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
-        runner[:server] = [:auto, :rack, :jasmine_gem, :none].include?(options.server.to_sym) ? options.server.to_sym : :auto
+        runner[:server] = [:auto, :none, :webrick, :mongrel, :thin, :jasmine_gem].include?(options.server.to_sym) ? options.server.to_sym : :auto
 
         runner[:notification] = false
         runner[:hide_success] = true

@@ -61,15 +61,39 @@ describe Guard::Jasmine::Server do
     end
   end
 
-  context 'with the :rack strategy' do
+  context 'with the :thin strategy' do
     it 'does not auto detect a server' do
       server.should_not_receive(:detect_server)
-      server.start(:rack, 8888, 'test')
+      server.start(:thin, 8888, 'test')
     end
 
     it 'does wait for the server' do
       server.should_receive(:wait_for_server)
-      server.start(:rack, 8888, 'test')
+      server.start(:thin, 8888, 'test')
+    end
+  end
+
+  context 'with the :mongrel strategy' do
+    it 'does not auto detect a server' do
+      server.should_not_receive(:detect_server)
+      server.start(:mongrel, 8888, 'test')
+    end
+
+    it 'does wait for the server' do
+      server.should_receive(:wait_for_server)
+      server.start(:mongrel, 8888, 'test')
+    end
+  end
+
+  context 'with the :webrick strategy' do
+    it 'does not auto detect a server' do
+      server.should_not_receive(:detect_server)
+      server.start(:webrick, 8888, 'test')
+    end
+
+    it 'does wait for the server' do
+      server.should_receive(:wait_for_server)
+      server.start(:webrick, 8888, 'test')
     end
   end
 

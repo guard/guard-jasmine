@@ -18,8 +18,8 @@ describe Guard::Jasmine::CLI do
     context 'with specified options' do
       context 'for the server' do
         it 'sets the server type' do
-          server.should_receive(:start).with(:rack, 8888, 'development')
-          cli.start(['spec', '--server', 'rack'])
+          server.should_receive(:start).with(:thin, 8888, 'development')
+          cli.start(['spec', '--server', 'thin'])
         end
 
         it 'sets the server port' do

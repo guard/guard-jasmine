@@ -179,7 +179,7 @@ describe Guard::Jasmine do
     end
 
     context 'with illegal options' do
-      let(:guard) { Guard::Jasmine.new(nil, defaults.merge({ :specdoc => :wrong, :server => :thin })) }
+      let(:guard) { Guard::Jasmine.new(nil, defaults.merge({ :specdoc => :wrong, :server => :unknown })) }
 
       it 'sets default :specdoc option' do
         guard.options[:specdoc].should eql :failure

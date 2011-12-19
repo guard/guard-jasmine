@@ -21,8 +21,8 @@ module Guard
           strategy = detect_server if strategy == :auto
 
           case strategy
-          when :rack
-            start_rack_server(port, environment)
+          when :webrick, :mongrel, :thin
+            start_rack_server(port, environment, strategy)
           when :jasmine_gem
             start_jasmine_gem_server(port)
           end
@@ -44,15 +44,16 @@ module Guard
         #
         # @param [Number] port the server port
         # @param [String] environment the Rails environment
+        # @param [Symbol] server the rack server to use
         #
-        def start_rack_server(port, environment)
+        def start_rack_server(port, environment, server)
           require 'rack'
 
           ::Guard::UI.info "Guard::Jasmine starts Rack test server on port #{ port } in #{ environment } environment."
 
           self.thread = Thread.new {
             ENV['RAILS_ENV'] = environment.to_s
-            Rack::Server.start(:config => 'config.ru', :Port => port, :AccessLog => [])
+            Rack::Server.start(:config => 'config.ru', :Port => port, :server => server)
           }
 
         rescue Exception => e
@@ -84,7 +85,7 @@ module Guard
         #
         def detect_server
           if File.exists?('config.ru')
-            :rack
+            :webrick
           elsif File.exists?(File.join('spec', 'javascripts', 'support', 'jasmine.yml'))
             :jasmine_gem
           else
