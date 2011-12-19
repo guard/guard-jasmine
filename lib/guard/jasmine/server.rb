@@ -49,7 +49,7 @@ module Guard
         def start_rack_server(port, environment, server)
           require 'rack'
 
-          ::Guard::UI.info "Guard::Jasmine starts Rack test server on port #{ port } in #{ environment } environment."
+          ::Guard::UI.info "Guard::Jasmine starts #{ server } test server on port #{ port } in #{ environment } environment."
 
           self.thread = Thread.new {
             ENV['RAILS_ENV'] = environment.to_s
