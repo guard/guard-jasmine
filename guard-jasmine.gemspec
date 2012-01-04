@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Michael Kessler']
   s.email       = ['michi@netzpiraten.ch']
-  s.homepage    = 'http://github.com/netzpirat/guard-jasmine'
+  s.homepage    = 'https://github.com/netzpirat/guard-jasmine'
   s.summary     = 'Guard gem for headless testing with Jasmine'
   s.description = 'Guard::Jasmine automatically tests your Jasmine specs on PhantomJS'
 
@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'guard',      '>= 0.8.3'
   s.add_dependency 'multi_json', '~> 1.0.3'
-  s.add_dependency 'version',    '~> 1.0.0'
+  # s.add_dependency 'version',    '~> 1.0.0'
   s.add_dependency 'thor',       '~> 0.14.6'
   s.add_dependency 'rack',       '~> 1.3.5'
 
