@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'guard',      '>= 0.8.3'
   s.add_dependency 'multi_json', '~> 1.0.3'
-  # s.add_dependency 'version',    '~> 1.0.0'
   s.add_dependency 'thor',       '~> 0.14.6'
   s.add_dependency 'rack',       '~> 1.3.5'
 
