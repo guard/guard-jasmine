@@ -3,6 +3,8 @@ source :rubygems
 gemspec
 
 gem 'rake'
+
+gem 'rack'
 gem 'jasmine'
 
 platform :ruby do

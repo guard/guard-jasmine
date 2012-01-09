@@ -1,5 +1,7 @@
 # coding: utf-8
 
+require 'childprocess'
+
 module Guard
   class Jasmine
 
@@ -9,7 +11,7 @@ module Guard
     module Server
       class << self
 
-        attr_accessor :thread
+        attr_accessor :process
 
         # Start the internal test server for getting the Jasmine runner.
         #
@@ -33,7 +35,13 @@ module Guard
         # Stop the server thread.
         #
         def stop
-          self.thread.kill if self.thread && self.thread.alive?
+          ::Guard::UI.info "Guard::Jasmine stops server."
+
+          begin
+            self.process.poll_for_exit(5)
+          rescue ChildProcess::TimeoutError
+            self.process.stop
+          end
         end
 
         private
@@ -47,14 +55,11 @@ module Guard
         # @param [Symbol] server the rack server to use
         #
         def start_rack_server(port, environment, server)
-          require 'rack'
-
           ::Guard::UI.info "Guard::Jasmine starts #{ server } test server on port #{ port } in #{ environment } environment."
 
-          self.thread = Thread.new {
-            ENV['RAILS_ENV'] = environment.to_s
-            Rack::Server.start(:config => 'config.ru', :Port => port, :server => server, :AccessLog => [])
-          }
+          self.process = ChildProcess.build('rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s)
+          self.process.io.inherit! if ::Guard.options[:verbose]
+          self.process.start
 
         rescue Exception => e
           ::Guard::UI.error "Cannot start Rack server: #{ e.message }"
@@ -65,15 +70,11 @@ module Guard
         # @param [Number] port the server port
         #
         def start_jasmine_gem_server(port)
-          require 'jasmine'
-          require 'jasmine/config'
-
-          jasmine_config_overrides = File.join(::Jasmine::Config.new.project_root, 'spec', 'javascripts' ,'support' ,'jasmine_config.rb')
-          require jasmine_config_overrides if File.exist?(jasmine_config_overrides)
-
           ::Guard::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
 
-          self.thread = Thread.new { ::Jasmine::Config.new.start_server(port) }
+          self.process = ChildProcess.build('rake', 'jasmine', "JASMINE_PORT=#{ port }")
+          self.process.io.inherit! if ::Guard.options[:verbose]
+          self.process.start
 
         rescue Exception => e
           ::Guard::UI.error "Cannot start Jasmine Gem server: #{ e.message }"
@@ -103,7 +104,7 @@ module Guard
           while true
             begin
               ::TCPSocket.new('127.0.0.1', port).close
-              return
+              break
             rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
               # Ignore, server still not available
             end
