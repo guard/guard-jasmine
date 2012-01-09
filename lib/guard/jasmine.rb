@@ -2,7 +2,6 @@ require 'guard'
 require 'guard/guard'
 require 'guard/watcher'
 require 'net/http'
-require 'version'
 
 module Guard
 
@@ -182,7 +181,7 @@ module Guard
 
         if !version
           notify_failure('PhantomJS executable missing', "PhantomJS executable doesn't exist at #{ bin }")
-        elsif version.to_version < '1.3.0'.to_version
+        elsif Gem::Version.new(version) < Gem::Version.new('1.3.0')
           notify_failure('Wrong PhantomJS version', "PhantomJS executable at #{ bin } must be at least version 1.3.0")
         else
           true
