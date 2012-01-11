@@ -178,15 +178,18 @@ module Guard
     def phantomjs_bin_valid?(bin)
       if bin && !bin.empty?
         version = `#{ bin } --version`
-        # remove all but version from "1.5 (development)"
-        version = version.match(/(\d\.\d)/)[0]
 
-        if !version
-          notify_failure('PhantomJS executable missing', "PhantomJS executable doesn't exist at #{ bin }")
-        elsif Gem::Version.new(version) < Gem::Version.new('1.3.0')
-          notify_failure('Wrong PhantomJS version', "PhantomJS executable at #{ bin } must be at least version 1.3.0")
+        if version
+          # Remove all but version, e.g. from '1.5 (development)'
+          version = version.match(/(\d\.)*(\d)/)[0]
+
+          if Gem::Version.new(version) < Gem::Version.new('1.3.0')
+            notify_failure('Wrong PhantomJS version', "PhantomJS executable at #{ bin } must be at least version 1.3.0")
+          else
+            true
+          end
         else
-          true
+          notify_failure('PhantomJS executable missing', "PhantomJS executable doesn't exist at #{ bin }")
         end
       else
         notify_failure('PhantomJS executable missing', "PhantomJS executable couldn't be auto detected.")
