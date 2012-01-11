@@ -178,6 +178,8 @@ module Guard
     def phantomjs_bin_valid?(bin)
       if bin && !bin.empty?
         version = `#{ bin } --version`
+        # remove all but version from "1.5 (development)"
+        version = version.match(/(\d\.\d)/)[0]
 
         if !version
           notify_failure('PhantomJS executable missing', "PhantomJS executable doesn't exist at #{ bin }")
