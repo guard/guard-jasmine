@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Guard::Jasmine::Inspector do
   before do
     File.stub(:exists?) do |file|
-      puts "Exists #{ file }"
       ['spec/javascripts/a_spec.js.coffee', 'spec/javascripts/b_spec.js', 'c_spec.coffee'].include?(file)
     end
   end
