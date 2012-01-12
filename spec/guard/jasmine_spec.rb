@@ -464,16 +464,11 @@ describe Guard::Jasmine do
     let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/Users/michi/.bin/phantomjs' }) }
 
     it 'passes the paths to the Inspector for cleanup' do
-      inspector.should_receive(:clean).twice.with(['spec/javascripts/a.js.coffee',
+      inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
                                                    'spec/javascripts/b.js.coffee'])
 
       guard.run_on_change(['spec/javascripts/a.js.coffee',
                            'spec/javascripts/b.js.coffee'])
-    end
-
-    it 'clears the inspector' do
-      inspector.should_receive(:clear)
-      guard.run_on_change(['spec/javascripts/b.js.coffee'])
     end
 
     it 'returns false when no valid paths are passed' do
@@ -482,7 +477,7 @@ describe Guard::Jasmine do
     end
 
     it 'starts the Runner with the cleaned files' do
-      inspector.should_receive(:clean).twice.with(['spec/javascripts/a.js.coffee',
+      inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
                                                    'spec/javascripts/b.js.coffee']).and_return ['spec/javascripts/a.js.coffee']
 
       runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], defaults.merge({ :phantomjs_bin => '/Users/michi/.bin/phantomjs' })).and_return [['spec/javascripts/a.js.coffee'], true]

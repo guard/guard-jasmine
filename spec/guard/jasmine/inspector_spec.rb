@@ -2,7 +2,10 @@ require 'spec_helper'
 
 describe Guard::Jasmine::Inspector do
   before do
-    Dir.stub(:glob).and_return ['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js', 'c.coffee']
+    File.stub(:exists?) do |file|
+      puts "Exists #{ file }"
+      ['spec/javascripts/a_spec.js.coffee', 'spec/javascripts/b_spec.js', 'c_spec.coffee'].include?(file)
+    end
   end
 
   subject { Guard::Jasmine::Inspector }
@@ -13,19 +16,19 @@ describe Guard::Jasmine::Inspector do
     end
 
     it 'removes duplicate files' do
-      subject.clean(['spec/javascripts/a.js.coffee', 'spec/javascripts/a.js.coffee']).should == ['spec/javascripts/a.js.coffee']
+      subject.clean(['spec/javascripts/a_spec.js.coffee', 'spec/javascripts/a_spec.js.coffee']).should == ['spec/javascripts/a_spec.js.coffee']
     end
 
     it 'remove nil files' do
-      subject.clean(['spec/javascripts/a.js.coffee', nil]).should == ['spec/javascripts/a.js.coffee']
+      subject.clean(['spec/javascripts/a_spec.js.coffee', nil]).should == ['spec/javascripts/a_spec.js.coffee']
     end
 
     it 'removes files that are no javascript specs' do
-      subject.clean(['spec/javascripts/a.js.coffee',
-                     'spec/javascripts/b.js',
+      subject.clean(['spec/javascripts/a_spec.js.coffee',
+                     'spec/javascripts/b_spec.js',
                      'app/assets/javascripts/a.js.coffee',
                      'b.txt',
-                     'c.coffee']).should == ['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js', 'c.coffee']
+                     'c_spec.coffee']).should == ['spec/javascripts/a_spec.js.coffee', 'spec/javascripts/b_spec.js', 'c_spec.coffee']
     end
 
   end

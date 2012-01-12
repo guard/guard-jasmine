@@ -28,12 +28,6 @@ module Guard
           paths
         end
 
-        # Clears the list of Jasmine specs in this project.
-        #
-        def clear
-          @jasmine_specs = nil
-        end
-
         private
 
         # Tests if the file is valid.
@@ -42,18 +36,7 @@ module Guard
         # @return [Boolean] when the file valid
         #
         def jasmine_spec?(path)
-          jasmine_specs.include?(path)
-        end
-
-        # Scans the project and keeps a list of all
-        # JavaScript and CoffeeScript files in the `spec`
-        # directory.
-        #
-        # @see .clear
-        # @return [Array<String>] the valid files
-        #
-        def jasmine_specs
-          @jasmine_specs ||= Dir.glob('spec/**/*_spec.{js,coffee,js.coffee}')
+          path =~ /_spec\.(js|coffee|js\.coffee)$/ && File.exists?(path)
         end
 
       end

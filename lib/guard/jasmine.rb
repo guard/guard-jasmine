@@ -120,12 +120,12 @@ module Guard
     # @raise [:task_has_failed] when run_on_change has failed
     #
     def run_on_change(paths)
-      return false if Inspector.clean(paths).empty?
+      specs = Inspector.clean(paths)
+      return false if specs.empty?
 
-      paths += self.last_failed_paths if options[:keep_failed]
+      specs += self.last_failed_paths if options[:keep_failed]
 
-      passed, failed_specs = Runner.run(Inspector.clean(paths), options)
-      Inspector.clear
+      passed, failed_specs = Runner.run(specs, options)
 
       if passed
         self.last_failed_paths = self.last_failed_paths - paths
