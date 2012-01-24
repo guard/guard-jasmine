@@ -162,7 +162,7 @@ module Guard
           response.code.to_i == 200
         end
 
-      rescue Errno::ECONNREFUSED => e
+      rescue
         notify_failure("Jasmine test runner isn't available", "Jasmine test runner isn't available at #{ url }")
 
         false
