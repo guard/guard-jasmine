@@ -16,13 +16,13 @@ Gem::Specification.new do |s|
   s.rubyforge_project = 'guard-jasmine'
 
   s.add_dependency 'guard',        '>= 0.8.3'
-  s.add_dependency 'multi_json',   '~> 1.0.3'
-  s.add_dependency 'childprocess', '~> 0.2.8'
+  s.add_dependency 'multi_json'
+  s.add_dependency 'childprocess'
   s.add_dependency 'thor'
 
-  s.add_development_dependency 'bundler',     '~> 1.0'
-  s.add_development_dependency 'guard-rspec', '~> 0.6'
-  s.add_development_dependency 'rspec',       '~> 2.8'
+  s.add_development_dependency 'bundler'
+  s.add_development_dependency 'guard-rspec'
+  s.add_development_dependency 'rspec'
   s.add_development_dependency 'yard'
   s.add_development_dependency 'redcarpet'
   s.add_development_dependency 'pry'
