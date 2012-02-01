@@ -89,7 +89,7 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def stop
-      Server.stop
+      Server.stop unless options[:server] == :none
     end
 
     # Gets called when the Guard should reload itself.

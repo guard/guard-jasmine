@@ -398,9 +398,22 @@ describe Guard::Jasmine do
   end
 
   describe '.stop' do
-    it 'stops the server' do
-      server.should_receive(:stop)
-      guard.stop
+    context 'with a configured server' do
+      let(:guard) { Guard::Jasmine.new(nil, { :server => :thin }) }
+
+      it 'stops the server' do
+        server.should_receive(:stop)
+        guard.stop
+      end
+    end
+
+    context 'without a configured server' do
+      let(:guard) { Guard::Jasmine.new(nil, { :server => :none }) }
+
+      it 'does not stop the server' do
+        server.should_not_receive(:stop)
+        guard.stop
+      end
     end
   end
 
