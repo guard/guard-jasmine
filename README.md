@@ -18,7 +18,7 @@ various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 * Runs the standard Jasmine test runner, so you can use [Jasminerice][] for integrating [Jasmine][] into the
 [Rails 3.1 asset pipeline][] and write your specs in [CoffeeScript][].
 
-* Command line helper for CI server integration.
+* Thor and Rake command line helper for CI server integration.
 
 * Runs on Mac OS X, Linux and Windows.
 
@@ -332,7 +332,9 @@ So if you want to have a precise spec detection, you should:
 To get a feeling how your naming strategy works, play with the web based Jasmine runner and modify the `spec` query
 parameter.
 
-## Guard::Jasmine for your CI server
+## Guard::Jasmine outside of Guard
+
+### Thor command line utility
 
 Guard::Jasmine includes a little command line utility to run your specs once and output the specdoc to the console.
 
@@ -343,22 +345,26 @@ $ guard-jasmine
 You can get help on the available options with the `help` task:
 
 ```bash
+$ guard-jasmine help spec
+
 Usage:
   guard-jasmine spec
 
 Options:
-  -s, [--server=SERVER]    # Server to start, either `auto`, `none`, `webrick`, `mongrel`, `thin`, `jasmine_gem`
-                           # Default: auto
-  -p, [--port=N]           # Server port to use
-                           # Default: 8888
-  -u, [--url=URL]          # The url of the Jasmine test runner
-                           # Default: http://127.0.0.1:8888/jasmine
-  -b, [--bin=BIN]          # The location of the PhantomJS binary
-                           # Default: /usr/local/bin/phantomjs
-  -t, [--timeout=N]        # The maximum time in milliseconds to wait for the spec runner to finish
-                           # Default: 10000
-  -c, [--console=CONSOLE]  # Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`
-                           # Default: failure
+  -s, [--server=SERVER]          # Server to start, either `auto`, `none`, `webrick`, `mongrel`, `thin`, `jasmine_gem`
+                                 # Default: auto
+  -p, [--port=N]                 # Server port to use
+                                 # Default: 8888
+  -u, [--url=URL]                # The url of the Jasmine test runner
+                                 # Default: http://127.0.0.1:8888/jasmine
+  -b, [--bin=BIN]                # The location of the PhantomJS binary
+                                 # Default: /usr/local/bin/phantomjs
+  -t, [--timeout=N]              # The maximum time in milliseconds to wait for the spec runner to finish
+                                 # Default: 10000
+  -c, [--console=CONSOLE]        # Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`
+                                 # Default: failure
+  -e, [--server-env=SERVER_ENV]  # The server environment to use, for example `development`, `test` etc.
+                                 # Default: test
 
 Run the Jasmine spec runner
 ```
@@ -367,6 +373,28 @@ By default all specs are run, but you can supply multiple paths to your specs to
 
 ```bash
 $ guard-jasmine spec/javascripts/a_spec.js.coffee spec/javascripts/another_spec.js.coffee
+```
+
+### Rake task integration
+
+Guard::Jasmine provides a Rake task wrapper around the Thor command line utility. Simply create a JasmineTask within
+your `Rakefile`:
+
+```ruby
+require 'guard/jasmine/task'
+Guard::JasmineTask.new
+```
+
+You can configure the CLI options either by providing the options as parameter or use a block:
+
+```ruby
+require 'guard/jasmine/task'
+
+Guard::JasmineTask.new do |task|
+  task.options = '-t 15 -e test'
+end
+
+Guard::JasmineTask.new(:jasmine_no_server, '-s none')
 ```
 
 ### Travis CI integration

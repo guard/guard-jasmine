@@ -18,12 +18,12 @@ describe Guard::Jasmine::CLI do
     context 'with specified options' do
       context 'for the server' do
         it 'sets the server type' do
-          server.should_receive(:start).with(:thin, 8888, 'development')
+          server.should_receive(:start).with(:thin, 8888, 'test')
           cli.start(['spec', '--server', 'thin'])
         end
 
         it 'sets the server port' do
-          server.should_receive(:start).with(:auto, 4321, 'development')
+          server.should_receive(:start).with(:auto, 4321, 'test')
           cli.start(['spec', '--port', '4321'])
         end
       end
@@ -50,8 +50,8 @@ describe Guard::Jasmine::CLI do
         end
 
         it 'sets the server environment' do
-          runner.should_receive(:run).with(anything(), hash_including(:server_env => 'test')).and_return [true, []]
-          cli.start(['spec', '--server_env', 'test'])
+          runner.should_receive(:run).with(anything(), hash_including(:server_env => 'development')).and_return [true, []]
+          cli.start(['spec', '--server_env', 'development'])
         end
 
         context 'for a valid console option' do
@@ -73,7 +73,7 @@ describe Guard::Jasmine::CLI do
     context 'without specified options' do
       context 'for the server' do
         it 'sets the server type' do
-          server.should_receive(:start).with(:auto, 8888, 'development')
+          server.should_receive(:start).with(:auto, 8888, 'test')
           cli.start(['spec'])
         end
       end
@@ -105,7 +105,7 @@ describe Guard::Jasmine::CLI do
         end
 
         it 'sets the server environment' do
-          runner.should_receive(:run).with(anything(), hash_including(:server_env => 'development')).and_return [true, []]
+          runner.should_receive(:run).with(anything(), hash_including(:server_env => 'test')).and_return [true, []]
           cli.start(['spec'])
         end
       end

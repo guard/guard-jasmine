@@ -59,7 +59,7 @@ module Guard
       method_option :server_env,
                     :type => :string,
                     :aliases => '-e',
-                    :default => 'development',
+                    :default => 'test',
                     :desc => 'The server environment to use, for example `development`, `test` etc.'
 
       # Run the Guard::Jasmine::Runner with options from
