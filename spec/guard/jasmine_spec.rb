@@ -290,9 +290,9 @@ describe Guard::Jasmine do
 
       context 'with the server set to something other than :none' do
         before do
-          guard.options[:server] = :jasmine_gem
+          guard.options[:server]     = :jasmine_gem
           guard.options[:server_env] = 'test'
-          guard.options[:port] = 3333
+          guard.options[:port]       = 3333
         end
 
         it 'does start a server' do
@@ -478,7 +478,7 @@ describe Guard::Jasmine do
 
     it 'passes the paths to the Inspector for cleanup' do
       inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                                   'spec/javascripts/b.js.coffee'])
+                                             'spec/javascripts/b.js.coffee'])
 
       guard.run_on_change(['spec/javascripts/a.js.coffee',
                            'spec/javascripts/b.js.coffee'])
@@ -491,7 +491,7 @@ describe Guard::Jasmine do
 
     it 'starts the Runner with the cleaned files' do
       inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                                   'spec/javascripts/b.js.coffee']).and_return ['spec/javascripts/a.js.coffee']
+                                             'spec/javascripts/b.js.coffee']).and_return ['spec/javascripts/a.js.coffee']
 
       runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], defaults.merge({ :phantomjs_bin => '/Users/michi/.bin/phantomjs' })).and_return [['spec/javascripts/a.js.coffee'], true]
 
@@ -503,6 +503,13 @@ describe Guard::Jasmine do
 
       before do
         guard.last_failed_paths = ['spec/javascripts/b.js.coffee']
+      end
+
+      it 'passes the paths to the Inspector for cleanup' do
+        inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
+                                               'spec/javascripts/b.js.coffee'])
+
+        guard.run_on_change(['spec/javascripts/a.js.coffee'])
       end
 
       it 'appends the last failed paths to the current run' do
