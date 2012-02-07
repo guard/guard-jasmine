@@ -403,12 +403,19 @@ With the given `guard-jasmine` script you're able to configure [Travis CI](http:
 Simply use the `script` setting in your `.travis.yml`:
 
 ```yaml
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
 script: 'bundle exec guard-jasmine'
 ```
 
 You can also run your Guard::Jasmine specs after your specs that are ran with `rake` by using `after_script`:
 
 ```yaml
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+script: 'rake spec'
 after_script: 'bundle exec guard-jasmine'
 ```
 
