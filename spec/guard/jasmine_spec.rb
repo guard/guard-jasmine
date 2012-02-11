@@ -192,83 +192,14 @@ describe Guard::Jasmine do
   end
 
   describe '.start' do
-    context 'when not able to detect the PhantomJS executable' do
+    context 'without a valid PhantomJS executable' do
 
       before do
-        Guard::Jasmine.stub(:which).and_return nil
-      end
-
-      it 'shows a message that the executable is missing' do
-        formatter.should_receive(:error).with "PhantomJS executable couldn't be auto detected."
-        expect { guard.start }.to throw_symbol :task_has_failed
+        Guard::Jasmine.stub(:phantomjs_bin_valid?).and_return false
       end
 
       it 'throws :task_has_failed' do
         expect { guard.start }.to throw_symbol :task_has_failed
-      end
-
-      context 'with enabled notifications' do
-        it 'shows a notification that the executable is missing' do
-          formatter.should_receive(:notify).with("PhantomJS executable couldn't be auto detected.",
-                                                 :title    => 'PhantomJS executable missing',
-                                                 :image    => :failed,
-                                                 :priority => 2)
-          expect { guard.start }.to throw_symbol :task_has_failed
-        end
-      end
-    end
-
-    context 'with a missing PhantomJS executable' do
-      let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/tmp' }) }
-
-      before do
-        guard.stub(:`).and_return nil
-      end
-
-      it 'shows a message that the executable is missing' do
-        formatter.should_receive(:error).with "PhantomJS executable doesn't exist at /tmp"
-        expect { guard.start }.to throw_symbol :task_has_failed
-      end
-
-      it 'throws :task_has_failed' do
-        expect { guard.start }.to throw_symbol :task_has_failed
-      end
-
-      context 'with enabled notifications' do
-        it 'shows a notification that the executable is missing' do
-          formatter.should_receive(:notify).with("PhantomJS executable doesn't exist at /tmp",
-                                                 :title    => 'PhantomJS executable missing',
-                                                 :image    => :failed,
-                                                 :priority => 2)
-          expect { guard.start }.to throw_symbol :task_has_failed
-        end
-      end
-    end
-
-    context 'with a wrong PhantomJS version' do
-      let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/usr/local/bin/phantomjs' }) }
-
-      before do
-        guard.stub(:`).and_return '1.2.0'
-      end
-
-      it 'shows a message that the version is wrong' do
-        formatter.should_receive(:error).with "PhantomJS executable at /usr/local/bin/phantomjs must be at least version 1.3.0"
-        expect { guard.start }.to throw_symbol :task_has_failed
-      end
-
-      it 'throws :task_has_failed' do
-        expect { guard.start }.to throw_symbol :task_has_failed
-      end
-
-      context 'with enabled notifications' do
-        it 'shows a notification that the version is wrong' do
-          formatter.should_receive(:notify).with("PhantomJS executable at /usr/local/bin/phantomjs must be at least version 1.3.0",
-                                                 :title    => 'Wrong PhantomJS version',
-                                                 :image    => :failed,
-                                                 :priority => 2)
-          expect { guard.start }.to throw_symbol :task_has_failed
-        end
       end
     end
 
@@ -276,7 +207,7 @@ describe Guard::Jasmine do
       let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/bin/phantomjs' }) }
 
       before do
-        guard.stub(:phantomjs_bin_valid?).and_return true
+        ::Guard::Jasmine.stub(:phantomjs_bin_valid?).and_return true
       end
 
       context 'with the server set to :none' do
@@ -301,67 +232,12 @@ describe Guard::Jasmine do
         end
       end
 
-      context 'with the Jasmine runner available' do
-        let(:http) { mock('http') }
-
-        before do
-          http.stub_chain(:request, :code).and_return 200
-          Net::HTTP.stub(:start).and_yield http
-        end
-
-        it 'does show that the runner is available' do
-          formatter.should_receive(:info).with "Jasmine test runner is available at http://localhost:8888/jasmine"
-          guard.start
-        end
-      end
-
-      context 'without the Jasmine runner available' do
-        let(:http) { mock('http') }
-
-        context 'because the connection is refused' do
-          before do
-            Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED
-          end
-
-          it 'does show that the runner is not available' do
-            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:8888/jasmine"
-            guard.start
-          end
-        end
-
-        context 'because the http status is not OK' do
-          before do
-            http.stub_chain(:request, :code).and_return 404
-            Net::HTTP.stub(:start).and_yield http
-          end
-
-          it 'does show that the runner is not available' do
-            formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:8888/jasmine"
-            guard.start
-          end
-        end
-
-        context 'with notifications enabled' do
-          before do
-            Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED
-          end
-
-          it 'shows a failing system notification' do
-            formatter.should_receive(:notify).with("Jasmine test runner isn't available at http://localhost:8888/jasmine",
-                                                   :title    => "Jasmine test runner isn't available",
-                                                   :image    => :failed,
-                                                   :priority => 2)
-            guard.start
-          end
-        end
-      end
-
       context 'with :all_on_start set to true' do
         let(:guard) { Guard::Jasmine.new(nil, { :all_on_start => true }) }
 
         context 'with the Jasmine runner available' do
           before do
-            guard.stub(:jasmine_runner_available?).and_return true
+            ::Guard::Jasmine.stub(:runner_available?).and_return true
           end
 
           it 'triggers .run_all' do
@@ -372,7 +248,7 @@ describe Guard::Jasmine do
 
         context 'without the Jasmine runner available' do
           before do
-            guard.stub(:jasmine_runner_available?).and_return false
+            ::Guard::Jasmine.stub(:runner_available?).and_return false
           end
 
           it 'does not triggers .run_all' do
@@ -386,7 +262,7 @@ describe Guard::Jasmine do
         let(:guard) { Guard::Jasmine.new(nil, { :all_on_start => false }) }
 
         before do
-          guard.stub(:jasmine_runner_available?).and_return true
+          ::Guard::Jasmine.stub(:runner_available?).and_return true
         end
 
         it 'does not trigger .run_all' do

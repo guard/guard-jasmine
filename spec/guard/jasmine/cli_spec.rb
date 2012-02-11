@@ -12,6 +12,9 @@ describe Guard::Jasmine::CLI do
     runner.stub(:run)
     server.stub(:start)
     server.stub(:stop)
+    cli.stub(:which).and_return '/usr/local/bin/phantomjs'
+    cli.stub(:phantomjs_bin_valid?).and_return true
+    cli.stub(:runner_available?).and_return true
   end
 
   describe '.spec' do
@@ -89,8 +92,9 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec'])
         end
 
-        it 'sets the default PhantomJS binary' do
-          runner.should_receive(:run).with(anything(), hash_including(:phantomjs_bin => '/usr/local/bin/phantomjs')).and_return [true, []]
+        it 'auto detects the phantomjs binary' do
+          cli.should_receive(:which).with('phantomjs').and_return '/tmp/phantomjs'
+          runner.should_receive(:run).with(anything(), hash_including(:phantomjs_bin => '/tmp/phantomjs')).and_return [true, []]
           cli.start(['spec'])
         end
 
@@ -129,6 +133,28 @@ describe Guard::Jasmine::CLI do
 
       it 'sets the specdoc to always' do
         runner.should_receive(:run).with(anything(), hash_including(:specdoc => :always)).and_return [true, []]
+        cli.start(['spec'])
+      end
+    end
+
+    context 'without a valid phantomjs executable' do
+      before do
+        cli.stub(:phantomjs_bin_valid?).and_return false
+      end
+
+      it 'stops with an exit code 2' do
+        Process.should_receive(:exit).with(2)
+        cli.start(['spec'])
+      end
+    end
+
+    context 'without the runner available' do
+      before do
+        cli.stub(:runner_available).and_return false
+      end
+
+      it 'stops with an exit code 2' do
+        Process.should_receive(:exit).with(2)
         cli.start(['spec'])
       end
     end

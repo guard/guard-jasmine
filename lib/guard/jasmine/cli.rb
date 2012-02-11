@@ -4,6 +4,7 @@ require 'guard/jasmine/version'
 require 'guard/jasmine/runner'
 require 'guard/jasmine/formatter'
 require 'guard/jasmine/server'
+require 'guard/jasmine/util'
 
 module Guard
   class Jasmine
@@ -15,6 +16,7 @@ module Guard
     # This outputs the specdoc and disables any notifications.
     #
     class CLI < Thor
+      extend Util
 
       default_task :spec
 
@@ -41,7 +43,6 @@ module Guard
       method_option :bin,
                     :type => :string,
                     :aliases => '-b',
-                    :default => '/usr/local/bin/phantomjs',
                     :desc => 'The location of the PhantomJS binary'
 
       method_option :timeout,
@@ -72,7 +73,7 @@ module Guard
 
         runner = {}
         runner[:jasmine_url] = options.url
-        runner[:phantomjs_bin] = options.bin
+        runner[:phantomjs_bin] = options.bin || CLI.which('phantomjs')
         runner[:timeout] = options.timeout
         runner[:port] = options.port
         runner[:server_env] = options.server_env
@@ -84,13 +85,21 @@ module Guard
         runner[:max_error_notify] = 0
         runner[:specdoc] = :always
 
-        ::Guard::Jasmine::Server.start(runner[:server], runner[:port], runner[:server_env]) unless runner[:server] == :none
-        result = ::Guard::Jasmine::Runner.run(paths, runner)
+        if CLI.phantomjs_bin_valid?(runner[:phantomjs_bin])
+          ::Guard::Jasmine::Server.start(runner[:server], runner[:port], runner[:server_env]) unless runner[:server] == :none
 
-        ::Guard::Jasmine::Server.stop
+          if CLI.runner_available?(runner[:jasmine_url])
+            result = ::Guard::Jasmine::Runner.run(paths, runner)
+            ::Guard::Jasmine::Server.stop
 
-        exit_code = result.first ? 0 : 1
-        Process.exit exit_code
+            Process.exit result.first ? 0 : 1
+          else
+            Process.exit 2
+          end
+
+        else
+          Process.exit 2
+        end
 
       rescue Exception => e
         raise e if e.is_a?(SystemExit)
