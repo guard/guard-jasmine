@@ -113,6 +113,7 @@ page.onInitialized = ->
         suites: []
       }
 
+      specCount: 0
       currentSpecs: []
       nestedSuiteResults: {}
 
@@ -140,6 +141,7 @@ page.onInitialized = ->
             messages.push result.message for result in spec.results().getItems()
             specResult['messages'] = messages if messages.length isnt 0
 
+          @specCount += 1
           @currentSpecs.push specResult
 
       # Report results from a suite.
@@ -180,7 +182,7 @@ page.onInitialized = ->
         @runnerResult['passed'] = runner.results().failedCount is 0
 
         @runnerResult['stats'] = {
-          specs: runner.results().totalCount
+          specs: @specCount
           failures: runner.results().failedCount
           time: runtime
         }
