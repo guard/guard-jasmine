@@ -88,7 +88,7 @@ describe Guard::Jasmine::CLI do
         end
 
         it 'sets the default jasmine url' do
-          runner.should_receive(:run).with(anything(), hash_including(:jasmine_url => 'http://127.0.0.1:8888/jasmine')).and_return [true, []]
+          runner.should_receive(:run).with(anything(), hash_including(:jasmine_url => 'http://localhost:8888/jasmine')).and_return [true, []]
           cli.start(['spec'])
         end
 
@@ -184,7 +184,7 @@ describe Guard::Jasmine::CLI do
 
   describe '.version' do
     it 'outputs the Guard::Jasmine version' do
-      ::Guard::UI.should_receive(:info).with("Guard::Jasmine version #{ ::Guard::JasmineVersion }")
+      ::Guard::UI.should_receive(:info).with("Guard::Jasmine version #{ ::Guard::JasmineVersion::VERSION }")
       cli.start(['-v'])
     end
   end

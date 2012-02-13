@@ -27,7 +27,7 @@ describe Guard::Jasmine::Util do
         end
 
         it 'does show that the runner is not available' do
-          Guard::Jasmine::Formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:8888/jasmine"
+          Guard::Jasmine::Formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:8888/jasmine: Connection refused"
           util.runner_available?('http://localhost:8888/jasmine')
         end
       end
@@ -39,7 +39,7 @@ describe Guard::Jasmine::Util do
         end
 
         it 'does show that the runner is not available' do
-          Guard::Jasmine::Formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:8888/jasmine"
+          Guard::Jasmine::Formatter.should_receive(:error).with "Jasmine test runner isn't available at http://localhost:8888/jasmine (404)"
           util.runner_available?('http://localhost:8888/jasmine')
         end
       end

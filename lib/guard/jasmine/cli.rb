@@ -37,7 +37,7 @@ module Guard
       method_option :url,
                     :type => :string,
                     :aliases => '-u',
-                    :default => 'http://127.0.0.1:8888/jasmine',
+                    :default => 'http://localhost:8888/jasmine',
                     :desc => 'The url of the Jasmine test runner'
 
       method_option :bin,
