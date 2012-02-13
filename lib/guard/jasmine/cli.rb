@@ -116,7 +116,7 @@ module Guard
       # @see Guard::Jasmine::VERSION
       #
       def version
-        ::Guard::UI.info "Guard::Jasmine version #{ ::Guard::JasmineVersion }"
+        ::Guard::UI.info "Guard::Jasmine version #{ ::Guard::JasmineVersion::VERSION }"
       end
 
     end
