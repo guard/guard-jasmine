@@ -23,14 +23,14 @@ module Guard
             if response.code.to_i == 200
               ::Guard::Jasmine::Formatter.info "Jasmine test runner is available at #{ url }"
             else
-              ::Guard::Jasmine::Formatter.error "Jasmine test runner isn't available at #{ url }"
+              ::Guard::Jasmine::Formatter.error "Jasmine test runner isn't available at #{ url } (#{ response.code })"
             end
 
             response.code.to_i == 200
           end
 
-        rescue
-          ::Guard::Jasmine::Formatter.error "Jasmine test runner isn't available at #{ url }"
+        rescue Exception => e
+          ::Guard::Jasmine::Formatter.error "Jasmine test runner isn't available at #{ url }: #{ e.message }"
 
           false
         end
