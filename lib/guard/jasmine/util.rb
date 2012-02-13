@@ -1,3 +1,4 @@
+require 'net/http'
 require 'guard/jasmine/formatter'
 
 module Guard
