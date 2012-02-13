@@ -356,7 +356,7 @@ Options:
   -p, [--port=N]                 # Server port to use
                                  # Default: 8888
   -u, [--url=URL]                # The url of the Jasmine test runner
-                                 # Default: http://127.0.0.1:8888/jasmine
+                                 # Default: http://localhost:8888/jasmine
   -b, [--bin=BIN]                # The location of the PhantomJS binary
                                  # Default: /usr/local/bin/phantomjs
   -t, [--timeout=N]              # The maximum time in milliseconds to wait for the spec runner to finish
