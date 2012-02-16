@@ -36,12 +36,7 @@ module Guard
         #
         def stop
           ::Guard::UI.info "Guard::Jasmine stops server."
-
-          begin
-            self.process.poll_for_exit(5)
-          rescue ChildProcess::TimeoutError
-            self.process.stop
-          end
+          self.process.stop(5)
         end
 
         private
