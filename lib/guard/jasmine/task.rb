@@ -33,7 +33,19 @@ module Guard
       namespace :guard do
         desc 'Run all Jasmine specs'
         task(name) do
-          Guard::Jasmine::CLI.start(options.split)
+          begin
+            Guard::Jasmine::CLI.start(options.split)
+
+          rescue SystemExit => e
+            case e.status
+            when 0
+              ok 'All specs have passed'
+            when 1
+              fail 'Some specs have failed'
+            when 2
+              fail "The spec couldn't be run: #{ e.message }'"
+            end
+          end
         end
       end
     end
