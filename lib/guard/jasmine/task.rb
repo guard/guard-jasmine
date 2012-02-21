@@ -38,8 +38,6 @@ module Guard
 
           rescue SystemExit => e
             case e.status
-            when 0
-              ok 'All specs have passed'
             when 1
               fail 'Some specs have failed'
             when 2
