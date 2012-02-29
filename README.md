@@ -255,11 +255,18 @@ The spec runner options configures the behavior driven development (or BDD) cycl
 
 :all_after_pass => false                      # Run all suites after a suite has passed again after failing.
                                               # default: true
+
+:clean => false                               # Clean the spec list by only keep Jasmine specs within the project.
+                                              # default: true
 ```
 
 The `:keep_failed` failed option remembers failed suites and not failed specs. The reason for this decision is to
 avoid additional round trip time to request the Jasmine test runner for each single spec, which is mostly more expensive
 than running a whole suite.
+
+In general you want to leave the `:clean` flag on, which ensures that only Jasmine specs (files ending with `_spec.js`,
+`_spec.coffee` and `_spec.js.coffee` inside your project are passed to the runner. If you have a custom project
+structure or spec naming convention, you can set `:clean` to false to skip that file filter.
 
 ### Specdoc options
 
@@ -485,12 +492,7 @@ $ guard-jasmine-debug http://127.0.0.1:3000/Jasmine?spec=YourSpec
 ```
 ## Contributors
 
-* [Aaron Pfeifer](https://github.com/obrie)
-* [Damien Mathieu](https://github.com/dmathieu)
-* [David Cuddeback](https://github.com/dcuddeback)
-* [Dmytrii Nagirniak](https://github.com/dnagir)
-* [Mark Dodwell](https://github.com/mkdynamic)
-* [Rémy Coutable](https://github.com/rymai)
+See the the GitHub list of [contributors](https://github.com/netzpirat/haml_coffee_assets/contributors).
 
 ## Acknowledgment
 
