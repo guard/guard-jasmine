@@ -212,10 +212,12 @@ end
 The general options configures the environment that is needed to run Guard::Jasmine:
 
 ```ruby
-:server => :jasmine_gem                       # Jasmine server to use, either :auto, :none, :webrick, :mongrel, :thin, :jasmine_gem
+:server => :jasmine_gem                       # Jasmine server to use, either :auto, :none,
+                                              # :webrick, :mongrel, :thin, :jasmine_gem
                                               # default: :auto
 
-:server_env => :test                          # Jasmine server Rails environment to set, e.g. :development or :test
+:server_env => :test                          # Jasmine server Rails environment to set,
+                                              # e.g. :development or :test
                                               # default: :development
 
 :port => 9292                                 # Jasmine server port to use.
@@ -260,7 +262,8 @@ The spec runner options configures the behavior driven development (or BDD) cycl
 :keep_failed => false                         # Keep failed suites and add them to the next run again.
                                               # default: true
 
-:all_after_pass => false                      # Run all suites after a suite has passed again after failing.
+:all_after_pass => false                      # Run all suites after a suite has passed again
+                                              # after failing.
                                               # default: true
 ```
 
@@ -274,13 +277,16 @@ Guard::Jasmine can generate an RSpec like specdoc in the console after running t
 be shown in the console:
 
 ```ruby
-:specdoc => :always                           # Specdoc output options, either :always, :never or :failure
+:specdoc => :always                           # Specdoc output options,
+                                              # either :always, :never or :failure
                                               # default: :failure
 
-:focus => false                               # Specdoc focus to hide successful specs when at least one spec fails.
+:focus => false                               # Specdoc focus to hide successful specs when
+                                              # at least one spec fails.
                                               # default: true
 
-:console => :always                           # Console.log output options, either :always, :never or :failure
+:console => :always                           # Console.log output options,
+                                              # either :always, :never or :failure
                                               # default: :failure
 ```
 
@@ -358,7 +364,8 @@ Usage:
   guard-jasmine spec
 
 Options:
-  -s, [--server=SERVER]          # Server to start, either `auto`, `none`, `webrick`, `mongrel`, `thin`, `jasmine_gem`
+  -s, [--server=SERVER]          # Server to start, either `auto`, `none`, `webrick`, `mongrel`,
+                                 # `thin`, `jasmine_gem`
                                  # Default: auto
   -p, [--port=N]                 # Server port to use
                                  # Default: 8888
@@ -366,11 +373,13 @@ Options:
                                  # Default: http://localhost:8888/jasmine
   -b, [--bin=BIN]                # The location of the PhantomJS binary
                                  # Default: /usr/local/bin/phantomjs
-  -t, [--timeout=N]              # The maximum time in milliseconds to wait for the spec runner to finish
+  -t, [--timeout=N]              # The maximum time in milliseconds to wait
+                                 # for the spec runner to finish
                                  # Default: 10000
-  -c, [--console=CONSOLE]        # Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`
+  -c, [--console=CONSOLE]        # Whether to show console.log statements in the spec runner,
+                                 # either `always`, `never` or `failure`
                                  # Default: failure
-  -e, [--server-env=SERVER_ENV]  # The server environment to use, for example `development`, `test` etc.
+  -e, [--server-env=SERVER_ENV]  # The server environment to use, for example `development`, `test`
                                  # Default: test
 
 Run the Jasmine spec runner
