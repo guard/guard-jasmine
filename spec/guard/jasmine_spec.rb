@@ -78,6 +78,10 @@ describe Guard::Jasmine do
         guard.options[:focus].should eql true
       end
 
+      it 'sets a default :clean option' do
+        guard.options[:clean].should eql true
+      end
+
       it 'sets last run failed to false' do
         guard.last_run_failed.should be_false
       end
@@ -107,6 +111,7 @@ describe Guard::Jasmine do
                                               :all_after_pass   => false,
                                               :specdoc          => :always,
                                               :focus            => false,
+                                              :clean => false,
                                               :console          => :always }) }
 
       it 'sets the :server option' do
@@ -167,6 +172,10 @@ describe Guard::Jasmine do
 
       it 'sets the :focus option' do
         guard.options[:focus].should eql false
+      end
+
+      it 'sets the :clean option' do
+        guard.options[:clean].should eql false
       end
     end
 
@@ -352,14 +361,6 @@ describe Guard::Jasmine do
   describe '.run_on_change' do
     let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/Users/michi/.bin/phantomjs' }) }
 
-    it 'passes the paths to the Inspector for cleanup' do
-      inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                             'spec/javascripts/b.js.coffee'])
-
-      guard.run_on_change(['spec/javascripts/a.js.coffee',
-                           'spec/javascripts/b.js.coffee'])
-    end
-
     it 'returns false when no valid paths are passed' do
       inspector.should_receive(:clean).and_return []
       guard.run_on_change(['spec/javascripts/b.js.coffee'])
@@ -372,6 +373,30 @@ describe Guard::Jasmine do
       runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], defaults.merge({ :phantomjs_bin => '/Users/michi/.bin/phantomjs' })).and_return [['spec/javascripts/a.js.coffee'], true]
 
       guard.run_on_change(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
+    end
+
+    context 'with :clean enabled' do
+      let(:guard) { Guard::Jasmine.new(nil, { :clean => true, :phantomjs_bin => '/usr/bin/phantomjs' }) }
+
+      it 'passes the paths to the Inspector for cleanup' do
+        inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
+                                               'spec/javascripts/b.js.coffee'])
+
+        guard.run_on_change(['spec/javascripts/a.js.coffee',
+                             'spec/javascripts/b.js.coffee'])
+      end
+    end
+
+    context 'with :clean disabled' do
+      let(:guard) { Guard::Jasmine.new(nil, { :clean => false, :phantomjs_bin => '/usr/bin/phantomjs' }) }
+
+      it 'does not pass the paths to the Inspector for cleanup' do
+        inspector.should_not_receive(:clean).with(['spec/javascripts/a.js.coffee',
+                                               'spec/javascripts/b.js.coffee'])
+
+        guard.run_on_change(['spec/javascripts/a.js.coffee',
+                             'spec/javascripts/b.js.coffee'])
+      end
     end
 
     context 'with :keep_failed enabled' do
