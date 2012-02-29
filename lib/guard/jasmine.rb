@@ -30,6 +30,7 @@ module Guard
         :hide_success     => false,
         :all_on_start     => true,
         :keep_failed      => true,
+        :clean            => true,
         :all_after_pass   => true,
         :max_error_notify => 3,
         :specdoc          => :failure,
@@ -52,6 +53,7 @@ module Guard
     # @option options [Integer] :max_error_notify maximum error notifications to show
     # @option options [Boolean] :all_on_start run all suites on start
     # @option options [Boolean] :keep_failed keep failed suites and add them to the next run again
+    # @option options [Boolean] :clean clean the specs according to rails naming conventions
     # @option options [Boolean] :all_after_pass run all suites after a suite has passed again after failing
     # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never or :failure
     # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
@@ -123,7 +125,8 @@ module Guard
     # @raise [:task_has_failed] when run_on_change has failed
     #
     def run_on_change(paths)
-      specs = Inspector.clean(options[:keep_failed] ? paths + self.last_failed_paths : paths)
+      specs = options[:keep_failed] ? paths + self.last_failed_paths : paths
+      specs = Inspector.clean(specs) if options[:clean]
       return false if specs.empty?
 
       passed, failed_specs = Runner.run(specs, options)
