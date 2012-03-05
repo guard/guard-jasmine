@@ -163,7 +163,7 @@ module Guard
 
             result
 
-          rescue Exception => e
+          rescue => e
             if json == ''
               Formatter.error("No response from the Jasmine runner!")
             else

@@ -101,9 +101,7 @@ module Guard
           Process.exit 2
         end
 
-      rescue Exception => e
-        raise e if e.is_a?(SystemExit)
-
+      rescue => e
         ::Guard::UI.error e.message
         Process.exit 2
       end

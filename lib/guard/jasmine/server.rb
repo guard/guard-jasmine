@@ -56,7 +56,7 @@ module Guard
           self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options[:verbose]
           self.process.start
 
-        rescue Exception => e
+        rescue => e
           ::Guard::UI.error "Cannot start Rack server: #{ e.message }"
         end
 
@@ -71,7 +71,7 @@ module Guard
           self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options[:verbose]
           self.process.start
 
-        rescue Exception => e
+        rescue => e
           ::Guard::UI.error "Cannot start Jasmine Gem server: #{ e.message }"
         end
 

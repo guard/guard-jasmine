@@ -29,7 +29,7 @@ module Guard
             response.code.to_i == 200
           end
 
-        rescue Exception => e
+        rescue => e
           ::Guard::Jasmine::Formatter.error "Jasmine test runner isn't available at #{ url }: #{ e.message }"
 
           false
