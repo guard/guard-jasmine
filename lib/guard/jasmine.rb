@@ -26,6 +26,7 @@ module Guard
         :port             => 8888,
         :jasmine_url      => 'http://localhost:8888/jasmine',
         :timeout          => 10000,
+        :spec_dir         => 'spec/javascripts',
         :notification     => true,
         :hide_success     => false,
         :all_on_start     => true,
@@ -48,6 +49,7 @@ module Guard
     # @option options [String] :jasmine_url the url of the Jasmine test runner
     # @option options [String] :phantomjs_bin the location of the PhantomJS binary
     # @option options [Integer] :timeout the maximum time in milliseconds to wait for the spec runner to finish
+    # @option options [String] :spec_dir the directory with the Jasmine specs
     # @option options [Boolean] :notification show notifications
     # @option options [Boolean] :hide_success hide success message notification
     # @option options [Integer] :max_error_notify maximum error notifications to show
@@ -111,7 +113,7 @@ module Guard
     # @raise [:task_has_failed] when run_on_change has failed
     #
     def run_all
-      passed, failed_specs = Runner.run(['spec/javascripts'], options)
+      passed, failed_specs = Runner.run([options[:spec_dir]], options)
 
       self.last_failed_paths = failed_specs
       self.last_run_failed   = !passed
@@ -126,7 +128,7 @@ module Guard
     #
     def run_on_change(paths)
       specs = options[:keep_failed] ? paths + self.last_failed_paths : paths
-      specs = Inspector.clean(specs) if options[:clean]
+      specs = Inspector.clean(specs, options) if options[:clean]
       return false if specs.empty?
 
       passed, failed_specs = Runner.run(specs, options)

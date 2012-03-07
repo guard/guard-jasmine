@@ -12,7 +12,7 @@ describe Guard::Jasmine do
   let(:defaults) { Guard::Jasmine::DEFAULT_OPTIONS }
 
   before do
-    inspector.stub(:clean).and_return { |specs| specs }
+    inspector.stub(:clean).and_return { |specs, options| specs }
     runner.stub(:run).and_return [true, []]
     formatter.stub(:notify)
     server.stub(:start)
@@ -40,6 +40,10 @@ describe Guard::Jasmine do
 
       it 'sets a default :timeout option' do
         guard.options[:timeout].should eql 10000
+      end
+
+      it 'sets a default :spec_dir option' do
+        guard.options[:spec_dir].should eql 'spec/javascripts'
       end
 
       it 'sets a default :all_on_start option' do
@@ -103,6 +107,7 @@ describe Guard::Jasmine do
                                               :jasmine_url      => 'http://192.168.1.5/jasmine',
                                               :phantomjs_bin    => '~/bin/phantomjs',
                                               :timeout          => 20000,
+                                              :spec_dir         => 'spec',
                                               :all_on_start     => false,
                                               :notification     => false,
                                               :max_error_notify => 5,
@@ -136,6 +141,10 @@ describe Guard::Jasmine do
 
       it 'sets the :phantomjs_bin option' do
         guard.options[:timeout].should eql 20000
+      end
+
+      it 'sets the :spec_dir option' do
+        guard.options[:spec_dir].should eql 'spec'
       end
 
       it 'sets the :all_on_start option' do
@@ -320,12 +329,26 @@ describe Guard::Jasmine do
   end
 
   describe '.run_all' do
-    let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/bin/phantomjs' }) }
+    let(:options) { defaults.merge({ :phantomjs_bin => '/bin/phantomjs' }) }
+    let(:guard) { Guard::Jasmine.new(nil, options) }
 
-    it 'starts the Runner with the spec dir' do
-      runner.should_receive(:run).with(['spec/javascripts'], defaults.merge(:phantomjs_bin => '/bin/phantomjs')).and_return [['spec/javascripts/a.js.coffee'], true]
+    context 'without a specified spec dir' do
+      it 'starts the Runner with the default spec dir' do
+        runner.should_receive(:run).with(['spec/javascripts'], options).and_return [['spec/javascripts/a.js.coffee'], true]
 
-      guard.run_all
+        guard.run_all
+      end
+    end
+
+    context 'with a specified spec dir' do
+      let(:options) { defaults.merge({ :phantomjs_bin => '/bin/phantomjs', :spec_dir => 'specs' }) }
+      let(:guard) { Guard::Jasmine.new(nil, options) }
+
+      it 'starts the Runner with the default spec dir' do
+        runner.should_receive(:run).with(['specs'], options).and_return [['spec/javascripts/a.js.coffee'], true]
+
+        guard.run_all
+      end
     end
 
     context 'with all specs passing' do
@@ -359,7 +382,8 @@ describe Guard::Jasmine do
   end
 
   describe '.run_on_change' do
-    let(:guard) { Guard::Jasmine.new(nil, { :phantomjs_bin => '/Users/michi/.bin/phantomjs' }) }
+    let(:options) { defaults.merge({ :phantomjs_bin => '/Users/michi/.bin/phantomjs' }) }
+    let(:guard) { Guard::Jasmine.new(nil, options) }
 
     it 'returns false when no valid paths are passed' do
       inspector.should_receive(:clean).and_return []
@@ -368,19 +392,20 @@ describe Guard::Jasmine do
 
     it 'starts the Runner with the cleaned files' do
       inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                             'spec/javascripts/b.js.coffee']).and_return ['spec/javascripts/a.js.coffee']
+                                             'spec/javascripts/b.js.coffee'], options).and_return ['spec/javascripts/a.js.coffee']
 
-      runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], defaults.merge({ :phantomjs_bin => '/Users/michi/.bin/phantomjs' })).and_return [['spec/javascripts/a.js.coffee'], true]
+      runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], options).and_return [['spec/javascripts/a.js.coffee'], true]
 
       guard.run_on_change(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
     end
 
     context 'with :clean enabled' do
-      let(:guard) { Guard::Jasmine.new(nil, { :clean => true, :phantomjs_bin => '/usr/bin/phantomjs' }) }
+      let(:options) { defaults.merge({ :clean => true, :phantomjs_bin => '/usr/bin/phantomjs' }) }
+      let(:guard) { Guard::Jasmine.new(nil, options) }
 
       it 'passes the paths to the Inspector for cleanup' do
         inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                               'spec/javascripts/b.js.coffee'])
+                                               'spec/javascripts/b.js.coffee'], options)
 
         guard.run_on_change(['spec/javascripts/a.js.coffee',
                              'spec/javascripts/b.js.coffee'])
@@ -388,11 +413,12 @@ describe Guard::Jasmine do
     end
 
     context 'with :clean disabled' do
-      let(:guard) { Guard::Jasmine.new(nil, { :clean => false, :phantomjs_bin => '/usr/bin/phantomjs' }) }
+      let(:options) { defaults.merge({ :clean => false, :phantomjs_bin => '/usr/bin/phantomjs' }) }
+      let(:guard) { Guard::Jasmine.new(nil, options) }
 
       it 'does not pass the paths to the Inspector for cleanup' do
         inspector.should_not_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                               'spec/javascripts/b.js.coffee'])
+                                               'spec/javascripts/b.js.coffee'], options)
 
         guard.run_on_change(['spec/javascripts/a.js.coffee',
                              'spec/javascripts/b.js.coffee'])
@@ -400,7 +426,8 @@ describe Guard::Jasmine do
     end
 
     context 'with :keep_failed enabled' do
-      let(:guard) { Guard::Jasmine.new(nil, { :keep_failed => true, :phantomjs_bin => '/usr/bin/phantomjs' }) }
+      let(:options) { defaults.merge({ :keep_failed => true, :phantomjs_bin => '/usr/bin/phantomjs' }) }
+      let(:guard) { Guard::Jasmine.new(nil, options) }
 
       before do
         guard.last_failed_paths = ['spec/javascripts/b.js.coffee']
@@ -408,14 +435,14 @@ describe Guard::Jasmine do
 
       it 'passes the paths to the Inspector for cleanup' do
         inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                               'spec/javascripts/b.js.coffee'])
+                                               'spec/javascripts/b.js.coffee'], options)
 
         guard.run_on_change(['spec/javascripts/a.js.coffee'])
       end
 
       it 'appends the last failed paths to the current run' do
         runner.should_receive(:run).with(['spec/javascripts/a.js.coffee',
-                                          'spec/javascripts/b.js.coffee'], defaults.merge({ :phantomjs_bin => '/usr/bin/phantomjs' }))
+                                          'spec/javascripts/b.js.coffee'], options)
 
         guard.run_on_change(['spec/javascripts/a.js.coffee'])
       end

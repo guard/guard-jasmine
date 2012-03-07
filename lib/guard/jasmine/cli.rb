@@ -63,13 +63,19 @@ module Guard
                     :default => 'test',
                     :desc => 'The server environment to use, for example `development`, `test` etc.'
 
+      method_option :spec_dir,
+                    :type => :string,
+                    :aliases => '-d',
+                    :default => 'spec/javascripts',
+                    :desc => 'The directory with the Jasmine specs'
+
       # Run the Guard::Jasmine::Runner with options from
       # the command line.
       #
       # @param [Array<String>] paths the name of the specs to run
       #
       def spec(*paths)
-        paths = ['spec/javascripts'] if paths.empty?
+        paths = [options.spec_dir] if paths.empty?
 
         runner = {}
         runner[:jasmine_url] = options.url
@@ -77,6 +83,7 @@ module Guard
         runner[:timeout] = options.timeout
         runner[:port] = options.port
         runner[:server_env] = options.server_env
+        runner[:spec_dir] = options.spec_dir
         runner[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
         runner[:server] = [:auto, :none, :webrick, :mongrel, :thin, :jasmine_gem].include?(options.server.to_sym) ? options.server.to_sym : :auto
 

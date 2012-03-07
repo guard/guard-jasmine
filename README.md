@@ -235,9 +235,6 @@ If you're setting the `:server` option to `:none`, you can supply the Jasmine ru
 ```ruby
 :jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
                                               # default: http://127.0.0.1:8888/jasmine
-
-:clean => false                               # Clean the spec list by only keep Jasmine specs within the project.
-                                              # default: true
 ```
 
 Detecting the server with the `auto` option does only detect the jasmine gem or webrick. If you want to use mongrel or
@@ -247,15 +244,20 @@ The reason why the Server environment is set to `development` by default is that
 the asset pipeline doesn't concatenate the JavaScripts and you'll see the line number in the real file,
 instead of a ridiculous high line number in a single, very large JavaScript.
 
-In general you want to leave the `:clean` flag on, which ensures that only Jasmine specs (files ending with `_spec.js`,
-`_spec.coffee` and `_spec.js.coffee` inside your project are passed to the runner. If you have a custom project
-structure or spec naming convention, you can set `:clean` to false to skip that file filter.
-
 ### Spec runner options
 
 The spec runner options configures the behavior driven development (or BDD) cycle:
 
 ```ruby
+:spec_dir => false                            # Directory with the Jasmine specs.
+                                              # default: 'spec/javascripts'
+
+:clean => false                               # Clean the spec list by only keep Jasmine specs within the project.
+                                              # default: true
+
+:all_on_start => false                        # Run all suites on start.
+                                              # default: true
+
 :all_on_start => false                        # Run all suites on start.
                                               # default: true
 
@@ -270,6 +272,10 @@ The spec runner options configures the behavior driven development (or BDD) cycl
 The `:keep_failed` failed option remembers failed suites and not failed specs. The reason for this decision is to
 avoid additional round trip time to request the Jasmine test runner for each single spec, which is mostly more expensive
 than running a whole suite.
+
+In general you want to leave the `:clean` flag on, which ensures that only Jasmine specs (files ending with `_spec.js`,
+`_spec.coffee` and `_spec.js.coffee` inside your project are passed to the runner. If you have a custom project
+structure or spec naming convention, you can set `:clean` to false to skip that file filter.
 
 ### Specdoc options
 

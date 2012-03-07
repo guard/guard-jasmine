@@ -19,17 +19,19 @@ module Guard
         # @option options [String] :jasmine_url the url of the Jasmine test runner
         # @option options [String] :phantomjs_bin the location of the PhantomJS binary
         # @option options [Integer] :timeout the maximum time in milliseconds to wait for the spec runner to finish
+        # @option options [String] :spec_dir the directory with the Jasmine specs
         # @option options [Boolean] :notification show notifications
         # @option options [Boolean] :hide_success hide success message notification
         # @option options [Integer] :max_error_notify maximum error notifications to show
         # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never
         # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
+        # @option options [String] :spec_dir the directory with the Jasmine specs
         # @return [Boolean, Array<String>] the status of the run and the failed files
         #
         def run(paths, options = { })
           return [false, []] if paths.empty?
 
-          notify_start_message(paths)
+          notify_start_message(paths, options)
 
           results = paths.inject([]) do |results, file|
             results << evaluate_response(run_jasmine_spec(file, options), file, options)
@@ -45,9 +47,11 @@ module Guard
         # Shows a notification in the console that the runner starts.
         #
         # @param [Array<String>] paths the spec files or directories
+        # @param [Hash] options the options for the execution
+        # @option options [String] :spec_dir the directory with the Jasmine specs
         #
-        def notify_start_message(paths)
-          message = if paths == ['spec/javascripts']
+        def notify_start_message(paths, options)
+          message = if paths == [options[:spec_dir]]
                       'Run all Jasmine suites'
                     else
                       "Run Jasmine suite#{ paths.size == 1 ? '' : 's' } #{ paths.join(' ') }"
@@ -99,12 +103,13 @@ module Guard
         # Get the Jasmine test runner URL with the appended suite name
         # that acts as the spec filter.
         #
+        # @param [String] file the spec file
         # @param [Hash] options the options for the execution
         # @option options [String] :jasmine_url the url of the Jasmine test runner
         # @return [String] the Jasmine url
         #
         def jasmine_suite(file, options)
-          options[:jasmine_url] + query_string_for_suite(file)
+          options[:jasmine_url] + query_string_for_suite(file, options)
         end
 
         # Get the PhantomJS script that executes the spec and extracts
@@ -122,10 +127,12 @@ module Guard
         # found.
         #
         # @param [String] file the spec file
+        # @param [Hash] options the options for the execution
+        # @option options [String] :spec_dir the directory with the Jasmine specs
         # @return [String] the suite name
         #
-        def query_string_for_suite(file)
-          return '' if file == 'spec/javascripts'
+        def query_string_for_suite(file, options)
+          return '' if file == options[:spec_dir]
 
           query_string = ''
 

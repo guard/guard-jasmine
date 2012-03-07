@@ -9,17 +9,19 @@ describe Guard::Jasmine::Inspector do
 
   subject { Guard::Jasmine::Inspector }
 
+  let(:options) { { :spec_dir => 'spec/javascripts' }}
+
   describe 'clean' do
     it 'allows the Jasmine spec dir' do
-      subject.clean(['spec/javascripts', 'spec/javascripts/a.js.coffee']).should == ['spec/javascripts']
+      subject.clean(['spec/javascripts', 'spec/javascripts/a.js.coffee'], options).should == ['spec/javascripts']
     end
 
     it 'removes duplicate files' do
-      subject.clean(['spec/javascripts/a_spec.js.coffee', 'spec/javascripts/a_spec.js.coffee']).should == ['spec/javascripts/a_spec.js.coffee']
+      subject.clean(['spec/javascripts/a_spec.js.coffee', 'spec/javascripts/a_spec.js.coffee'], options).should == ['spec/javascripts/a_spec.js.coffee']
     end
 
     it 'remove nil files' do
-      subject.clean(['spec/javascripts/a_spec.js.coffee', nil]).should == ['spec/javascripts/a_spec.js.coffee']
+      subject.clean(['spec/javascripts/a_spec.js.coffee', nil], options).should == ['spec/javascripts/a_spec.js.coffee']
     end
 
     it 'removes files that are no javascript specs' do
@@ -27,7 +29,7 @@ describe Guard::Jasmine::Inspector do
                      'spec/javascripts/b_spec.js',
                      'app/assets/javascripts/a.js.coffee',
                      'b.txt',
-                     'c_spec.coffee']).should == ['spec/javascripts/a_spec.js.coffee', 'spec/javascripts/b_spec.js', 'c_spec.coffee']
+                     'c_spec.coffee'], options).should == ['spec/javascripts/a_spec.js.coffee', 'spec/javascripts/b_spec.js', 'c_spec.coffee']
     end
 
   end

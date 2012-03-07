@@ -37,6 +37,11 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', 'spec/javascripts/a_spec.js', 'spec/javascripts/another_spec.js'])
         end
 
+        it 'sets the spec dir' do
+          runner.should_receive(:run).with(anything(), hash_including(:spec_dir => 'specs')).and_return [true, []]
+          cli.start(['spec', '--spec_dir', 'specs'])
+        end
+
         it 'sets the jasmine url' do
           runner.should_receive(:run).with(anything(), hash_including(:jasmine_url => 'http://smackaho.st:3000/jasmine')).and_return [true, []]
           cli.start(['spec', '--url', 'http://smackaho.st:3000/jasmine'])
@@ -82,8 +87,22 @@ describe Guard::Jasmine::CLI do
       end
 
       context 'for the runner' do
-        it 'runs all specs when the paths are empty' do
-          runner.should_receive(:run).with(['spec/javascripts'], anything()).and_return [true, []]
+        context 'without a specific spec dir' do
+          it 'runs all default specs when the paths are empty' do
+            runner.should_receive(:run).with(['spec/javascripts'], anything()).and_return [true, []]
+            cli.start(['spec'])
+          end
+        end
+
+        context 'with a specific spec dir' do
+          it 'runs all specs when the paths are empty' do
+            runner.should_receive(:run).with(['specs'], anything()).and_return [true, []]
+            cli.start(['spec', '-d', 'specs'])
+          end
+        end
+
+        it 'sets the spec dir' do
+          runner.should_receive(:run).with(anything(), hash_including(:spec_dir => 'spec/javascripts')).and_return [true, []]
           cli.start(['spec'])
         end
 

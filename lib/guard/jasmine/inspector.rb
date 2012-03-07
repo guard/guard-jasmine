@@ -13,14 +13,16 @@ module Guard
         # Jasmine specs in either JavaScript or CoffeeScript.
         #
         # @param [Array<String>] paths the changed paths
+        # @param [Hash] options the options for the Guard
+        # @option options [String] :spec_dir the directory with the Jasmine specs
         # @return [Array<String>] the valid spec files
         #
-        def clean(paths)
+        def clean(paths, options)
           paths.uniq!
           paths.compact!
 
-          if paths.include?('spec/javascripts')
-            paths = ['spec/javascripts']
+          if paths.include?(options[:spec_dir])
+            paths = [options[:spec_dir]]
           else
             paths = paths.select { |p| jasmine_spec?(p) }
           end
