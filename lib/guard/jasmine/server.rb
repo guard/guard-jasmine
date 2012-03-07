@@ -18,15 +18,18 @@ module Guard
         # @param [String] strategy the server strategy to use
         # @param [Number] port the server port
         # @param [String] environment the Rails environment
+        # @param [String] spec_dir the spec directory
         #
-        def start(strategy, port, environment)
-          strategy = detect_server if strategy == :auto
+        def start(strategy, port, environment, spec_dir)
+          strategy = detect_server(spec_dir) if strategy == :auto
 
           case strategy
           when :webrick, :mongrel, :thin
             start_rack_server(port, environment, strategy)
           when :jasmine_gem
-            start_jasmine_gem_server(port)
+            start_rake_server(port, 'jasmine')
+          else
+            start_rake_server(port, strategy.to_s) unless strategy == :none
           end
 
           wait_for_server(port) unless strategy == :none
@@ -63,11 +66,12 @@ module Guard
         # Start the Jasmine gem server of the current project.
         #
         # @param [Number] port the server port
+        # @param [String] task the rake task name
         #
-        def start_jasmine_gem_server(port)
+        def start_rake_server(port, task)
           ::Guard::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
 
-          self.process = ChildProcess.build('rake', 'jasmine', "JASMINE_PORT=#{ port }")
+          self.process = ChildProcess.build('rake', task, "JASMINE_PORT=#{ port }")
           self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options[:verbose]
           self.process.start
 
@@ -77,12 +81,13 @@ module Guard
 
         # Detect the server to use
         #
+        # @param [String] spec_dir the spec directory
         # @return [Symbol] the server strategy
         #
-        def detect_server
+        def detect_server(spec_dir)
           if File.exists?('config.ru')
             :webrick
-          elsif File.exists?(File.join('spec', 'javascripts', 'support', 'jasmine.yml'))
+          elsif File.exists?(File.join(spec_dir, 'support', 'jasmine.yml'))
             :jasmine_gem
           else
             :none

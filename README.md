@@ -207,9 +207,9 @@ guard 'jasmine', :all_on_start => false, :specdoc => :always do
 end
 ```
 
-### General options
+### Server options
 
-The general options configures the environment that is needed to run Guard::Jasmine:
+The server options configures the server environment that is needed to run Guard::Jasmine:
 
 ```ruby
 :server => :jasmine_gem                       # Jasmine server to use, either :auto, :none,
@@ -243,6 +243,14 @@ thins, you have to set it explicit in the server option.
 The reason why the Server environment is set to `development` by default is that in development mode
 the asset pipeline doesn't concatenate the JavaScripts and you'll see the line number in the real file,
 instead of a ridiculous high line number in a single, very large JavaScript.
+
+#### Use a custom server
+
+If you supply an unknown server name as the `:server` option, then Guard::Jasmine will execute
+a `rake` task with the given server name as task in a child process. For example, if you configure
+`:server => 'start_my_server'`, then the command `rake start_my_server` will be executed and
+you have to make sure the server starts on the port that you can get from the `JASMINE_PORT`
+environment variable.
 
 ### Spec runner options
 

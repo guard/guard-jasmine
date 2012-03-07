@@ -85,7 +85,7 @@ module Guard
         runner[:server_env] = options.server_env
         runner[:spec_dir] = options.spec_dir
         runner[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
-        runner[:server] = [:auto, :none, :webrick, :mongrel, :thin, :jasmine_gem].include?(options.server.to_sym) ? options.server.to_sym : :auto
+        runner[:server] = options.server.to_sym
 
         runner[:notification] = false
         runner[:hide_success] = true
@@ -93,7 +93,7 @@ module Guard
         runner[:specdoc] = :always
 
         if CLI.phantomjs_bin_valid?(runner[:phantomjs_bin])
-          ::Guard::Jasmine::Server.start(runner[:server], runner[:port], runner[:server_env]) unless runner[:server] == :none
+          ::Guard::Jasmine::Server.start(runner[:server], runner[:port], runner[:server_env], runner[:spec_dir]) unless runner[:server] == :none
 
           if CLI.runner_available?(runner[:jasmine_url])
             result = ::Guard::Jasmine::Runner.run(paths, runner)
