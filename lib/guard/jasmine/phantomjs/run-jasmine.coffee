@@ -91,7 +91,7 @@ page.onConsoleMessage = (msg, line, source) ->
     logs[currentSpecId] = []
 
   else
-    logs[currentSpecId].push("#{ msg } in #{ source } (line #{ line })") if currentSpecId isnt -1
+    logs[currentSpecId].push(msg) if currentSpecId isnt -1
 
 # Initialize the page before the JavaScript is run.
 #
