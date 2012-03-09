@@ -38,8 +38,10 @@ module Guard
         # Stop the server thread.
         #
         def stop
-          ::Guard::UI.info "Guard::Jasmine stops server."
-          self.process.stop(5)
+          if self.process
+            ::Guard::UI.info "Guard::Jasmine stops server."
+            self.process.stop(5)
+          end
         end
 
         private
