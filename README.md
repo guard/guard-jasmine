@@ -310,13 +310,32 @@ set to `:never`, there is no output at all, instead just a summary of the spec r
 
 When `:focus` is enabled, only the failing specs are shown in the specdoc when at least one spec is failing.
 
-The `:console` options adds captured console logs from the spec runner and adds them to the specdoc. Guard::Jasmine
-includes a slightly modified version of [console.js](https://github.com/NV/console.js) in order to support object and
-HTML element output.
+#### Console logs
 
-Please vote on [Issue 232](http://code.google.com/p/phantomjs/issues/detail?id=232) and
-[Issue 36](http://code.google.com/p/phantomjs/issues/detail?id=36) if you like to see improved, native PhantomJS support
-for more console methods and multiple console arguments.
+The `:console` options adds captured console logs from the spec runner and adds them to the specdoc. Guard:Jasmine
+contains its own minimalistic console implementation. The following console methods are supported:
+
+* `console.log`
+* `console.info`
+* `console.warn`
+* `console.error`
+* `console.debug`
+
+The difference for each of this log methods is simply a prefix that is added to the log statement. The log also
+supports the common format placeholders:
+
+* `%s`
+* `%i`, `%d`
+* `%f`
+* `%o`
+
+You can further customize the log output by implement on of these methods:
+
+* `toString()` - must return a string that describes the object
+* `toJSON()` - must return an object that is used instead of the actual object.
+
+In addition the console can log jQuery collections and outputs the HTML representation of the element by using the
+jQuery `html()` method.
 
 ### System notifications options
 
