@@ -7,6 +7,36 @@ Tested on MRI Ruby 1.8.7, 1.9.2, 1.9.3, REE and the latest versions of JRuby and
 If you have any questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
 (irc.freenode.net).
 
+## Contents
+
+* [Highlights](#highlights)
+* [Installation](#installation)
+  * [Guard and Guard::Jasmine](#guard-guard-jasmine)
+  * [PhantomJS](#phantomjs)
+* [Rails 3.1 setup](#rails31)
+  * [How it works](#rails31-works)
+  * [Jasminerice](#rails31-jasminerice)
+* [Rails 2 & Rails 3 setup](#rails23)
+  * [How it works](#rails23-works)
+  * [Jasmine Gem](#rails23-jasmine-gem)
+* [Usage](#usage)
+  * [Guardfile](#guardfile)
+* [Options](#options)
+  * [Server options](#server-options)
+    * [Use a custom server](#server-options-custom)
+  * [Spec runner options](#spec-runner-options)
+  * [Specdoc options](#specdoc-options)
+    * [Console logs](#console-logs)
+  * [System notifications options](#system-notifications-options)
+* [Mapping file changes to the spec filter](#file-mapping)
+* [Guard::Jasmine outside of Guard](#outside-guard)
+  * [Thor command line utility](#thor)
+  * [Rake task integration](#rake)
+  * [Travis CI integration](#travis-ci)
+* [How to file an issue](#issues)
+* [Development information](#development-information)
+
+<a name="highlights" />
 ## Highlights
 
 * Continuous testing based on file modifications by [Guard][], manifold configuration by writing rules with RegExp and
@@ -22,8 +52,10 @@ various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 
 * Runs on Mac OS X, Linux and Windows.
 
-## Install
+<a name="installation" />
+## Installation
 
+<a name="guard-guard-jasmine" />
 ### Guard and Guard::Jasmine
 
 The simplest way to install Guard is to use [Bundler](http://gembundler.com/).
@@ -43,6 +75,7 @@ Add the default Guard::Jasmine template to your `Guardfile` by running:
 $ guard init jasmine
 ```
 
+<a name="phantomjs" />
 ### PhantomJS
 
 You need the PhantomJS browser installed on your system. You can download binaries for Mac OS X and Windows from
@@ -65,6 +98,7 @@ $ sudo apt-get install phantomjs
 You can also build it from source for several other operating systems, please consult the
 [PhantomJS build instructions][].
 
+<a name="rails31" />
 ## Rails 3.1 setup
 
 With Rails 3.1 you can write your Jasmine specs in addition to JavaScript with CoffeeScript, fully integrated into the
@@ -73,6 +107,7 @@ to fake the server response. Check out the excellent [Sinon.JS][] documentation 
 
 Guard::Jasmine will start a Rails Rack server to run your specs.
 
+<a name="rails31-works" />
 ### How it works
 
 ![Guard Jasmine](https://github.com/netzpirat/guard-jasmine/raw/master/resources/guard-jasmine-rails31.jpg)
@@ -88,6 +123,7 @@ Guard::Jasmine will start a Rails Rack server to run your specs.
 9. The PhantomJS script collects the Jasmine runner results and returns a JSON report.
 10. Guard::Jasmine reports the results to the console and system notifications.
 
+<a name="rails31-jasminerice" />
 ### Jasminerice
 
 Please read the detailed installation and configuration instructions at [Jasminerice][].
@@ -120,6 +156,7 @@ It also creates an empty `spec/javascripts/spec.css` file as it is always reques
 
 Now you can access `/jasmine` url when you start rails server normally.
 
+<a name="rails23" />
 ## Rails 2 & Rails 3 setup
 
 With Rails 2 or Rails 3 you can use [the Jasmine Gem][] to configure your Jasmine specs and server the Jasmine
@@ -128,6 +165,7 @@ response. Check out the excellent [Sinon.JS][] documentation to learn more about
 
 Guard::Jasmine will start a Jasmine Gem Rack server to run your specs.
 
+<a name="rails23-works" />
 ### How it works
 
 ![Guard Jasmine](https://github.com/netzpirat/guard-jasmine/raw/master/resources/guard-jasmine-rails23.jpg)
@@ -141,6 +179,7 @@ Guard::Jasmine will start a Jasmine Gem Rack server to run your specs.
 7. The PhantomJS script collects the Jasmine runner results and returns a JSON report.
 8. Guard::Jasmine reports the results to the console and system notifications.
 
+<a name="rails23-jasmine-gem" />
 ### Jasmine Gem
 
 Please read the detailed installation and configuration instructions at [the Jasmine Gem][].
@@ -179,10 +218,12 @@ guard 'coffeescript', :input => 'app/coffeescripts',  :output => 'public/javascr
 guard 'coffeescript', :input => 'spec/coffeescripts', :output => 'spec/javascripts'
 ```
 
+<a name="usage" />
 ## Usage
 
 Please read the [Guard usage documentation](https://github.com/guard/guard#readme).
 
+<a name="guardfile" />
 ## Guardfile
 
 Guard::Jasmine can be adapted to all kind of projects. Please read the
@@ -196,6 +237,7 @@ guard 'jasmine' do
 end
 ```
 
+<a name="options" />
 ## Options
 
 There are many options that can customize Guard::Jasmine to your needs. Options are simply supplied as hash when
@@ -207,6 +249,7 @@ guard 'jasmine', :all_on_start => false, :specdoc => :always do
 end
 ```
 
+<a name="server-options" />
 ### Server options
 
 The server options configures the server environment that is needed to run Guard::Jasmine:
@@ -244,6 +287,7 @@ The reason why the Server environment is set to `development` by default is that
 the asset pipeline doesn't concatenate the JavaScripts and you'll see the line number in the real file,
 instead of a ridiculous high line number in a single, very large JavaScript.
 
+<a name="server-options-custom" />
 #### Use a custom server
 
 If you supply an unknown server name as the `:server` option, then Guard::Jasmine will execute
@@ -252,6 +296,7 @@ a `rake` task with the given server name as task in a child process. For example
 you have to make sure the server starts on the port that you can get from the `JASMINE_PORT`
 environment variable.
 
+<a name="spec-runner-options" />
 ### Spec runner options
 
 The spec runner options configures the behavior driven development (or BDD) cycle:
@@ -285,6 +330,7 @@ In general you want to leave the `:clean` flag on, which ensures that only Jasmi
 `_spec.coffee` and `_spec.js.coffee` inside your project are passed to the runner. If you have a custom project
 structure or spec naming convention, you can set `:clean` to false to skip that file filter.
 
+<a name="specdoc-options" />
 ### Specdoc options
 
 Guard::Jasmine can generate an RSpec like specdoc in the console after running the specs and you can set when it will
@@ -310,6 +356,7 @@ set to `:never`, there is no output at all, instead just a summary of the spec r
 
 When `:focus` is enabled, only the failing specs are shown in the specdoc when at least one spec is failing.
 
+<a name="console-logs" />
 #### Console logs
 
 The `:console` options adds captured console logs from the spec runner and adds them to the specdoc. Guard:Jasmine
@@ -337,6 +384,7 @@ You can further customize the log output by implement on of these methods:
 In addition the console can log jQuery collections and outputs the HTML representation of the element by using the
 jQuery `html()` method.
 
+<a name="system-notifications-options" />
 ### System notifications options
 
 These options affects what system notifications (growl, libnotify or notifu) are shown after a spec run:
@@ -352,6 +400,7 @@ These options affects what system notifications (growl, libnotify or notifu) are
                                               # default: 3
 ```
 
+<a name="file-mapping" />
 ## Mapping file changes to the spec filter
 
 Jasmine doesn't know anything about your test files, it only knows the name of your specs that you specify in the
@@ -366,8 +415,10 @@ So if you want to have a precise spec detection, you should:
 To get a feeling how your naming strategy works, play with the web based Jasmine runner and modify the `spec` query
 parameter.
 
+<a name="outside-guard" />
 ## Guard::Jasmine outside of Guard
 
+<a name="thor" />
 ### Thor command line utility
 
 Guard::Jasmine includes a little command line utility to run your specs once and output the specdoc to the console.
@@ -412,6 +463,7 @@ By default all specs are run, but you can supply multiple paths to your specs to
 $ guard-jasmine spec/javascripts/a_spec.js.coffee spec/javascripts/another_spec.js.coffee
 ```
 
+<a name="rake" />
 ### Rake task integration
 
 Guard::Jasmine provides a Rake task wrapper around the Thor command line utility. Simply create a JasmineTask within
@@ -434,6 +486,7 @@ end
 Guard::JasmineTask.new(:jasmine_no_server, '-s none')
 ```
 
+<a name="travis-ci" />
 ### Travis CI integration
 
 With the given `guard-jasmine` script you're able to configure [Travis CI](http://travis-ci.org/) to run Guard::Jasmine.
@@ -473,7 +526,8 @@ I recommend to check out these other brilliant Jasmine runners:
 * [Jezebel][] a Node.js REPL and continuous test runner for [Jessie][], a Node runner for Jasmine, but has no full
 featured browser environment.
 
-## Issues
+<a name="issues" />
+## How to file an issue
 
 You can report issues and feature requests to [GitHub Issues](https://github.com/netzpirat/guard-jasmine/issues). Try to figure out
 where the issue belongs to: Is it an issue with Guard itself or with Guard::Jasmine? Please don't
@@ -482,12 +536,14 @@ ask question in the issue tracker, instead join us in our [Google group](http://
 
 When you file an issue, please try to follow to these simple rules if applicable:
 
+* Make sure you have study the README carefully.
 * Make sure you run Guard with `bundle exec` first.
 * Add debug information to the issue by running Guard with the `--verbose` option.
 * Add your `Guardfile` and `Gemfile` to the issue.
 * Make sure that the issue is reproducible with your description.
 
-## Development
+<a name="development-information" />
+## Development information
 
 - Documentation hosted at [RubyDoc](http://rubydoc.info/github/guard/guard-jasmine/master/frames).
 - Source hosted at [GitHub](https://github.com/netzpirat/guard-jasmine).
