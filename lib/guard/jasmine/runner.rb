@@ -6,7 +6,7 @@ module Guard
   class Jasmine
 
     # The Jasmine runner handles the execution of the spec through the PhantomJS binary,
-    # evaluates the JSON response from the PhantomJS Script `run_jasmine.coffee`,
+    # evaluates the JSON response from the PhantomJS Script `guard_jasmine.coffee`,
     # writes the result to the console and triggers optional system notifications.
     #
     module Runner
@@ -118,7 +118,7 @@ module Guard
         # @return [String] the path to the PhantomJS script
         #
         def phantomjs_script
-          File.expand_path(File.join(File.dirname(__FILE__), 'phantomjs', 'run-jasmine.coffee'))
+          File.expand_path(File.join(File.dirname(__FILE__), 'phantomjs', 'guard-jasmine.coffee'))
         end
 
         # The suite name must be extracted from the spec that

@@ -310,25 +310,13 @@ set to `:never`, there is no output at all, instead just a summary of the spec r
 
 When `:focus` is enabled, only the failing specs are shown in the specdoc when at least one spec is failing.
 
-The `:console` options adds captured console logs from the spec runner and adds them to the specdoc. Please note
-that PhantomJS only support capturing of `console.log`, so the other log functions like `debug`, `warn`, `info` and
-`error` are missing. Please vote on [Issue 232](http://code.google.com/p/phantomjs/issues/detail?id=232) if you like
-to see support for more console methods coming to PhantomJS.
+The `:console` options adds captured console logs from the spec runner and adds them to the specdoc. Guard::Jasmine
+includes a slightly modified version of [console.js](https://github.com/NV/console.js) in order to support object and
+HTML element output.
 
-Another restriction on console logging is that currently only the first log parameter is passed. So instead of writing
-
-```javascript
-console.log('Debug of %o with %s', object, string)
-```
-
-your should write
-
-```javascript
-console.log('Debug of ' + object.toString() + ' width ' + string)
-```
-
-You can also give your vote on [Issue 36](http://code.google.com/p/phantomjs/issues/detail?id=36) to see support for
-multiple console arguments.
+Please vote on [Issue 232](http://code.google.com/p/phantomjs/issues/detail?id=232) and
+[Issue 36](http://code.google.com/p/phantomjs/issues/detail?id=36) if you like to see improved, native PhantomJS support
+for more console methods and multiple console arguments.
 
 ### System notifications options
 
@@ -574,7 +562,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [guard-jasmine-headless-webkit]: https://github.com/johnbintz/guard-jasmine-headless-webkit
 [jasmine-headless-webkit]: https://github.com/johnbintz/jasmine-headless-webkit/
 [Evergreen]: https://github.com/jnicklas/evergreen
-[PhantomJS script]: https://github.com/netzpirat/guard-jasmine/blob/master/lib/guard/jasmine/phantomjs/run-jasmine.coffee
+[PhantomJS script]: https://github.com/netzpirat/guard-jasmine/blob/master/lib/guard/jasmine/phantomjs/guard-jasmine.coffee
 [Guard::CoffeeScript]: https://github.com/guard/guard-coffeescript
 [Sinon.JS]: http://sinonjs.org
 [guard-jasmine-node]: https://github.com/guard/guard-jasmine-node

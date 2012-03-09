@@ -6,6 +6,7 @@ pkg/*
 .yardoc
 doc
 Gemfile.lock
+node_modules
 
 ## MAC OS
 .DS_Store
