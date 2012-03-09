@@ -576,6 +576,14 @@ The only argument that the script takes is the URL to the Jasmine runner, which 
 ```bash
 $ guard-jasmine-debug http://127.0.0.1:3000/Jasmine?spec=YourSpec
 ```
+
+## Author
+
+Developed by Michael Kessler, sponsored by [mksoft.ch](https://mksoft.ch).
+
+If you like Guard::Jasmine, you can watch the repository at [GitHub](https://github.com/netzpirat/guard-jasmine) and
+follow [@netzpirat](https://twitter.com/#!/netzpirat) on Twitter for project updates.
+
 ## Contributors
 
 See the the GitHub list of [contributors](https://github.com/netzpirat/haml_coffee_assets/contributors).
