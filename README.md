@@ -75,6 +75,9 @@ Add the default Guard::Jasmine template to your `Guardfile` by running:
 $ guard init jasmine
 ```
 
+Please have a look at the [CHANGELOG](https://github.com/netzpirat/guard-jasmine/blob/master/CHANGELOG.md) when
+upgrading to a newer Guard::Jasmine version.
+
 <a name="phantomjs" />
 ### PhantomJS
 
@@ -586,7 +589,8 @@ follow [@netzpirat](https://twitter.com/#!/netzpirat) on Twitter for project upd
 
 ## Contributors
 
-See the the GitHub list of [contributors](https://github.com/netzpirat/haml_coffee_assets/contributors).
+See the [CHANGELOG](https://github.com/netzpirat/guard-jasmine/blob/master/CHANGELOG.md) and the GitHub list of
+[contributors](https://github.com/netzpirat/haml_coffee_assets/contributors).
 
 ## Acknowledgment
 
