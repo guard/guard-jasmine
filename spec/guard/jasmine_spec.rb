@@ -202,10 +202,6 @@ describe Guard::Jasmine do
       it 'sets default :specdoc option' do
         guard.options[:specdoc].should eql :failure
       end
-
-      it 'sets default :server option' do
-        guard.options[:server].should eql :auto
-      end
     end
   end
 
