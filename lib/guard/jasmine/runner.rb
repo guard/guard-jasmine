@@ -278,8 +278,8 @@ module Guard
         def report_specdoc_logs(spec, options, level)
           if spec['logs'] && (options[:console] == :always || (options[:console] == :failure && !spec['passed']))
             spec['logs'].each do |log|
-              log.split("\n").each do |message|
-                Formatter.info(indent("    • #{ message }", level))
+              log.split("\n").each_with_index do |message, index|
+                Formatter.info(indent("    #{ index == 0 ? '•' : ' ' } #{ message }", level))
               end
             end
           end

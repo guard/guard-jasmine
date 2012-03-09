@@ -23,6 +23,8 @@ class Console
     console.debug = (args...) ->
       log.call console, "DEBUG: #{ Console.format(args...) }"
 
+  @MAX_OBJECT_DEPTH: 2
+
   # Format the console arguments. This parses the known
   # % placeholder with the object value and/or concatenates
   # the arguments.
@@ -49,17 +51,96 @@ class Console
     switch type
       when '%s'
         result = String(object)
+        result = match[1] if match = /'(.*)'/.exec result
+
       when '%d', '%i'
         result = parseInt object
+
       when '%f'
         result = parseFloat object
-      else
-        if Object::toString.call(object) is '[object Object]' and object.toJSON
-          result = object.toJSON()
-        else
-          result = object
 
-    result = match[1] if match = /'(.*)'/.exec result
+      else
+        type = Object::toString.call(object).slice 8, -1
+
+        if type is 'Object' and object.toJSON
+          result = Console.pp object.toJSON()
+
+        else if type is 'Object' and object.toString and object.toString() isnt '[object Object]'
+          result = Console.pp object.toString()
+          result = match[1] if match = /'(.*)'/.exec result
+
+        else if type is 'String'
+          result = String(object)
+          result = match[1] if match = /'(.*)'/.exec result
+
+        else
+          result = Console.pp object
+
+    result
+
+  # Pretty print an object
+  #
+  # @param [Object] object the object to inspect
+  # @param [Number] depth the object depth
+  # @return [String] a string representation
+  #
+  @pp: (object, depth = 0) ->
+    type = Object::toString.call(object).slice 8, -1
+    result = ''
+
+    switch type
+      when 'Undefined', 'Null'
+        result += type.toLowerCase()
+
+      when 'Boolean', 'Number', 'Date'
+        result += object.toString()
+
+      when 'String'
+        result += "'#{ object.toString() }'"
+
+      when 'Array'
+        if object.length > 0
+          result += '['
+
+          for value in object
+            if depth < Console.MAX_OBJECT_DEPTH or Object::toString.call(value).slice(8, -1) isnt 'Object'
+              result += "#{ Console.pp value, depth + 1 }, "
+            else
+              result += "[Object], "
+
+          result = result.slice(0, -2)
+          result += ']'
+        else
+          result += '[]'
+
+      when 'Object'
+        if object.jquery
+          if object.length > 0
+            result += '['
+
+            object.each -> result += jQuery(@).html()
+
+            result += ']'
+          else
+            result += '[]'
+
+        else if Object.keys(object).length > 0
+          result += '{ '
+
+          for key, value of object
+            if depth < Console.MAX_OBJECT_DEPTH or Object::toString.call(value).slice(8, -1) isnt 'Object'
+              result += "#{ key }: #{ Console.pp value, depth + 1 }, " if object.hasOwnProperty key
+            else
+              result += "#{ key }: [Object], "
+
+          result = result.slice(0, -2)
+          result += ' }'
+        else
+          result += '{}'
+
+      when 'Function'
+        result += '[Function]'
+
     result
 
 if typeof module isnt 'undefined' and module.exports

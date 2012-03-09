@@ -72,11 +72,11 @@ describe 'console', ->
 
       it 'logs a date', ->
         @console.log new Date('Thu Mar 08 2012 20:28:56 GMT+0100 (CET)')
-        expect(@log.args[0][0]).to.equal 'Thu, 08 Mar 2012 19:28:56 GMT'
+        expect(@log.args[0][0]).to.equal 'Thu Mar 08 2012 20:28:56 GMT+0100 (CET)'
 
       it 'logs an array', ->
         @console.log [1, 2, 3, 4]
-        expect(@log.args[0][0]).to.equal '[ 1, 2, 3, 4 ]'
+        expect(@log.args[0][0]).to.equal '[1, 2, 3, 4]'
 
       it 'logs an object', ->
         @console.log { a: 1 }
@@ -86,7 +86,7 @@ describe 'console', ->
         @console.log "Hello object %o. Nice to meet you", { a: 1, b: { x: 1 } }
         expect(@log.args[0][0]).to.equal 'Hello object { a: 1, b: { x: 1 } }. Nice to meet you'
 
-      it 'logs a nested object until depth 3', ->
+      it 'logs a nested object until depth 2', ->
         @console.log "Hello object %o. Nice to meet you", { a: 1, b: { x: { a: 1, b: { x: 1 } } } }
         expect(@log.args[0][0]).to.equal 'Hello object { a: 1, b: { x: { a: 1, b: [Object] } } }. Nice to meet you'
 
@@ -95,9 +95,9 @@ describe 'console', ->
         @console.log 'I have a toString(): %s!', { toString: -> '[Yepa]' }
         expect(@log.args[0][0]).to.equal 'I have a toString(): [Yepa]!'
 
-      it '%o logs the object representation', ->
+      it '%o logs the custom string representation', ->
         @console.log 'I have a toString(): %o!', { toString: -> '[Yepa]' }
-        expect(@log.args[0][0]).to.equal 'I have a toString(): { toString: [Function] }!'
+        expect(@log.args[0][0]).to.equal 'I have a toString(): [Yepa]!'
 
     describe 'with an Object that implements toJSON()', ->
       it '%o logs the custom JSON representation', ->
