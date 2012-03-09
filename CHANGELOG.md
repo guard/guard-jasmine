@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 - March 10, 2012
+
+- [Pull #44](https://github.com/netzpirat/guard-jasmine/pull/44): Allow a Guardfile to specify a custom rake task as the server. ([@eventualbuddha][])
+
 ## 1.0.1 - March 9, 2012
 
 - Optimize PhantomJS runner result passing to improve speed.
@@ -196,6 +200,7 @@
 [@darrinholst]: https://github.com/darrinholst
 [@dmathieu]: https://github.com/dmathieu
 [@DouweM]: https://github.com/DouweM
+[@eventualbuddha]: https://github.com/DouweM
 [@jasonm]: https://github.com/jasonm
 [@mkdynamic]: https://github.com/mkdynamic
 [@rymai]: https://github.com/rymai
