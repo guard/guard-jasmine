@@ -376,12 +376,12 @@ supports the common format placeholders:
 * `%f`
 * `%o`
 
-You can further customize the log output by implement on of these methods:
+You can further customize the log output by implement one of these methods:
 
 * `toString()` - must return a string that describes the object
 * `toJSON()` - must return an object that is used instead of the actual object.
 
-In addition the console can log jQuery collections and outputs the HTML representation of the element by using the
+In addition, the console can log jQuery collections and outputs the HTML representation of the element by using the
 jQuery `html()` method.
 
 <a name="system-notifications-options" />
