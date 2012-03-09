@@ -43,7 +43,7 @@ module Guard
     #
     # @param [Array<Guard::Watcher>] watchers the watchers in the Guard block
     # @param [Hash] options the options for the Guard
-    # @option options [String] :server the server to use, either :auto, :none, :webrick, :mongrel, :thin, :jasmine_gem
+    # @option options [String] :server the server to use, either :auto, :none, :webrick, :mongrel, :thin, :jasmine_gem, or a custom rake task
     # @option options [String] :server_env the server environment to use, for example :development, :test
     # @option options [String] :port the port for the Jasmine test server
     # @option options [String] :jasmine_url the url of the Jasmine test runner
@@ -65,7 +65,7 @@ module Guard
       options[:jasmine_url] = "http://localhost:#{ options[:port] }/jasmine" if options[:port] && !options[:jasmine_url]
       options = DEFAULT_OPTIONS.merge(options)
       options[:specdoc] = :failure if ![:always, :never, :failure].include? options[:specdoc]
-      options[:server] = :auto if ![:none, :webrick, :mongrel, :thin, :jasmine_gem].include? options[:server]
+      options[:server] ||= :auto
       options[:phantomjs_bin] = Jasmine.which('phantomjs') unless options[:phantomjs_bin]
 
       super(watchers, options)
