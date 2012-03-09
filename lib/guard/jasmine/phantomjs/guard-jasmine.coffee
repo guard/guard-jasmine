@@ -34,13 +34,14 @@ page.addLogs = (suite) ->
 # the result when specs have finished.
 #
 page.onConsoleMessage = (msg, line, source) ->
-  if /^RUNNER_RESULT: ([\s\S]*)$/.test(msg)
-    result = JSON.parse(RegExp.$1)
+  if /^RUNNER_END$/.test(msg)
+    result = page.evaluate -> window.reporter.runnerResult
 
     for suite in result.suites
       page.addLogs(suite)
 
-    console.log JSON.stringify(result, undefined, 2)
+    console.log JSON.stringify(result)
+
     page.evaluate -> window.resultReceived = true
 
   else if /^SPEC_START: (\d+)$/.test(msg)
@@ -60,7 +61,8 @@ page.onInitialized = ->
     # Attach the console reporter when the document is ready.
     window.onload = ->
       window.resultReceived = false
-      jasmine.getEnv().addReporter(new ConsoleReporter())
+      window.reporter = new ConsoleReporter()
+      jasmine.getEnv().addReporter(window.reporter)
 
 # Open web page and run the Jasmine test runner
 #

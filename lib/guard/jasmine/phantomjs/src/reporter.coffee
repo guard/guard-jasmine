@@ -87,7 +87,7 @@ class ConsoleReporter
       time: runtime
     }
 
-    console.log "RUNNER_RESULT: #{ JSON.stringify(@runnerResult) }"
+    console.log "RUNNER_END"
 
   # Report the start of the runner
   #
