@@ -34,7 +34,7 @@ module Guard
         desc 'Run all Jasmine specs'
         task(name) do
           begin
-            Guard::Jasmine::CLI.start(options.split)
+            ::Guard::Jasmine::CLI.start(options.split)
 
           rescue SystemExit => e
             case e.status
