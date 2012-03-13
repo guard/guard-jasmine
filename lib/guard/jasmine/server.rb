@@ -58,7 +58,7 @@ module Guard
           ::Guard::UI.info "Guard::Jasmine starts #{ server } test server on port #{ port } in #{ environment } environment."
 
           self.process = ChildProcess.build('rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s)
-          self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options[:verbose]
+          self.process.io.inherit! if ::Guard.options && ::Guard.options[:verbose]
           self.process.start
 
         rescue => e
@@ -74,7 +74,7 @@ module Guard
           ::Guard::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
 
           self.process = ChildProcess.build('rake', task, "JASMINE_PORT=#{ port }")
-          self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options[:verbose]
+          self.process.io.inherit! if ::Guard.options && ::Guard.options[:verbose]
           self.process.start
 
         rescue => e
