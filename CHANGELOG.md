@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4 - March 13, 2012
+
+- Fix server start when not running in context of Guard.
+
 ## 1.0.3 - March 13, 2012
 
 - [Issue #45](https://github.com/netzpirat/guard-jasmine/issues/45): Cannot start Rack server.
