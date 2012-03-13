@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3 - March 13, 2012
+
+- [Issue #45](https://github.com/netzpirat/guard-jasmine/issues/45): Cannot start Rack server.
+
 ## 1.0.2 - March 10, 2012
 
 - [Pull #44](https://github.com/netzpirat/guard-jasmine/pull/44): Allow a Guardfile to specify a custom rake task as the server. ([@eventualbuddha][])
