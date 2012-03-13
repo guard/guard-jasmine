@@ -78,7 +78,7 @@ module Guard
           self.process.start
 
         rescue => e
-          ::Guard::UI.error "Cannot start Jasmine Gem server: #{ e.message }"
+          ::Guard::UI.error "Cannot start Rake task server: #{ e.message }"
         end
 
         # Detect the server to use
