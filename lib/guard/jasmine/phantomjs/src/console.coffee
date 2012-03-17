@@ -1,4 +1,4 @@
-# Simplified console logger rreplacement.
+# Simplified console logger replacement.
 #
 class Console
 
