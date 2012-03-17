@@ -218,7 +218,7 @@ describe Guard::Jasmine::Runner do
           formatter.should_not_receive(:suite_name)
           formatter.should_not_receive(:spec_failed)
           formatter.should_receive(:error).with(
-              "3 specs, 2 failures\nin 0.007 seconds"
+              "3 specs, 2 failures"
           )
           runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :specdoc => :never }))
         end
@@ -416,7 +416,7 @@ describe Guard::Jasmine::Runner do
               '    ✔ Success nested test tests something'
           )
           formatter.should_receive(:success).with(
-              "3 specs, 0 failures\nin 0.009 seconds"
+              "3 specs, 0 failures"
           )
           runner.run(['spec/javascripts/x/t.js'], defaults.merge({ :specdoc => :always }))
         end
@@ -456,7 +456,7 @@ describe Guard::Jasmine::Runner do
           )
           formatter.should_not_receive(:suite_name)
           formatter.should_receive(:success).with(
-              "3 specs, 0 failures\nin 0.009 seconds"
+              "3 specs, 0 failures"
           )
           runner.run(['spec/javascripts/x/t.js'], defaults.merge({ :specdoc => :never }))
         end
