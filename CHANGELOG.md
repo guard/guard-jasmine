@@ -1,5 +1,12 @@
 # Changelog
 
+## Master
+
+- PhantomJS 1.5 compatibility.
+- Add onError handler for catching PhantomJS errors
+- Filter logs and errors depending on the runner setting to speed up result parsing.
+- Add errors to the spec doc.
+
 ## 1.0.4 - March 13, 2012
 
 - Fix server start when not running in context of Guard.
