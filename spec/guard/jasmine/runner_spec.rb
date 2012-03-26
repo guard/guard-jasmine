@@ -38,6 +38,15 @@ describe Guard::Jasmine::Runner do
               "logs": [
                 "console.log message"
               ],
+              "errors": [
+                {
+                  "msg": "Error message",
+                  "trace" : {
+                    "file": "/path/to/file.js",
+                    "line": "255"
+                  }
+                }
+              ],
               "passed": false
             }
           ],
@@ -58,6 +67,15 @@ describe Guard::Jasmine::Runner do
                   "logs": [
                     "Another console.log message",
                     "And even more console.log messages"
+                  ],
+                  "errors": [
+                    {
+                      "msg": "Another error message",
+                      "trace" : {
+                        "file": "/path/to/file.js",
+                        "line": "255"
+                      }
+                    }
                   ]
                 }
               ]
@@ -139,7 +157,7 @@ describe Guard::Jasmine::Runner do
 
     context 'when passed the spec directory' do
       it 'requests all jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 10000")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 10000 failure true failure failure")
         runner.run(['spec/javascripts'], defaults.merge({ :notification => false }))
       end
 
@@ -152,7 +170,7 @@ describe Guard::Jasmine::Runner do
 
     context 'for an erroneous Jasmine runner' do
       it 'requests the jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=ErrorTest\" 10000")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=ErrorTest\" 10000 failure true failure failure")
         runner.run(['spec/javascripts/a.js.coffee'], defaults)
       end
 
@@ -197,7 +215,7 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=FailureTest\" 10000")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=FailureTest\" 10000 failure true failure failure")
         runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
       end
 
@@ -252,13 +270,16 @@ describe Guard::Jasmine::Runner do
             formatter.should_not_receive(:success).with(
                 '    ✔ Success spec tests something'
             )
+            formatter.should_not_receive(:spec_failed).with(
+                "    ➜ Exception: Another error message in /path/to/file.js on line 255"
+            )
             formatter.should_not_receive(:info).with(
                 "      • Another console.log message"
             )
             formatter.should_not_receive(:info).with(
                 "      • And even more console.log messages"
             )
-            runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :always, :focus => true }))
+            runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :always, :errors => :always, :focus => true }))
           end
         end
 
@@ -286,6 +307,15 @@ describe Guard::Jasmine::Runner do
           end
         end
 
+        context 'with error logs set to :always' do
+          it 'shows the failed console logs' do
+            formatter.should_receive(:spec_failed).with(
+                "    ➜ Exception: Error message in /path/to/file.js on line 255"
+            )
+            runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :errors => :always }))
+          end
+        end
+
         context 'with console logs set to :never' do
           it 'does not shows the console logs' do
             formatter.should_not_receive(:info).with(
@@ -301,6 +331,18 @@ describe Guard::Jasmine::Runner do
           end
         end
 
+        context 'with error logs set to :never' do
+          it 'does not shows the console logs' do
+            formatter.should_not_receive(:spec_failed).with(
+                "    ➜ Exception: Error message in /path/to/file.js on line 255"
+            )
+            formatter.should_not_receive(:spec_failed).with(
+                "    ➜ Exception: Another error message in /path/to/file.js on line 255"
+            )
+            runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :errors => :never }))
+          end
+        end
+
         context 'with console logs set to :failure' do
           it 'shows the the console logs for failed specs' do
             formatter.should_receive(:info).with(
@@ -313,6 +355,18 @@ describe Guard::Jasmine::Runner do
                 "      • And even more console.log messages"
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :failure }))
+          end
+        end
+
+        context 'with error logs set to :failure' do
+          it 'shows the the console logs for failed specs' do
+            formatter.should_receive(:spec_failed).with(
+                "    ➜ Exception: Error message in /path/to/file.js on line 255"
+            )
+            formatter.should_not_receive(:spec_failed).with(
+                "    ➜ Exception: Another error message in /path/to/file.js on line 255"
+            )
+            runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :errors => :failure }))
           end
         end
       end
@@ -381,7 +435,7 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=SuccessTest\" 10000")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=SuccessTest\" 10000 failure true failure failure")
 
         runner.run(['spec/javascripts/t.js'], defaults)
       end

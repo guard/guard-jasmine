@@ -57,6 +57,12 @@ module Guard
                     :default => 'failure',
                     :desc => 'Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`'
 
+      method_option :errors,
+                    :type => :string,
+                    :aliases => '-x',
+                    :default => 'failure',
+                    :desc => 'Whether to show errors in the spec runner, either `always`, `never` or `failure`'
+
       method_option :server_env,
                     :type => :string,
                     :aliases => '-e',
@@ -85,6 +91,7 @@ module Guard
         runner[:server_env] = options.server_env
         runner[:spec_dir] = options.spec_dir
         runner[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
+        runner[:errors] = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
         runner[:server] = options.server.to_sym
 
         runner[:notification] = false

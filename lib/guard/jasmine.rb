@@ -36,6 +36,7 @@ module Guard
         :max_error_notify => 3,
         :specdoc          => :failure,
         :console          => :failure,
+        :errors           => :failure,
         :focus            => true
     }
 
@@ -59,6 +60,7 @@ module Guard
     # @option options [Boolean] :all_after_pass run all suites after a suite has passed again after failing
     # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never or :failure
     # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
+    # @option options [Symbol] :errors options for the errors output, either :always, :never or :failure
     # @option options [Symbol] :focus options for focus on failures in the specdoc
     #
     def initialize(watchers = [], options = { })

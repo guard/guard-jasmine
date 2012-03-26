@@ -87,7 +87,7 @@ module Guard
         def run_jasmine_spec(file, options)
           suite = jasmine_suite(file, options)
           Formatter.info("Run Jasmine suite at #{ suite }")
-          IO.popen("#{ phantomjs_command(options) } \"#{ suite }\" #{ options[:timeout] }")
+          IO.popen("#{ phantomjs_command(options) } \"#{ suite }\" #{ options[:timeout] } #{ options[:specdoc] } #{ options[:focus] } #{ options[:console] } #{ options[:errors] }")
         end
 
         # Get the PhantomJS binary and script to execute.
@@ -261,6 +261,7 @@ module Guard
               spec['messages'].each do |message|
                 Formatter.spec_failed(indent("    ➤ #{ format_message(message, false) }", level))
               end
+              report_specdoc_errors(spec, options, level)
               report_specdoc_logs(spec, options, level)
             end
           end
@@ -280,6 +281,25 @@ module Guard
             spec['logs'].each do |log|
               log.split("\n").each_with_index do |message, index|
                 Formatter.info(indent("    #{ index == 0 ? '•' : ' ' } #{ message }", level))
+              end
+            end
+          end
+        end
+
+        # Shows the errors for a given spec.
+        #
+        # @param [Hash] spec the spec result
+        # @param [Hash] options the options
+        # @option options [Symbol] :errors options for the errors output, either :always, :never or :failure
+        # @param [Number] level the indention level
+        #
+        def report_specdoc_errors(spec, options, level)
+          if spec['errors'] && (options[:errors] == :always || (options[:errors] == :failure && !spec['passed']))
+            spec['errors'].each do |error|
+              if error['trace']
+                Formatter.spec_failed(indent("    ➜ Exception: #{ error['msg']  } in #{ error['trace']['file'] } on line #{ error['trace']['line'] }", level))
+              else
+                Formatter.spec_failed(indent("    ➜ Exception: #{ error['msg']  }", level))
               end
             end
           end

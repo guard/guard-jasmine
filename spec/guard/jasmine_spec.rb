@@ -78,6 +78,10 @@ describe Guard::Jasmine do
         guard.options[:console].should eql :failure
       end
 
+      it 'sets a default :errors option' do
+        guard.options[:errors].should eql :failure
+      end
+
       it 'sets a default :focus option' do
         guard.options[:focus].should eql true
       end
@@ -116,7 +120,8 @@ describe Guard::Jasmine do
                                               :all_after_pass   => false,
                                               :specdoc          => :always,
                                               :focus            => false,
-                                              :clean => false,
+                                              :clean            => false,
+                                              :errors           => :always,
                                               :console          => :always }) }
 
       it 'sets the :server option' do
@@ -177,6 +182,10 @@ describe Guard::Jasmine do
 
       it 'sets the :console option' do
         guard.options[:console].should eql :always
+      end
+
+      it 'sets the :errors option' do
+        guard.options[:errors].should eql :always
       end
 
       it 'sets the :focus option' do
