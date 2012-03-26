@@ -351,6 +351,10 @@ be shown in the console:
 :console => :always                           # Console.log output options,
                                               # either :always, :never or :failure
                                               # default: :failure
+
+:errors => :always                            # Error output options,
+                                              # either :always, :never or :failure
+                                              # default: :failure
 ```
 
 With the option set to `:always`, the specdoc is shown with and without errors in your spec, whereas on with the option
@@ -358,6 +362,10 @@ set to `:never`, there is no output at all, instead just a summary of the spec r
 `:failure` shows the specdoc when at least one spec failed.
 
 When `:focus` is enabled, only the failing specs are shown in the specdoc when at least one spec is failing.
+
+The `:errors` option is partially working when using at least PhantomJS version 1.5. Please see
+[Issue #166](http://code.google.com/p/phantomjs/issues/detail?id=166) for the actual status of retreiving the JavaScript
+stack trace.
 
 <a name="console-logs" />
 #### Console logs
@@ -454,6 +462,9 @@ Options:
   -c, [--console=CONSOLE]        # Whether to show console.log statements in the spec runner,
                                  # either `always`, `never` or `failure`
                                  # Default: failure
+  -x, [--errors=ERRORS]          # Whether to show errors in the spec runner,
+                                 # either `always`, `never` or `failure`
+                                 # Default: failure
   -e, [--server-env=SERVER_ENV]  # The server environment to use, for example `development`, `test`
                                  # Default: test
 
@@ -505,11 +516,16 @@ script: 'bundle exec guard-jasmine'
 You can also run your Guard::Jasmine specs after your specs that are ran with `rake` by using `after_script`:
 
 ```yaml
+script: 'rake spec'
+after_script: 'bundle exec guard-jasmine'
+```
+
+When using a PhantomJS version prior to 1.5, you need to start `xvfb` before running the specs:
+
+```yaml
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-script: 'rake spec'
-after_script: 'bundle exec guard-jasmine'
 ```
 
 ## Alternatives
