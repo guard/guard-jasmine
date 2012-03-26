@@ -314,9 +314,6 @@ The spec runner options configures the behavior driven development (or BDD) cycl
 :all_on_start => false                        # Run all suites on start.
                                               # default: true
 
-:all_on_start => false                        # Run all suites on start.
-                                              # default: true
-
 :keep_failed => false                         # Keep failed suites and add them to the next run again.
                                               # default: true
 

@@ -205,24 +205,30 @@ module Guard
         # @option options [Boolean] :hide_success hide success message notification
         #
         def notify_spec_result(result, options)
-          specs    = result['stats']['specs']
-          failures = result['stats']['failures']
-          time     = result['stats']['time']
-          plural   = failures == 1 ? '' : 's'
-
-          message = "#{ specs } specs, #{ failures } failure#{ plural }\nin #{ time } seconds"
-          passed  = failures == 0
-
+          specs           = result['stats']['specs']
+          failures        = result['stats']['failures']
+          time            = result['stats']['time']
+          specs_plural    = specs == 1    ? '' : 's'
+          failures_plural = failures == 1 ? '' : 's'
+          
+          Formatter.info("\nFinished in #{ time } seconds")
+          
+          message      = "#{ specs } spec#{ specs_plural }, #{ failures } failure#{ failures_plural }"
+          full_message = "#{ message }\nin #{ time } seconds"
+          passed       = failures == 0
+          
           if passed
             report_specdoc(result, passed, options) if options[:specdoc] == :always
             Formatter.success(message)
-            Formatter.notify(message, :title => 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
+            Formatter.notify(full_message, :title => 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
           else
             report_specdoc(result, passed, options) if options[:specdoc] != :never
             Formatter.error(message)
             notify_errors(result, options)
-            Formatter.notify(message, :title => 'Jasmine suite failed', :image => :failed, :priority => 2) if options[:notification]
+            Formatter.notify(full_message, :title => 'Jasmine suite failed', :image => :failed, :priority => 2) if options[:notification]
           end
+          
+          Formatter.info("Done.\n")
         end
 
         # Specdoc like formatting of the result.
