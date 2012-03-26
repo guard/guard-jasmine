@@ -1,9 +1,15 @@
 # This file is the script that runs within PhantomJS, requests the Jasmine specs
 # and waits until they are ready.
+phantom.injectJs 'lib/result.js'
 
 # Set default values
-url = phantom.args[0] || 'http://127.0.0.1:3000/jasmine'
-timeout = parseInt(phantom.args[1] || 5000)
+options =
+  url: phantom.args[0] || 'http://127.0.0.1:3000/jasmine'
+  timeout: parseInt(phantom.args[1] || 5000)
+  specdoc: phantom.args[2] || 'failure'
+  focus: /true/i.test phantom.args[3]
+  console: phantom.args[4] || 'failure'
+  errors: phantom.args[5] || 'failure'
 
 # Create the web page.
 #
@@ -13,22 +19,14 @@ page = require('webpage').create()
 #
 currentSpecId = -1
 logs = {}
+errors = {}
 
-# Add logs to the given suite
+# Catch JavaScript errors
 #
-# @param suite [Object} the suite result
-#
-page.addLogs = (suite) ->
-  for s in suite.suites
-    arguments.callee(s) if s
-
-  for spec in suite.specs
-    id = Number(spec['id'])
-    spec['logs'] = logs[id] if logs[id] && logs[id].length isnt 0
-    delete spec['id']
-
-  delete suite['id']
-  delete suite['parent']
+page.onError = (msg, trace) ->
+  if currentSpecId && currentSpecId isnt -1
+    errors[currentSpecId] ||= []
+    errors[currentSpecId].push({ msg: msg, trace: trace })
 
 # Capture console.log output to add it to
 # the result when specs have finished.
@@ -36,12 +34,7 @@ page.addLogs = (suite) ->
 page.onConsoleMessage = (msg, line, source) ->
   if /^RUNNER_END$/.test(msg)
     result = page.evaluate -> window.reporter.runnerResult
-
-    for suite in result.suites
-      page.addLogs(suite)
-
-    console.log JSON.stringify(result)
-
+    console.log JSON.stringify(new Result(result, logs, errors, options).process())
     page.evaluate -> window.resultReceived = true
 
   else if /^SPEC_START: (\d+)$/.test(msg)
@@ -66,16 +59,16 @@ page.onInitialized = ->
 
 # Open web page and run the Jasmine test runner
 #
-page.open url, (status) ->
+page.open options.url, (status) ->
   # Avoid that a failed iframe load breaks the runner, see https://github.com/netzpirat/guard-jasmine/pull/19
   page.onLoadFinished = ->
 
   if status isnt 'success'
-    console.log JSON.stringify({ error: "Unable to access Jasmine specs at #{ url }" })
+    console.log JSON.stringify({ error: "Unable to access Jasmine specs at #{ options.url }" })
     phantom.exit()
   else
     done = -> phantom.exit()
-    waitFor specsReady, done, timeout
+    waitFor specsReady, done, options.timeout
 
 # Test if the specs have finished.
 #

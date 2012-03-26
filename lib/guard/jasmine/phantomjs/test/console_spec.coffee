@@ -3,7 +3,7 @@ sinon    = require 'sinon'
 
 Console  = require '../src/console'
 
-describe 'console', ->
+describe 'Console', ->
   beforeEach ->
     @log = sinon.stub()
     @console = { log: @log }

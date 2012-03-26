@@ -87,7 +87,9 @@ class ConsoleReporter
       time: runtime
     }
 
-    console.log "RUNNER_END"
+    # Delay the end runner message, so that logs and errors can be retreived in between
+    end = -> console.log "RUNNER_END"
+    setTimeout end, 10
 
   # Report the start of the runner
   #
