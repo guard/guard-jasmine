@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.1.0 - March 27, 2012
 
 - PhantomJS 1.5 compatibility.
 - Add onError handler for catching PhantomJS errors
