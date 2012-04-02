@@ -24,7 +24,7 @@ module Guard
           strategy = detect_server(spec_dir) if strategy == :auto
 
           case strategy
-          when :webrick, :mongrel, :thin
+          when :webrick, :mongrel, :thin, :unicorn
             start_rack_server(port, environment, strategy)
           when :jasmine_gem
             start_rake_server(port, 'jasmine')
