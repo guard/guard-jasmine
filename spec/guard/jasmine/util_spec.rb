@@ -65,9 +65,20 @@ describe Guard::Jasmine::Util do
       end
     end
 
+    context 'with a something other than a valid PhantomJS version' do
+      before do
+        util.stub(:`).and_return 'Command not found'
+      end
+
+      it 'shows a message that the version is wrong' do
+        Guard::Jasmine::Formatter.should_receive(:error).with "PhantomJS reports unknown version format: Command not found"
+        util.phantomjs_bin_valid?('/usr/bin/phantomjs')
+      end
+    end
+
     context 'with a wrong PhantomJS version' do
       before do
-        util.stub(:`).and_return '1.2.0'
+        util.stub(:`).and_return '1.1.0'
       end
 
       it 'shows a message that the version is wrong' do

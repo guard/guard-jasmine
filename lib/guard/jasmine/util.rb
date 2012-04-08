@@ -48,12 +48,16 @@ module Guard
 
           if version
             # Remove all but version, e.g. from '1.5 (development)'
-            version = version.match(/(\d\.)*(\d)/)[0]
+            cleaned_version = version.match(/(\d\.)*(\d)/)
 
-            if Gem::Version.new(version) < Gem::Version.new('1.3.0')
-              ::Guard::Jasmine::Formatter.error "PhantomJS executable at #{ bin } must be at least version 1.3.0"
+            if cleaned_version
+              if Gem::Version.new(cleaned_version[0]) < Gem::Version.new('1.3.0')
+                ::Guard::Jasmine::Formatter.error "PhantomJS executable at #{ bin } must be at least version 1.3.0"
+              else
+                true
+              end
             else
-              true
+              ::Guard::Jasmine::Formatter.error "PhantomJS reports unknown version format: #{ version }"
             end
           else
             ::Guard::Jasmine::Formatter.error "PhantomJS executable doesn't exist at #{ bin }"
