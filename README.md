@@ -305,7 +305,7 @@ environment variable.
 The spec runner options configures the behavior driven development (or BDD) cycle:
 
 ```ruby
-:spec_dir => false                            # Directory with the Jasmine specs.
+:spec_dir => 'app/spec'                       # Directory with the Jasmine specs.
                                               # default: 'spec/javascripts'
 
 :clean => false                               # Clean the spec list by only keep Jasmine specs within the project.
