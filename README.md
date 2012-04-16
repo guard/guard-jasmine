@@ -114,7 +114,7 @@ Guard::Jasmine will start a Rails Rack server to run your specs.
 <a name="asset-pipeline-works" />
 ### How it works
 
-![Guard Jasmine](https://github.com/netzpirat/guard-jasmine/raw/master/resources/guard-jasmine-rails31.jpg)
+![Guard Jasmine](https://github.com/netzpirat/guard-jasmine/raw/master/resources/guard-jasmine-with-asset-pipeline.jpg)
 
 1. Guard is triggered by a file modification.
 2. Guard::Jasmine executes the [PhantomJS script][].
