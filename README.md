@@ -47,7 +47,10 @@ Ruby.
 various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 
 * Runs the standard Jasmine test runner, so you can use [Jasminerice][] for integrating [Jasmine][] into the
-[Rails 3.1 asset pipeline][] and write your specs in [CoffeeScript][].
+[Rails asset pipeline][] and write your specs in [CoffeeScript][].
+
+* Can be used to run [Jasmine-species](http://rudylattae.github.com/jasmine-species/) acceptance tests provided by
+[Jasmine Stories](https://github.com/DominikGuzei/jasmine-stories).
 
 * Thor and Rake command line helper for CI server integration.
 
