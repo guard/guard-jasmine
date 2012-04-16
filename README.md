@@ -234,9 +234,11 @@ end
 
 and generate the configuration files and change the Jasmine url:
 
+```ruby
 guard :jasmine, :jasmine_url => 'http://localhost:8888/' do
   ...
 end
+```
 
 #### Rails 3 without the asset pipeline
 
