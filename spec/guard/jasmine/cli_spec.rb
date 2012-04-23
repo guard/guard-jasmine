@@ -21,7 +21,7 @@ describe Guard::Jasmine::CLI do
     context 'with specified options' do
       context 'for the server' do
         it 'sets the server type' do
-          server.should_receive(:start).with(:thin, 8888, 'test', 'spec/javascripts')
+          server.should_receive(:start).with(:thin, 3001, 'test', 'spec/javascripts')
           cli.start(['spec', '--server', 'thin'])
         end
 
@@ -100,7 +100,7 @@ describe Guard::Jasmine::CLI do
     context 'without specified options' do
       context 'for the server' do
         it 'sets the server type' do
-          server.should_receive(:start).with(:auto, 8888, 'test', 'spec/javascripts')
+          server.should_receive(:start).with(:auto, 3001 , 'test', 'spec/javascripts')
           cli.start(['spec'])
         end
       end
@@ -126,7 +126,7 @@ describe Guard::Jasmine::CLI do
         end
 
         it 'sets the default jasmine url' do
-          runner.should_receive(:run).with(anything(), hash_including(:jasmine_url => 'http://localhost:8888/jasmine')).and_return [true, []]
+          runner.should_receive(:run).with(anything(), hash_including(:jasmine_url => 'http://localhost:3001/jasmine')).and_return [true, []]
           cli.start(['spec'])
         end
 

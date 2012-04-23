@@ -31,13 +31,13 @@ module Guard
       method_option :port,
                     :type => :numeric,
                     :aliases => '-p',
-                    :default => 8888,
+                    :default => 3001,
                     :desc => 'Server port to use'
 
       method_option :url,
                     :type => :string,
                     :aliases => '-u',
-                    :default => 'http://localhost:8888/jasmine',
+                    :default => 'http://localhost:3001/jasmine',
                     :desc => 'The url of the Jasmine test runner'
 
       method_option :bin,
