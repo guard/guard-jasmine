@@ -32,7 +32,7 @@ module Guard
 
       namespace :guard do
         desc 'Run all Jasmine specs'
-        task(name) do
+        new_task = task(name) do
           begin
             ::Guard::Jasmine::CLI.start(options.split)
 
@@ -45,6 +45,8 @@ module Guard
             end
           end
         end
+
+        new_task.execute
       end
     end
 
