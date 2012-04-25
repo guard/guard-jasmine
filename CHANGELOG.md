@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.1.1 - April 25, 2012
 
 - Change CLI default port to 3001.
 - Fix Rake task options.
