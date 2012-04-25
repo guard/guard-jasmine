@@ -1,5 +1,10 @@
 # Changelog
 
+## Master
+
+- Change CLI default port to 3001.
+- Fix Rake task options.
+
 ## 1.1.0 - March 27, 2012
 
 - PhantomJS 1.5 compatibility.
