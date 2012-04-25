@@ -544,6 +544,21 @@ end
 Guard::JasmineTask.new(:jasmine_no_server, '-s none')
 ```
 
+Now you'll set your tasks in the Rake task list:
+
+```bash
+$ rake -T guard
+rake guard:jasmine            # Run all Jasmine specs
+rake guard:jasmine_no_server  # Run all Jasmine specs
+```
+
+and you can execute the Guard::Jasmine specs on the console by running
+the task:
+
+```bash
+$ rake guard:jasmine
+```
+
 <a name="travis-ci" />
 ### Travis CI integration
 
