@@ -1,4 +1,5 @@
 require 'net/http'
+require 'timeout'
 require 'guard/jasmine/formatter'
 
 module Guard
@@ -9,6 +10,8 @@ module Guard
     module Util
 
       # Verifies if the Jasmine test runner is available.
+      # If the runner is not available within 15 seconds, then
+      # the availability check will cancel.
       #
       # @param [String] url the location of the test runner
       # @return [Boolean] when the runner is available
@@ -17,21 +20,27 @@ module Guard
         url = URI.parse(url)
 
         begin
-          Net::HTTP.start(url.host, url.port) do |http|
-            response = http.request(Net::HTTP::Head.new(url.path))
+          ::Guard::Jasmine::Formatter.info "Waiting for Jasmine test runner at #{ url }"
 
-            if response.code.to_i == 200
-              ::Guard::Jasmine::Formatter.info "Jasmine test runner is available at #{ url }"
-            else
-              ::Guard::Jasmine::Formatter.error "Jasmine test runner isn't available at #{ url } (#{ response.code })"
+          Timeout::timeout(15) do
+            Net::HTTP.start(url.host, url.port) do |http|
+              response = http.request(Net::HTTP::Head.new(url.path))
+              available = response.code.to_i == 200
+
+              unless available
+                ::Guard::Jasmine::Formatter.error "Jasmine test runner fails with response code #{ response.code }"
+              end
+
+              available
             end
-
-            response.code.to_i == 200
           end
 
-        rescue => e
-          ::Guard::Jasmine::Formatter.error "Jasmine test runner isn't available at #{ url }: #{ e.message }"
+        rescue Timeout::Error => e
+          ::Guard::Jasmine::Formatter.error "Timeout waiting for the Jasmine test runner."
+          false
 
+        rescue => e
+          ::Guard::Jasmine::Formatter.error "Jasmine test runner isn't available: #{ e.message }"
           false
         end
       end
