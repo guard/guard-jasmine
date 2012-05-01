@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.2 - Mai 1, 2012
+
+- Add timeout to availability checker.
+- The availablity checker prints it's url before starting.
+
 ## 1.1.1 - April 25, 2012
 
 - Change CLI default port to 3001.
