@@ -41,10 +41,10 @@ describe Guard::Jasmine::Runner do
               "errors": [
                 {
                   "msg": "Error message",
-                  "trace" : {
+                  "trace" : [{
                     "file": "/path/to/file.js",
                     "line": "255"
-                  }
+                  }]
                 }
               ],
               "passed": false
@@ -71,10 +71,10 @@ describe Guard::Jasmine::Runner do
                   "errors": [
                     {
                       "msg": "Another error message",
-                      "trace" : {
+                      "trace" : [{
                         "file": "/path/to/file.js",
                         "line": "255"
-                      }
+                      }]
                     }
                   ]
                 }

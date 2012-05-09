@@ -210,13 +210,13 @@ module Guard
           time            = result['stats']['time']
           specs_plural    = specs == 1    ? '' : 's'
           failures_plural = failures == 1 ? '' : 's'
-          
+
           Formatter.info("\nFinished in #{ time } seconds")
-          
+
           message      = "#{ specs } spec#{ specs_plural }, #{ failures } failure#{ failures_plural }"
           full_message = "#{ message }\nin #{ time } seconds"
           passed       = failures == 0
-          
+
           if passed
             report_specdoc(result, passed, options) if options[:specdoc] == :always
             Formatter.success(message)
@@ -227,7 +227,7 @@ module Guard
             notify_errors(result, options)
             Formatter.notify(full_message, :title => 'Jasmine suite failed', :image => :failed, :priority => 2) if options[:notification]
           end
-          
+
           Formatter.info("Done.\n")
         end
 
@@ -303,7 +303,9 @@ module Guard
           if spec['errors'] && (options[:errors] == :always || (options[:errors] == :failure && !spec['passed']))
             spec['errors'].each do |error|
               if error['trace']
-                Formatter.spec_failed(indent("    ➜ Exception: #{ error['msg']  } in #{ error['trace']['file'] } on line #{ error['trace']['line'] }", level))
+                error['trace'].each do |trace|
+                  Formatter.spec_failed(indent("    ➜ Exception: #{ error['msg']  } in #{ trace['file'] } on line #{ trace['line'] }", level))
+                end
               else
                 Formatter.spec_failed(indent("    ➜ Exception: #{ error['msg']  }", level))
               end

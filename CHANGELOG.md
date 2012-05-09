@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.3 - Mai 9, 2012
+
+- [Issue #57](https://github.com/netzpirat/guard-jasmine/issues/57): Fix error trace notification.
+
 ## 1.1.2 - Mai 1, 2012
 
 - Add timeout to availability checker.
