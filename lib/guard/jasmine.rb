@@ -128,7 +128,7 @@ module Guard
     # @param [Array<String>] paths the changed paths and files
     # @raise [:task_has_failed] when run_on_change has failed
     #
-    def run_on_change(paths)
+    def run_on_changes(paths)
       specs = options[:keep_failed] ? paths + self.last_failed_paths : paths
       specs = Inspector.clean(specs, options) if options[:clean]
       return false if specs.empty?
