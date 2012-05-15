@@ -23,7 +23,7 @@ describe Guard::Jasmine::Util do
 
       context 'because the connection is refused' do
         before do
-          Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED
+          Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED.new
         end
 
         it 'does show that the runner is not available' do
