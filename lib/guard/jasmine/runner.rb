@@ -34,7 +34,7 @@ module Guard
           notify_start_message(paths, options)
 
           results = paths.inject([]) do |results, file|
-            results << evaluate_response(run_jasmine_spec(file, options), file, options)
+            results << evaluate_response(run_jasmine_spec(file, options), file, options) if File.exist?(file)
 
             results
           end.compact

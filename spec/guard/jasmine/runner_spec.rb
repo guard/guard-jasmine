@@ -146,12 +146,21 @@ describe Guard::Jasmine::Runner do
   describe '#run' do
     before do
       File.stub(:foreach).and_yield 'describe "ErrorTest", ->'
+      File.stub(:exist?).and_return(true)
       IO.stub(:popen).and_return StringIO.new(phantomjs_error_response)
     end
 
     context 'when passed an empty paths list' do
       it 'returns false' do
         runner.run([]).should eql [false, []]
+      end
+    end
+
+    context 'when the spec file does not exist' do
+      it 'does nothing' do
+        File.stub(:exist?).with('spec/javascripts').and_return(false)
+        runner.should_not_receive(:evaluate_response)
+        runner.run(['spec/javascripts'])
       end
     end
 
