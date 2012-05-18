@@ -736,3 +736,4 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [Sinon.JS]: http://sinonjs.org
 [guard-jasmine-node]: https://github.com/guard/guard-jasmine-node
 [guard-jessie]: https://github.com/guard/guard-jessie
+[Rails asset pipeline]: http://guides.rubyonrails.org/asset_pipeline.html
