@@ -596,6 +596,25 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
 ```
 
+## How to test a Rails engine with Jasmine Gem
+
+When building an engine, your code lives at the root but the dummy Rails app is in another folder (like `test/dummy` or `spec/dummy`).
+
+So you have to import the Jasmine task in your `Rakefile`: 
+
+```bash
+$ echo "import 'lib/tasks/jasmine.rake'" > Rakefile
+$ bundle exec rake -T jasmine
+rake jasmine     # Run specs via server
+rake jasmine:ci  # Run continuous integration tests
+```
+
+Given your configuration, you could also need to set:
+
+* `jasmine_url` in your `Guardfile` as explained above
+
+* the server url in the command line: `bundle exec guard-jasmine -u http://localhost:8888/`
+
 ## Alternatives
 
 There are many ways to get your Jasmine specs run within a headless environment. If Guard::Jasmine isn't for you,
