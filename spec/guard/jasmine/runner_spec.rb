@@ -235,7 +235,7 @@ describe Guard::Jasmine::Runner do
       end
 
       context 'with the specdoc set to :never' do
-        context 'and console set to :never' do
+        context 'and console and errors set to :never' do
           it 'shows the summary in the console' do
             formatter.should_receive(:info).with(
                 'Run Jasmine suite spec/javascripts/x/b.js.coffee', { :reset => true }
@@ -248,7 +248,7 @@ describe Guard::Jasmine::Runner do
             formatter.should_receive(:error).with(
                 "3 specs, 2 failures"
             )
-            runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :specdoc => :never, :console => :never }))
+            runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :specdoc => :never, :console => :never, :errors => :never }))
           end
         end
 
@@ -349,7 +349,7 @@ describe Guard::Jasmine::Runner do
         end
 
         context 'with focus enabled' do
-          context 'and console set to :never' do
+          context 'and console and error set to :never' do
             it 'does not show the passed specs' do
               formatter.should_not_receive(:success).with(
                   '    ✔ Success spec tests something'
@@ -363,11 +363,11 @@ describe Guard::Jasmine::Runner do
               formatter.should_not_receive(:info).with(
                   "      • And even more console.log messages"
               )
-              runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :never, :errors => :always, :focus => true }))
+              runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :never, :errors => :never, :focus => true }))
             end
           end
 
-          context 'and console set to :failure' do
+          context 'and console and errors set to :failure' do
             it 'shows the failed specs with logs' do
               formatter.should_receive(:info).with(
                   "    • console.log message"
@@ -384,7 +384,7 @@ describe Guard::Jasmine::Runner do
               formatter.should_not_receive(:info).with(
                   "      • And even more console.log messages"
               )
-              runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :failure, :errors => :always, :focus => true }))
+              runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :failure, :errors => :failure, :focus => true }))
             end
           end
 
