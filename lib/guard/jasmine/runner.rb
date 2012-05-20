@@ -254,8 +254,38 @@ module Guard
         # @param [Number] level the indention level
         #
         def report_specdoc_suite(suite, passed, options, level = 0)
-          # Should the specdoc be shown?
-          show_specdoc = (options[:specdoc] == :always || (options[:specdoc] == :failure && !passed))
+          # Print the suite description when the specdoc is shown or there are logs to display
+          if (specdoc_shown?(passed, options) || console_logs_shown?(suite, passed, options))
+            Formatter.suite_name((' ' * level) + suite['description']) if passed || options[:focus] && contains_failed_spec?(suite)
+          end
+
+          suite['specs'].each do |spec|
+            if spec['passed']
+              if passed || !options[:focus] || (options[:console] == :always && spec['logs'])
+                Formatter.success(indent("  ✔ #{ spec['description'] }", level)) if description_shown?(passed, spec, options)
+                report_specdoc_errors(spec, options, level) if specdoc_shown?(passed, options)
+                report_specdoc_logs(spec, options, level)
+              end
+            else
+              Formatter.spec_failed(indent("  ✘ #{ spec['description'] }", level)) if description_shown?(passed, spec, options)
+              spec['messages'].each do |message|
+                Formatter.spec_failed(indent("    ➤ #{ format_message(message, false) }", level)) if specdoc_shown?(passed, options)
+              end
+              report_specdoc_errors(spec, options, level) if specdoc_shown?(passed, options)
+              report_specdoc_logs(spec, options, level)
+            end
+          end
+
+          suite['suites'].each { |suite| report_specdoc_suite(suite, passed, options, level + 2) } if suite['suites']
+        end
+
+        # Is the specdoc shown for this suite?
+        def specdoc_shown?(passed, options = {})
+          (options[:specdoc] == :always || (options[:specdoc] == :failure && !passed))
+        end
+
+        # Are console logs shown for this suite?
+        def console_logs_shown?(suite, passed, options = {})
           # Are console messages displayed?
           console_messages = (options[:console] == :always || (options[:console] == :failure && !passed))
           # Are there any logs to display at all for this suite?
@@ -263,37 +293,17 @@ module Guard
             spec['logs'] && (options[:console] == :always || (options[:console] == :failure && !spec['passed']))
           end
           any_logs_present = (!logs_for_current_options.empty?)
-
-          # Print the suite description when the specdoc is shown or there are logs to display
-          if show_specdoc || (any_logs_present && console_messages)
-            Formatter.suite_name((' ' * level) + suite['description']) if passed || options[:focus] && contains_failed_spec?(suite)
-          end
-
-          suite['specs'].each do |spec|
-            if spec['passed']
-              # Should the spec description be shown?
-              show_description = (show_specdoc || (spec['logs'] && options[:console] == :always))
-
-              if passed || !options[:focus] || (options[:console] == :always && spec['logs'])
-                Formatter.success(indent("  ✔ #{ spec['description'] }", level)) if show_description
-                report_specdoc_errors(spec, options, level) if show_specdoc
-                report_specdoc_logs(spec, options, level)
-              end
-            else
-              # Should the spec description be shown?
-              show_description = (show_specdoc || (spec['logs'] && options[:console] != :never))
-
-              Formatter.spec_failed(indent("  ✘ #{ spec['description'] }", level)) if show_description
-              spec['messages'].each do |message|
-                Formatter.spec_failed(indent("    ➤ #{ format_message(message, false) }", level)) if show_specdoc
-              end
-              report_specdoc_errors(spec, options, level) if show_specdoc
-              report_specdoc_logs(spec, options, level)
-            end
-          end
-
-          suite['suites'].each { |suite| report_specdoc_suite(suite, passed, options, level + 2) } if suite['suites']
+          (console_messages && any_logs_present)
         end
+
+        # Is the description shown for this spec?
+        def description_shown?(passed, spec, options = {})
+          specdoc = specdoc_shown?(passed, options)
+          console = (spec['logs'] && ((spec['passed'] && options[:console] == :always) ||
+                                      options[:console] != :never))
+          (specdoc || console)
+        end
+
 
         # Shows the logs for a given spec.
         #
