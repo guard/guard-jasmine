@@ -218,11 +218,11 @@ module Guard
           passed       = failures == 0
 
           if passed
-            report_specdoc(result, passed, options) if options[:specdoc] == :always
+            report_specdoc(result, passed, options)
             Formatter.success(message)
             Formatter.notify(full_message, :title => 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
           else
-            report_specdoc(result, passed, options) if options[:specdoc] != :never
+            report_specdoc(result, passed, options)
             Formatter.error(message)
             notify_errors(result, options)
             Formatter.notify(full_message, :title => 'Jasmine suite failed', :image => :failed, :priority => 2) if options[:notification]
@@ -254,18 +254,22 @@ module Guard
         # @param [Number] level the indention level
         #
         def report_specdoc_suite(suite, passed, options, level = 0)
-          Formatter.suite_name((' ' * level) + suite['description']) if passed || options[:focus] && contains_failed_spec?(suite)
+          # Print the suite description when the specdoc is shown or there are logs to display
+          if (specdoc_shown?(passed, options) || console_logs_shown?(suite, passed, options) || error_logs_shown?(suite, passed, options))
+            Formatter.suite_name((' ' * level) + suite['description']) if passed || options[:focus] && contains_failed_spec?(suite)
+          end
 
           suite['specs'].each do |spec|
             if spec['passed']
-              if passed || !options[:focus]
-                Formatter.success(indent("  ✔ #{ spec['description'] }", level))
+              if passed || !options[:focus] || console_for_spec?(spec, options) || errors_for_spec?(spec, options)
+                Formatter.success(indent("  ✔ #{ spec['description'] }", level)) if description_shown?(passed, spec, options)
+                report_specdoc_errors(spec, options, level)
                 report_specdoc_logs(spec, options, level)
               end
             else
-              Formatter.spec_failed(indent("  ✘ #{ spec['description'] }", level))
+              Formatter.spec_failed(indent("  ✘ #{ spec['description'] }", level)) if description_shown?(passed, spec, options)
               spec['messages'].each do |message|
-                Formatter.spec_failed(indent("    ➤ #{ format_message(message, false) }", level))
+                Formatter.spec_failed(indent("    ➤ #{ format_message(message, false) }", level)) if specdoc_shown?(passed, options)
               end
               report_specdoc_errors(spec, options, level)
               report_specdoc_logs(spec, options, level)
@@ -274,6 +278,53 @@ module Guard
 
           suite['suites'].each { |suite| report_specdoc_suite(suite, passed, options, level + 2) } if suite['suites']
         end
+
+        # Is the specdoc shown for this suite?
+        def specdoc_shown?(passed, options = {})
+          (options[:specdoc] == :always || (options[:specdoc] == :failure && !passed))
+        end
+
+        # Are console logs shown for this suite?
+        def console_logs_shown?(suite, passed, options = {})
+          # Are console messages displayed?
+          console_enabled = (options[:console] == :always || (options[:console] == :failure && !passed))
+          # Are there any logs to display at all for this suite?
+          logs_for_current_options = suite['specs'].select do |spec|
+            spec['logs'] && (options[:console] == :always || (options[:console] == :failure && !spec['passed']))
+          end
+          any_logs_present = (!logs_for_current_options.empty?)
+          (console_enabled && any_logs_present)
+        end
+
+        # Are console logs shown for this spec?
+        def console_for_spec?(spec, options = {})
+          console = (spec['logs'] && ((spec['passed'] && options[:console] == :always) ||
+                                      (!spec['passed'] && options[:console] != :never)))
+        end
+
+        # Are error logs shown for this suite?
+        def error_logs_shown?(suite, passed, options = {})
+          # Are error messages displayed?
+          errors_enabled = (options[:errors] == :always || (options[:errors] == :failure && !passed))
+          # Are there any errors to display at all for this suite?
+          errors_for_current_options = suite['specs'].select do |spec|
+            spec['errors'] && (options[:errors] == :always || (options[:errors] == :failure && !spec['passed']))
+          end
+          any_errors_present = (!errors_for_current_options.empty?)
+          (errors_enabled && any_errors_present)
+        end
+
+        # Are errors shown for this spec?
+        def errors_for_spec?(spec, options = {})
+          errors = (spec['errors'] && ((spec['passed'] && options[:errors] == :always) ||
+                                       (!spec['passed'] && options[:errors] != :never)))
+        end
+
+        # Is the description shown for this spec?
+        def description_shown?(passed, spec, options = {})
+          (specdoc_shown?(passed, options) || console_for_spec?(spec, options) || errors_for_spec?(spec, options))
+        end
+
 
         # Shows the logs for a given spec.
         #
