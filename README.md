@@ -158,7 +158,7 @@ guard :jasmine, :jasmine_url => 'http://127.0.0.1:8888/jasmine-stories' do
 end
 ```
 
-## Rails without the asset pipeline and plain Ruby projects
+## Rails without the asset pipeline
 
 With Rails without the asset pipeline or a plain Ruby project, you can use [the Jasmine Gem][] to configure your Jasmine
 specs and server the Jasmine runner. You don't have full access to your running Rails app, but it's anyway a good
@@ -231,8 +231,9 @@ guard 'coffeescript', :input => 'spec/coffeescripts', :output => 'spec/javascrip
 
 If you like to use Guard::Jasmine with a plain Ruby project, you can create a Rack configuration file
 that starts a Rails instance with the asset pipeline and Jasminerice, having the full Rails testing
-comfort for non-Rails projects. Please have a look at the Rails with the asset pipeline section above
-to see how the setup works.
+comfort for non-Rails projects. Please have a look at the
+[Rails with the asset pipeline](https://github.com/netzpirat/guard-jasmine#rails-with-the-asset-pipeline-setup)
+section to see how the setup works.
 
 First you have the add the needed Gems to your `Gemfile`:
 
@@ -247,7 +248,7 @@ group :development, :test do
   gem 'tzinfo'
 
   gem 'thin'
-    
+
   gem 'jasminerice'
   gem 'jquery-rails'
   gem 'guard-jasmine'
@@ -600,7 +601,7 @@ before_script:
 
 When building an engine, your code lives at the root but the dummy Rails app is in another folder (like `test/dummy` or `spec/dummy`).
 
-So you have to import the Jasmine task in your `Rakefile`: 
+So you have to import the Jasmine task in your `Rakefile`:
 
 ```bash
 $ echo "import 'lib/tasks/jasmine.rake'" > Rakefile
