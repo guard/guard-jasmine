@@ -14,7 +14,7 @@ class ConsoleReporter
   }
 
   specCount: 0
-  currentSpecs: []
+  currentSpecs: {}
   nestedSuiteResults: {}
 
   # Report the start of a spec.
@@ -42,7 +42,8 @@ class ConsoleReporter
         specResult['messages'] = messages if messages.length isnt 0
 
       @specCount += 1
-      @currentSpecs.push specResult
+      @currentSpecs[spec.suite.id] or= []
+      @currentSpecs[spec.suite.id].push specResult
 
   # Report results from a suite.
   #
@@ -55,7 +56,7 @@ class ConsoleReporter
         parent: suite.parentSuite?.id
         description: suite.description
         passed: suite.results().failedCount is 0
-        specs: @currentSpecs
+        specs: @currentSpecs[suite.id]
         suites: []
       }
 
@@ -69,8 +70,6 @@ class ConsoleReporter
 
         if suiteResult.specs.length isnt 0 || suiteResult.suites.length isnt 0
           @runnerResult.suites.push suiteResult
-
-    @currentSpecs = []
 
   # Report results from the runner.
   #
