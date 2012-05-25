@@ -21,14 +21,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'thor'
 
   s.add_development_dependency 'bundler'
-  s.add_development_dependency 'guard-rspec'
-  s.add_development_dependency 'guard-coffeescript'
-  s.add_development_dependency 'guard-shell'
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'yard'
-  s.add_development_dependency 'redcarpet'
-  s.add_development_dependency 'pry'
-  s.add_development_dependency 'yajl-ruby'
 
   s.files        = Dir.glob('{bin,lib}/**/*') + %w[LICENSE README.md]
   s.executables  = ['guard-jasmine', 'guard-jasmine-debug']
