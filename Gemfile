@@ -11,6 +11,15 @@ platform :ruby do
   gem 'rb-readline'
 end
 
+gem 'guard-coffeescript'
+gem 'guard-shell'
+gem 'guard-rspec'
+gem 'rspec'
+gem 'yard'
+gem 'redcarpet'
+gem 'pry'
+gem 'yajl-ruby'
+
 require 'rbconfig'
 
 if RbConfig::CONFIG['target_os'] =~ /darwin/i
