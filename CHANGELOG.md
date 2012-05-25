@@ -1,5 +1,17 @@
 # Changelog
 
+## Master
+
+- [Issue #63](https://github.com/netzpirat/guard-jasmine/issues/63): The failures are not logged in the right order when there are nested describes.
+
+## 1.2.0 - Mai 21, 2012
+
+- [Pull #62](https://github.com/netzpirat/guard-jasmine/pull/62): Show console log messages and errors independently from specdocs in Guard. ([@esposito][])
+
+## 1.1.4 - Mai 18, 2012
+
+- [Pull #60](https://github.com/netzpirat/guard-jasmine/pull/60): Test if spec file exists. ([@huyhoang1970][])
+
 ## 1.1.3 - Mai 9, 2012
 
 - [Issue #57](https://github.com/netzpirat/guard-jasmine/issues/57): Fix error trace notification.
@@ -229,7 +241,9 @@
 [@darrinholst]: https://github.com/darrinholst
 [@dmathieu]: https://github.com/dmathieu
 [@DouweM]: https://github.com/DouweM
+[@esposito]: https://github.com/esposito
 [@eventualbuddha]: https://github.com/DouweM
+[@huyhoang1970]: https://github.com/huyhoang1970
 [@jasonm]: https://github.com/jasonm
 [@mkdynamic]: https://github.com/mkdynamic
 [@rymai]: https://github.com/rymai
