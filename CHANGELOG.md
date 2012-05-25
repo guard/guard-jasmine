@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.2.1 - Mai 25, 2012
 
 - [Issue #63](https://github.com/netzpirat/guard-jasmine/issues/63): The failures are not logged in the right order when there are nested describes.
 
