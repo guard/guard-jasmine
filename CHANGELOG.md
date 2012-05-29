@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2 - Mai 29, 2012
+
+- [Issue #64](https://github.com/netzpirat/guard-jasmine/issues/64): Suite result specs may be undefined and makes the runner fail.
+
 ## 1.2.1 - Mai 25, 2012
 
 - [Issue #63](https://github.com/netzpirat/guard-jasmine/issues/63): The failures are not logged in the right order when there are nested describes.
