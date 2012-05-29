@@ -62,7 +62,7 @@ class ConsoleReporter
 
       if suite.parentSuite?
         parent = suite.parentSuite.id
-        @nestedSuiteResults[parent] = [] unless @nestedSuiteResults[parent]
+        @nestedSuiteResults[parent] or= []
         @nestedSuiteResults[parent].push suiteResult
       else
         @addNestedSuites suiteResult
