@@ -56,7 +56,7 @@ class ConsoleReporter
         parent: suite.parentSuite?.id
         description: suite.description
         passed: suite.results().failedCount is 0
-        specs: @currentSpecs[suite.id]
+        specs: @currentSpecs[suite.id] || []
         suites: []
       }
 
