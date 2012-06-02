@@ -131,6 +131,23 @@ describe Guard::Jasmine::Server do
     end
   end
 
+  context 'with the :unicorn strategy' do
+    it 'does not auto detect a server' do
+      server.should_not_receive(:detect_server)
+      server.start(:unicorn, 8888, 'test', 'spec/javascripts')
+    end
+
+    it 'does wait for the server' do
+      server.should_receive(:wait_for_server)
+      server.start(:unicorn, 8888, 'test', 'spec/javascripts')
+    end
+
+    it 'starts a :unicorn rack server' do
+      server.should_receive(:start_rack_server).with(8888, 'test', :unicorn)
+      server.start(:unicorn, 8888, 'test', 'spec/javascripts')
+    end
+  end
+
   context 'with the :jasmine_gem strategy' do
     it 'does not auto detect a server' do
       server.should_not_receive(:detect_server)
