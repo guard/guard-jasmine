@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 - June 2, 2012
+
+- Upgrade for Guard 1.1.0
+
 ## 1.2.2 - Mai 29, 2012
 
 - [Issue #64](https://github.com/netzpirat/guard-jasmine/issues/64): Suite result specs may be undefined and makes the runner fail.
