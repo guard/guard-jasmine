@@ -386,13 +386,13 @@ describe Guard::Jasmine do
 
   end
 
-  describe '.run_on_change' do
+  describe '.run_on_changes' do
     let(:options) { defaults.merge({ :phantomjs_bin => '/Users/michi/.bin/phantomjs' }) }
     let(:guard) { Guard::Jasmine.new(nil, options) }
 
     it 'returns false when no valid paths are passed' do
       inspector.should_receive(:clean).and_return []
-      guard.run_on_change(['spec/javascripts/b.js.coffee'])
+      guard.run_on_changes(['spec/javascripts/b.js.coffee'])
     end
 
     it 'starts the Runner with the cleaned files' do
@@ -401,7 +401,7 @@ describe Guard::Jasmine do
 
       runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], options).and_return [['spec/javascripts/a.js.coffee'], true]
 
-      guard.run_on_change(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
+      guard.run_on_changes(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
     end
 
     context 'with :clean enabled' do
@@ -412,7 +412,7 @@ describe Guard::Jasmine do
         inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
                                                'spec/javascripts/b.js.coffee'], options)
 
-        guard.run_on_change(['spec/javascripts/a.js.coffee',
+        guard.run_on_changes(['spec/javascripts/a.js.coffee',
                              'spec/javascripts/b.js.coffee'])
       end
     end
@@ -425,7 +425,7 @@ describe Guard::Jasmine do
         inspector.should_not_receive(:clean).with(['spec/javascripts/a.js.coffee',
                                                'spec/javascripts/b.js.coffee'], options)
 
-        guard.run_on_change(['spec/javascripts/a.js.coffee',
+        guard.run_on_changes(['spec/javascripts/a.js.coffee',
                              'spec/javascripts/b.js.coffee'])
       end
     end
@@ -442,14 +442,14 @@ describe Guard::Jasmine do
         inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
                                                'spec/javascripts/b.js.coffee'], options)
 
-        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        guard.run_on_changes(['spec/javascripts/a.js.coffee'])
       end
 
       it 'appends the last failed paths to the current run' do
         runner.should_receive(:run).with(['spec/javascripts/a.js.coffee',
                                           'spec/javascripts/b.js.coffee'], options)
 
-        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        guard.run_on_changes(['spec/javascripts/a.js.coffee'])
       end
     end
 
@@ -461,12 +461,12 @@ describe Guard::Jasmine do
       end
 
       it 'sets the last run failed to false' do
-        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        guard.run_on_changes(['spec/javascripts/a.js.coffee'])
         guard.last_run_failed.should be_false
       end
 
       it 'removes the passed specs from the list of failed paths' do
-        guard.run_on_change(['spec/javascripts/a.js.coffee'])
+        guard.run_on_changes(['spec/javascripts/a.js.coffee'])
         guard.last_failed_paths.should be_empty
       end
 
@@ -475,7 +475,7 @@ describe Guard::Jasmine do
 
         it 'runs all specs' do
           guard.should_receive(:run_all)
-          guard.run_on_change(['spec/javascripts/a.js.coffee'])
+          guard.run_on_changes(['spec/javascripts/a.js.coffee'])
         end
       end
 
@@ -484,7 +484,7 @@ describe Guard::Jasmine do
 
         it 'does not run all specs' do
           guard.should_not_receive(:run_all)
-          guard.run_on_change(['spec/javascripts/a.js.coffee'])
+          guard.run_on_changes(['spec/javascripts/a.js.coffee'])
         end
       end
     end
@@ -496,16 +496,16 @@ describe Guard::Jasmine do
       end
 
       it 'throws :task_has_failed' do
-        expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
+        expect { guard.run_on_changes(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
       end
 
       it 'sets the last run failed to true' do
-        expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
+        expect { guard.run_on_changes(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
         guard.last_run_failed.should be_true
       end
 
       it 'appends the failed spec to the list of failed paths' do
-        expect { guard.run_on_change(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
+        expect { guard.run_on_changes(['spec/javascripts/a.js.coffee']) }.to throw_symbol :task_has_failed
         guard.last_failed_paths.should =~ ['spec/javascripts/a.js.coffee']
       end
     end
