@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.6'
   s.rubyforge_project = 'guard-jasmine'
 
-  s.add_dependency 'guard',        '>= 0.8.3'
+  s.add_dependency 'guard',        '>= 1.1.0'
   s.add_dependency 'multi_json'
   s.add_dependency 'childprocess'
   s.add_dependency 'thor'
