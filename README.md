@@ -329,7 +329,7 @@ The server options configures the server environment that is needed to run Guard
 
 ```ruby
 :server => :jasmine_gem                       # Jasmine server to use, either :auto, :none,
-                                              # :webrick, :mongrel, :thin, :jasmine_gem
+                                              # :webrick, :mongrel, :thin, :unicorn, :jasmine_gem
                                               # default: :auto
 
 :server_env => :test                          # Jasmine server Rails environment to set,

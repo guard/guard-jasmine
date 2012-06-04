@@ -26,7 +26,7 @@ module Guard
                     :type => :string,
                     :aliases => '-s',
                     :default => 'auto',
-                    :desc => 'Server to start, either `auto`, `webrick`, `mongrel`, `thin`, `jasmine_gem` or `none`'
+                    :desc => 'Server to start, either `auto`, `webrick`, `mongrel`, `thin`, `unicorn`, `jasmine_gem` or `none`'
 
       method_option :port,
                     :type => :numeric,
