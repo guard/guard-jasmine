@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0 - June 4, 2012
+
+- [Pull #65](https://github.com/netzpirat/guard-jasmine/pull/65): Support unicorn as server. ([@pushbang][] and [@clumsysnake][])
+
 ## 1.3.0 - June 2, 2012
 
 - Upgrade for Guard 1.1.0
@@ -245,14 +249,16 @@
 
 [@andersjanmyr]: https://github.com/andersjanmyr
 [@antono]: https://github.com/antono
-[@dnagir]: https://github.com/dnagir
+[@clumsysnake]: https://github.com/clumsysnake
 [@darrinholst]: https://github.com/darrinholst
 [@dmathieu]: https://github.com/dmathieu
+[@dnagir]: https://github.com/dnagir
 [@DouweM]: https://github.com/DouweM
 [@esposito]: https://github.com/esposito
 [@eventualbuddha]: https://github.com/DouweM
 [@huyhoang1970]: https://github.com/huyhoang1970
 [@jasonm]: https://github.com/jasonm
 [@mkdynamic]: https://github.com/mkdynamic
-[@rymai]: https://github.com/rymai
 [@obrie]: https://github.com/obrie
+[@pushbang]: https://github.com/pushbang
+[@rymai]: https://github.com/rymai
