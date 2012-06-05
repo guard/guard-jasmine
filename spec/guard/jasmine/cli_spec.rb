@@ -68,10 +68,11 @@ describe Guard::Jasmine::CLI do
         end
 
         it 'respects the RAILS_ENV environment variable' do
-          ENV['RAILS_ENV'] = "test"
-          runner.should_receive(:run).with(anything(), hash_including(:server_env => 'test')).and_return [true, []]
+          old_env = ENV['RAILS_ENV']
+          ENV['RAILS_ENV'] = "some_arbitrary_environment"
+          runner.should_receive(:run).with(anything(), hash_including(:server_env => 'some_arbitrary_environment')).and_return [true, []]
           cli.start(['spec'])
-          ENV['RAILS_ENV'] = nil
+          ENV['RAILS_ENV'] = old_env
         end
 
         context 'for a valid console option' do
