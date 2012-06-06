@@ -692,7 +692,7 @@ follow [@netzpirat](https://twitter.com/#!/netzpirat) on Twitter for project upd
 ## Contributors
 
 See the [CHANGELOG](https://github.com/netzpirat/guard-jasmine/blob/master/CHANGELOG.md) and the GitHub list of
-[contributors](https://github.com/netzpirat/haml_coffee_assets/contributors).
+[contributors](https://github.com/netzpirat/guard-jasmine/contributors).
 
 ## Acknowledgment
 
