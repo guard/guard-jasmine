@@ -66,7 +66,7 @@ module Guard
       method_option :server_env,
                     :type => :string,
                     :aliases => '-e',
-                    :default => 'test',
+                    :default => ENV['RAILS_ENV'] || 'test',
                     :desc => 'The server environment to use, for example `development`, `test` etc.'
 
       method_option :spec_dir,
@@ -88,7 +88,7 @@ module Guard
         runner[:phantomjs_bin] = options.bin || CLI.which('phantomjs')
         runner[:timeout] = options.timeout
         runner[:port] = options.port
-        runner[:server_env] = ENV['RAILS_ENV'] || options.server_env
+        runner[:server_env] = options.server_env
         runner[:spec_dir] = options.spec_dir
         runner[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
         runner[:errors] = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
