@@ -27,7 +27,7 @@ describe Guard::Jasmine do
       end
 
       it 'sets a default :server option' do
-        guard.options[:server_env].should eql 'development'
+        guard.options[:server_env].should eql defaults.server_env
       end
 
       it 'sets a default :port option' do

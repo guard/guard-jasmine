@@ -22,7 +22,7 @@ module Guard
 
     DEFAULT_OPTIONS = {
         :server           => :auto,
-        :server_env       => 'development',
+        :server_env       => ENV['RAILS_ENV'] || 'development',
         :port             => 8888,
         :jasmine_url      => 'http://localhost:8888/jasmine',
         :timeout          => 10000,
