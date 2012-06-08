@@ -67,6 +67,14 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--server_env', 'development'])
         end
 
+        it 'respects the RAILS_ENV environment variable' do
+          old_env = ENV['RAILS_ENV']
+          ENV['RAILS_ENV'] = "some_arbitrary_environment"
+          runner.should_receive(:run).with(anything(), hash_including(:server_env => 'some_arbitrary_environment')).and_return [true, []]
+          cli.start(['spec'])
+          ENV['RAILS_ENV'] = old_env
+        end
+
         context 'for a valid console option' do
           it 'sets the console option' do
             runner.should_receive(:run).with(anything(), hash_including(:console => :always)).and_return [true, []]
