@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.0 - June 4, 2012
+
+- [Pull #68](https://github.com/netzpirat/guard-jasmine/pull/68) Use RAILS_ENV as server environment default if exists. [@richo][]
 ## 1.4.0 - June 4, 2012
 
 - [Pull #65](https://github.com/netzpirat/guard-jasmine/pull/65): Support unicorn as server. ([@pushbang][] and [@clumsysnake][])
@@ -261,4 +264,5 @@
 [@mkdynamic]: https://github.com/mkdynamic
 [@obrie]: https://github.com/obrie
 [@pushbang]: https://github.com/pushbang
+[@richo]: https://github.com/richo
 [@rymai]: https://github.com/rymai
