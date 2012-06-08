@@ -334,7 +334,7 @@ The server options configures the server environment that is needed to run Guard
 
 :server_env => :test                          # Jasmine server Rails environment to set,
                                               # e.g. :development or :test
-                                              # default: :development
+                                              # default: RAILS_ENV is exists, otherwise :development
 
 :port => 9292                                 # Jasmine server port to use.
                                               # default: 8888
@@ -525,7 +525,7 @@ Options:
                                  # either `always`, `never` or `failure`
                                  # Default: failure
   -e, [--server-env=SERVER_ENV]  # The server environment to use, for example `development`, `test`
-                                 # Default: test
+                                 # Default: RAILS_ENV if exists, otherwise `test`
 
 Run the Jasmine spec runner
 ```
