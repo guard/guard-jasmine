@@ -25,6 +25,12 @@ various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 
 * Runs on Mac OS X, Linux and Windows.
 
+## ScreenCast
+
+If you are a [RailsCast Pro](http://railscasts.com/pro) subscriber, I recommend to watch
+[#261 Testing JavaScript with Jasmine (revised)](http://railscasts.com/episodes/261-testing-javascript-with-jasmine-revised)
+for an introduction to Jasmine, Jasminerice and Guard::Jasmine.
+
 ## Installation
 
 ### Guard and Guard::Jasmine
