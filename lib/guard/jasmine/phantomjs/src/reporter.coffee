@@ -32,7 +32,7 @@ class ConsoleReporter
     unless spec.results().skipped
       specResult = {
         id: spec.id
-        description: spec.description
+        description: '' + spec.description
         passed: spec.results().failedCount is 0
       }
 
@@ -54,7 +54,7 @@ class ConsoleReporter
       suiteResult = {
         id: suite.id
         parent: suite.parentSuite?.id
-        description: suite.description
+        description: '' + suite.description
         passed: suite.results().failedCount is 0
         specs: @currentSpecs[suite.id] || []
         suites: []
