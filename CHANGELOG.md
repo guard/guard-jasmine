@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.1 - Juli 19, 2012
+
+- [Issue #70](https://github.com/netzpirat/guard-jasmine/issues/70): Ensure the description is always a String.
+
 ## 1.5.0 - June 4, 2012
 
 - [Pull #68](https://github.com/netzpirat/guard-jasmine/pull/68) Use RAILS_ENV as server environment default if exists. [@richo][]
