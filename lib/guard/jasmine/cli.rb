@@ -21,7 +21,13 @@ module Guard
       default_task :spec
 
       desc 'spec', 'Run the Jasmine spec runner'
-
+      
+      method_option :focus,
+                    :type => :boolean,
+                    :aliases => '-f',
+                    :default => false,
+                    :desc    => 'Specdoc focus to hide successful tests when at least one test fails'
+                    
       method_option :server,
                     :type => :string,
                     :aliases => '-s',
@@ -93,9 +99,12 @@ module Guard
         runner[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
         runner[:errors] = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
         runner[:server] = options.server.to_sym
-
+        runner[:focus] = options.focus
+        
+        
         runner[:notification] = false
         runner[:hide_success] = true
+        
         runner[:max_error_notify] = 0
         runner[:specdoc] = :always
 
