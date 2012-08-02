@@ -47,6 +47,11 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--spec_dir', 'specs'])
         end
 
+        it 'enables focus mode' do
+          runner.should_receive(:run).with(anything(), hash_including(:focus => true)).and_return [true, []]
+          cli.start(['spec'])
+        end
+
         it 'sets the jasmine url' do
           runner.should_receive(:run).with(anything(), hash_including(:jasmine_url => 'http://smackaho.st:3000/jasmine')).and_return [true, []]
           cli.start(['spec', '--url', 'http://smackaho.st:3000/jasmine'])
@@ -66,7 +71,7 @@ describe Guard::Jasmine::CLI do
           runner.should_receive(:run).with(anything(), hash_including(:server_env => 'development')).and_return [true, []]
           cli.start(['spec', '--server_env', 'development'])
         end
-       
+
         context 'for an invalid console option' do
           it 'sets the console option to failure' do
             runner.should_receive(:run).with(anything(), hash_including(:console => :failure)).and_return [true, []]
@@ -116,6 +121,11 @@ describe Guard::Jasmine::CLI do
         it 'sets the spec dir' do
           runner.should_receive(:run).with(anything(), hash_including(:spec_dir => 'spec/javascripts')).and_return [true, []]
           cli.start(['spec'])
+        end
+
+        it 'disables the focus mode' do
+          runner.should_receive(:run).with(anything(), hash_including(:focus => false)).and_return [true, []]
+          cli.start(['spec', '-f', 'false'])
         end
 
         it 'sets the default jasmine url' do
