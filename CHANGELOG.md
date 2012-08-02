@@ -1,12 +1,17 @@
 # Changelog
 
+## 1.6.0 - August 2, 2012
+
+- [Pull #71](https://github.com/netzpirat/guard-jasmine/pull/71): Add focus flag to CLI runner. ([@robotarmy][])
+
 ## 1.5.1 - Juli 19, 2012
 
 - [Issue #70](https://github.com/netzpirat/guard-jasmine/issues/70): Ensure the description is always a String.
 
 ## 1.5.0 - June 4, 2012
 
-- [Pull #68](https://github.com/netzpirat/guard-jasmine/pull/68) Use RAILS_ENV as server environment default if exists. [@richo][]
+- [Pull #68](https://github.com/netzpirat/guard-jasmine/pull/68) Use RAILS_ENV as server environment default if exists. ([@richo][])
+
 ## 1.4.0 - June 4, 2012
 
 - [Pull #65](https://github.com/netzpirat/guard-jasmine/pull/65): Support unicorn as server. ([@pushbang][] and [@clumsysnake][])
@@ -269,4 +274,5 @@
 [@obrie]: https://github.com/obrie
 [@pushbang]: https://github.com/pushbang
 [@richo]: https://github.com/richo
+[@robotarmy]: https://github.com/robotarmy
 [@rymai]: https://github.com/rymai
