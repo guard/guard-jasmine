@@ -69,6 +69,11 @@ module Guard
                     :default => 'failure',
                     :desc => 'Whether to show errors in the spec runner, either `always`, `never` or `failure`'
 
+      method_option :specdoc,
+                    :type => :string,
+                    :default => :always,
+                    :desc => 'Whether to show successes in the spec runner, either `always`, `never` or `failure`'
+
       method_option :server_env,
                     :type => :string,
                     :aliases => '-e',
@@ -98,6 +103,7 @@ module Guard
         runner[:spec_dir] = options.spec_dir
         runner[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
         runner[:errors] = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
+        runner[:specdoc] = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
         runner[:server] = options.server.to_sym
         runner[:focus] = options.focus
 
@@ -106,7 +112,6 @@ module Guard
         runner[:hide_success] = true
 
         runner[:max_error_notify] = 0
-        runner[:specdoc] = :always
 
         if CLI.phantomjs_bin_valid?(runner[:phantomjs_bin])
           ::Guard::Jasmine::Server.start(runner[:server], runner[:port], runner[:server_env], runner[:spec_dir]) unless runner[:server] == :none

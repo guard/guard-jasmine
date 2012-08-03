@@ -153,6 +153,17 @@ describe Guard::Jasmine::CLI do
           runner.should_receive(:run).with(anything(), hash_including(:server_env => 'test')).and_return [true, []]
           cli.start(['spec'])
         end
+
+        it 'sets the specdoc to always by default' do
+          runner.should_receive(:run).with(anything(), hash_including(:specdoc => :always)).and_return [true, []]
+          cli.start(['spec'])
+        end
+
+        it 'sets the specdoc to failure' do
+          runner.should_receive(:run).with(anything(), hash_including(:specdoc => :failure)).and_return [true, []]
+          cli.start(['spec', '--specdoc', 'failure'])
+        end
+
       end
     end
 
@@ -169,11 +180,6 @@ describe Guard::Jasmine::CLI do
 
       it 'sets the maximum error notifications to none' do
         runner.should_receive(:run).with(anything(), hash_including(:max_error_notify => 0)).and_return [true, []]
-        cli.start(['spec'])
-      end
-
-      it 'sets the specdoc to always' do
-        runner.should_receive(:run).with(anything(), hash_including(:specdoc => :always)).and_return [true, []]
         cli.start(['spec'])
       end
     end
