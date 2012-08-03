@@ -1,8 +1,12 @@
 # Changelog
 
+## 1.6.1 - August 3, 2012
+
+- [Pull #72](https://github.com/netzpirat/guard-jasmine/pull/72): Add specdoc option to CLI runner. ([@robotarmy][])
+
 ## 1.6.0 - August 2, 2012
 
-- [Pull #71](https://github.com/netzpirat/guard-jasmine/pull/71): Add focus flag to CLI runner. ([@robotarmy][])
+- [Pull #71](https://github.com/netzpirat/guard-jasmine/pull/71): Add focus option to CLI runner. ([@robotarmy][])
 
 ## 1.5.1 - Juli 19, 2012
 
