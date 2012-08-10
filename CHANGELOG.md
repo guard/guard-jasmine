@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [Issue #73](https://github.com/netzpirat/guard-jasmine/issues/73): Add `:run_all` option to overwrite normal options.
+
 ## 1.6.1 - August 3, 2012
 
 - [Pull #72](https://github.com/netzpirat/guard-jasmine/pull/72): Add specdoc option to CLI runner. ([@robotarmy][])

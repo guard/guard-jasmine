@@ -18,7 +18,7 @@ module Guard
 
     extend Util
 
-    attr_accessor :last_run_failed, :last_failed_paths
+    attr_accessor :last_run_failed, :last_failed_paths, :run_all_options
 
     DEFAULT_OPTIONS = {
         :server           => :auto,
@@ -62,6 +62,7 @@ module Guard
     # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
     # @option options [Symbol] :errors options for the errors output, either :always, :never or :failure
     # @option options [Symbol] :focus options for focus on failures in the specdoc
+    # @option options [Hash] :run_all options overwrite options when run all specs
     #
     def initialize(watchers = [], options = { })
       options[:jasmine_url] = "http://localhost:#{ options[:port] }/jasmine" if options[:port] && !options[:jasmine_url]
@@ -69,6 +70,8 @@ module Guard
       options[:specdoc] = :failure if ![:always, :never, :failure].include? options[:specdoc]
       options[:server] ||= :auto
       options[:phantomjs_bin] = Jasmine.which('phantomjs') unless options[:phantomjs_bin]
+
+      self.run_all_options = options.delete(:run_all) || {}
 
       super(watchers, options)
 
@@ -115,7 +118,7 @@ module Guard
     # @raise [:task_has_failed] when run_on_change has failed
     #
     def run_all
-      passed, failed_specs = Runner.run([options[:spec_dir]], options)
+      passed, failed_specs = Runner.run([options[:spec_dir]], options.merge(self.run_all_options))
 
       self.last_failed_paths = failed_specs
       self.last_run_failed   = !passed

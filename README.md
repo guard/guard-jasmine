@@ -439,6 +439,17 @@ The `:errors` option is partially working when using at least PhantomJS version 
 [Issue #166](http://code.google.com/p/phantomjs/issues/detail?id=166) for the actual status of retreiving the JavaScript
 stack trace.
 
+### Overwrite options when running all specs
+
+You may want to have different options when the spec runner runs all specs. You can specify the `:run_all` options
+as a Hash that contains any valid runner option and will overwrite the general options.
+
+```ruby
+:run_all => { :specdoc => :never }            # Run all options,
+                                              # Takes any valid option
+                                              # default: {}
+```
+
 #### Console logs
 
 The `:console` options adds captured console logs from the spec runner and adds them to the specdoc. Guard:Jasmine

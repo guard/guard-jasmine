@@ -197,6 +197,19 @@ describe Guard::Jasmine do
       end
     end
 
+    context 'with run all options' do
+      let(:guard) { Guard::Jasmine.new(nil, { :run_all => { test: true } }) }
+
+      it 'removes them from the default options' do
+        guard.options[:run_all].should be_nil
+      end
+
+      it 'saves the run_all options' do
+        guard.run_all_options.should eql({ test: true })
+      end
+
+    end
+
     context 'with a port but no jasmine_url option set' do
       let(:guard) { Guard::Jasmine.new(nil, { :port => 4321 }) }
 
@@ -351,6 +364,19 @@ describe Guard::Jasmine do
 
       it 'starts the Runner with the default spec dir' do
         runner.should_receive(:run).with(['specs'], options).and_return [['spec/javascripts/a.js.coffee'], true]
+
+        guard.run_all
+      end
+    end
+
+    context 'with run all options' do
+      let(:start_options) { defaults.merge({ :run_all => { :specdoc => :overwritten }, :phantomjs_bin => '/bin/phantomjs', }) }
+      let(:run_options) { defaults.merge({ :specdoc => :overwritten , :phantomjs_bin => '/bin/phantomjs', }) }
+
+      let(:guard) { Guard::Jasmine.new(nil, start_options) }
+
+      it 'starts the Runner with the merged run all options' do
+        runner.should_receive(:run).with(['spec/javascripts'], run_options).and_return [['spec/javascripts/a.js.coffee'], true]
 
         guard.run_all
       end
