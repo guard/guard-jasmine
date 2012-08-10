@@ -198,14 +198,14 @@ describe Guard::Jasmine do
     end
 
     context 'with run all options' do
-      let(:guard) { Guard::Jasmine.new(nil, { :run_all => { test: true } }) }
+      let(:guard) { Guard::Jasmine.new(nil, { :run_all => { :test => true } }) }
 
       it 'removes them from the default options' do
         guard.options[:run_all].should be_nil
       end
 
       it 'saves the run_all options' do
-        guard.run_all_options.should eql({ test: true })
+        guard.run_all_options.should eql({ :test => true })
       end
 
     end
