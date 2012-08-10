@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.7.0 - August 10, 2012
 
 - [Issue #73](https://github.com/netzpirat/guard-jasmine/issues/73): Add `:run_all` option to overwrite normal options.
 
