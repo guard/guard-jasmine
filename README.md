@@ -441,7 +441,7 @@ stack trace.
 
 ### Overwrite options when running all specs
 
-You may want to have different options when the spec runner runs all specs. You can specify the `:run_all` options
+You may want to have different options when the spec runner runs all specs. You can specify the `:run_all` option
 as a Hash that contains any valid runner option and will overwrite the general options.
 
 ```ruby
@@ -695,7 +695,7 @@ $ guard-jasmine-debug
 ```
 
 The only argument that the script takes is the URL to the Jasmine runner, which defaults to
-`http://127.0.0.1:3000/Jasmine`. So you can for example just run a subset of the specs by changing the URL:
+`http://127.0.0.1:3000/jasmine`. So you can for example just run a subset of the specs by changing the URL:
 
 ```bash
 $ guard-jasmine-debug http://127.0.0.1:3000/Jasmine?spec=YourSpec
