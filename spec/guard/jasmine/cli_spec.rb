@@ -197,7 +197,7 @@ describe Guard::Jasmine::CLI do
 
     context 'without the runner available' do
       before do
-        cli.stub(:runner_available).and_return false
+        cli.stub(:runner_available?).and_return false
       end
 
       it 'stops with an exit code 2' do
