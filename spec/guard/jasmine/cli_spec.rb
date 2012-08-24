@@ -197,11 +197,16 @@ describe Guard::Jasmine::CLI do
 
     context 'without the runner available' do
       before do
-        cli.stub(:runner_available).and_return false
+        cli.stub(:runner_available?).and_return false
       end
 
       it 'stops with an exit code 2' do
         Process.should_receive(:exit).with(2)
+        cli.start(['spec'])
+      end
+
+      it 'attemps to stop the server process, that may be running' do
+        server.should_receive(:stop)
         cli.start(['spec'])
       end
     end
