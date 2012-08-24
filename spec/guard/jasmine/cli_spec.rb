@@ -204,6 +204,11 @@ describe Guard::Jasmine::CLI do
         Process.should_receive(:exit).with(2)
         cli.start(['spec'])
       end
+
+      it 'attemps to stop the server process, that may be running' do
+        server.should_receive(:stop)
+        cli.start(['spec'])
+      end
     end
 
     context 'with a runner exception' do
