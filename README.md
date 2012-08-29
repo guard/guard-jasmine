@@ -344,6 +344,9 @@ The server options configures the server environment that is needed to run Guard
                                               # e.g. :development or :test
                                               # default: RAILS_ENV is exists, otherwise :development
 
+:server_timeout => 30                         # The number of seconds to wait for the Jasmine spec server
+                                              # default: 15
+
 :port => 9292                                 # Jasmine server port to use.
                                               # default: 8888
 
@@ -525,26 +528,33 @@ Usage:
   guard-jasmine spec
 
 Options:
-  -s, [--server=SERVER]          # Server to start, either `auto`, `none`, `webrick`, `mongrel`,
-                                 # `thin`, `jasmine_gem`
+  -s, [--server=SERVER]          # Server to start, either `auto`, `webrick`, `mongrel`, `thin`,
+                                 # `unicorn`, `jasmine_gem` or `none`
                                  # Default: auto
   -p, [--port=N]                 # Server port to use
-                                 # Default: 8888
-  -u, [--url=URL]                # The url of the Jasmine test runner
-                                 # Default: http://localhost:8888/jasmine
+                                 # Default: 3001
+  -e, [--server-env=SERVER_ENV]  # The server environment to use, for example `development`, `test` etc.
+                                 # Default: test
+      [--server-timeout=N]       # The number of seconds to wait for the Jasmine spec server
+                                 # Default: 15
   -b, [--bin=BIN]                # The location of the PhantomJS binary
-                                 # Default: /usr/local/bin/phantomjs
-  -t, [--timeout=N]              # The maximum time in milliseconds to wait
-                                 # for the spec runner to finish
+  -d, [--spec-dir=SPEC_DIR]      # The directory with the Jasmine specs
+                                 # Default: spec/javascripts
+  -u, [--url=URL]                # The url of the Jasmine test runner_options
+                                 # Default: http://localhost:3001/jasmine
+  -t, [--timeout=N]              # The maximum time in milliseconds to wait for the spec
+                                 # runner to finish
                                  # Default: 10000
-  -c, [--console=CONSOLE]        # Whether to show console.log statements in the spec runner,
+      [--console=CONSOLE]        # Whether to show console.log statements in the spec runner,
                                  # either `always`, `never` or `failure`
                                  # Default: failure
-  -x, [--errors=ERRORS]          # Whether to show errors in the spec runner,
+      [--errors=ERRORS]          # Whether to show errors in the spec runner,
                                  # either `always`, `never` or `failure`
                                  # Default: failure
-  -e, [--server-env=SERVER_ENV]  # The server environment to use, for example `development`, `test`
-                                 # Default: RAILS_ENV if exists, otherwise `test`
+      [--focus]                  # Specdoc focus to hide successful tests when at least one test fails
+                                 # Default: true
+      [--specdoc=SPECDOC]        # Whether to show successes in the spec runner, either `always`, `never` or `failure`
+                                 # Default: always
 
 Run the Jasmine spec runner
 ```

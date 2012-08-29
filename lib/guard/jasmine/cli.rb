@@ -9,7 +9,7 @@ require 'guard/jasmine/util'
 module Guard
   class Jasmine
 
-    # Small helper class to run the Jasmine runner once from the
+    # Small helper class to run the Jasmine runner_options once from the
     # command line. This can be useful to integrate guard-jasmine
     # into a continuous integration server.
     #
@@ -20,13 +20,7 @@ module Guard
 
       default_task :spec
 
-      desc 'spec', 'Run the Jasmine spec runner'
-
-      method_option :focus,
-                    :type => :boolean,
-                    :aliases => '-f',
-                    :default => true,
-                    :desc    => 'Specdoc focus to hide successful tests when at least one test fails'
+      desc 'spec', 'Run the Jasmine spec runner_options'
 
       method_option :server,
                     :type => :string,
@@ -40,16 +34,33 @@ module Guard
                     :default => 3001,
                     :desc => 'Server port to use'
 
-      method_option :url,
+      method_option :server_env,
                     :type => :string,
-                    :aliases => '-u',
-                    :default => 'http://localhost:3001/jasmine',
-                    :desc => 'The url of the Jasmine test runner'
+                    :aliases => '-e',
+                    :default => ENV['RAILS_ENV'] || 'test',
+                    :desc => 'The server environment to use, for example `development`, `test` etc.'
+
+      method_option :server_timeout,
+                    :type => :numeric,
+                    :default => 15,
+                    :desc => 'The number of seconds to wait for the Jasmine spec server'
 
       method_option :bin,
                     :type => :string,
                     :aliases => '-b',
                     :desc => 'The location of the PhantomJS binary'
+
+      method_option :spec_dir,
+                    :type => :string,
+                    :aliases => '-d',
+                    :default => 'spec/javascripts',
+                    :desc => 'The directory with the Jasmine specs'
+
+      method_option :url,
+                    :type => :string,
+                    :aliases => '-u',
+                    :default => 'http://localhost:3001/jasmine',
+                    :desc => 'The url of the Jasmine test runner'
 
       method_option :timeout,
                     :type => :numeric,
@@ -59,32 +70,24 @@ module Guard
 
       method_option :console,
                     :type => :string,
-                    :aliases => '-c',
                     :default => 'failure',
                     :desc => 'Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`'
 
       method_option :errors,
                     :type => :string,
-                    :aliases => '-x',
                     :default => 'failure',
                     :desc => 'Whether to show errors in the spec runner, either `always`, `never` or `failure`'
+
+      method_option :focus,
+                    :type => :boolean,
+                    :aliases => '-f',
+                    :default => true,
+                    :desc    => 'Specdoc focus to hide successful tests when at least one test fails'
 
       method_option :specdoc,
                     :type => :string,
                     :default => :always,
                     :desc => 'Whether to show successes in the spec runner, either `always`, `never` or `failure`'
-
-      method_option :server_env,
-                    :type => :string,
-                    :aliases => '-e',
-                    :default => ENV['RAILS_ENV'] || 'test',
-                    :desc => 'The server environment to use, for example `development`, `test` etc.'
-
-      method_option :spec_dir,
-                    :type => :string,
-                    :aliases => '-d',
-                    :default => 'spec/javascripts',
-                    :desc => 'The directory with the Jasmine specs'
 
       # Run the Guard::Jasmine::Runner with options from
       # the command line.
@@ -94,30 +97,31 @@ module Guard
       def spec(*paths)
         paths = [options.spec_dir] if paths.empty?
 
-        runner = {}
-        runner[:jasmine_url] = options.url
-        runner[:phantomjs_bin] = options.bin || CLI.which('phantomjs')
-        runner[:timeout] = options.timeout
-        runner[:port] = options.port
-        runner[:server_env] = options.server_env
-        runner[:spec_dir] = options.spec_dir
-        runner[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
-        runner[:errors] = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
-        runner[:specdoc] = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
-        runner[:server] = options.server.to_sym
-        runner[:focus] = options.focus
+        runner_options = {}
+        runner_options[:jasmine_url] = options.url
+        runner_options[:phantomjs_bin] = options.bin || CLI.which('phantomjs')
+        runner_options[:timeout] = options.timeout
+        runner_options[:port] = options.port
+        runner_options[:server_env] = options.server_env
+        runner_options[:server_timeout] = options.server_timeout
+        runner_options[:spec_dir] = options.spec_dir
+        runner_options[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
+        runner_options[:errors] = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
+        runner_options[:specdoc] = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
+        runner_options[:server] = options.server.to_sym
+        runner_options[:focus] = options.focus
 
 
-        runner[:notification] = false
-        runner[:hide_success] = true
+        runner_options[:notification] = false
+        runner_options[:hide_success] = true
 
-        runner[:max_error_notify] = 0
+        runner_options[:max_error_notify] = 0
 
-        if CLI.phantomjs_bin_valid?(runner[:phantomjs_bin])
-          ::Guard::Jasmine::Server.start(runner[:server], runner[:port], runner[:server_env], runner[:spec_dir]) unless runner[:server] == :none
+        if CLI.phantomjs_bin_valid?(runner_options[:phantomjs_bin])
+          ::Guard::Jasmine::Server.start(runner_options[:server], runner_options[:port], runner_options[:server_env], runner_options[:spec_dir]) unless runner_options[:server] == :none
 
-          if CLI.runner_available?(runner[:jasmine_url])
-            result = ::Guard::Jasmine::Runner.run(paths, runner)
+          if CLI.runner_available?(runner_options)
+            result = ::Guard::Jasmine::Runner.run(paths, runner_options)
             ::Guard::Jasmine::Server.stop
 
             Process.exit result.first ? 0 : 1

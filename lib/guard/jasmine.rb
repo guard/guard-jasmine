@@ -23,6 +23,7 @@ module Guard
     DEFAULT_OPTIONS = {
         :server           => :auto,
         :server_env       => ENV['RAILS_ENV'] || 'development',
+        :server_timeout   => 15,
         :port             => 8888,
         :jasmine_url      => 'http://localhost:8888/jasmine',
         :timeout          => 10000,
@@ -46,6 +47,7 @@ module Guard
     # @param [Hash] options the options for the Guard
     # @option options [String] :server the server to use, either :auto, :none, :webrick, :mongrel, :thin, :jasmine_gem, or a custom rake task
     # @option options [String] :server_env the server environment to use, for example :development, :test
+    # @option options [Integer] :server_timeout the number of seconds to wait for the Jasmine spec server
     # @option options [String] :port the port for the Jasmine test server
     # @option options [String] :jasmine_url the url of the Jasmine test runner
     # @option options [String] :phantomjs_bin the location of the PhantomJS binary
@@ -88,7 +90,7 @@ module Guard
 
         Server.start(options[:server], options[:port], options[:server_env], options[:spec_dir]) unless options[:server] == :none
 
-        if Jasmine.runner_available?(options[:jasmine_url])
+        if Jasmine.runner_available?(options)
           run_all if options[:all_on_start]
         end
       else

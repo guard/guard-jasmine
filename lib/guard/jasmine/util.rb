@@ -13,16 +13,18 @@ module Guard
       # If the runner is not available within 15 seconds, then
       # the availability check will cancel.
       #
-      # @param [String] url the location of the test runner
+      # @param [Hash] options the options for the Guard
+      # @option options [Integer] :server_timeout the number of seconds to wait for the Jasmine spec server
+      # @option options [String] :jasmine_url the url of the Jasmine test runner
       # @return [Boolean] when the runner is available
       #
-      def runner_available?(url)
-        url = URI.parse(url)
+      def runner_available?(options)
+        url = URI.parse(options[:jasmine_url])
 
         begin
           ::Guard::Jasmine::Formatter.info "Waiting for Jasmine test runner at #{ url }"
 
-          Timeout::timeout(15) do
+          Timeout::timeout(options[:server_timeout]) do
             Net::HTTP.start(url.host, url.port) do |http|
               response = http.request(Net::HTTP::Head.new(url.path))
               available = response.code.to_i == 200

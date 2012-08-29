@@ -1,5 +1,11 @@
 # Changelog
 
+## Master
+
+- [Pull #75](https://github.com/netzpirat/guard-jasmine/pull/75): Make sure the server process dies on error. ([@mutru][])
+- Add Guard and cli option to define the number of seconds to wait for the Jasmine spec server to start.
+- Remove cli short aliases `-c`, `-x` and `-f`, use the long form instead.
+
 ## 1.7.0 - August 10, 2012
 
 - [Issue #73](https://github.com/netzpirat/guard-jasmine/issues/73): Add `:run_all` option to overwrite normal options.
@@ -279,6 +285,7 @@
 [@huyhoang1970]: https://github.com/huyhoang1970
 [@jasonm]: https://github.com/jasonm
 [@mkdynamic]: https://github.com/mkdynamic
+[@mutru]: https:///github.com/mutru
 [@obrie]: https://github.com/obrie
 [@pushbang]: https://github.com/pushbang
 [@richo]: https://github.com/richo

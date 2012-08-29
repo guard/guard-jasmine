@@ -30,6 +30,10 @@ describe Guard::Jasmine do
         guard.options[:server_env].should eql defaults[:server_env]
       end
 
+      it 'sets a default :server_timeout option' do
+        guard.options[:server_timeout].should eql 15
+      end
+
       it 'sets a default :port option' do
         guard.options[:port].should eql 8888
       end
@@ -107,6 +111,7 @@ describe Guard::Jasmine do
     context 'with other options than the default ones' do
       let(:guard) { Guard::Jasmine.new(nil, { :server           => :jasmine_gem,
                                               :server_env       => 'test',
+                                              :server_timeout   => 20,
                                               :port             => 4321,
                                               :jasmine_url      => 'http://192.168.1.5/jasmine',
                                               :phantomjs_bin    => '~/bin/phantomjs',
@@ -130,6 +135,10 @@ describe Guard::Jasmine do
 
       it 'sets the :server_env option' do
         guard.options[:server_env].should eql 'test'
+      end
+
+      it 'sets the :server_timeout option' do
+        guard.options[:server_timeout].should eql 20
       end
 
       it 'sets the :jasmine_url option' do
