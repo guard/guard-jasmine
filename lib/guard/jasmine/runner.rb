@@ -159,7 +159,7 @@ module Guard
           json = output.read
 
           begin
-            result = MultiJson.decode(json)
+            result = MultiJson.decode(json, { :max_nesting => false })
 
             if result['error']
               notify_runtime_error(result, options)
