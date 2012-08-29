@@ -75,21 +75,21 @@ describe Guard::Jasmine::CLI do
         context 'for an invalid console option' do
           it 'sets the console option to failure' do
             runner.should_receive(:run).with(anything(), hash_including(:console => :failure)).and_return [true, []]
-            cli.start(['spec', '-c', 'wrong'])
+            cli.start(['spec', '--console', 'wrong'])
           end
         end
 
         context 'for a valid errors option' do
           it 'sets the errors option' do
             runner.should_receive(:run).with(anything(), hash_including(:errors => :always)).and_return [true, []]
-            cli.start(['spec', '-x', 'always'])
+            cli.start(['spec', '--errors', 'always'])
           end
         end
 
         context 'for an invalid errors option' do
           it 'sets the errors option to failure' do
             runner.should_receive(:run).with(anything(), hash_including(:errors => :failure)).and_return [true, []]
-            cli.start(['spec', '-x', 'wrong'])
+            cli.start(['spec', '--errors', 'wrong'])
           end
         end
       end
