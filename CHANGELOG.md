@@ -1,6 +1,10 @@
 # Changelog
 
-## Master
+## 1.8.1 - August 30, 2012
+
+- [Issue #76](https://github.com/netzpirat/guard-jasmine/issues/76): Remove nesting limitation on the JSON parser.
+
+## 1.8.0 - August 29, 2012
 
 - [Pull #75](https://github.com/netzpirat/guard-jasmine/pull/75): Make sure the server process dies on error. ([@mutru][])
 - Add Guard and cli option to define the number of seconds to wait for the Jasmine spec server to start.
