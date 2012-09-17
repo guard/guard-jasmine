@@ -68,7 +68,13 @@ Alternatively you can install [Homebrew][] on Mac OS X and install it with:
 $ brew install phantomjs
 ```
 
-If you are using Ubuntu 10.10, you can install it with apt:
+If you are using Ubuntu 12.04 or above, phantomjs is in the official repositories and can be installed with apt:
+
+```bash
+$ sudo apt-get install phantomjs
+```
+
+For older versions of Ubuntu, you will need to add a repository first:
 
 ```bash
 $ sudo add-apt-repository ppa:jerome-etienne/neoip
