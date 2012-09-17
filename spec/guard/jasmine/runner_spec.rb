@@ -130,7 +130,7 @@ describe Guard::Jasmine::Runner do
   end
 
   let(:phantomjs_command) do
-    "/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/guard-jasmine.coffee"
+    "/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/guard-jasmine.js"
   end
 
   before do

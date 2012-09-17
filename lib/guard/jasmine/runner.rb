@@ -118,7 +118,7 @@ module Guard
         # @return [String] the path to the PhantomJS script
         #
         def phantomjs_script
-          File.expand_path(File.join(File.dirname(__FILE__), 'phantomjs', 'guard-jasmine.coffee'))
+          File.expand_path(File.join(File.dirname(__FILE__), 'phantomjs', 'guard-jasmine.js'))
         end
 
         # The suite name must be extracted from the spec that

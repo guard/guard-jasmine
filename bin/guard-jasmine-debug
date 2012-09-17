@@ -1,3 +1,3 @@
 #!/usr/bin/env ruby
-script = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'guard', 'jasmine', 'phantomjs', 'guard-jasmine.coffee'))
+script = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'guard', 'jasmine', 'phantomjs', 'guard-jasmine.js'))
 puts `phantomjs #{ script } #{ ARGV[0] } #{ ARGV[1] }`
