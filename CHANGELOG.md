@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.2 - September 18, 2012
+
+- [Issue #78](https://github.com/netzpirat/guard-jasmine/issues/78): Use vanilla JS runner to make it run on Ubuntu 12.04 and PhantomJS 1.4.0.
+
 ## 1.8.1 - August 30, 2012
 
 - [Issue #76](https://github.com/netzpirat/guard-jasmine/issues/76): Remove nesting limitation on the JSON parser.
