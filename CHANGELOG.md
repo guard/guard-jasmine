@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.8.3 - September 19, 2012
 
 - [Issue #81](https://github.com/netzpirat/guard-jasmine/issues/81): Make the Guardfile template catch `.js.coffee` again.
 
