@@ -129,6 +129,64 @@ describe Guard::Jasmine::Runner do
     JSON
   end
 
+  let(:phantomjs_partial_coverage_response) do
+    <<-JSON
+    {
+      "passed": true,
+      "stats": {
+        "specs": 1,
+        "failures": 0,
+        "time": 0.009
+      },
+      "coverage": {
+        "application.js": 50.12,
+        "todo.js": 100.0,
+        "total": 84.78260869565217
+      },
+      "suites": [
+        {
+          "description": "Success suite",
+          "specs": [
+            {
+              "description": "Success test tests something",
+              "passed": true
+            }
+          ]
+        }
+      ]
+    }
+    JSON
+  end
+  
+  let(:phantomjs_full_coverage_response) do
+    <<-JSON
+    {
+      "passed": true,
+      "stats": {
+        "specs": 1,
+        "failures": 0,
+        "time": 0.009
+      },
+      "coverage": {
+        "application.js": 100.0,
+        "todo.js": 100.0,
+        "total": 100.0
+      },
+      "suites": [
+        {
+          "description": "Success suite",
+          "specs": [
+            {
+              "description": "Success test tests something",
+              "passed": true
+            }
+          ]
+        }
+      ]
+    }
+    JSON
+  end
+
   let(:phantomjs_command) do
     "/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/guard-jasmine.js"
   end
@@ -195,6 +253,11 @@ describe Guard::Jasmine::Runner do
         response.first.should be_false
         response.last.should =~ []
       end
+      
+      it "does not show coverage" do
+        runner.should_not_receive(:notify_coverage_result)
+        runner.run(['spec/javascripts/a.js.coffee'], defaults)
+      end
 
       context 'with notifications' do
         it 'shows an error notification' do
@@ -232,6 +295,12 @@ describe Guard::Jasmine::Runner do
         response = runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
         response.first.should be_false
         response.last.should =~ ['spec/javascripts/x/b.js.coffee']
+      end
+
+
+      it "does not show coverage" do
+        runner.should_not_receive(:notify_coverage_result)
+        runner.run(['spec/javascripts/a.js.coffee'], defaults)
       end
 
       context 'with the specdoc set to :never' do
@@ -572,7 +641,67 @@ describe Guard::Jasmine::Runner do
         response.first.should be_true
         response.last.should =~ []
       end
+      
+      context "with coverage" do
+        
+        context 'when coverage is present' do
+          before do
+            IO.stub(:popen).and_return StringIO.new(phantomjs_full_coverage_response)
+          end
+          
+          
+          it 'notifies coverage when present' do
+            runner.should_receive(:notify_coverage_result)
+            runner.run(['spec/javascripts/t.js.coffee'], defaults)
+          end
+          
+          it 'shows a success notification' do            
+            formatter.should_receive(:notify).with("1 spec, 0 failures\nin 0.009 seconds", :title=>"Jasmine suite passed")
+            formatter.should_receive(:notify).with('100% covered', :title => "Code Coverage")
+            runner.run(['spec/javascripts/t.js.coffee'], defaults)
+          end
+          
+          it 'logs the coverage to the console' do
+            formatter.should_receive(:success).with('Code Coverage: 100%')
+            runner.run(['spec/javascripts/t.js.coffee'], defaults)
+          end
+            
+          
+          context 'when coverage is below 100%' do
+            before do
+              IO.stub(:popen).and_return StringIO.new(phantomjs_partial_coverage_response)
+            end
+            
+            it 'shows a failure notification' do
+              formatter.should_receive(:notify).with(
+                  "85% covered",
+                  :title    => 'Code coverage below 100%',
+                  :image    => :failed,
+                  :priority => 2
+              )
+              runner.run(['spec/javascripts/t.js.coffee'], defaults)
+            end
+            
+            it 'logs the coverage to the console for all the files' do
+              formatter.should_receive(:error).with('Code Coverage: 85%')
+              formatter.should_receive(:error).with('application.js: 50%')
+              formatter.should_receive(:success).with('todo.js: 100%')
+              
+              runner.run(['spec/javascripts/t.js.coffee'], defaults)
+            end
+            
+            it 'fails the build' do
+              response = runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
+              response.first.should be_false
+              response.last.should =~ []
+            end
+            
 
+          end
+        end
+          
+      end
+      
       context 'with the specdoc set to :always' do
         it 'shows the specdoc in the console' do
           formatter.should_receive(:info).with(
