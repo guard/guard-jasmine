@@ -38,6 +38,10 @@ describe Guard::Jasmine do
         guard.options[:port].should eql 8888
       end
 
+      it 'sets a default :rackup_config option' do
+        guard.options[:rackup_config].should eql nil
+      end
+
       it 'sets a default :jasmine_url option' do
         guard.options[:jasmine_url].should eql 'http://localhost:8888/jasmine'
       end
@@ -113,6 +117,7 @@ describe Guard::Jasmine do
                                               :server_env       => 'test',
                                               :server_timeout   => 20,
                                               :port             => 4321,
+                                              :rackup_config    => 'spec/dummy/config.ru',
                                               :jasmine_url      => 'http://192.168.1.5/jasmine',
                                               :phantomjs_bin    => '~/bin/phantomjs',
                                               :timeout          => 20000,
@@ -145,6 +150,10 @@ describe Guard::Jasmine do
         guard.options[:port].should eql 4321
       end
 
+      it 'sets a default :rackup_config option' do
+        guard.options[:rackup_config].should eql 'spec/dummy/config.ru'
+      end
+      
       it 'sets the :jasmine_url option' do
         guard.options[:jasmine_url].should eql 'http://192.168.1.5/jasmine'
       end
@@ -272,7 +281,11 @@ describe Guard::Jasmine do
         end
 
         it 'does start a server' do
-          server.should_receive(:start).with(:jasmine_gem, 3333, 'test', 'spec/javascripts', nil)
+          server.should_receive(:start).with(hash_including(:server => :jasmine_gem,
+                                                            :port => 3333,
+                                                            :server_env => 'test',
+                                                            :spec_dir => 'spec/javascripts',
+                                                            :rackup_config => nil))
           guard.start
         end
       end

@@ -1,5 +1,7 @@
 # coding: utf-8
 
+require 'socket'
+require 'timeout'
 require 'childprocess'
 
 module Guard
@@ -15,32 +17,36 @@ module Guard
 
         # Start the internal test server for getting the Jasmine runner.
         #
-        # @param [String] strategy the server strategy to use
-        # @param [Number] port the server port
-        # @param [String] environment the Rails environment
-        # @param [String] spec_dir the spec directory
-        # @param [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
+        # @param [Hash] options the server options
+        # @option options [String] server the server to use
+        # @option options [Number] port the server port
+        # @option options [String] server_env the Rails environment
+        # @option options [String] spec_dir the spec directory
+        # @option options [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
-        def start(strategy, port, environment, spec_dir, rackup_config = nil)
-          strategy = detect_server(spec_dir) if strategy == :auto
+        def start(options)
+          server  = options[:server]
+          server  = detect_server(options[:spec_dir]) if server == :auto
+          port    = options[:port]
+          timeout = options[:server_timeout]
 
-          case strategy
+          case server
           when :webrick, :mongrel, :thin, :unicorn
-            start_rack_server(port, environment, strategy, rackup_config)
+            start_rack_server(options)
           when :jasmine_gem
             start_rake_server(port, 'jasmine')
           else
-            start_rake_server(port, strategy.to_s) unless strategy == :none
+            start_rake_server(port, server.to_s) unless server == :none
           end
 
-          wait_for_server(port) unless strategy == :none
+          wait_for_server(port, timeout) unless server == :none
         end
 
         # Stop the server thread.
         #
         def stop
           if self.process
-            ::Guard::UI.info "Guard::Jasmine stops server."
+            ::Guard::UI.info 'Guard::Jasmine stops server.'
             self.process.stop(5)
           end
         end
@@ -51,12 +57,18 @@ module Guard
         # will simply start a server that uses the `config.ru`
         # in the current directory.
         #
-        # @param [Number] port the server port
-        # @param [String] environment the Rails environment
-        # @param [Symbol] server the rack server to use
-        # @param [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
+        # @param [Hash] options the server options
+        # @option options [Symbol] server the rack server to use
+        # @option options [String] server_env the Rails environment
+        # @option options [Number] port the server port
+        # @option options [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
-        def start_rack_server(port, environment, server, rackup_config)
+        def start_rack_server(options)
+          server        = options[:server]
+          environment   = options[:server_env]
+          port          = options[:port]
+          rackup_config = options[:rackup_config]
+
           ::Guard::UI.info "Guard::Jasmine starts #{ server } test server on port #{ port } in #{ environment } environment."
 
           self.process = ChildProcess.build(*['rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s, rackup_config].compact)
@@ -109,19 +121,22 @@ module Guard
         # Wait until the Jasmine test server is running.
         #
         # @param [Number] port the server port
+        # @param [Number] timeout the server wait timeout
         #
-        def wait_for_server(port)
-          require 'socket'
-
-          while true
-            begin
-              ::TCPSocket.new('127.0.0.1', port).close
-              break
-            rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
-              # Ignore, server still not available
+        def wait_for_server(port, timeout)
+          Timeout::timeout(timeout) do
+            while true
+              begin
+                ::TCPSocket.new('127.0.0.1', port).close
+              rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
+                # Ignore, server still not available
+              end
+              sleep 0.1
             end
-            sleep 0.1
           end
+          
+        rescue Timeout::Error
+          ::Guard::UI.warning 'Timeout while waiting for the server startup.'
         end
 
       end

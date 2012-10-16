@@ -5,6 +5,15 @@ require 'spec_helper'
 describe Guard::Jasmine::Server do
 
   let(:server) { Guard::Jasmine::Server }
+  
+  let(:defaults) do
+    { 
+      :server     => :auto,
+      :port       => 8888,
+      :server_env => 'test',
+      :spec_dir   => 'spec/javascripts'
+    }
+  end
 
   before do
     server.stub(:start_rack_server)
@@ -14,6 +23,10 @@ describe Guard::Jasmine::Server do
 
   describe '.start' do
     context 'with the :auto strategy' do
+      let(:options) do
+        defaults
+      end
+      
       context 'with a rackup config file' do
         before do
           File.should_receive(:exists?).with('config.ru').and_return true
@@ -21,7 +34,7 @@ describe Guard::Jasmine::Server do
   
         it 'does wait for the server' do
           server.should_receive(:wait_for_server)
-          server.start(:auto, 8888, 'test', 'spec/javascripts')
+          server.start(options)
         end
   
         context 'with unicorn available' do
@@ -30,8 +43,8 @@ describe Guard::Jasmine::Server do
           end
           
           it 'uses unicorn as server' do
-            server.should_receive(:start_rack_server).with(8888, 'test', :unicorn, nil)
-            server.start(:auto, 8888, 'test', 'spec/javascripts')
+            server.should_receive(:start_rack_server).with(options)
+            server.start(options)
           end
         end
   
@@ -42,8 +55,8 @@ describe Guard::Jasmine::Server do
           end
   
           it 'uses thin as server' do
-            server.should_receive(:start_rack_server).with(8888, 'test', :thin, nil)
-            server.start(:auto, 8888, 'test', 'spec/javascripts')
+            server.should_receive(:start_rack_server).with(options)
+            server.start(options)
           end
         end
   
@@ -55,8 +68,8 @@ describe Guard::Jasmine::Server do
           end
   
           it 'uses mongrel as server' do
-            server.should_receive(:start_rack_server).with(8888, 'test', :mongrel, nil)
-            server.start(:auto, 8888, 'test', 'spec/javascripts')
+            server.should_receive(:start_rack_server).with(options)
+            server.start(options)
           end
         end
   
@@ -68,8 +81,8 @@ describe Guard::Jasmine::Server do
           end
   
           it 'uses webrick as server' do
-            server.should_receive(:start_rack_server).with(8888, 'test', :webrick, nil)
-            server.start(:auto, 8888, 'test', 'spec/javascripts')
+            server.should_receive(:start_rack_server).with(options)
+            server.start(options)
           end
         end
       end
@@ -83,16 +96,20 @@ describe Guard::Jasmine::Server do
   
           it 'chooses the jasmine_gem server strategy' do
             server.should_receive(:start_rake_server)
-            server.start(:auto, 8888, 'test', 'spec/javascripts')
+            server.start(options)
           end
   
           it 'does wait for the server' do
             server.should_receive(:wait_for_server)
-            server.start(:auto, 8888, 'test', 'spec/javascripts')
+            server.start(options)
           end
         end
   
         context 'with a custom spec dir' do
+          let(:options) do
+            defaults.merge({ :spec_dir => 'specs' })
+          end
+          
           before do
             File.should_receive(:exists?).with('config.ru').and_return false
             File.should_receive(:exists?).with(File.join('specs', 'support', 'jasmine.yml')).and_return true
@@ -100,12 +117,12 @@ describe Guard::Jasmine::Server do
   
           it 'chooses the jasmine_gem server strategy' do
             server.should_receive(:start_rake_server)
-            server.start(:auto, 8888, 'test', 'specs')
+            server.start(options)
           end
   
           it 'does wait for the server' do
             server.should_receive(:wait_for_server)
-            server.start(:auto, 8888, 'test', 'specs')
+            server.start(options)
           end
         end
       end
@@ -120,131 +137,163 @@ describe Guard::Jasmine::Server do
           server.should_not_receive(:start_rack_server)
           server.should_not_receive(:start_rake_server)
           server.should_not_receive(:wait_for_server)
-          server.start(:auto, 8888, 'test', 'spec/javascripts')
+          server.start(options)
         end
       end
     end
   
     context 'with the :thin strategy' do
+      let(:options) do
+        defaults.merge({ :server => :thin })
+      end
+
       it 'does not auto detect a server' do
         server.should_not_receive(:detect_server)
-        server.start(:thin, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'does wait for the server' do
         server.should_receive(:wait_for_server)
-        server.start(:thin, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'starts a :thin rack server' do
-        server.should_receive(:start_rack_server).with(8888, 'test', :thin, nil)
-        server.start(:thin, 8888, 'test', 'spec/javascripts')
+        server.should_receive(:start_rack_server).with(options)
+        server.start(options)
       end
     end
   
     context 'with the :mongrel strategy' do
+      let(:options) do
+        defaults.merge({ :server => :mongrel })
+      end
+
       it 'does not auto detect a server' do
         server.should_not_receive(:detect_server)
-        server.start(:mongrel, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'does wait for the server' do
         server.should_receive(:wait_for_server)
-        server.start(:mongrel, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'starts a :mongrel rack server' do
-        server.should_receive(:start_rack_server).with(8888, 'test', :mongrel, nil)
-        server.start(:mongrel, 8888, 'test', 'spec/javascripts')
+        server.should_receive(:start_rack_server).with(options)
+        server.start(options)
       end
     end
   
     context 'with the :webrick strategy' do
+      let(:options) do
+        defaults.merge({ :server => :webrick })
+      end
+
       it 'does not auto detect a server' do
         server.should_not_receive(:detect_server)
-        server.start(:webrick, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'does wait for the server' do
         server.should_receive(:wait_for_server)
-        server.start(:webrick, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'starts a :webrick rack server' do
-        server.should_receive(:start_rack_server).with(8888, 'test', :webrick, nil)
-        server.start(:webrick, 8888, 'test', 'spec/javascripts')
+        server.should_receive(:start_rack_server).with(options)
+        server.start(options)
       end
     end
   
     context 'with the :unicorn strategy' do
+      let(:options) do
+        defaults.merge({ :server => :unicorn })
+      end
+
       it 'does not auto detect a server' do
         server.should_not_receive(:detect_server)
-        server.start(:unicorn, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'does wait for the server' do
         server.should_receive(:wait_for_server)
-        server.start(:unicorn, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'starts a :unicorn rack server' do
-        server.should_receive(:start_rack_server).with(8888, 'test', :unicorn, nil)
-        server.start(:unicorn, 8888, 'test', 'spec/javascripts')
+        server.should_receive(:start_rack_server).with(options)
+        server.start(options)
       end
     end
   
     context 'with the :webrick strategy and a custom config.ru' do
+      let(:options) do
+        defaults.merge({ :server => :webrick, :rackup_config => 'my/cool.ru' })
+      end
+
       it 'starts a :webrick rack server' do
-        server.should_receive(:start_rack_server).with(8888, 'test', :webrick, 'my/cool.ru')
-        server.start(:webrick, 8888, 'test', 'spec/javascripts', 'my/cool.ru')
+        server.should_receive(:start_rack_server).with(options)
+        server.start(options)
       end
     end
   
     context 'with the :jasmine_gem strategy' do
+      let(:options) do
+        defaults.merge({ :server => :jasmine_gem })
+      end
+
       it 'does not auto detect a server' do
         server.should_not_receive(:detect_server)
-        server.start(:jasmine_gem, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'does wait for the server' do
         server.should_receive(:wait_for_server)
-        server.start(:jasmine_gem, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'starts the :jasmine rake task server' do
         server.should_receive(:start_rake_server).with(8888, 'jasmine')
-        server.start(:jasmine_gem, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
     end
   
     context 'with a custom rake strategy' do
+      let(:options) do
+        defaults.merge({ :server => :custom_server_strategy })
+      end
+
       it 'does not auto detect a server' do
         server.should_not_receive(:detect_server)
-        server.start(:start_server, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'does wait for the server' do
         server.should_receive(:wait_for_server)
-        server.start(:start_server, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'starts a custom rake task server' do
-        server.should_receive(:start_rake_server).with(8888, 'start_server')
-        server.start(:start_server, 8888, 'test', 'spec/javascripts')
+        server.should_receive(:start_rake_server).with(8888, 'custom_server_strategy')
+        server.start(options)
       end
     end
   
     context 'with the :none strategy' do
+      let(:options) do
+        defaults.merge({ :server => :none })
+      end
+
       it 'does not auto detect a server' do
         server.should_not_receive(:detect_server)
-        server.start(:none, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
   
       it 'does not start a server' do
         server.should_not_receive(:start_rack_server)
         server.should_not_receive(:start_rake_server)
         server.should_not_receive(:wait_for_server)
-        server.start(:none, 8888, 'test', 'spec/javascripts')
+        server.start(options)
       end
     end
   end

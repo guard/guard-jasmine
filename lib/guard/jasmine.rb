@@ -25,6 +25,7 @@ module Guard
         :server_env       => ENV['RAILS_ENV'] || 'development',
         :server_timeout   => 15,
         :port             => 8888,
+        :rackup_config    => nil,
         :jasmine_url      => 'http://localhost:8888/jasmine',
         :timeout          => 10000,
         :spec_dir         => 'spec/javascripts',
@@ -89,7 +90,7 @@ module Guard
     def start
       if Jasmine.phantomjs_bin_valid?(options[:phantomjs_bin])
 
-        Server.start(options[:server], options[:port], options[:server_env], options[:spec_dir], options[:rackup_config]) unless options[:server] == :none
+        Server.start(options) unless options[:server] == :none
 
         if Jasmine.runner_available?(options)
           run_all if options[:all_on_start]

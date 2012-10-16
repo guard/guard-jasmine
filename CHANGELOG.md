@@ -2,6 +2,7 @@
 
 ## Master
 
+- Add timeout to the initial server startup.
 - [Pull #83](https://github.com/netzpirat/guard-jasmine/pull/83): Make it possible to run within mountable engine within a dummy app (using jasminerice). ([@pschyska][])
 - [Issue #82](https://github.com/netzpirat/guard-jasmine/issues/82): Enable the `:auto` server to detection unicorn, thin and mongrel.
 
