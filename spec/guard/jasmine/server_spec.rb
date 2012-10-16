@@ -18,14 +18,58 @@ describe Guard::Jasmine::Server do
         File.should_receive(:exists?).with('config.ru').and_return true
       end
 
-      it 'chooses the rack server strategy' do
-        server.should_receive(:start_rack_server)
-        server.start(:auto, 8888, 'test', 'spec/javascripts')
-      end
-
       it 'does wait for the server' do
         server.should_receive(:wait_for_server)
         server.start(:auto, 8888, 'test', 'spec/javascripts')
+      end
+
+      context 'with unicorn available' do
+        before do
+          Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_return true  
+        end
+        
+        it 'uses unicorn as server' do
+          server.should_receive(:start_rack_server).with(8888, 'test', :unicorn)
+          server.start(:auto, 8888, 'test', 'spec/javascripts')
+        end
+      end
+
+      context 'with thin available' do
+        before do
+          Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_raise LoadError
+          Guard::Jasmine::Server.should_receive(:require).with('thin').and_return true
+        end
+
+        it 'uses thin as server' do
+          server.should_receive(:start_rack_server).with(8888, 'test', :thin)
+          server.start(:auto, 8888, 'test', 'spec/javascripts')
+        end
+      end
+
+      context 'with mongrel available' do
+        before do
+          Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_raise LoadError
+          Guard::Jasmine::Server.should_receive(:require).with('thin').and_raise LoadError
+          Guard::Jasmine::Server.should_receive(:require).with('mongrel').and_return true
+        end
+
+        it 'uses mongrel as server' do
+          server.should_receive(:start_rack_server).with(8888, 'test', :mongrel)
+          server.start(:auto, 8888, 'test', 'spec/javascripts')
+        end
+      end
+
+      context 'with unicorn, thin or mongrel not being available' do
+        before do
+          Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_raise LoadError
+          Guard::Jasmine::Server.should_receive(:require).with('thin').and_raise LoadError
+          Guard::Jasmine::Server.should_receive(:require).with('mongrel').and_raise LoadError
+        end
+
+        it 'uses webrick as server' do
+          server.should_receive(:start_rack_server).with(8888, 'test', :webrick)
+          server.start(:auto, 8888, 'test', 'spec/javascripts')
+        end
       end
     end
 

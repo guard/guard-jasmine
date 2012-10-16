@@ -88,6 +88,14 @@ module Guard
         #
         def detect_server(spec_dir)
           if File.exists?('config.ru')
+            %w(unicorn thin mongrel).each do |server|
+              begin
+                require server
+                return server.to_sym
+              rescue LoadError
+                # Ignore missing server and try next
+              end
+            end
             :webrick
           elsif File.exists?(File.join(spec_dir, 'support', 'jasmine.yml'))
             :jasmine_gem
