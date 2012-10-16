@@ -49,6 +49,7 @@ module Guard
     # @option options [String] :server_env the server environment to use, for example :development, :test
     # @option options [Integer] :server_timeout the number of seconds to wait for the Jasmine spec server
     # @option options [String] :port the port for the Jasmine test server
+    # @option options [String] :rackup_config custom rackup config to use
     # @option options [String] :jasmine_url the url of the Jasmine test runner
     # @option options [String] :phantomjs_bin the location of the PhantomJS binary
     # @option options [Integer] :timeout the maximum time in milliseconds to wait for the spec runner to finish

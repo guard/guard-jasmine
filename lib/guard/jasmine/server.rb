@@ -19,7 +19,7 @@ module Guard
         # @param [Number] port the server port
         # @param [String] environment the Rails environment
         # @param [String] spec_dir the spec directory
-        # @param [String] (optional) custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
+        # @param [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
         def start(strategy, port, environment, spec_dir, rackup_config = nil)
           strategy = detect_server(spec_dir) if strategy == :auto
@@ -54,7 +54,7 @@ module Guard
         # @param [Number] port the server port
         # @param [String] environment the Rails environment
         # @param [Symbol] server the rack server to use
-        # @param [String] (optional) custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
+        # @param [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
         def start_rack_server(port, environment, server, rackup_config)
           ::Guard::UI.info "Guard::Jasmine starts #{ server } test server on port #{ port } in #{ environment } environment."
