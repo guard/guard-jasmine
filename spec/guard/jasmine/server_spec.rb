@@ -12,7 +12,7 @@ describe Guard::Jasmine::Server do
     server.stub(:wait_for_server)
   end
 
-  describe '#start' do
+  describe '.start' do
     context 'with the :auto strategy' do
       context 'with a rackup config file' do
         before do
