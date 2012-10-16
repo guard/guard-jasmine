@@ -136,7 +136,7 @@ describe Guard::Jasmine::Server do
     end
 
     it 'starts a :thin rack server' do
-      server.should_receive(:start_rack_server).with(8888, 'test', :thin)
+      server.should_receive(:start_rack_server).with(8888, 'test', :thin, nil)
       server.start(:thin, 8888, 'test', 'spec/javascripts')
     end
   end
@@ -153,7 +153,7 @@ describe Guard::Jasmine::Server do
     end
 
     it 'starts a :mongrel rack server' do
-      server.should_receive(:start_rack_server).with(8888, 'test', :mongrel)
+      server.should_receive(:start_rack_server).with(8888, 'test', :mongrel, nil)
       server.start(:mongrel, 8888, 'test', 'spec/javascripts')
     end
   end
@@ -170,7 +170,7 @@ describe Guard::Jasmine::Server do
     end
 
     it 'starts a :webrick rack server' do
-      server.should_receive(:start_rack_server).with(8888, 'test', :webrick)
+      server.should_receive(:start_rack_server).with(8888, 'test', :webrick, nil)
       server.start(:webrick, 8888, 'test', 'spec/javascripts')
     end
   end
@@ -187,8 +187,15 @@ describe Guard::Jasmine::Server do
     end
 
     it 'starts a :unicorn rack server' do
-      server.should_receive(:start_rack_server).with(8888, 'test', :unicorn)
+      server.should_receive(:start_rack_server).with(8888, 'test', :unicorn, nil)
       server.start(:unicorn, 8888, 'test', 'spec/javascripts')
+    end
+  end
+
+  context 'with the :webrick strategy and a custom config.ru' do
+    it 'starts a :webrick rack server' do
+      server.should_receive(:start_rack_server).with(8888, 'test', :webrick, 'my/cool.ru')
+      server.start(:webrick, 8888, 'test', 'spec/javascripts', 'my/cool.ru')
     end
   end
 
