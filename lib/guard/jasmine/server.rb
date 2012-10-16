@@ -59,11 +59,7 @@ module Guard
         def start_rack_server(port, environment, server, rackup_config)
           ::Guard::UI.info "Guard::Jasmine starts #{ server } test server on port #{ port } in #{ environment } environment."
 
-          if rackup_config
-            self.process = ChildProcess.build('rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s, rackup_config)
-          else
-            self.process = ChildProcess.build('rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s)
-          end
+          self.process = ChildProcess.build(*['rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s, rackup_config].compact)
           self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options && ::Guard.options[:verbose]
           self.process.start
 
