@@ -361,6 +361,11 @@ The server options configures the server environment that is needed to run Guard
 
 :timeout => 20000                             # The time in ms to wait for the spec runner to finish.
                                               # default: 10000
+
+:rackup_config => 'spec/dummy/config.ru'      # Path to rackup config file (i.e. for webrick, mongrel, thin, unicorn).
+                                              # default: ./config.ru
+                                              # This option is useful when using guard-jasmine in a mountable engine
+                                              # and the config.ru is within the dummy app
 ```
 
 If you're setting the `:server` option to `:none`, you can supply the Jasmine runner url manually:

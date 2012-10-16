@@ -272,7 +272,7 @@ describe Guard::Jasmine do
         end
 
         it 'does start a server' do
-          server.should_receive(:start).with(:jasmine_gem, 3333, 'test', 'spec/javascripts')
+          server.should_receive(:start).with(:jasmine_gem, 3333, 'test', 'spec/javascripts', nil)
           guard.start
         end
       end
