@@ -19,13 +19,14 @@ module Guard
         # @param [Number] port the server port
         # @param [String] environment the Rails environment
         # @param [String] spec_dir the spec directory
+        # @param [String] (optional) custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
-        def start(strategy, port, environment, spec_dir)
+        def start(strategy, port, environment, spec_dir, rackup_config = nil)
           strategy = detect_server(spec_dir) if strategy == :auto
 
           case strategy
           when :webrick, :mongrel, :thin, :unicorn
-            start_rack_server(port, environment, strategy)
+            start_rack_server(port, environment, strategy, rackup_config)
           when :jasmine_gem
             start_rake_server(port, 'jasmine')
           else
@@ -53,11 +54,16 @@ module Guard
         # @param [Number] port the server port
         # @param [String] environment the Rails environment
         # @param [Symbol] server the rack server to use
+        # @param [String] (optional) custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
-        def start_rack_server(port, environment, server)
+        def start_rack_server(port, environment, server, rackup_config)
           ::Guard::UI.info "Guard::Jasmine starts #{ server } test server on port #{ port } in #{ environment } environment."
 
-          self.process = ChildProcess.build('rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s)
+          if rackup_config
+            self.process = ChildProcess.build('rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s, rackup_config)
+          else
+            self.process = ChildProcess.build('rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s)
+          end
           self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options && ::Guard.options[:verbose]
           self.process.start
 
