@@ -128,6 +128,7 @@ module Guard
             while true
               begin
                 ::TCPSocket.new('127.0.0.1', port).close
+                break
               rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
                 # Ignore, server still not available
               end
