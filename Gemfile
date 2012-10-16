@@ -8,7 +8,7 @@ gem 'rack'
 gem 'jasmine'
 
 gem 'coolline'
-gem 'terminal-notifier-guard'
+gem 'ruby_gntp'
 
 gem 'guard-coffeescript'
 gem 'guard-shell'
@@ -18,3 +18,4 @@ gem 'yard'
 gem 'redcarpet'
 gem 'pry'
 gem 'yajl-ruby'
+gem 'rb-fsevent'

@@ -1,5 +1,4 @@
 interactor :coolline
-notification :terminal_notifier
 
 guard :coffeescript, :input => 'lib/guard/jasmine/phantomjs/src', :output => 'lib/guard/jasmine/phantomjs/lib'
 
