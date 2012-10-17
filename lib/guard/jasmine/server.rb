@@ -33,7 +33,7 @@ module Guard
 
           case server
           when :webrick, :mongrel, :thin, :unicorn
-            start_rack_server(options)
+            start_rack_server(server, options)
           when :jasmine_gem
             start_rake_server(port, 'jasmine')
           else
@@ -64,8 +64,7 @@ module Guard
         # @option options [Number] port the server port
         # @option options [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
-        def start_rack_server(options)
-          server        = options[:server]
+        def start_rack_server(server, options)
           environment   = options[:server_env]
           port          = options[:port]
           rackup_config = options[:rackup_config]

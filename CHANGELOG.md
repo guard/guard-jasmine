@@ -2,6 +2,7 @@
 
 ## Master
 
+- Fix automatic server detection.
 - [Issue #84](https://github.com/netzpirat/guard-jasmine/issues/84): Fix server start from the CLI.
 
 ## 1.9.0 - October 17, 2012

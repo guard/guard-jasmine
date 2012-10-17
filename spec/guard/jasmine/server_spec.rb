@@ -43,7 +43,7 @@ describe Guard::Jasmine::Server do
           end
           
           it 'uses unicorn as server' do
-            server.should_receive(:start_rack_server).with(options)
+            server.should_receive(:start_rack_server).with(:unicorn, options)
             server.start(options)
           end
         end
@@ -55,7 +55,7 @@ describe Guard::Jasmine::Server do
           end
   
           it 'uses thin as server' do
-            server.should_receive(:start_rack_server).with(options)
+            server.should_receive(:start_rack_server).with(:thin, options)
             server.start(options)
           end
         end
@@ -68,7 +68,7 @@ describe Guard::Jasmine::Server do
           end
   
           it 'uses mongrel as server' do
-            server.should_receive(:start_rack_server).with(options)
+            server.should_receive(:start_rack_server).with(:mongrel, options)
             server.start(options)
           end
         end
@@ -81,7 +81,7 @@ describe Guard::Jasmine::Server do
           end
   
           it 'uses webrick as server' do
-            server.should_receive(:start_rack_server).with(options)
+            server.should_receive(:start_rack_server).with(:webrick, options)
             server.start(options)
           end
         end
@@ -158,7 +158,7 @@ describe Guard::Jasmine::Server do
       end
   
       it 'starts a :thin rack server' do
-        server.should_receive(:start_rack_server).with(options)
+        server.should_receive(:start_rack_server).with(:thin, options)
         server.start(options)
       end
     end
@@ -179,7 +179,7 @@ describe Guard::Jasmine::Server do
       end
   
       it 'starts a :mongrel rack server' do
-        server.should_receive(:start_rack_server).with(options)
+        server.should_receive(:start_rack_server).with(:mongrel, options)
         server.start(options)
       end
     end
@@ -200,7 +200,7 @@ describe Guard::Jasmine::Server do
       end
   
       it 'starts a :webrick rack server' do
-        server.should_receive(:start_rack_server).with(options)
+        server.should_receive(:start_rack_server).with(:webrick, options)
         server.start(options)
       end
     end
@@ -221,7 +221,7 @@ describe Guard::Jasmine::Server do
       end
   
       it 'starts a :unicorn rack server' do
-        server.should_receive(:start_rack_server).with(options)
+        server.should_receive(:start_rack_server).with(:unicorn, options)
         server.start(options)
       end
     end
@@ -232,7 +232,7 @@ describe Guard::Jasmine::Server do
       end
 
       it 'starts a :webrick rack server' do
-        server.should_receive(:start_rack_server).with(options)
+        server.should_receive(:start_rack_server).with(:webrick, options)
         server.start(options)
       end
     end
