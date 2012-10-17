@@ -21,6 +21,7 @@ module Guard
         # @option options [String] server the server to use
         # @option options [Number] port the server port
         # @option options [String] server_env the Rails environment
+        # @option options [Number] server_timeoout the server start timeout
         # @option options [String] spec_dir the spec directory
         # @option options [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
