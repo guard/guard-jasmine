@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.9.0 - October 17, 2012
 
 - Add timeout to the initial server startup.
 - [Pull #83](https://github.com/netzpirat/guard-jasmine/pull/83): Make it possible to run within mountable engine within a dummy app (using jasminerice). ([@pschyska][])
