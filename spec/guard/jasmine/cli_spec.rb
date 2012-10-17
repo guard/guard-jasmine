@@ -19,20 +19,17 @@ describe Guard::Jasmine::CLI do
 
   describe '.spec' do
     context 'with specified options' do
-      context 'for the server' do
-        it 'sets the server type' do
-          server.should_receive(:start).with(:thin, 3001, 'test', 'spec/javascripts')
+      context 'with the server set to :none' do
+        it 'does not start the server' do
+          server.should_not_receive(:start)
+          cli.start(['spec', '--server', 'none'])
+        end
+      end
+
+      context 'without the server set to :none' do
+        it 'starts the server' do
+          server.should_receive(:start).with(hash_including(:server => :thin))
           cli.start(['spec', '--server', 'thin'])
-        end
-
-        it 'sets the server port' do
-          server.should_receive(:start).with(:auto, 4321, 'test', 'spec/javascripts')
-          cli.start(['spec', '--port', '4321'])
-        end
-
-        it 'sets the spec dir' do
-          server.should_receive(:start).with(:auto, 4321, 'test', 'specs')
-          cli.start(['spec', '--port', '4321', '-d', 'specs'])
         end
       end
 
@@ -98,7 +95,7 @@ describe Guard::Jasmine::CLI do
     context 'without specified options' do
       context 'for the server' do
         it 'sets the server type' do
-          server.should_receive(:start).with(:auto, 3001 , 'test', 'spec/javascripts')
+          server.should_receive(:start).with(hash_including(:server => :auto))
           cli.start(['spec'])
         end
       end

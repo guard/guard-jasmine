@@ -45,6 +45,11 @@ module Guard
                     :default => 15,
                     :desc => 'The number of seconds to wait for the Jasmine spec server'
 
+      method_option :rackup_config,
+                    :type => :string,
+                    :aliases => '-c',
+                    :desc => 'The rackup config to use (jasminerice only)'
+
       method_option :bin,
                     :type => :string,
                     :aliases => '-b',
@@ -118,7 +123,7 @@ module Guard
         runner_options[:max_error_notify] = 0
 
         if CLI.phantomjs_bin_valid?(runner_options[:phantomjs_bin])
-          ::Guard::Jasmine::Server.start(runner_options[:server], runner_options[:port], runner_options[:server_env], runner_options[:spec_dir]) unless runner_options[:server] == :none
+          ::Guard::Jasmine::Server.start(runner_options) unless runner_options[:server] == :none
 
           if CLI.runner_available?(runner_options)
             result = ::Guard::Jasmine::Runner.run(paths, runner_options)
