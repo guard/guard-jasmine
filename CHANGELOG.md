@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [Issue #85](https://github.com/netzpirat/guard-jasmine/issues/85): Improve server timeout handling.
+
 ## 1.9.1 - October 17, 2012
 
 - Fix automatic server detection.

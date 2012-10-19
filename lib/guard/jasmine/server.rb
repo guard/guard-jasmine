@@ -137,7 +137,8 @@ module Guard
           end
           
         rescue Timeout::Error
-          ::Guard::UI.warning 'Timeout while waiting for the server startup.'
+          ::Guard::UI.warning 'Timeout while waiting for the server startup. You may need to increase the `:server_timeout` option.'
+          throw :task_has_failed
         end
 
       end
