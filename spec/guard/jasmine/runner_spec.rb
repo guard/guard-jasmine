@@ -166,7 +166,7 @@ describe Guard::Jasmine::Runner do
 
     context 'when passed the spec directory' do
       it 'requests all jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 10000 failure true failure failure")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 10000 failure true failure failure", "r:UTF-8")
         runner.run(['spec/javascripts'], defaults.merge({ :notification => false }))
       end
 
@@ -179,7 +179,7 @@ describe Guard::Jasmine::Runner do
 
     context 'for an erroneous Jasmine runner' do
       it 'requests the jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=ErrorTest\" 10000 failure true failure failure")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=ErrorTest\" 10000 failure true failure failure", "r:UTF-8")
         runner.run(['spec/javascripts/a.js.coffee'], defaults)
       end
 
@@ -224,7 +224,7 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=FailureTest\" 10000 failure true failure failure")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=FailureTest\" 10000 failure true failure failure", "r:UTF-8")
         runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
       end
 
@@ -562,7 +562,7 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=SuccessTest\" 10000 failure true failure failure")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=SuccessTest\" 10000 failure true failure failure", "r:UTF-8")
 
         runner.run(['spec/javascripts/t.js'], defaults)
       end
