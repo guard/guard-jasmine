@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.9.3 - October 30, 2012
 
 - Fix starting the Unicorn test server.
 
