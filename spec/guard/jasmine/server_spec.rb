@@ -43,7 +43,7 @@ describe Guard::Jasmine::Server do
           end
           
           it 'uses unicorn as server' do
-            server.should_receive(:start_rack_server).with(:unicorn, options)
+            server.should_receive(:start_unicorn_server).with(options)
             server.start(options)
           end
         end
@@ -220,8 +220,8 @@ describe Guard::Jasmine::Server do
         server.start(options)
       end
   
-      it 'starts a :unicorn rack server' do
-        server.should_receive(:start_rack_server).with(:unicorn, options)
+      it 'starts a Unicorn Rails server' do
+        server.should_receive(:start_unicorn_server).with(options)
         server.start(options)
       end
     end

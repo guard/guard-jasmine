@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- Fix starting the Unicorn test server.
+
 ## 1.9.2 - October 19, 2012
 
 - [Issue #85](https://github.com/netzpirat/guard-jasmine/issues/85): Improve server timeout handling.

@@ -32,8 +32,10 @@ module Guard
           timeout = options[:server_timeout]
 
           case server
-          when :webrick, :mongrel, :thin, :unicorn
+          when :webrick, :mongrel, :thin
             start_rack_server(server, options)
+          when :unicorn
+            start_unicorn_server(options)
           when :jasmine_gem
             start_rake_server(port, 'jasmine')
           else
@@ -58,6 +60,7 @@ module Guard
         # will simply start a server that uses the `config.ru`
         # in the current directory.
         #
+        # @param [Symbol] server the server name
         # @param [Hash] options the server options
         # @option options [Symbol] server the rack server to use
         # @option options [String] server_env the Rails environment
@@ -79,6 +82,28 @@ module Guard
           ::Guard::UI.error "Cannot start Rack server: #{ e.message }"
         end
 
+        # Start the Rack server of the current project. This
+        # will simply start a server that uses the `config.ru`
+        # in the current directory.
+        #
+        # @param [Hash] options the server options
+        # @option options [String] server_env the Rails environment
+        # @option options [Number] port the server port
+        #
+        def start_unicorn_server(options)
+          environment   = options[:server_env]
+          port          = options[:port]
+
+          ::Guard::UI.info "Guard::Jasmine starts Unicorn test server on port #{ port } in #{ environment } environment."
+
+          self.process = ChildProcess.build('unicorn_rails', '-E', environment.to_s, '-p', port.to_s)
+          self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options && ::Guard.options[:verbose]
+          self.process.start
+
+        rescue => e
+          ::Guard::UI.error "Cannot start Unicorn server: #{ e.message }"
+        end
+        
         # Start the Jasmine gem server of the current project.
         #
         # @param [Number] port the server port
