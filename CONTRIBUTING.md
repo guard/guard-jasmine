@@ -33,8 +33,8 @@ Pull requests are very welcome! Please try to follow these simple rules if appli
 * Please create a topic branch for every separate change you make.
 * Make sure your patches are well tested. All specs run with `rake spec:portability` must pass.
 * Update the [Yard](http://yardoc.org/) documentation.
-* Update the [README](https://github.com/guard/guard/blob/master/README.md).
-* Update the [CHANGELOG](https://github.com/guard/guard/blob/master/CHANGELOG.md) for noteworthy changes.
+* Update the [README](https://github.com/netzpirat/guard-jasmine/blob/master/README.md).
+* Update the [CHANGELOG](https://github.com/netzpirat/guard-jasmine/blob/master/CHANGELOG.md) for noteworthy changes.
 * Please **do not change** the version number.
 
 For questions please join us in our [Google group](http://groups.google.com/group/guard-dev) or on
