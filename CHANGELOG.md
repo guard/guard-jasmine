@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [Issue #88](https://github.com/netzpirat/guard-jasmine/issues/88): Guard::Jasmine leaves server running on timeout.
+
 ## 1.9.3 - October 30, 2012
 
 - Fix starting the Unicorn test server.
