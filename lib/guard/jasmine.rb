@@ -27,7 +27,7 @@ module Guard
         :port             => 8888,
         :rackup_config    => nil,
         :jasmine_url      => 'http://localhost:8888/jasmine',
-        :timeout          => 10000,
+        :timeout          => 10,
         :spec_dir         => 'spec/javascripts',
         :notification     => true,
         :hide_success     => false,
@@ -53,7 +53,7 @@ module Guard
     # @option options [String] :rackup_config custom rackup config to use
     # @option options [String] :jasmine_url the url of the Jasmine test runner
     # @option options [String] :phantomjs_bin the location of the PhantomJS binary
-    # @option options [Integer] :timeout the maximum time in milliseconds to wait for the spec runner to finish
+    # @option options [Integer] :timeout the maximum time in seconds to wait for the spec runner to finish
     # @option options [String] :spec_dir the directory with the Jasmine specs
     # @option options [Boolean] :notification show notifications
     # @option options [Boolean] :hide_success hide success message notification

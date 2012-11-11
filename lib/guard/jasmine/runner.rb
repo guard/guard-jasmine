@@ -18,7 +18,7 @@ module Guard
         # @param [Hash] options the options for the execution
         # @option options [String] :jasmine_url the url of the Jasmine test runner
         # @option options [String] :phantomjs_bin the location of the PhantomJS binary
-        # @option options [Integer] :timeout the maximum time in milliseconds to wait for the spec runner to finish
+        # @option options [Integer] :timeout the maximum time in seconds to wait for the spec runner to finish
         # @option options [String] :rackup_config custom rackup config to use
         # @option options [Boolean] :notification show notifications
         # @option options [Boolean] :hide_success hide success message notification
@@ -82,12 +82,12 @@ module Guard
         #
         # @param [String] path the path of the spec
         # @param [Hash] options the options for the execution
-        # @option options [Integer] :timeout the maximum time in milliseconds to wait for the spec runner to finish
+        # @option options [Integer] :timeout the maximum time in seconds to wait for the spec runner to finish
         #
         def run_jasmine_spec(file, options)
           suite = jasmine_suite(file, options)
           Formatter.info("Run Jasmine suite at #{ suite }")
-          IO.popen("#{ phantomjs_command(options) } \"#{ suite }\" #{ options[:timeout] } #{ options[:specdoc] } #{ options[:focus] } #{ options[:console] } #{ options[:errors] }", 'r:UTF-8')
+          IO.popen("#{ phantomjs_command(options) } \"#{ suite }\" #{ options[:timeout] * 1000 } #{ options[:specdoc] } #{ options[:focus] } #{ options[:console] } #{ options[:errors] }", 'r:UTF-8')
         end
 
         # Get the PhantomJS binary and script to execute.

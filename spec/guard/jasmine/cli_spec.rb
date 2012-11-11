@@ -137,7 +137,7 @@ describe Guard::Jasmine::CLI do
         end
 
         it 'sets the timeout' do
-          runner.should_receive(:run).with(anything(), hash_including(:timeout => 10000)).and_return [true, []]
+          runner.should_receive(:run).with(anything(), hash_including(:timeout => 10)).and_return [true, []]
           cli.start(['spec'])
         end
 

@@ -47,7 +47,7 @@ describe Guard::Jasmine do
       end
 
       it 'sets a default :timeout option' do
-        guard.options[:timeout].should eql 10000
+        guard.options[:timeout].should eql 10
       end
 
       it 'sets a default :spec_dir option' do
@@ -153,7 +153,7 @@ describe Guard::Jasmine do
       it 'sets a default :rackup_config option' do
         guard.options[:rackup_config].should eql 'spec/dummy/config.ru'
       end
-      
+
       it 'sets the :jasmine_url option' do
         guard.options[:jasmine_url].should eql 'http://192.168.1.5/jasmine'
       end

@@ -70,8 +70,8 @@ module Guard
       method_option :timeout,
                     :type => :numeric,
                     :aliases => '-t',
-                    :default => 10000,
-                    :desc => 'The maximum time in milliseconds to wait for the spec runner to finish'
+                    :default => 10,
+                    :desc => 'The maximum time in seconds to wait for the spec runner to finish'
 
       method_option :console,
                     :type => :string,
