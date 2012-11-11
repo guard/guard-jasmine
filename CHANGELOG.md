@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.9.4 - November 11, 2012
 
 - [Issue #88](https://github.com/netzpirat/guard-jasmine/issues/88): Guard::Jasmine leaves server running on timeout.
 - The `:timeout` options takes now seconds and not milliseconds.
