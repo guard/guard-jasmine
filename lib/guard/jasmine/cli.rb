@@ -123,7 +123,9 @@ module Guard
         runner_options[:max_error_notify] = 0
 
         if CLI.phantomjs_bin_valid?(runner_options[:phantomjs_bin])
-          ::Guard::Jasmine::Server.start(runner_options) unless runner_options[:server] == :none
+          catch (:task_has_failed) do
+            ::Guard::Jasmine::Server.start(runner_options) unless runner_options[:server] == :none
+          end
 
           if CLI.runner_available?(runner_options)
             result = ::Guard::Jasmine::Runner.run(paths, runner_options)
