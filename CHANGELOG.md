@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.10.0 - November 19, 2012
 
 - [Issue #89](https://github.com/netzpirat/guard-jasmine/issues/89): Randomize server port if not specified.
 
