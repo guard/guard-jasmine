@@ -24,7 +24,7 @@ module Guard
         :server           => :auto,
         :server_env       => ENV['RAILS_ENV'] || 'development',
         :server_timeout   => 15,
-        :port             => 8888,
+        :port             => nil,
         :rackup_config    => nil,
         :jasmine_url      => 'http://localhost:8888/jasmine',
         :timeout          => 10,

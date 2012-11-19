@@ -28,14 +28,14 @@ module Guard
         def start(options)
           server  = options[:server]
           server  = detect_server(options[:spec_dir]) if server == :auto
-          port    = options[:port]
+          port    = options[:port] || detect_server_port
           timeout = options[:server_timeout]
 
           case server
           when :webrick, :mongrel, :thin
-            start_rack_server(server, options)
+            start_rack_server(server, port, options)
           when :unicorn
-            start_unicorn_server(options)
+            start_unicorn_server(port, options)
           when :jasmine_gem
             start_rake_server(port, 'jasmine')
           else
@@ -61,15 +61,14 @@ module Guard
         # in the current directory.
         #
         # @param [Symbol] server the server name
+        # @param [Integer] port the server port
         # @param [Hash] options the server options
         # @option options [Symbol] server the rack server to use
         # @option options [String] server_env the Rails environment
-        # @option options [Number] port the server port
         # @option options [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
-        def start_rack_server(server, options)
+        def start_rack_server(server, port, options)
           environment   = options[:server_env]
-          port          = options[:port]
           rackup_config = options[:rackup_config]
 
           ::Guard::UI.info "Guard::Jasmine starts #{ server } test server on port #{ port } in #{ environment } environment."
@@ -90,9 +89,8 @@ module Guard
         # @option options [String] server_env the Rails environment
         # @option options [Number] port the server port
         #
-        def start_unicorn_server(options)
+        def start_unicorn_server(port, options)
           environment   = options[:server_env]
-          port          = options[:port]
 
           ::Guard::UI.info "Guard::Jasmine starts Unicorn test server on port #{ port } in #{ environment } environment."
 
@@ -103,7 +101,7 @@ module Guard
         rescue => e
           ::Guard::UI.error "Cannot start Unicorn server: #{ e.message }"
         end
-        
+
         # Start the Jasmine gem server of the current project.
         #
         # @param [Number] port the server port
@@ -143,6 +141,20 @@ module Guard
           end
         end
 
+        # Detect the server port to use
+        #
+        # @return [Integer] a free server port
+        #
+        def detect_server_port
+          server = TCPServer.new('127.0.0.1', 0)
+          port = server.addr[1]
+          server.close
+
+          port
+        rescue Errno::EADDRINUSE
+          retry
+        end
+
         # Wait until the Jasmine test server is running.
         #
         # @param [Number] port the server port
@@ -160,7 +172,7 @@ module Guard
               sleep 0.1
             end
           end
-          
+
         rescue Timeout::Error
           ::Guard::UI.warning 'Timeout while waiting for the server startup. You may need to increase the `:server_timeout` option.'
           throw :task_has_failed

@@ -353,8 +353,8 @@ The server options configures the server environment that is needed to run Guard
 :server_timeout => 30                         # The number of seconds to wait for the Jasmine spec server
                                               # default: 15
 
-:port => 9292                                 # Jasmine server port to use.
-                                              # default: 8888
+:port => 8888                                 # Jasmine server port to use.
+                                              # default: a random, free server port
 
 :phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
                                               # default: auto-detect 'phantomjs'

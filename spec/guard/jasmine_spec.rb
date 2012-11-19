@@ -34,8 +34,8 @@ describe Guard::Jasmine do
         guard.options[:server_timeout].should eql 15
       end
 
-      it 'sets a default :port option' do
-        guard.options[:port].should eql 8888
+      it 'does not set a default :port option' do
+        guard.options[:port].should eql nil
       end
 
       it 'sets a default :rackup_config option' do

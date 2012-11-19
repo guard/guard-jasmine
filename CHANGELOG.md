@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [Issue #89](https://github.com/netzpirat/guard-jasmine/issues/89): Randomize server port if not specified.
+
 ## 1.9.4 - November 11, 2012
 
 - [Issue #88](https://github.com/netzpirat/guard-jasmine/issues/88): Guard::Jasmine leaves server running on timeout.
