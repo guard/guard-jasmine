@@ -1,5 +1,7 @@
 # Changelog
 
+## 1.10.1 - November 19, 2012
+
 - [Issue #90](https://github.com/netzpirat/guard-jasmine/issues/90): Fix wrong port in the default Jasmine url.
 
 ## 1.10.0 - November 19, 2012
