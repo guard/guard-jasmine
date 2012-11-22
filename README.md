@@ -368,15 +368,14 @@ The server options configures the server environment that is needed to run Guard
                                               # and the config.ru is within the dummy app
 ```
 
-If you're setting the `:server` option to `:none`, you can supply the Jasmine runner url manually:
+If you're setting the `:server` option to `:none` or need to access your specs on a other host than `localhost`, you can
+supply the Jasmine runner url manually:
 
 ```ruby
-:jasmine_url => 'http://192.168.1.5/jasmine'  # URL where Jasmine is served.
-                                              # default: http://127.0.0.1:8888/jasmine
+:jasmine_url => 'http://192.168.1.5:1234/jasmine'  # URL where Jasmine is served.
+                                                   # default: nil
 ```
-
-Detecting the server with the `auto` option does only detect the jasmine gem or webrick. If you want to use mongrel or
-thins, you have to set it explicit in the server option.
+You may want to have also a fixed port instead of the random generated one.
 
 The reason why the Server environment is set to `development` by default is that in development mode
 the asset pipeline doesn't concatenate the JavaScripts and you'll see the line number in the real file,
@@ -543,7 +542,7 @@ Options:
                                  # `unicorn`, `jasmine_gem` or `none`
                                  # Default: auto
   -p, [--port=N]                 # Server port to use
-                                 # Default: 3001
+                                 # Default: Random free port
   -e, [--server-env=SERVER_ENV]  # The server environment to use, for example `development`, `test` etc.
                                  # Default: test
       [--server-timeout=N]       # The number of seconds to wait for the Jasmine spec server
@@ -552,7 +551,7 @@ Options:
   -d, [--spec-dir=SPEC_DIR]      # The directory with the Jasmine specs
                                  # Default: spec/javascripts
   -u, [--url=URL]                # The url of the Jasmine test runner_options
-                                 # Default: http://localhost:3001/jasmine
+                                 # Default: nil
   -t, [--timeout=N]              # The maximum time in milliseconds to wait for the spec
                                  # runner to finish
                                  # Default: 10000

@@ -125,11 +125,6 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '-f', 'false'])
         end
 
-        it 'sets the default jasmine url' do
-          runner.should_receive(:run).with(anything(), hash_including(:jasmine_url => 'http://localhost:3001/jasmine')).and_return [true, []]
-          cli.start(['spec'])
-        end
-
         it 'auto detects the phantomjs binary' do
           cli.should_receive(:which).with('phantomjs').and_return '/tmp/phantomjs'
           runner.should_receive(:run).with(anything(), hash_including(:phantomjs_bin => '/tmp/phantomjs')).and_return [true, []]
@@ -161,6 +156,31 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--specdoc', 'failure'])
         end
 
+        context 'with a defined port' do
+          it 'uses the given port' do
+            runner.should_receive(:run).with(anything(), hash_including(:port => 3333)).and_return [true, []]
+            cli.start(['spec', '--port', '3333'])
+          end
+
+          it 'generates the default jasmine url with the given port' do
+            runner.should_receive(:run).with(anything(), hash_including(:jasmine_url => 'http://localhost:9876/jasmine')).and_return [true, []]
+            cli.start(['spec', '--port', '9876'])
+          end
+        end
+
+        context 'without a defined port' do
+          it 'uses a free port' do
+            cli.should_receive(:find_free_server_port).and_return 4321
+            runner.should_receive(:run).with(anything(), hash_including(:port => 4321)).and_return [true, []]
+            cli.start(['spec'])
+          end
+
+          it 'generates the default jasmine url with a free port' do
+            cli.should_receive(:find_free_server_port).and_return 1234
+            runner.should_receive(:run).with(anything(), hash_including(:jasmine_url => 'http://localhost:1234/jasmine')).and_return [true, []]
+            cli.start(['spec'])
+          end
+        end
       end
     end
 

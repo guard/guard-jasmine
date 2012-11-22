@@ -28,7 +28,7 @@ module Guard
         def start(options)
           server  = options[:server]
           server  = detect_server(options[:spec_dir]) if server == :auto
-          port    = options[:port] || detect_server_port
+          port    = options[:port]
           timeout = options[:server_timeout]
 
           case server
@@ -139,20 +139,6 @@ module Guard
           else
             :none
           end
-        end
-
-        # Detect the server port to use
-        #
-        # @return [Integer] a free server port
-        #
-        def detect_server_port
-          server = TCPServer.new('127.0.0.1', 0)
-          port = server.addr[1]
-          server.close
-
-          port
-        rescue Errno::EADDRINUSE
-          retry
         end
 
         # Wait until the Jasmine test server is running.

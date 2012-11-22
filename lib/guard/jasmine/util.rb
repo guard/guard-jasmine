@@ -78,6 +78,20 @@ module Guard
         end
       end
 
+      # Finds a free server port to use
+      #
+      # @return [Integer] a free server port
+      #
+      def find_free_server_port
+        server = TCPServer.new('127.0.0.1', 0)
+        port = server.addr[1]
+        server.close
+
+        port
+      rescue Errno::EADDRINUSE
+        retry
+      end
+
       # Cross-platform way of finding an executable in the $PATH.
       # http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
       #

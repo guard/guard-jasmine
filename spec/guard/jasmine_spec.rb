@@ -34,16 +34,14 @@ describe Guard::Jasmine do
         guard.options[:server_timeout].should eql 15
       end
 
-      it 'does not set a default :port option' do
-        guard.options[:port].should eql nil
+      it 'finds a free port for the :port option' do
+        Guard::Jasmine.should_receive(:find_free_server_port).and_return 9999
+        guard = Guard::Jasmine.new
+        guard.options[:port].should eql 9999
       end
 
       it 'sets a default :rackup_config option' do
         guard.options[:rackup_config].should eql nil
-      end
-
-      it 'sets a default :jasmine_url option' do
-        guard.options[:jasmine_url].should eql 'http://localhost:8888/jasmine'
       end
 
       it 'sets a default :timeout option' do
@@ -146,16 +144,12 @@ describe Guard::Jasmine do
         guard.options[:server_timeout].should eql 20
       end
 
-      it 'sets the :jasmine_url option' do
+      it 'sets the :port option' do
         guard.options[:port].should eql 4321
       end
 
       it 'sets a default :rackup_config option' do
         guard.options[:rackup_config].should eql 'spec/dummy/config.ru'
-      end
-
-      it 'sets the :jasmine_url option' do
-        guard.options[:jasmine_url].should eql 'http://192.168.1.5/jasmine'
       end
 
       it 'sets the :phantomjs_bin option' do
@@ -233,6 +227,14 @@ describe Guard::Jasmine do
 
       it 'sets the port on the jasmine_url' do
         guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
+      end
+    end
+
+    context 'without a port but no jasmine_url option set' do
+      it 'sets detected free server port on the jasmine_url' do
+        Guard::Jasmine.should_receive(:find_free_server_port).and_return 7654
+        guard = Guard::Jasmine.new
+        guard.options[:jasmine_url].should eql 'http://localhost:7654/jasmine'
       end
     end
 
@@ -392,13 +394,10 @@ describe Guard::Jasmine do
     end
 
     context 'with run all options' do
-      let(:start_options) { defaults.merge({ :run_all => { :specdoc => :overwritten }, :phantomjs_bin => '/bin/phantomjs', }) }
-      let(:run_options) { defaults.merge({ :specdoc => :overwritten , :phantomjs_bin => '/bin/phantomjs', }) }
-
-      let(:guard) { Guard::Jasmine.new(nil, start_options) }
+      let(:guard) { Guard::Jasmine.new(nil, { :run_all => { :specdoc => :overwritten } }) }
 
       it 'starts the Runner with the merged run all options' do
-        runner.should_receive(:run).with(['spec/javascripts'], run_options).and_return [['spec/javascripts/a.js.coffee'], true]
+        runner.should_receive(:run).with(['spec/javascripts'], hash_including({ :specdoc => :overwritten })).and_return [['spec/javascripts/a.js.coffee'], true]
 
         guard.run_all
       end
