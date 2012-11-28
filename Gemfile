@@ -15,10 +15,10 @@ gem 'guard-shell'
 gem 'guard-rspec'
 gem 'rspec'
 gem 'pry'
-gem 'yajl-ruby'
-gem 'rb-fsevent'
 
 unless ENV['TRAVIS']
   gem 'yard'
   gem 'redcarpet'
+  gem 'yajl-ruby'
+  gem 'rb-fsevent'
 end
