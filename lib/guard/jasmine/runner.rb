@@ -170,13 +170,12 @@ module Guard
 
             result
 
-          rescue => e
-            if json == ''
-              Formatter.error("No response from the Jasmine runner!")
+          rescue MultiJson::DecodeError => e
+            if e.data == ''
+              Formatter.error('No response from the Jasmine runner!')
             else
               Formatter.error("Cannot decode JSON from PhantomJS runner: #{ e.message }")
-              Formatter.error('Please report an issue at: https://github.com/netzpirat/guard-jasmine/issues')
-              Formatter.error("JSON response: #{ json }")
+              Formatter.error("JSON response: #{ e.data }")
             end
           ensure
             output.close
