@@ -274,8 +274,7 @@ We add support for CoffeeScript specs, using Thin as spec server and adding Jasm
 create a Rack configuration to spin up a mini-Rails app for testing:
 
 ```Ruby
-require 'rails'
-require 'rails/all'
+require 'action_controller/railtie'
 require 'jasminerice'
 require 'sprockets/railtie'
 require 'jquery-rails'
