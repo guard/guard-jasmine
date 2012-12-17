@@ -342,7 +342,7 @@ The server options configures the server environment that is needed to run Guard
 
 ```ruby
 :server => :jasmine_gem                       # Jasmine server to use, either :auto, :none,
-                                              # :webrick, :mongrel, :thin, :unicorn, :jasmine_gem
+                                              # :webrick, :mongrel, :thin, :unicorn, :jasmine_gem, :puma
                                               # default: :auto
 
 :server_env => :test                          # Jasmine server Rails environment to set,
@@ -361,7 +361,7 @@ The server options configures the server environment that is needed to run Guard
 :timeout => 20                                # The time in seconds to wait for the spec runner to finish.
                                               # default: 10
 
-:rackup_config => 'spec/dummy/config.ru'      # Path to rackup config file (i.e. for webrick, mongrel, thin, unicorn).
+:rackup_config => 'spec/dummy/config.ru'      # Path to rackup config file (i.e. for webrick, mongrel, thin, unicorn, puma).
                                               # default: ./config.ru
                                               # This option is useful when using guard-jasmine in a mountable engine
                                               # and the config.ru is within the dummy app
@@ -537,7 +537,7 @@ Usage:
   guard-jasmine spec
 
 Options:
-  -s, [--server=SERVER]          # Server to start, either `auto`, `webrick`, `mongrel`, `thin`,
+  -s, [--server=SERVER]          # Server to start, either `auto`, `webrick`, `mongrel`, `thin`, `puma`
                                  # `unicorn`, `jasmine_gem` or `none`
                                  # Default: auto
   -p, [--port=N]                 # Server port to use

@@ -32,7 +32,7 @@ module Guard
           timeout = options[:server_timeout]
 
           case server
-          when :webrick, :mongrel, :thin
+          when :webrick, :mongrel, :thin, :puma
             start_rack_server(server, port, options)
           when :unicorn
             start_unicorn_server(port, options)
