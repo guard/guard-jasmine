@@ -1,5 +1,7 @@
 # Changelog
 
+## 1.11.0 - December 17, 2012
+
 - [#95](https://github.com/netzpirat/guard-jasmine/pull/95): Add Puma as a rack-compatible server. ([@mrship][])
 
 ## 1.10.1 - November 19, 2012
