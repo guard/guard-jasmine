@@ -1,18 +1,18 @@
 # Changelog
 
-- Add Puma as a rack-compatible server
+- [#95](https://github.com/netzpirat/guard-jasmine/pull/95): Add Puma as a rack-compatible server. ([@mrship][])
 
 ## 1.10.1 - November 19, 2012
 
-- [Issue #90](https://github.com/netzpirat/guard-jasmine/issues/90): Fix wrong port in the default Jasmine url.
+- [#90](https://github.com/netzpirat/guard-jasmine/issues/90): Fix wrong port in the default Jasmine url.
 
 ## 1.10.0 - November 19, 2012
 
-- [Issue #89](https://github.com/netzpirat/guard-jasmine/issues/89): Randomize server port if not specified.
+- [#89](https://github.com/netzpirat/guard-jasmine/issues/89): Randomize server port if not specified.
 
 ## 1.9.4 - November 11, 2012
 
-- [Issue #88](https://github.com/netzpirat/guard-jasmine/issues/88): Guard::Jasmine leaves server running on timeout.
+- [#88](https://github.com/netzpirat/guard-jasmine/issues/88): Guard::Jasmine leaves server running on timeout.
 - The `:timeout` options takes now seconds and not milliseconds.
 
 ## 1.9.3 - October 30, 2012
@@ -21,60 +21,60 @@
 
 ## 1.9.2 - October 19, 2012
 
-- [Issue #85](https://github.com/netzpirat/guard-jasmine/issues/85): Improve server timeout handling.
+- [#85](https://github.com/netzpirat/guard-jasmine/issues/85): Improve server timeout handling.
 
 ## 1.9.1 - October 17, 2012
 
 - Fix automatic server detection.
-- [Issue #84](https://github.com/netzpirat/guard-jasmine/issues/84): Fix server start from the CLI.
+- [#84](https://github.com/netzpirat/guard-jasmine/issues/84): Fix server start from the CLI.
 
 ## 1.9.0 - October 17, 2012
 
 - Add timeout to the initial server startup.
-- [Pull #83](https://github.com/netzpirat/guard-jasmine/pull/83): Make it possible to run within mountable engine within a dummy app (using jasminerice). ([@pschyska][])
-- [Issue #82](https://github.com/netzpirat/guard-jasmine/issues/82): Enable the `:auto` server to detection unicorn, thin and mongrel.
+- [#83](https://github.com/netzpirat/guard-jasmine/pull/83): Make it possible to run within mountable engine within a dummy app (using jasminerice). ([@pschyska][])
+- [#82](https://github.com/netzpirat/guard-jasmine/issues/82): Enable the `:auto` server to detection unicorn, thin and mongrel.
 
 ## 1.8.3 - September 19, 2012
 
-- [Issue #81](https://github.com/netzpirat/guard-jasmine/issues/81): Make the Guardfile template catch `.js.coffee` again.
+- [#81](https://github.com/netzpirat/guard-jasmine/issues/81): Make the Guardfile template catch `.js.coffee` again.
 
 ## 1.8.2 - September 18, 2012
 
-- [Issue #78](https://github.com/netzpirat/guard-jasmine/issues/78): Use vanilla JS runner to make it run on Ubuntu 12.04 and PhantomJS 1.4.0.
+- [#78](https://github.com/netzpirat/guard-jasmine/issues/78): Use vanilla JS runner to make it run on Ubuntu 12.04 and PhantomJS 1.4.0.
 
 ## 1.8.1 - August 30, 2012
 
-- [Issue #76](https://github.com/netzpirat/guard-jasmine/issues/76): Remove nesting limitation on the JSON parser.
+- [#76](https://github.com/netzpirat/guard-jasmine/issues/76): Remove nesting limitation on the JSON parser.
 
 ## 1.8.0 - August 29, 2012
 
-- [Pull #75](https://github.com/netzpirat/guard-jasmine/pull/75): Make sure the server process dies on error. ([@mutru][])
+- [#75](https://github.com/netzpirat/guard-jasmine/pull/75): Make sure the server process dies on error. ([@mutru][])
 - Add Guard and cli option to define the number of seconds to wait for the Jasmine spec server to start.
 - Remove cli short aliases `-c`, `-x` and `-f`, use the long form instead.
 
 ## 1.7.0 - August 10, 2012
 
-- [Issue #73](https://github.com/netzpirat/guard-jasmine/issues/73): Add `:run_all` option to overwrite normal options.
+- [#73](https://github.com/netzpirat/guard-jasmine/issues/73): Add `:run_all` option to overwrite normal options.
 
 ## 1.6.1 - August 3, 2012
 
-- [Pull #72](https://github.com/netzpirat/guard-jasmine/pull/72): Add specdoc option to CLI runner. ([@robotarmy][])
+- [#72](https://github.com/netzpirat/guard-jasmine/pull/72): Add specdoc option to CLI runner. ([@robotarmy][])
 
 ## 1.6.0 - August 2, 2012
 
-- [Pull #71](https://github.com/netzpirat/guard-jasmine/pull/71): Add focus option to CLI runner. ([@robotarmy][])
+- [#71](https://github.com/netzpirat/guard-jasmine/pull/71): Add focus option to CLI runner. ([@robotarmy][])
 
 ## 1.5.1 - Juli 19, 2012
 
-- [Issue #70](https://github.com/netzpirat/guard-jasmine/issues/70): Ensure the description is always a String.
+- [#70](https://github.com/netzpirat/guard-jasmine/issues/70): Ensure the description is always a String.
 
 ## 1.5.0 - June 4, 2012
 
-- [Pull #68](https://github.com/netzpirat/guard-jasmine/pull/68) Use RAILS_ENV as server environment default if exists. ([@richo][])
+- [#68](https://github.com/netzpirat/guard-jasmine/pull/68) Use RAILS_ENV as server environment default if exists. ([@richo][])
 
 ## 1.4.0 - June 4, 2012
 
-- [Pull #65](https://github.com/netzpirat/guard-jasmine/pull/65): Support unicorn as server. ([@pushbang][] and [@clumsysnake][])
+- [#65](https://github.com/netzpirat/guard-jasmine/pull/65): Support unicorn as server. ([@pushbang][] and [@clumsysnake][])
 
 ## 1.3.0 - June 2, 2012
 
@@ -82,23 +82,23 @@
 
 ## 1.2.2 - Mai 29, 2012
 
-- [Issue #64](https://github.com/netzpirat/guard-jasmine/issues/64): Suite result specs may be undefined and makes the runner fail.
+- [#64](https://github.com/netzpirat/guard-jasmine/issues/64): Suite result specs may be undefined and makes the runner fail.
 
 ## 1.2.1 - Mai 25, 2012
 
-- [Issue #63](https://github.com/netzpirat/guard-jasmine/issues/63): The failures are not logged in the right order when there are nested describes.
+- [#63](https://github.com/netzpirat/guard-jasmine/issues/63): The failures are not logged in the right order when there are nested describes.
 
 ## 1.2.0 - Mai 21, 2012
 
-- [Pull #62](https://github.com/netzpirat/guard-jasmine/pull/62): Show console log messages and errors independently from specdocs in Guard. ([@esposito][])
+- [#62](https://github.com/netzpirat/guard-jasmine/pull/62): Show console log messages and errors independently from specdocs in Guard. ([@esposito][])
 
 ## 1.1.4 - Mai 18, 2012
 
-- [Pull #60](https://github.com/netzpirat/guard-jasmine/pull/60): Test if spec file exists. ([@huyhoang1970][])
+- [#60](https://github.com/netzpirat/guard-jasmine/pull/60): Test if spec file exists. ([@huyhoang1970][])
 
 ## 1.1.3 - Mai 9, 2012
 
-- [Issue #57](https://github.com/netzpirat/guard-jasmine/issues/57): Fix error trace notification.
+- [#57](https://github.com/netzpirat/guard-jasmine/issues/57): Fix error trace notification.
 
 ## 1.1.2 - Mai 1, 2012
 
@@ -123,11 +123,11 @@
 
 ## 1.0.3 - March 13, 2012
 
-- [Issue #45](https://github.com/netzpirat/guard-jasmine/issues/45): Cannot start Rack server.
+- [#45](https://github.com/netzpirat/guard-jasmine/issues/45): Cannot start Rack server.
 
 ## 1.0.2 - March 10, 2012
 
-- [Pull #44](https://github.com/netzpirat/guard-jasmine/pull/44): Allow a Guardfile to specify a custom rake task as the server. ([@eventualbuddha][])
+- [#44](https://github.com/netzpirat/guard-jasmine/pull/44): Allow a Guardfile to specify a custom rake task as the server. ([@eventualbuddha][])
 
 ## 1.0.1 - March 9, 2012
 
@@ -136,17 +136,17 @@
 ## 1.0.0 - March 9, 2012
 
 - Add a console.log implementation that supports formatting and pretty printing.
-- [Issue #43](https://github.com/netzpirat/guard-jasmine/issues/43): Fix Rake rask for Ruby 1.9.3p125
+- [#43](https://github.com/netzpirat/guard-jasmine/issues/43): Fix Rake rask for Ruby 1.9.3p125
 
 ## 0.9.14 - March 8, 2012
 
-- [Issue #42](https://github.com/netzpirat/guard-jasmine/issues/42):  Add the possibility to start a custom Rake based server.
-- [Issue #42](https://github.com/netzpirat/guard-jasmine/issues/42):  Add option to configure the Jasmine spec directory.
-- [Pull #41](https://github.com/netzpirat/guard-jasmine/pull/41): Clean up Guardfile template. ([@DouweM][])
+- [#42](https://github.com/netzpirat/guard-jasmine/issues/42):  Add the possibility to start a custom Rake based server.
+- [#42](https://github.com/netzpirat/guard-jasmine/issues/42):  Add option to configure the Jasmine spec directory.
+- [#41](https://github.com/netzpirat/guard-jasmine/pull/41): Clean up Guardfile template. ([@DouweM][])
 
 ## 0.9.13 - February 29, 2012
 
-- [Pull #40](https://github.com/netzpirat/guard-jasmine/pull/40): Add clean option to skip the spec path cleaning. ([@andersjanmyr][])
+- [#40](https://github.com/netzpirat/guard-jasmine/pull/40): Add clean option to skip the spec path cleaning. ([@andersjanmyr][])
 
 ## 0.9.12 - February 20, 2012
 
@@ -154,18 +154,18 @@
 
 ## 0.9.11 - February 21, 2012
 
-- [Issue #39](https://github.com/netzpirat/guard-jasmine/issues/39): Add proper return code for the Rake task.
-- [Pull #38](https://github.com/netzpirat/guard-jasmine/pull/38): Proper server shutdown. ([@darrinholst][])
+- [#39](https://github.com/netzpirat/guard-jasmine/issues/39): Add proper return code for the Rake task.
+- [#38](https://github.com/netzpirat/guard-jasmine/pull/38): Proper server shutdown. ([@darrinholst][])
 - Fix command line version output.
 
 ## 0.9.10 - February 13, 2012
 
-- [Pull #36](https://github.com/netzpirat/guard-jasmine/pull/36): Fix CLI runner server startup test. ([@darrinholst][])
+- [#36](https://github.com/netzpirat/guard-jasmine/pull/36): Fix CLI runner server startup test. ([@darrinholst][])
 
 ## 0.9.9 - February 13, 2012
 
-- [Issue #35](https://github.com/netzpirat/guard-jasmine/issues/35): Fix spec count in the results.
-- [Issue #33](https://github.com/netzpirat/guard-jasmine/issues/33): Exit code wrong on CI helper when runner fails.
+- [#35](https://github.com/netzpirat/guard-jasmine/issues/35): Fix spec count in the results.
+- [#33](https://github.com/netzpirat/guard-jasmine/issues/33): Exit code wrong on CI helper when runner fails.
 
 ## 0.9.8 - February 2, 2012
 
@@ -173,17 +173,17 @@
 
 ## 0.9.7 - February 1, 2012
 
-- [Issue #31](https://github.com/netzpirat/guard-jasmine/issues/31): Don't try to stop a server when no server is running.
-- [Issue #30](https://github.com/netzpirat/guard-jasmine/issues/30): Provide a Rake task that wraps the Thor CLI.
+- [#31](https://github.com/netzpirat/guard-jasmine/issues/31): Don't try to stop a server when no server is running.
+- [#30](https://github.com/netzpirat/guard-jasmine/issues/30): Provide a Rake task that wraps the Thor CLI.
 
 ## 0.9.6 - January 24, 2012
 
-- [Issue #28](https://github.com/netzpirat/guard-jasmine/issues/28): Relax gem dependencies.
+- [#28](https://github.com/netzpirat/guard-jasmine/issues/28): Relax gem dependencies.
 - Improve spec file inspector.
 
 ## 0.9.5 - January 11, 2012
 
-- [Issue #26](https://github.com/netzpirat/guard-jasmine/issues/26): Fix version parser for PhantomJS 1.5. ([@antono][])
+- [#26](https://github.com/netzpirat/guard-jasmine/issues/26): Fix version parser for PhantomJS 1.5. ([@antono][])
 
 ## 0.9.4 - January 10, 2012
 
@@ -191,11 +191,11 @@
 
 ## 0.9.3 - January 9, 2012
 
-- [Pull #22](https://github.com/netzpirat/guard-jasmine/pull/22): Remove version gem dependency. ([@rymai][])
+- [#22](https://github.com/netzpirat/guard-jasmine/pull/22): Remove version gem dependency. ([@rymai][])
 
 ## 0.9.2 - January 5, 2012
 
-- [Issue #21](https://github.com/netzpirat/guard-jasmine/issues/21): Remove version from Rack and Thor dependencies.
+- [#21](https://github.com/netzpirat/guard-jasmine/issues/21): Remove version from Rack and Thor dependencies.
 
 ## 0.9.1 - December 30, 2011
 
@@ -207,15 +207,15 @@
 
 ## 0.8.8 - December 15, 2011
 
-- [Pull #19](https://github.com/netzpirat/guard-jasmine/pull/19): Fix PhantomJS runner when iFrames are used. ([@obrie][])
+- [#19](https://github.com/netzpirat/guard-jasmine/pull/19): Fix PhantomJS runner when iFrames are used. ([@obrie][])
 
 ## 0.8.7 - December 10, 2011
 
-- [Pull #17](https://github.com/netzpirat/guard-jasmine/pull/17): Fix CI helper for Bundler 1.1. ([@darrinholst][])
+- [#17](https://github.com/netzpirat/guard-jasmine/pull/17): Fix CI helper for Bundler 1.1. ([@darrinholst][])
 
 ## 0.8.6 - November 30, 2011
 
-- [Pull #16](https://github.com/netzpirat/guard-jasmine/pull/16): Allow the server env to be configured in the CI helper. ([@mkdynamic][])
+- [#16](https://github.com/netzpirat/guard-jasmine/pull/16): Allow the server env to be configured in the CI helper. ([@mkdynamic][])
 
 ## 0.8.5 - November 23, 2011
 
@@ -228,15 +228,15 @@
 
 ## 0.8.3 - November 22, 2011
 
-- [Pull #14](https://github.com/netzpirat/guard-jasmine/pull/14): Set server env to test. ([@dmathieu][])
+- [#14](https://github.com/netzpirat/guard-jasmine/pull/14): Set server env to test. ([@dmathieu][])
 
 ## 0.8.2 - November 6, 2011
 
-- [Issue #10](https://github.com/netzpirat/guard-jasmine/issues/10): Add `.coffee` to the allowed file types in the inspector.
-- [Pull #9](https://github.com/netzpirat/guard-jasmine/pull/9): Autodetect PhantomJS location. ([@dnagir][])
-- [Issue #12](https://github.com/netzpirat/guard-jasmine/issues/12): Fix timeout in the PhantomJS runner.
-- [Pull #8](https://github.com/netzpirat/guard-jasmine/pull/8): Update README with quicker setup instructions for Rails 3.1. ([@dnagir][])
-- [Pull #11](https://github.com/netzpirat/guard-jasmine/pull/11): Improve default Guardfile definition. ([@dnagir][])
+- [#10](https://github.com/netzpirat/guard-jasmine/issues/10): Add `.coffee` to the allowed file types in the inspector.
+- [#9](https://github.com/netzpirat/guard-jasmine/pull/9): Autodetect PhantomJS location. ([@dnagir][])
+- [#12](https://github.com/netzpirat/guard-jasmine/issues/12): Fix timeout in the PhantomJS runner.
+- [#8](https://github.com/netzpirat/guard-jasmine/pull/8): Update README with quicker setup instructions for Rails 3.1. ([@dnagir][])
+- [#11](https://github.com/netzpirat/guard-jasmine/pull/11): Improve default Guardfile definition. ([@dnagir][])
 - Set port on the default jasmine_url.
 
 ## 0.8.1 - November 1, 2011
@@ -272,7 +272,7 @@
 ## 0.6.0 - September 30, 2011
 
 - Make use of :task_has_failed to abort Guard groups.
-- [Pull #3](https://github.com/netzpirat/guard-jasmine/pull/3): Correct :jasmine_url in README.md ([@dnagir][])
+- [#3](https://github.com/netzpirat/guard-jasmine/pull/3): Correct :jasmine_url in README.md ([@dnagir][])
 - Improved formatting.
 
 ## 0.5.0 - September 14, 2011
@@ -302,7 +302,7 @@
 
 ## 0.2.2 - September 8, 2011
 
-- [Issue #1](https://github.com/netzpirat/guard-jasmine/issues/1): Fix filter Regex.
+- [#1](https://github.com/netzpirat/guard-jasmine/issues/1): Fix filter Regex.
 
 ## 0.2.1 - September 8, 2011
 
@@ -331,6 +331,7 @@
 [@huyhoang1970]: https://github.com/huyhoang1970
 [@jasonm]: https://github.com/jasonm
 [@mkdynamic]: https://github.com/mkdynamic
+[@mrship]: https://github.com/mrship
 [@mutru]: https:///github.com/mutru
 [@obrie]: https://github.com/obrie
 [@pushbang]: https://github.com/pushbang
