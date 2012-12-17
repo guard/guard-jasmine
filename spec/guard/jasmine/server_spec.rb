@@ -163,6 +163,27 @@ describe Guard::Jasmine::Server do
       end
     end
 
+    context 'with the :puma strategy' do
+      let(:options) do
+        defaults.merge({ :server => :puma })
+      end
+
+      it 'does not auto detect a server' do
+        server.should_not_receive(:detect_server)
+        server.start(options)
+      end
+
+      it 'does wait for the server' do
+        server.should_receive(:wait_for_server)
+        server.start(options)
+      end
+
+      it 'starts a :puma rack server' do
+        server.should_receive(:start_rack_server).with(:puma, 8888, options)
+        server.start(options)
+      end
+    end
+
     context 'with the :mongrel strategy' do
       let(:options) do
         defaults.merge({ :server => :mongrel })
