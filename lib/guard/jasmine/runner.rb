@@ -157,6 +157,7 @@ module Guard
         #
         def evaluate_response(output, file, options)
           json = output.read
+          json = json.encode('UTF-8') if json.respond_to?(:encode)
 
           begin
             result = MultiJson.decode(json, { :max_nesting => false })
