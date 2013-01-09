@@ -80,7 +80,7 @@ module Guard
 
         # Run the Jasmine spec by executing the PhantomJS script.
         #
-        # @param [String] path the path of the spec
+        # @param [String] file the path of the spec
         # @param [Hash] options the options for the execution
         # @option options [Integer] :timeout the maximum time in seconds to wait for the spec runner to finish
         #
@@ -185,7 +185,7 @@ module Guard
         # Notification when a system error happens that
         # prohibits the execution of the Jasmine spec.
         #
-        # @param [Hash] the suite result
+        # @param [Hash] result the suite result
         # @param [Hash] options the options for the execution
         # @option options [Boolean] :notification show notifications
         #
@@ -403,7 +403,7 @@ module Guard
         # Get all specs from the suites and its nested suites.
         #
         # @param suites [Array<Hash>] the suites results
-        # @param [Array<Hash>] all specs
+        # @return [Array<Hash>] all specs
         #
         def collect_specs(suites)
           suites.inject([]) do |specs, suite|

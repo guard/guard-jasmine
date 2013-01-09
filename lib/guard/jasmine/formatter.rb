@@ -81,7 +81,7 @@ module Guard
 
         # Print a info message to the console.
         #
-        # @param [String] test the text to colorize
+        # @param [String] text the text to colorize
         # @param [String] color_code the color code
         #
         def color(text, color_code)
