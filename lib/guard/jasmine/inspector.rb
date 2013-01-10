@@ -34,7 +34,7 @@ module Guard
 
         # Tests if the file is valid.
         #
-        # @param [String] file the file
+        # @param [String] path the file
         # @return [Boolean] when the file valid
         #
         def jasmine_spec?(path)

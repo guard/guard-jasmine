@@ -8,9 +8,9 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
 
   config.before(:each) do
-    ENV["GUARD_ENV"] = 'test'
+    ENV['GUARD_ENV'] = 'test'
     @project_path    = Pathname.new(File.expand_path('../../', __FILE__))
-    
+
     Guard::UI.stub(:info)
     Guard::UI.stub(:debug)
     Guard::UI.stub(:error)
@@ -20,6 +20,6 @@ RSpec.configure do |config|
   end
 
   config.after(:each) do
-    ENV["GUARD_ENV"] = nil
+    ENV['GUARD_ENV'] = nil
   end
 end

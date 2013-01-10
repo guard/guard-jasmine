@@ -21,7 +21,7 @@ module Guard
         # @option options [String] server the server to use
         # @option options [Number] port the server port
         # @option options [String] server_env the Rails environment
-        # @option options [Number] server_timeoout the server start timeout
+        # @option options [Number] server_timeout the server start timeout
         # @option options [String] spec_dir the spec directory
         # @option options [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
@@ -32,14 +32,14 @@ module Guard
           timeout = options[:server_timeout]
 
           case server
-          when :webrick, :mongrel, :thin, :puma
-            start_rack_server(server, port, options)
-          when :unicorn
-            start_unicorn_server(port, options)
-          when :jasmine_gem
-            start_rake_server(port, 'jasmine')
-          else
-            start_rake_server(port, server.to_s) unless server == :none
+            when :webrick, :mongrel, :thin, :puma
+              start_rack_server(server, port, options)
+            when :unicorn
+              start_unicorn_server(port, options)
+            when :jasmine_gem
+              start_rake_server(port, 'jasmine')
+            else
+              start_rake_server(port, server.to_s) unless server == :none
           end
 
           wait_for_server(port, timeout) unless server == :none
@@ -90,7 +90,7 @@ module Guard
         # @option options [Number] port the server port
         #
         def start_unicorn_server(port, options)
-          environment   = options[:server_env]
+          environment = options[:server_env]
 
           ::Guard::UI.info "Guard::Jasmine starts Unicorn test server on port #{ port } in #{ environment } environment."
 

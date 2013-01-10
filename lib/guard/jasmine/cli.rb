@@ -23,74 +23,74 @@ module Guard
       desc 'spec', 'Run the Jasmine spec runner_options'
 
       method_option :server,
-                    :type => :string,
+                    :type    => :string,
                     :aliases => '-s',
                     :default => 'auto',
-                    :desc => 'Server to start, either `auto`, `webrick`, `mongrel`, `thin`, `unicorn`, `jasmine_gem` or `none`'
+                    :desc    => 'Server to start, either `auto`, `webrick`, `mongrel`, `thin`, `unicorn`, `jasmine_gem` or `none`'
 
       method_option :port,
-                    :type => :numeric,
+                    :type    => :numeric,
                     :aliases => '-p',
-                    :desc => 'Server port to use'
+                    :desc    => 'Server port to use'
 
       method_option :server_env,
-                    :type => :string,
+                    :type    => :string,
                     :aliases => '-e',
                     :default => ENV['RAILS_ENV'] || 'test',
-                    :desc => 'The server environment to use, for example `development`, `test` etc.'
+                    :desc    => 'The server environment to use, for example `development`, `test` etc.'
 
       method_option :server_timeout,
-                    :type => :numeric,
+                    :type    => :numeric,
                     :default => 15,
-                    :desc => 'The number of seconds to wait for the Jasmine spec server'
+                    :desc    => 'The number of seconds to wait for the Jasmine spec server'
 
       method_option :rackup_config,
-                    :type => :string,
+                    :type    => :string,
                     :aliases => '-c',
-                    :desc => 'The rackup config to use (jasminerice only)'
+                    :desc    => 'The rackup config to use (jasminerice only)'
 
       method_option :bin,
-                    :type => :string,
+                    :type    => :string,
                     :aliases => '-b',
-                    :desc => 'The location of the PhantomJS binary'
+                    :desc    => 'The location of the PhantomJS binary'
 
       method_option :spec_dir,
-                    :type => :string,
+                    :type    => :string,
                     :aliases => '-d',
                     :default => 'spec/javascripts',
-                    :desc => 'The directory with the Jasmine specs'
+                    :desc    => 'The directory with the Jasmine specs'
 
       method_option :url,
-                    :type => :string,
+                    :type    => :string,
                     :aliases => '-u',
-                    :desc => 'The url of the Jasmine test runner'
+                    :desc    => 'The url of the Jasmine test runner'
 
       method_option :timeout,
-                    :type => :numeric,
+                    :type    => :numeric,
                     :aliases => '-t',
                     :default => 10,
-                    :desc => 'The maximum time in seconds to wait for the spec runner to finish'
+                    :desc    => 'The maximum time in seconds to wait for the spec runner to finish'
 
       method_option :console,
-                    :type => :string,
+                    :type    => :string,
                     :default => 'failure',
-                    :desc => 'Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`'
+                    :desc    => 'Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`'
 
       method_option :errors,
-                    :type => :string,
+                    :type    => :string,
                     :default => 'failure',
-                    :desc => 'Whether to show errors in the spec runner, either `always`, `never` or `failure`'
+                    :desc    => 'Whether to show errors in the spec runner, either `always`, `never` or `failure`'
 
       method_option :focus,
-                    :type => :boolean,
+                    :type    => :boolean,
                     :aliases => '-f',
                     :default => true,
                     :desc    => 'Specdoc focus to hide successful tests when at least one test fails'
 
       method_option :specdoc,
-                    :type => :string,
+                    :type    => :string,
                     :default => :always,
-                    :desc => 'Whether to show successes in the spec runner, either `always`, `never` or `failure`'
+                    :desc    => 'Whether to show successes in the spec runner, either `always`, `never` or `failure`'
 
       # Run the Guard::Jasmine::Runner with options from
       # the command line.
@@ -100,19 +100,19 @@ module Guard
       def spec(*paths)
         paths = [options.spec_dir] if paths.empty?
 
-        runner_options = {}
-        runner_options[:port] = options.port || CLI.find_free_server_port
-        runner_options[:jasmine_url] = options.url || "http://localhost:#{ runner_options[:port] }/jasmine"
-        runner_options[:phantomjs_bin] = options.bin || CLI.which('phantomjs')
-        runner_options[:timeout] = options.timeout
-        runner_options[:server_env] = options.server_env
+        runner_options                  = { }
+        runner_options[:port]           = options.port || CLI.find_free_server_port
+        runner_options[:jasmine_url]    = options.url || "http://localhost:#{ runner_options[:port] }/jasmine"
+        runner_options[:phantomjs_bin]  = options.bin || CLI.which('phantomjs')
+        runner_options[:timeout]        = options.timeout
+        runner_options[:server_env]     = options.server_env
         runner_options[:server_timeout] = options.server_timeout
-        runner_options[:spec_dir] = options.spec_dir
-        runner_options[:console] = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
-        runner_options[:errors] = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
-        runner_options[:specdoc] = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
-        runner_options[:server] = options.server.to_sym
-        runner_options[:focus] = options.focus
+        runner_options[:spec_dir]       = options.spec_dir
+        runner_options[:console]        = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
+        runner_options[:errors]         = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
+        runner_options[:specdoc]        = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
+        runner_options[:server]         = options.server.to_sym
+        runner_options[:focus]          = options.focus
 
 
         runner_options[:notification] = false

@@ -208,7 +208,7 @@ module Guard
           specs           = result['stats']['specs']
           failures        = result['stats']['failures']
           time            = result['stats']['time']
-          specs_plural    = specs == 1    ? '' : 's'
+          specs_plural    = specs == 1 ? '' : 's'
           failures_plural = failures == 1 ? '' : 's'
 
           Formatter.info("\nFinished in #{ time } seconds")
@@ -255,7 +255,7 @@ module Guard
         #
         def report_specdoc_suite(suite, passed, options, level = 0)
           # Print the suite description when the specdoc is shown or there are logs to display
-          if (specdoc_shown?(passed, options) || console_logs_shown?(suite, passed, options) || error_logs_shown?(suite, passed, options))
+          if specdoc_shown?(passed, options) || console_logs_shown?(suite, passed, options) || error_logs_shown?(suite, passed, options)
             Formatter.suite_name((' ' * level) + suite['description']) if passed || options[:focus] && contains_failed_spec?(suite)
           end
 
@@ -276,55 +276,86 @@ module Guard
             end
           end
 
-          suite['suites'].each { |suite| report_specdoc_suite(suite, passed, options, level + 2) } if suite['suites']
+          suite['suites'].each { |s| report_specdoc_suite(s, passed, options, level + 2) } if suite['suites']
         end
 
         # Is the specdoc shown for this suite?
-        def specdoc_shown?(passed, options = {})
-          (options[:specdoc] == :always || (options[:specdoc] == :failure && !passed))
+        #
+        # @param [Boolean] passed the spec status
+        # @param [Hash] options the options
+        #
+        def specdoc_shown?(passed, options = { })
+          options[:specdoc] == :always || (options[:specdoc] == :failure && !passed)
         end
 
         # Are console logs shown for this suite?
-        def console_logs_shown?(suite, passed, options = {})
+        #
+        # @param [Hash] suite the suite
+        # @param [Boolean] passed the spec status
+        # @param [Hash] options the options
+        #
+        def console_logs_shown?(suite, passed, options = { })
           # Are console messages displayed?
-          console_enabled = (options[:console] == :always || (options[:console] == :failure && !passed))
+          console_enabled = options[:console] == :always || (options[:console] == :failure && !passed)
+
           # Are there any logs to display at all for this suite?
           logs_for_current_options = suite['specs'].select do |spec|
             spec['logs'] && (options[:console] == :always || (options[:console] == :failure && !spec['passed']))
           end
-          any_logs_present = (!logs_for_current_options.empty?)
-          (console_enabled && any_logs_present)
+
+          any_logs_present = !logs_for_current_options.empty?
+
+          console_enabled && any_logs_present
         end
 
         # Are console logs shown for this spec?
-        def console_for_spec?(spec, options = {})
-          console = (spec['logs'] && ((spec['passed'] && options[:console] == :always) ||
-                                      (!spec['passed'] && options[:console] != :never)))
+        #
+        # @param [Hash] spec the spec
+        # @param [Hash] options the options
+        #
+        def console_for_spec?(spec, options = { })
+          spec['logs'] && ((spec['passed'] && options[:console] == :always) ||
+            (!spec['passed'] && options[:console] != :never))
         end
 
         # Are error logs shown for this suite?
-        def error_logs_shown?(suite, passed, options = {})
+        #
+        # @param [Hash] suite the suite
+        # @param [Boolean] passed the spec status
+        # @param [Hash] options the options
+        #
+        def error_logs_shown?(suite, passed, options = { })
           # Are error messages displayed?
-          errors_enabled = (options[:errors] == :always || (options[:errors] == :failure && !passed))
+          errors_enabled = options[:errors] == :always || (options[:errors] == :failure && !passed)
+
           # Are there any errors to display at all for this suite?
           errors_for_current_options = suite['specs'].select do |spec|
             spec['errors'] && (options[:errors] == :always || (options[:errors] == :failure && !spec['passed']))
           end
-          any_errors_present = (!errors_for_current_options.empty?)
-          (errors_enabled && any_errors_present)
+
+          any_errors_present= !errors_for_current_options.empty?
+
+          errors_enabled && any_errors_present
         end
 
         # Are errors shown for this spec?
-        def errors_for_spec?(spec, options = {})
-          errors = (spec['errors'] && ((spec['passed'] && options[:errors] == :always) ||
-                                       (!spec['passed'] && options[:errors] != :never)))
+        #
+        # @param [Hash] spec the spec
+        # @param [Hash] options the options
+        def errors_for_spec?(spec, options = { })
+          spec['errors'] && ((spec['passed'] && options[:errors] == :always) ||
+            (!spec['passed'] && options[:errors] != :never))
         end
 
         # Is the description shown for this spec?
-        def description_shown?(passed, spec, options = {})
-          (specdoc_shown?(passed, options) || console_for_spec?(spec, options) || errors_for_spec?(spec, options))
+        #
+        # @param [Boolean] passed the spec status
+        # @param [Hash] spec the spec
+        # @param [Hash] options the options
+        #
+        def description_shown?(passed, spec, options = { })
+          specdoc_shown?(passed, options) || console_for_spec?(spec, options) || errors_for_spec?(spec, options)
         end
-
 
         # Shows the logs for a given spec.
         #

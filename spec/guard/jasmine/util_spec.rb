@@ -40,7 +40,7 @@ describe Guard::Jasmine::Util do
         end
 
         it 'does show that the runner is not available' do
-          Guard::Jasmine::Formatter.should_receive(:error).with "Jasmine test runner fails with response code 404"
+          Guard::Jasmine::Formatter.should_receive(:error).with 'Jasmine test runner fails with response code 404'
           util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
         end
 
@@ -50,7 +50,7 @@ describe Guard::Jasmine::Util do
           end
 
           it 'outputs the body for further analysis' do
-            Guard::Jasmine::Formatter.should_receive(:error).with "Jasmine test runner fails with response code 404"
+            Guard::Jasmine::Formatter.should_receive(:error).with 'Jasmine test runner fails with response code 404'
             Guard::Jasmine::Formatter.should_receive(:error).with 'Something bad happened'
             util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
           end
@@ -63,7 +63,7 @@ describe Guard::Jasmine::Util do
         end
 
         it 'does show that the runner is not available' do
-          Guard::Jasmine::Formatter.should_receive(:error).with "Timeout waiting for the Jasmine test runner."
+          Guard::Jasmine::Formatter.should_receive(:error).with 'Timeout waiting for the Jasmine test runner.'
           util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
         end
 
@@ -74,7 +74,7 @@ describe Guard::Jasmine::Util do
   describe '.phantomjs_bin_valid?' do
     context 'without a phantomjs bin' do
       it 'shows a message that the executable is missing' do
-        Guard::Jasmine::Formatter.should_receive(:error).with "PhantomJS executable couldn't be auto detected."
+        Guard::Jasmine::Formatter.should_receive(:error).with 'PhantomJS executable couldn\'t be auto detected.'
         util.phantomjs_bin_valid?(nil)
       end
     end
@@ -85,7 +85,7 @@ describe Guard::Jasmine::Util do
       end
 
       it 'shows a message that the executable is missing' do
-        Guard::Jasmine::Formatter.should_receive(:error).with "PhantomJS executable doesn't exist at /usr/bin/phantomjs"
+        Guard::Jasmine::Formatter.should_receive(:error).with 'PhantomJS executable doesn\'t exist at /usr/bin/phantomjs'
         util.phantomjs_bin_valid?('/usr/bin/phantomjs')
       end
     end
@@ -96,7 +96,7 @@ describe Guard::Jasmine::Util do
       end
 
       it 'shows a message that the version is wrong' do
-        Guard::Jasmine::Formatter.should_receive(:error).with "PhantomJS reports unknown version format: Command not found"
+        Guard::Jasmine::Formatter.should_receive(:error).with 'PhantomJS reports unknown version format: Command not found'
         util.phantomjs_bin_valid?('/usr/bin/phantomjs')
       end
     end
@@ -107,7 +107,7 @@ describe Guard::Jasmine::Util do
       end
 
       it 'shows a message that the version is wrong' do
-        Guard::Jasmine::Formatter.should_receive(:error).with "PhantomJS executable at /usr/bin/phantomjs must be at least version 1.3.0"
+        Guard::Jasmine::Formatter.should_receive(:error).with 'PhantomJS executable at /usr/bin/phantomjs must be at least version 1.3.0'
         util.phantomjs_bin_valid?('/usr/bin/phantomjs')
       end
     end

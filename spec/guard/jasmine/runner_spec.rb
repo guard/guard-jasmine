@@ -8,8 +8,8 @@ describe Guard::Jasmine::Runner do
   let(:formatter) { Guard::Jasmine::Formatter }
 
   let(:defaults) { Guard::Jasmine::DEFAULT_OPTIONS.merge({
-      :jasmine_url => 'http://localhost:8888/jasmine',
-      :phantomjs_bin => '/usr/local/bin/phantomjs' })
+                                                           :jasmine_url   => 'http://localhost:8888/jasmine',
+                                                           :phantomjs_bin => '/usr/local/bin/phantomjs' })
   }
 
   let(:phantomjs_error_response) do
@@ -133,7 +133,7 @@ describe Guard::Jasmine::Runner do
   end
 
   let(:phantomjs_command) do
-    "/usr/local/bin/phantomjs #{ @project_path }/lib/guard/jasmine/phantomjs/guard-jasmine.js"
+    "/usr/local/bin/phantomjs #@project_path/lib/guard/jasmine/phantomjs/guard-jasmine.js"
   end
 
   before do
@@ -188,7 +188,7 @@ describe Guard::Jasmine::Runner do
 
       it 'shows the error in the console' do
         formatter.should_receive(:error).with(
-            "An error occurred: Cannot request Jasmine specs"
+          'An error occurred: Cannot request Jasmine specs'
         )
         runner.run(['spec/javascripts/a.js.coffee'], defaults)
       end
@@ -202,10 +202,10 @@ describe Guard::Jasmine::Runner do
       context 'with notifications' do
         it 'shows an error notification' do
           formatter.should_receive(:notify).with(
-              "An error occurred: Cannot request Jasmine specs",
-              :title    => 'Jasmine error',
-              :image    => :failed,
-              :priority => 2
+            'An error occurred: Cannot request Jasmine specs',
+            :title    => 'Jasmine error',
+            :image    => :failed,
+            :priority => 2
           )
           runner.run(['spec/javascripts/a.js.coffee'], defaults)
         end
@@ -219,7 +219,7 @@ describe Guard::Jasmine::Runner do
       end
     end
 
-    context "for a failing Jasmine runner" do
+    context 'for a failing Jasmine runner' do
       before do
         File.stub(:foreach).and_yield 'describe "FailureTest", ->'
         IO.stub(:popen).and_return StringIO.new(phantomjs_failure_response)
@@ -241,15 +241,15 @@ describe Guard::Jasmine::Runner do
         context 'and console and errors set to :never' do
           it 'shows the summary in the console' do
             formatter.should_receive(:info).with(
-                'Run Jasmine suite spec/javascripts/x/b.js.coffee', { :reset => true }
+              'Run Jasmine suite spec/javascripts/x/b.js.coffee', { :reset => true }
             )
             formatter.should_receive(:info).with(
-                'Run Jasmine suite at http://localhost:8888/jasmine?spec=FailureTest'
+              'Run Jasmine suite at http://localhost:8888/jasmine?spec=FailureTest'
             )
             formatter.should_not_receive(:suite_name)
             formatter.should_not_receive(:spec_failed)
             formatter.should_receive(:error).with(
-                "3 specs, 2 failures"
+              '3 specs, 2 failures'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :specdoc => :never, :console => :never, :errors => :never }))
           end
@@ -258,34 +258,34 @@ describe Guard::Jasmine::Runner do
         context 'and console set to :failure' do
           it 'shows the suites with log messages for failures' do
             formatter.should_receive(:suite_name).with(
-                'Failure suite'
+              'Failure suite'
             )
             formatter.should_receive(:spec_failed).with(
-                '  ✘ Failure spec tests something'
+              '  ✘ Failure spec tests something'
             )
             formatter.should_not_receive(:spec_failed).with(
-                '    ➤ ReferenceError: Can\'t find variable: a in backbone/models/model_spec.js on line 27'
+              '    ➤ ReferenceError: Can\'t find variable: a in backbone/models/model_spec.js on line 27'
             )
             formatter.should_receive(:info).with(
-                '    • console.log message'
+              '    • console.log message'
             )
             formatter.should_not_receive(:suite_name).with(
-                '  Nested failure suite'
+              '  Nested failure suite'
             )
             formatter.should_not_receive(:spec_failed).with(
-                '    ✘ Failure spec 2 tests something'
+              '    ✘ Failure spec 2 tests something'
             )
             formatter.should_not_receive(:spec_failed).with(
-                '      ➤ ReferenceError: Can\'t find variable: b in backbone/models/model_spec.js on line 27'
+              '      ➤ ReferenceError: Can\'t find variable: b in backbone/models/model_spec.js on line 27'
             )
             formatter.should_not_receive(:success).with(
-                '    ✔ Success spec tests something'
+              '    ✔ Success spec tests something'
             )
             formatter.should_not_receive(:info).with(
-                '      • Another console.log message'
+              '      • Another console.log message'
             )
             formatter.should_not_receive(:info).with(
-                '      • And even more console.log messages'
+              '      • And even more console.log messages'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :specdoc => :never }))
           end
@@ -294,34 +294,34 @@ describe Guard::Jasmine::Runner do
         context 'and console set to :always' do
           it 'shows the suites with all log messages' do
             formatter.should_receive(:suite_name).with(
-                'Failure suite'
+              'Failure suite'
             )
             formatter.should_receive(:spec_failed).with(
-                '  ✘ Failure spec tests something'
+              '  ✘ Failure spec tests something'
             )
             formatter.should_not_receive(:spec_failed).with(
-                '    ➤ ReferenceError: Can\'t find variable: a in backbone/models/model_spec.js on line 27'
+              '    ➤ ReferenceError: Can\'t find variable: a in backbone/models/model_spec.js on line 27'
             )
             formatter.should_receive(:info).with(
-                '    • console.log message'
+              '    • console.log message'
             )
             formatter.should_receive(:suite_name).with(
-                '  Nested failure suite'
+              '  Nested failure suite'
             )
             formatter.should_not_receive(:spec_failed).with(
-                '    ✘ Failure spec 2 tests something'
+              '    ✘ Failure spec 2 tests something'
             )
             formatter.should_not_receive(:spec_failed).with(
-                '      ➤ ReferenceError: Can\'t find variable: b in backbone/models/model_spec.js on line 27'
+              '      ➤ ReferenceError: Can\'t find variable: b in backbone/models/model_spec.js on line 27'
             )
             formatter.should_receive(:success).with(
-                '    ✔ Success spec tests something'
+              '    ✔ Success spec tests something'
             )
             formatter.should_receive(:info).with(
-                '      • Another console.log message'
+              '      • Another console.log message'
             )
             formatter.should_receive(:info).with(
-                '      • And even more console.log messages'
+              '      • And even more console.log messages'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :specdoc => :never, :console => :always }))
           end
@@ -331,22 +331,22 @@ describe Guard::Jasmine::Runner do
       context 'with the specdoc set either :always or :failure' do
         it 'shows the failed suites' do
           formatter.should_receive(:suite_name).with(
-              'Failure suite'
+            'Failure suite'
           )
           formatter.should_receive(:spec_failed).with(
-              '  ✘ Failure spec tests something'
+            '  ✘ Failure spec tests something'
           )
           formatter.should_receive(:spec_failed).with(
-              "    ➤ ReferenceError: Can't find variable: a in backbone/models/model_spec.js on line 27"
+            '    ➤ ReferenceError: Can\'t find variable: a in backbone/models/model_spec.js on line 27'
           )
           formatter.should_receive(:suite_name).with(
-              '  Nested failure suite'
+            '  Nested failure suite'
           )
           formatter.should_receive(:spec_failed).with(
-              '    ✘ Failure spec 2 tests something'
+            '    ✘ Failure spec 2 tests something'
           )
           formatter.should_receive(:spec_failed).with(
-              "      ➤ ReferenceError: Can't find variable: b in backbone/models/model_spec.js on line 27"
+            '      ➤ ReferenceError: Can\'t find variable: b in backbone/models/model_spec.js on line 27'
           )
           runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :always }))
         end
@@ -355,16 +355,16 @@ describe Guard::Jasmine::Runner do
           context 'and console and error set to :never' do
             it 'does not show the passed specs' do
               formatter.should_not_receive(:success).with(
-                  '    ✔ Success spec tests something'
+                '    ✔ Success spec tests something'
               )
               formatter.should_not_receive(:spec_failed).with(
-                  "    ➜ Exception: Another error message in /path/to/file.js on line 255"
+                '    ➜ Exception: Another error message in /path/to/file.js on line 255'
               )
               formatter.should_not_receive(:info).with(
-                  "      • Another console.log message"
+                '      • Another console.log message'
               )
               formatter.should_not_receive(:info).with(
-                  "      • And even more console.log messages"
+                '      • And even more console.log messages'
               )
               runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :never, :errors => :never, :focus => true }))
             end
@@ -373,19 +373,19 @@ describe Guard::Jasmine::Runner do
           context 'and console and errors set to :failure' do
             it 'shows the failed specs with logs' do
               formatter.should_receive(:info).with(
-                  "    • console.log message"
+                '    • console.log message'
               )
               formatter.should_not_receive(:success).with(
-                  '    ✔ Success spec tests something'
+                '    ✔ Success spec tests something'
               )
               formatter.should_not_receive(:spec_failed).with(
-                  "    ➜ Exception: Another error message in /path/to/file.js on line 255"
+                '    ➜ Exception: Another error message in /path/to/file.js on line 255'
               )
               formatter.should_not_receive(:info).with(
-                  "      • Another console.log message"
+                '      • Another console.log message'
               )
               formatter.should_not_receive(:info).with(
-                  "      • And even more console.log messages"
+                '      • And even more console.log messages'
               )
               runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :failure, :errors => :failure, :focus => true }))
             end
@@ -394,19 +394,19 @@ describe Guard::Jasmine::Runner do
           context 'and console set to :always' do
             it 'shows the passed specs with logs' do
               formatter.should_receive(:info).with(
-                  "    • console.log message"
+                '    • console.log message'
               )
               formatter.should_receive(:success).with(
-                  '    ✔ Success spec tests something'
+                '    ✔ Success spec tests something'
               )
               formatter.should_not_receive(:spec_failed).with(
-                  "    ➜ Exception: Another error message in /path/to/file.js on line 255"
+                '    ➜ Exception: Another error message in /path/to/file.js on line 255'
               )
               formatter.should_receive(:info).with(
-                  "      • Another console.log message"
+                '      • Another console.log message'
               )
               formatter.should_receive(:info).with(
-                  "      • And even more console.log messages"
+                '      • And even more console.log messages'
               )
               runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :always, :errors => :always, :focus => true }))
             end
@@ -416,13 +416,13 @@ describe Guard::Jasmine::Runner do
         context 'with focus disabled' do
           it 'does show the passed specs' do
             formatter.should_receive(:success).with(
-                '    ✔ Success spec tests something'
+              '    ✔ Success spec tests something'
             )
             formatter.should_receive(:info).with(
-                "      • Another console.log message"
+              '      • Another console.log message'
             )
             formatter.should_receive(:info).with(
-                "      • And even more console.log messages"
+              '      • And even more console.log messages'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :always, :focus => false }))
           end
@@ -431,7 +431,7 @@ describe Guard::Jasmine::Runner do
         context 'with console logs set to :always' do
           it 'shows the failed console logs' do
             formatter.should_receive(:info).with(
-                "    • console.log message"
+              '    • console.log message'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :always }))
           end
@@ -440,7 +440,7 @@ describe Guard::Jasmine::Runner do
         context 'with error logs set to :always' do
           it 'shows the errors logs' do
             formatter.should_receive(:spec_failed).with(
-                "    ➜ Exception: Error message in /path/to/file.js on line 255"
+              '    ➜ Exception: Error message in /path/to/file.js on line 255'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :errors => :always }))
           end
@@ -449,13 +449,13 @@ describe Guard::Jasmine::Runner do
         context 'with console logs set to :never' do
           it 'does not shows the console logs' do
             formatter.should_not_receive(:info).with(
-                "    • console.log message"
+              '    • console.log message'
             )
             formatter.should_not_receive(:info).with(
-                "      • Another console.log message"
+              '      • Another console.log message'
             )
             formatter.should_not_receive(:info).with(
-                "      • And even more console.log messages"
+              '      • And even more console.log messages'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :never }))
           end
@@ -464,10 +464,10 @@ describe Guard::Jasmine::Runner do
         context 'with error logs set to :never' do
           it 'does not show the errors logs' do
             formatter.should_not_receive(:spec_failed).with(
-                "    ➜ Exception: Error message in /path/to/file.js on line 255"
+              '    ➜ Exception: Error message in /path/to/file.js on line 255'
             )
             formatter.should_not_receive(:spec_failed).with(
-                "    ➜ Exception: Another error message in /path/to/file.js on line 255"
+              '    ➜ Exception: Another error message in /path/to/file.js on line 255'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :errors => :never }))
           end
@@ -476,13 +476,13 @@ describe Guard::Jasmine::Runner do
         context 'with console logs set to :failure' do
           it 'shows the console logs for failed specs' do
             formatter.should_receive(:info).with(
-                "    • console.log message"
+              '    • console.log message'
             )
             formatter.should_not_receive(:info).with(
-                "      • Another console.log message"
+              '      • Another console.log message'
             )
             formatter.should_not_receive(:info).with(
-                "      • And even more console.log messages"
+              '      • And even more console.log messages'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :failure }))
           end
@@ -491,10 +491,10 @@ describe Guard::Jasmine::Runner do
         context 'with error logs set to :failure' do
           it 'shows the error logs for failed specs' do
             formatter.should_receive(:spec_failed).with(
-                "    ➜ Exception: Error message in /path/to/file.js on line 255"
+              '    ➜ Exception: Error message in /path/to/file.js on line 255'
             )
             formatter.should_not_receive(:spec_failed).with(
-                "    ➜ Exception: Another error message in /path/to/file.js on line 255"
+              '    ➜ Exception: Another error message in /path/to/file.js on line 255'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :errors => :failure }))
           end
@@ -504,22 +504,22 @@ describe Guard::Jasmine::Runner do
       context 'with notifications' do
         it 'shows the failing spec notification' do
           formatter.should_receive(:notify).with(
-              "Failure spec tests something: ReferenceError: Can't find variable: a",
-              :title    => 'Jasmine spec failed',
-              :image    => :failed,
-              :priority => 2
+            'Failure spec tests something: ReferenceError: Can\'t find variable: a',
+            :title    => 'Jasmine spec failed',
+            :image    => :failed,
+            :priority => 2
           )
           formatter.should_receive(:notify).with(
-              "Failure spec 2 tests something: ReferenceError: Can't find variable: b",
-              :title    => 'Jasmine spec failed',
-              :image    => :failed,
-              :priority => 2
+            'Failure spec 2 tests something: ReferenceError: Can\'t find variable: b',
+            :title    => 'Jasmine spec failed',
+            :image    => :failed,
+            :priority => 2
           )
           formatter.should_receive(:notify).with(
-              "3 specs, 2 failures\nin 0.007 seconds",
-              :title    => 'Jasmine suite failed',
-              :image    => :failed,
-              :priority => 2
+            "3 specs, 2 failures\nin 0.007 seconds",
+            :title    => 'Jasmine suite failed',
+            :image    => :failed,
+            :priority => 2
           )
           runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
         end
@@ -527,22 +527,22 @@ describe Guard::Jasmine::Runner do
         context 'with :max_error_notify' do
           it 'shows the failing spec notification' do
             formatter.should_receive(:notify).with(
-                "Failure spec tests something: ReferenceError: Can't find variable: a",
-                :title    => 'Jasmine spec failed',
-                :image    => :failed,
-                :priority => 2
+              'Failure spec tests something: ReferenceError: Can\'t find variable: a',
+              :title    => 'Jasmine spec failed',
+              :image    => :failed,
+              :priority => 2
             )
             formatter.should_not_receive(:notify).with(
-                "Failure spec 2 tests something: ReferenceError: Can't find variable: b",
-                :title    => 'Jasmine spec failed',
-                :image    => :failed,
-                :priority => 2
+              'Failure spec 2 tests something: ReferenceError: Can\'t find variable: b',
+              :title    => 'Jasmine spec failed',
+              :image    => :failed,
+              :priority => 2
             )
             formatter.should_receive(:notify).with(
-                "3 specs, 2 failures\nin 0.007 seconds",
-                :title    => 'Jasmine suite failed',
-                :image    => :failed,
-                :priority => 2
+              "3 specs, 2 failures\nin 0.007 seconds",
+              :title    => 'Jasmine suite failed',
+              :image    => :failed,
+              :priority => 2
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :max_error_notify => 1 }))
           end
@@ -557,7 +557,7 @@ describe Guard::Jasmine::Runner do
       end
     end
 
-    context "for a successful Jasmine runner" do
+    context 'for a successful Jasmine runner' do
       before do
         File.stub(:foreach).and_yield 'describe("SuccessTest", function() {'
         IO.stub(:popen).and_return StringIO.new(phantomjs_success_response)
@@ -579,28 +579,28 @@ describe Guard::Jasmine::Runner do
       context 'with the specdoc set to :always' do
         it 'shows the specdoc in the console' do
           formatter.should_receive(:info).with(
-              'Run Jasmine suite spec/javascripts/x/t.js', { :reset => true }
+            'Run Jasmine suite spec/javascripts/x/t.js', { :reset => true }
           )
           formatter.should_receive(:info).with(
-              'Run Jasmine suite at http://localhost:8888/jasmine?spec=SuccessTest'
+            'Run Jasmine suite at http://localhost:8888/jasmine?spec=SuccessTest'
           )
           formatter.should_receive(:suite_name).with(
-              'Success suite'
+            'Success suite'
           )
           formatter.should_receive(:success).with(
-              '  ✔ Success test tests something'
+            '  ✔ Success test tests something'
           )
           formatter.should_receive(:success).with(
-              '  ✔ Another success test tests something'
+            '  ✔ Another success test tests something'
           )
           formatter.should_receive(:suite_name).with(
-               '  Nested success suite'
-           )
-          formatter.should_receive(:success).with(
-              '    ✔ Success nested test tests something'
+            '  Nested success suite'
           )
           formatter.should_receive(:success).with(
-              "3 specs, 0 failures"
+            '    ✔ Success nested test tests something'
+          )
+          formatter.should_receive(:success).with(
+            '3 specs, 0 failures'
           )
           runner.run(['spec/javascripts/x/t.js'], defaults.merge({ :specdoc => :always }))
         end
@@ -608,13 +608,13 @@ describe Guard::Jasmine::Runner do
         context 'with console logs set to :always' do
           it 'shows the console logs' do
             formatter.should_receive(:info).with(
-                'Run Jasmine suite spec/javascripts/x/b.js.coffee', { :reset => true }
+              'Run Jasmine suite spec/javascripts/x/b.js.coffee', { :reset => true }
             )
             formatter.should_receive(:info).with(
-                'Run Jasmine suite at http://localhost:8888/jasmine?spec=SuccessTest'
+              'Run Jasmine suite at http://localhost:8888/jasmine?spec=SuccessTest'
             )
             formatter.should_receive(:info).with(
-                "    • I can haz console.logs"
+              '    • I can haz console.logs'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :specdoc => :always, :console => :always }))
           end
@@ -623,7 +623,7 @@ describe Guard::Jasmine::Runner do
         context 'with console logs set to :never' do
           it 'does not shows the console logs' do
             formatter.should_not_receive(:info).with(
-                "    • I can haz console.logs"
+              '    • I can haz console.logs'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :specdoc => :always, :console => :never }))
           end
@@ -633,14 +633,14 @@ describe Guard::Jasmine::Runner do
       context 'with the specdoc set to :never or :failure' do
         it 'shows the summary in the console' do
           formatter.should_receive(:info).with(
-              'Run Jasmine suite spec/javascripts/x/t.js', { :reset => true }
+            'Run Jasmine suite spec/javascripts/x/t.js', { :reset => true }
           )
           formatter.should_receive(:info).with(
-              'Run Jasmine suite at http://localhost:8888/jasmine?spec=SuccessTest'
+            'Run Jasmine suite at http://localhost:8888/jasmine?spec=SuccessTest'
           )
           formatter.should_not_receive(:suite_name)
           formatter.should_receive(:success).with(
-              "3 specs, 0 failures"
+            '3 specs, 0 failures'
           )
           runner.run(['spec/javascripts/x/t.js'], defaults.merge({ :specdoc => :never }))
         end
@@ -648,7 +648,7 @@ describe Guard::Jasmine::Runner do
         context 'with console logs set to :always' do
           it 'shows the console logs' do
             formatter.should_receive(:info).with(
-                "    • I can haz console.logs"
+              '    • I can haz console.logs'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ :console => :always }))
           end
@@ -658,8 +658,8 @@ describe Guard::Jasmine::Runner do
       context 'with notifications' do
         it 'shows a success notification' do
           formatter.should_receive(:notify).with(
-              "3 specs, 0 failures\nin 0.009 seconds",
-              :title => 'Jasmine suite passed'
+            "3 specs, 0 failures\nin 0.009 seconds",
+            :title => 'Jasmine suite passed'
           )
           runner.run(['spec/javascripts/t.js'], defaults)
         end

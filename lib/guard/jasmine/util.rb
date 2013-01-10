@@ -26,7 +26,7 @@ module Guard
 
           Timeout::timeout(options[:server_timeout]) do
             Net::HTTP.start(url.host, url.port) do |http|
-              response = http.request(Net::HTTP::Get.new(url.path))
+              response  = http.request(Net::HTTP::Get.new(url.path))
               available = response.code.to_i == 200
 
               unless available
@@ -39,7 +39,7 @@ module Guard
           end
 
         rescue Timeout::Error => e
-          ::Guard::Jasmine::Formatter.error "Timeout waiting for the Jasmine test runner."
+          ::Guard::Jasmine::Formatter.error 'Timeout waiting for the Jasmine test runner.'
           false
 
         rescue => e
@@ -75,7 +75,7 @@ module Guard
             ::Guard::Jasmine::Formatter.error "PhantomJS executable doesn't exist at #{ bin }"
           end
         else
-          ::Guard::Jasmine::Formatter.error "PhantomJS executable couldn't be auto detected."
+          ::Guard::Jasmine::Formatter.error 'PhantomJS executable couldn\'t be auto detected.'
         end
       end
 
@@ -85,7 +85,7 @@ module Guard
       #
       def find_free_server_port
         server = TCPServer.new('127.0.0.1', 0)
-        port = server.addr[1]
+        port   = server.addr[1]
         server.close
 
         port

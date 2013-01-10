@@ -283,10 +283,10 @@ describe Guard::Jasmine do
         end
 
         it 'does start a server' do
-          server.should_receive(:start).with(hash_including(:server => :jasmine_gem,
-                                                            :port => 3333,
-                                                            :server_env => 'test',
-                                                            :spec_dir => 'spec/javascripts',
+          server.should_receive(:start).with(hash_including(:server        => :jasmine_gem,
+                                                            :port          => 3333,
+                                                            :server_env    => 'test',
+                                                            :spec_dir      => 'spec/javascripts',
                                                             :rackup_config => nil))
           guard.start
         end
@@ -460,7 +460,7 @@ describe Guard::Jasmine do
                                                'spec/javascripts/b.js.coffee'], options)
 
         guard.run_on_changes(['spec/javascripts/a.js.coffee',
-                             'spec/javascripts/b.js.coffee'])
+                              'spec/javascripts/b.js.coffee'])
       end
     end
 
@@ -470,10 +470,10 @@ describe Guard::Jasmine do
 
       it 'does not pass the paths to the Inspector for cleanup' do
         inspector.should_not_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                               'spec/javascripts/b.js.coffee'], options)
+                                                   'spec/javascripts/b.js.coffee'], options)
 
         guard.run_on_changes(['spec/javascripts/a.js.coffee',
-                             'spec/javascripts/b.js.coffee'])
+                              'spec/javascripts/b.js.coffee'])
       end
     end
 

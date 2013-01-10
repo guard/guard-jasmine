@@ -25,7 +25,7 @@ module Guard
     # @yield [JasmineTask] the task
     #
     def initialize(name = :jasmine, options = '')
-      @name = name
+      @name    = name
       @options = options
 
       yield self if block_given?

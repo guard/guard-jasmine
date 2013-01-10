@@ -21,25 +21,25 @@ module Guard
     attr_accessor :last_run_failed, :last_failed_paths, :run_all_options
 
     DEFAULT_OPTIONS = {
-        :server           => :auto,
-        :server_env       => ENV['RAILS_ENV'] || 'development',
-        :server_timeout   => 15,
-        :port             => nil,
-        :rackup_config    => nil,
-        :jasmine_url      => nil,
-        :timeout          => 10,
-        :spec_dir         => 'spec/javascripts',
-        :notification     => true,
-        :hide_success     => false,
-        :all_on_start     => true,
-        :keep_failed      => true,
-        :clean            => true,
-        :all_after_pass   => true,
-        :max_error_notify => 3,
-        :specdoc          => :failure,
-        :console          => :failure,
-        :errors           => :failure,
-        :focus            => true
+      :server           => :auto,
+      :server_env       => ENV['RAILS_ENV'] || 'development',
+      :server_timeout   => 15,
+      :port             => nil,
+      :rackup_config    => nil,
+      :jasmine_url      => nil,
+      :timeout          => 10,
+      :spec_dir         => 'spec/javascripts',
+      :notification     => true,
+      :hide_success     => false,
+      :all_on_start     => true,
+      :keep_failed      => true,
+      :clean            => true,
+      :all_after_pass   => true,
+      :max_error_notify => 3,
+      :specdoc          => :failure,
+      :console          => :failure,
+      :errors           => :failure,
+      :focus            => true
     }
 
     # Initialize Guard::Jasmine.
@@ -76,7 +76,7 @@ module Guard
       options[:server] ||= :auto
       options[:phantomjs_bin] = Jasmine.which('phantomjs') unless options[:phantomjs_bin]
 
-      self.run_all_options = options.delete(:run_all) || {}
+      self.run_all_options = options.delete(:run_all) || { }
 
       super(watchers, options)
 

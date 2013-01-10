@@ -54,7 +54,7 @@ module Guard
         # @param [Hash] options the output options
         #
         def spec_failed(message, options = { })
-           ::Guard::UI.info(color(message, ';31'), options)
+          ::Guard::UI.info(color(message, ';31'), options)
         end
 
         # Print a red spec failed message to the console.
@@ -63,7 +63,7 @@ module Guard
         # @param [Hash] options the output options
         #
         def suite_name(message, options = { })
-           ::Guard::UI.info(color(message, ';33'), options)
+          ::Guard::UI.info(color(message, ';33'), options)
         end
 
         # Outputs a system notification.
