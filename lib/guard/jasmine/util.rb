@@ -26,11 +26,12 @@ module Guard
 
           Timeout::timeout(options[:server_timeout]) do
             Net::HTTP.start(url.host, url.port) do |http|
-              response = http.request(Net::HTTP::Head.new(url.path))
+              response = http.request(Net::HTTP::Get.new(url.path))
               available = response.code.to_i == 200
 
               unless available
                 ::Guard::Jasmine::Formatter.error "Jasmine test runner fails with response code #{ response.code }"
+                ::Guard::Jasmine::Formatter.error(response.body) if response.body
               end
 
               available

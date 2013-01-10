@@ -35,12 +35,25 @@ describe Guard::Jasmine::Util do
       context 'because the http status is not OK' do
         before do
           http.stub_chain(:request, :code).and_return 404
+          http.stub_chain(:request, :body).and_return nil
           Net::HTTP.stub(:start).and_yield http
         end
 
         it 'does show that the runner is not available' do
           Guard::Jasmine::Formatter.should_receive(:error).with "Jasmine test runner fails with response code 404"
           util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
+        end
+
+        context 'with a response body returned' do
+          before do
+            http.stub_chain(:request, :body).and_return 'Something bad happened'
+          end
+
+          it 'outputs the body for further analysis' do
+            Guard::Jasmine::Formatter.should_receive(:error).with "Jasmine test runner fails with response code 404"
+            Guard::Jasmine::Formatter.should_receive(:error).with 'Something bad happened'
+            util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
+          end
         end
       end
 
