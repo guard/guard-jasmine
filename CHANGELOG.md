@@ -1,5 +1,10 @@
 # Changelog
 
+## Master
+
+- [#99](https://github.com/netzpirat/guard-jasmine/pull/99): Allowed passing custom rackup config via CLI. ([@arr-ee][])
+- Output the runner response body on the CLI when the runner fails to start.
+
 ## 1.11.0 - December 17, 2012
 
 - [#95](https://github.com/netzpirat/guard-jasmine/pull/95): Add Puma as a rack-compatible server. ([@mrship][])
@@ -323,6 +328,7 @@
 
 [@andersjanmyr]: https://github.com/andersjanmyr
 [@antono]: https://github.com/antono
+[@arr-ee]: https://github.com/arr-ee
 [@clumsysnake]: https://github.com/clumsysnake
 [@darrinholst]: https://github.com/darrinholst
 [@dmathieu]: https://github.com/dmathieu
