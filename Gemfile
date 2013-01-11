@@ -15,6 +15,8 @@ gem 'guard-shell'
 gem 'guard-rspec'
 gem 'rspec'
 gem 'pry'
+gem 'yajl-ruby'
+gem 'tilt'
 
 unless ENV['TRAVIS']
   gem 'yard'

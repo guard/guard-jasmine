@@ -4,6 +4,8 @@ require 'guard'
 require 'guard/guard'
 require 'guard/watcher'
 
+require 'guard/jasmine/jscoverage'
+
 module Guard
 
   # The Jasmine guard that gets notifications about the following
