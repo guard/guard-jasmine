@@ -146,6 +146,11 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec'])
         end
 
+        it 'sets the rackup config' do
+          runner.should_receive(:run).with(anything(), hash_including(:rackup_config => 'custom.ru')).and_return [true, []]
+          cli.start(['spec', '--rackup-config', 'custom.ru'])
+        end
+
         it 'sets the specdoc to always by default' do
           runner.should_receive(:run).with(anything(), hash_including(:specdoc => :always)).and_return [true, []]
           cli.start(['spec'])
