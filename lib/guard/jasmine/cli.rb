@@ -105,13 +105,14 @@ module Guard
         runner_options[:jasmine_url]    = options.url || "http://localhost:#{ runner_options[:port] }/jasmine"
         runner_options[:phantomjs_bin]  = options.bin || CLI.which('phantomjs')
         runner_options[:timeout]        = options.timeout
+        runner_options[:server]         = options.server.to_sym
         runner_options[:server_env]     = options.server_env
         runner_options[:server_timeout] = options.server_timeout
+        runner_options[:rackup_config]  = options.rackup_config
         runner_options[:spec_dir]       = options.spec_dir
         runner_options[:console]        = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
         runner_options[:errors]         = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
         runner_options[:specdoc]        = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
-        runner_options[:server]         = options.server.to_sym
         runner_options[:focus]          = options.focus
 
 
