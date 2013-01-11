@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.11.1 - January 11, 2013
 
 - [#99](https://github.com/netzpirat/guard-jasmine/pull/99): Allowed passing custom rackup config via CLI. ([@arr-ee][])
 - Output the runner response body on the CLI when the runner fails to start.
