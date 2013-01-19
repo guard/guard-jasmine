@@ -96,6 +96,10 @@ describe Guard::Jasmine do
         guard.options[:clean].should eql true
       end
 
+      it 'sets a default :coverage option' do
+        guard.options[:coverage].should eql false
+      end
+
       it 'sets last run failed to false' do
         guard.last_run_failed.should be_false
       end
@@ -130,7 +134,8 @@ describe Guard::Jasmine do
                                               :focus            => false,
                                               :clean            => false,
                                               :errors           => :always,
-                                              :console          => :always }) }
+                                              :console          => :always,
+                                              :coverage         => true }) }
 
       it 'sets the :server option' do
         guard.options[:server].should eql :jasmine_gem
@@ -207,6 +212,11 @@ describe Guard::Jasmine do
       it 'sets the :clean option' do
         guard.options[:clean].should eql false
       end
+
+      it 'sets a :coverage option' do
+        guard.options[:coverage].should eql true
+      end
+
     end
 
     context 'with run all options' do

@@ -69,6 +69,11 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--server_env', 'development'])
         end
 
+        it 'sets the coverage support' do
+          runner.should_receive(:run).with(anything(), hash_including(:coverage => true)).and_return [true, []]
+          cli.start(['spec', '--coverage', 'true'])
+        end
+
         context 'for an invalid console option' do
           it 'sets the console option to failure' do
             runner.should_receive(:run).with(anything(), hash_including(:console => :failure)).and_return [true, []]
@@ -96,6 +101,11 @@ describe Guard::Jasmine::CLI do
       context 'for the server' do
         it 'sets the server type' do
           server.should_receive(:start).with(hash_including(:server => :auto))
+          cli.start(['spec'])
+        end
+
+        it 'sets the coverage support' do
+          runner.should_receive(:run).with(anything(), hash_including(:coverage => false)).and_return [true, []]
           cli.start(['spec'])
         end
       end

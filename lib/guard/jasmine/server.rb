@@ -70,10 +70,12 @@ module Guard
         def start_rack_server(server, port, options)
           environment   = options[:server_env]
           rackup_config = options[:rackup_config]
+          coverage      = options[:coverage] ? 'on' : 'off'
 
-          ::Guard::UI.info "Guard::Jasmine starts #{ server } test server on port #{ port } in #{ environment } environment."
+          ::Guard::UI.info "Guard::Jasmine starts #{ server } spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
 
           self.process = ChildProcess.build(*['rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s, rackup_config].compact)
+          self.process.environment['COVERAGE'] = options[:coverage].to_s
           self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options && ::Guard.options[:verbose]
           self.process.start
 
@@ -91,10 +93,12 @@ module Guard
         #
         def start_unicorn_server(port, options)
           environment = options[:server_env]
+          coverage    = options[:coverage] ? 'on' : 'off'
 
-          ::Guard::UI.info "Guard::Jasmine starts Unicorn test server on port #{ port } in #{ environment } environment."
+          ::Guard::UI.info "Guard::Jasmine starts Unicorn spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
 
           self.process = ChildProcess.build('unicorn_rails', '-E', environment.to_s, '-p', port.to_s)
+          self.process.environment['COVERAGE'] = options[:coverage].to_s
           self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options && ::Guard.options[:verbose]
           self.process.start
 

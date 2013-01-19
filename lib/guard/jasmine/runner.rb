@@ -168,15 +168,15 @@ module Guard
               result['file'] = file
               notify_spec_result(result, options)
             end
-            
+
             if result['coverage']
               notify_coverage_result(result['coverage'], options)
-              
+
               if result['coverage']['total'] < 100
                 result['error'] = "Coverage below 100%"
               end
             end
-            
+
             result
 
           rescue MultiJson::DecodeError => e
@@ -238,8 +238,7 @@ module Guard
 
           Formatter.info("Done.\n")
         end
-        
-        
+
         # Notification about the coverage of a spec run, success or failure,
         # and some stats.
         #
@@ -249,26 +248,32 @@ module Guard
         # @option options [Boolean] :hide_success hide success message notification
         #
         def notify_coverage_result(coverage, options)
-          percentage = '%.0f%' % coverage['total']
-          if coverage['total'] < 100.0
-            coverage.each_pair do |file, value|
-              next if file == 'total'
-              next unless value
-              coverage_for_file = "#{file}: #{'%.0f' % value}%"
-              if value < 100
-                Formatter.error(coverage_for_file)
-              else
-                Formatter.success(coverage_for_file)
-              end
-            end
-            Formatter.error("Code Coverage: #{percentage}")
-            Formatter.notify("#{percentage} covered", :title => "Code coverage below 100%", :image => :failed, :priority => 2) if options[:notification]
-          else
-            Formatter.success('Code Coverage: 100%')
-            Formatter.notify("#{percentage} covered", :title => 'Code Coverage') if options[:notification] && !options[:hide_success]
-          end
-        rescue Exception => e
-          puts e.backtrace
+          File.write 'coverage.json', MultiJson.encode(coverage, { :max_nesting => false })
+        #  percentage = '%.0f%' % coverage['total']
+        #
+        #  if coverage['total'] < 100.0
+        #
+        #    coverage.each_pair do |file, value|
+        #      next if file == 'total'
+        #      next unless value
+        #      coverage_for_file = "#{ file }: #{ '%.0f' % value }%"
+        #
+        #      if value < 100
+        #        Formatter.error(coverage_for_file)
+        #      else
+        #        Formatter.success(coverage_for_file)
+        #      end
+        #    end
+        #
+        #    Formatter.error("Code Coverage: #{ percentage }")
+        #    Formatter.notify("#{ percentage } covered", :title => 'Code coverage below 100%', :image => :failed, :priority => 2) if options[:notification]
+        #  else
+        #    Formatter.success('Code Coverage: 100%')
+        #    Formatter.notify("#{ percentage } covered", :title => 'Code Coverage') if options[:notification] && !options[:hide_success]
+        #  end
+        #
+        #rescue Exception => e
+        #  puts e.backtrace
         end
 
         # Specdoc like formatting of the result.

@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [#77](https://github.com/netzpirat/guard-jasmine/pull/77): Add coverage support. ([@alexspeller][])
+
 ## 1.11.1 - January 11, 2013
 
 - [#99](https://github.com/netzpirat/guard-jasmine/pull/99): Allowed passing custom rackup config via CLI. ([@arr-ee][])
@@ -326,6 +330,7 @@
 - Fix inspector glob to get also non-coffee specs.
 - Finish the runner phantomjs bridge.
 
+[@alexspeller]: https://github.com/alexspeller
 [@andersjanmyr]: https://github.com/andersjanmyr
 [@antono]: https://github.com/antono
 [@arr-ee]: https://github.com/arr-ee

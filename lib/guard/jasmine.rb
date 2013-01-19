@@ -4,8 +4,6 @@ require 'guard'
 require 'guard/guard'
 require 'guard/watcher'
 
-require 'guard/jasmine/jscoverage'
-
 module Guard
 
   # The Jasmine guard that gets notifications about the following
@@ -13,12 +11,13 @@ module Guard
   #
   class Jasmine < Guard
 
-    autoload :Inspector, 'guard/jasmine/inspector'
-    autoload :Runner, 'guard/jasmine/runner'
-    autoload :Server, 'guard/jasmine/server'
-    autoload :Util, 'guard/jasmine/util'
+    require 'guard/jasmine/coverage'
+    require 'guard/jasmine/inspector'
+    require 'guard/jasmine/runner'
+    require 'guard/jasmine/server'
+    require 'guard/jasmine/util'
 
-    extend Util
+    extend ::Guard::Jasmine::Util
 
     attr_accessor :last_run_failed, :last_failed_paths, :run_all_options
 
@@ -41,7 +40,8 @@ module Guard
       :specdoc          => :failure,
       :console          => :failure,
       :errors           => :failure,
-      :focus            => true
+      :focus            => true,
+      :coverage         => false
     }
 
     # Initialize Guard::Jasmine.
@@ -159,3 +159,4 @@ module Guard
 
   end
 end
+
