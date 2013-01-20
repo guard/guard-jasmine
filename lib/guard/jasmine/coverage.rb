@@ -18,7 +18,7 @@ class JasmineCoverage < Tilt::Template
   #
   def evaluate(context, locals)
     return data unless JasmineCoverage.coverage_bin
-    return data unless is_project_asset?(file)
+    return data unless file.include?(JasmineCoverage.app_asset_path)
 
     Dir.mktmpdir do |path|
       filename = File.basename(file)
@@ -41,13 +41,12 @@ class JasmineCoverage < Tilt::Template
 
   private
 
-  # Tests if the given file is a project asset.
+  # Get the absolute path to the projects assets path `/app/assets`.
   #
-  # @param [Pathname] file the path to the file
-  # @return [Boolean] true if a valid asset
+  # @return [String] the path to the Rails assets
   #
-  def is_project_asset?(file)
-    file.include?(Rails.root.to_s) && ::Rails.application.config.assets.paths.find { |p| file.include?(p.to_s) }
+  def app_asset_path
+    @app_asset_path ||= File.join(Rails.root, 'app', 'assets')
   end
 
   # Returns the coverage executable path.
