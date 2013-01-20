@@ -506,8 +506,8 @@ You also need to explicit enable the coverage support in the options:
                                               # default: :false
 ```
 
-**Important**: You need to clear the asset cache when you change this setting, so already compiled assets must be
-recompiled. Just delete `tmp/cache/assets` or use the Rails supplied rake task:
+**Important**: You need to clear the asset cache when you change this setting, so that already compiled assets will be
+recompiled. Just use the Sprockets supplied Rake task:
 
 ```ruby
 $ rake assets:clean
