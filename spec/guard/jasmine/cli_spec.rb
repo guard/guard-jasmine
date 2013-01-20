@@ -74,6 +74,26 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--coverage', 'true'])
         end
 
+        it 'sets the coverage statement threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:statement_threshold => 90)).and_return [true, []]
+          cli.start(['spec', '--statement-threshold', '90'])
+        end
+
+        it 'sets the coverage function threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:function_threshold => 80)).and_return [true, []]
+          cli.start(['spec', '--function-threshold', '80'])
+        end
+
+        it 'sets the coverage branch threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:branch_threshold => 85)).and_return [true, []]
+          cli.start(['spec', '--branch-threshold', '85'])
+        end
+
+        it 'sets the coverage lines threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:lines_threshold => 95)).and_return [true, []]
+          cli.start(['spec', '--lines-threshold', '95'])
+        end
+
         context 'for an invalid console option' do
           it 'sets the console option to failure' do
             runner.should_receive(:run).with(anything(), hash_including(:console => :failure)).and_return [true, []]
@@ -108,6 +128,27 @@ describe Guard::Jasmine::CLI do
           runner.should_receive(:run).with(anything(), hash_including(:coverage => false)).and_return [true, []]
           cli.start(['spec'])
         end
+
+        it 'sets the coverage statement threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:statement_threshold => 0)).and_return [true, []]
+          cli.start(['spec'])
+        end
+
+        it 'sets the coverage function threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:function_threshold => 0)).and_return [true, []]
+          cli.start(['spec'])
+        end
+
+        it 'sets the coverage branch threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:branch_threshold => 0)).and_return [true, []]
+          cli.start(['spec'])
+        end
+
+        it 'sets the coverage lines threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:lines_threshold => 0)).and_return [true, []]
+          cli.start(['spec'])
+        end
+
       end
 
       context 'for the runner' do

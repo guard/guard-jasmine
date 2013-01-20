@@ -100,6 +100,22 @@ describe Guard::Jasmine do
         guard.options[:coverage].should eql false
       end
 
+      it 'sets a :statement_threshold option' do
+        guard.options[:statement_threshold].should eql 0
+      end
+
+      it 'sets a :function_threshold option' do
+        guard.options[:function_threshold].should eql 0
+      end
+
+      it 'sets a :branch_threshold option' do
+        guard.options[:branch_threshold].should eql 0
+      end
+
+      it 'sets a :lines_threshold option' do
+        guard.options[:lines_threshold].should eql 0
+      end
+
       it 'sets last run failed to false' do
         guard.last_run_failed.should be_false
       end
@@ -115,27 +131,33 @@ describe Guard::Jasmine do
     end
 
     context 'with other options than the default ones' do
-      let(:guard) { Guard::Jasmine.new(nil, { :server           => :jasmine_gem,
-                                              :server_env       => 'test',
-                                              :server_timeout   => 20,
-                                              :port             => 4321,
-                                              :rackup_config    => 'spec/dummy/config.ru',
-                                              :jasmine_url      => 'http://192.168.1.5/jasmine',
-                                              :phantomjs_bin    => '~/bin/phantomjs',
-                                              :timeout          => 20000,
-                                              :spec_dir         => 'spec',
-                                              :all_on_start     => false,
-                                              :notification     => false,
-                                              :max_error_notify => 5,
-                                              :hide_success     => true,
-                                              :keep_failed      => false,
-                                              :all_after_pass   => false,
-                                              :specdoc          => :always,
-                                              :focus            => false,
-                                              :clean            => false,
-                                              :errors           => :always,
-                                              :console          => :always,
-                                              :coverage         => true }) }
+      let(:guard) { Guard::Jasmine.new(nil, {
+        :server              => :jasmine_gem,
+        :server_env          => 'test',
+        :server_timeout      => 20,
+        :port                => 4321,
+        :rackup_config       => 'spec/dummy/config.ru',
+        :jasmine_url         => 'http://192.168.1.5/jasmine',
+        :phantomjs_bin       => '~/bin/phantomjs',
+        :timeout             => 20000,
+        :spec_dir            => 'spec',
+        :all_on_start        => false,
+        :notification        => false,
+        :max_error_notify    => 5,
+        :hide_success        => true,
+        :keep_failed         => false,
+        :all_after_pass      => false,
+        :specdoc             => :always,
+        :focus               => false,
+        :clean               => false,
+        :errors              => :always,
+        :console             => :always,
+        :coverage            => true,
+        :statement_threshold => 95,
+        :function_threshold  => 90,
+        :branch_threshold    => 85,
+        :lines_threshold     => 80
+      }) }
 
       it 'sets the :server option' do
         guard.options[:server].should eql :jasmine_gem
@@ -217,6 +239,21 @@ describe Guard::Jasmine do
         guard.options[:coverage].should eql true
       end
 
+      it 'sets a :statement_threshold option' do
+        guard.options[:statement_threshold].should eql 95
+      end
+
+      it 'sets a :function_threshold option' do
+        guard.options[:function_threshold].should eql 90
+      end
+
+      it 'sets a :branch_threshold option' do
+        guard.options[:branch_threshold].should eql 85
+      end
+
+      it 'sets a :lines_threshold option' do
+        guard.options[:lines_threshold].should eql 80
+      end
     end
 
     context 'with run all options' do

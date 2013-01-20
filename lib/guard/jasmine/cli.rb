@@ -97,6 +97,26 @@ module Guard
                     :default => false,
                     :desc    => 'Whether to enable the coverage support or not'
 
+      method_option :statement_threshold,
+                    :type    => :numeric,
+                    :default => 0,
+                    :desc    => 'Statement coverage threshold'
+
+      method_option :function_threshold,
+                    :type    => :numeric,
+                    :default => 0,
+                    :desc    => 'Function coverage threshold'
+
+      method_option :branch_threshold,
+                    :type    => :numeric,
+                    :default => 0,
+                    :desc    => 'Branch coverage threshold'
+
+      method_option :lines_threshold,
+                    :type    => :numeric,
+                    :default => 0,
+                    :desc    => 'Line coverage threshold'
+
       # Run the Guard::Jasmine::Runner with options from
       # the command line.
       #
@@ -105,24 +125,28 @@ module Guard
       def spec(*paths)
         paths = [options.spec_dir] if paths.empty?
 
-        runner_options                    = { }
-        runner_options[:port]             = options.port || CLI.find_free_server_port
-        runner_options[:jasmine_url]      = options.url || "http://localhost:#{ runner_options[:port] }/jasmine"
-        runner_options[:phantomjs_bin]    = options.bin || CLI.which('phantomjs')
-        runner_options[:timeout]          = options.timeout
-        runner_options[:server]           = options.server.to_sym
-        runner_options[:server_env]       = options.server_env
-        runner_options[:server_timeout]   = options.server_timeout
-        runner_options[:rackup_config]    = options.rackup_config
-        runner_options[:spec_dir]         = options.spec_dir
-        runner_options[:console]          = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
-        runner_options[:errors]           = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
-        runner_options[:specdoc]          = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
-        runner_options[:focus]            = options.focus
-        runner_options[:coverage]         = options.coverage
-        runner_options[:notification]     = false
-        runner_options[:hide_success]     = true
-        runner_options[:max_error_notify] = 0
+        runner_options                       = { }
+        runner_options[:port]                = options.port || CLI.find_free_server_port
+        runner_options[:jasmine_url]         = options.url || "http://localhost:#{ runner_options[:port] }/jasmine"
+        runner_options[:phantomjs_bin]       = options.bin || CLI.which('phantomjs')
+        runner_options[:timeout]             = options.timeout
+        runner_options[:server]              = options.server.to_sym
+        runner_options[:server_env]          = options.server_env
+        runner_options[:server_timeout]      = options.server_timeout
+        runner_options[:rackup_config]       = options.rackup_config
+        runner_options[:spec_dir]            = options.spec_dir
+        runner_options[:console]             = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
+        runner_options[:errors]              = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
+        runner_options[:specdoc]             = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
+        runner_options[:focus]               = options.focus
+        runner_options[:coverage]            = options.coverage
+        runner_options[:statement_threshold] = options.statement_threshold
+        runner_options[:function_threshold]  = options.function_threshold
+        runner_options[:branch_threshold]    = options.branch_threshold
+        runner_options[:lines_threshold]     = options.lines_threshold
+        runner_options[:notification]        = false
+        runner_options[:hide_success]        = true
+        runner_options[:max_error_notify]    = 0
 
         if CLI.phantomjs_bin_valid?(runner_options[:phantomjs_bin])
           catch(:task_has_failed) do

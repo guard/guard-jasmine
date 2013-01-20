@@ -513,6 +513,28 @@ recompiled. Just use the Sprockets supplied Rake task:
 $ rake assets:clean
 ```
 
+#### Check coverage
+
+By default Guard::Jasmine just outputs the coverage when enable without any effect on the spec run result. You can
+make Guard::Jasmine fail the spec run when a given threshold is not met. You can set the following thresholds:
+
+```ruby
+:statement_threshold => 95                    # Statement coverage threshold
+                                              # default: 0
+
+:function_threshold => 85                     # Function coverage threshold
+                                              # default: 0
+
+:branch_threshold => -10                      # Branch coverage threshold
+                                              # default: 0
+
+:lines_threshold => -15                       # Lines coverage threshold
+                                              # default: 0
+```
+
+A positive threshold is taken to be the minimum percentage required, a negative threshold represents the maximum number
+of uncovered entities allowed.
+
 ### System notifications options
 
 These options affects what system notifications are shown after a spec run:
