@@ -610,7 +610,15 @@ Options:
                                  # Default: true
       [--specdoc=SPECDOC]        # Whether to show successes in the spec runner, either `always`, `never` or `failure`
                                  # Default: always
-
+      [--coverage]               # Whether to enable the coverage support or not
+      [--statement-threshold=N]  # Statement coverage threshold
+                                 # Default: 0
+      [--function-threshold=N]   # Function coverage threshold
+                                 # Default: 0
+      [--branch-threshold=N]     # Branch coverage threshold
+                                 # Default: 0
+      [--lines-threshold=N]      # Line coverage threshold
+                                 # Default: 0
 Run the Jasmine spec runner
 ```
 
