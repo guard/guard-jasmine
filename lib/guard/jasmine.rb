@@ -22,32 +22,32 @@ module Guard
     attr_accessor :last_run_failed, :last_failed_paths, :run_all_options
 
     DEFAULT_OPTIONS = {
-      :server              => :auto,
-      :server_env          => ENV['RAILS_ENV'] || 'development',
-      :server_timeout      => 15,
-      :port                => nil,
-      :rackup_config       => nil,
-      :jasmine_url         => nil,
-      :timeout             => 10,
-      :spec_dir            => 'spec/javascripts',
-      :notification        => true,
-      :hide_success        => false,
-      :all_on_start        => true,
-      :keep_failed         => true,
-      :clean               => true,
-      :all_after_pass      => true,
-      :max_error_notify    => 3,
-      :specdoc             => :failure,
-      :console             => :failure,
-      :errors              => :failure,
-      :focus               => true,
-      :coverage            => false,
-      :coverage_html       => false,
-      :coverage_summary    => false,
-      :statement_threshold => 0,
-      :function_threshold  => 0,
-      :branch_threshold    => 0,
-      :lines_threshold     => 0
+      :server               => :auto,
+      :server_env           => ENV['RAILS_ENV'] || 'development',
+      :server_timeout       => 15,
+      :port                 => nil,
+      :rackup_config        => nil,
+      :jasmine_url          => nil,
+      :timeout              => 10,
+      :spec_dir             => 'spec/javascripts',
+      :notification         => true,
+      :hide_success         => false,
+      :all_on_start         => true,
+      :keep_failed          => true,
+      :clean                => true,
+      :all_after_pass       => true,
+      :max_error_notify     => 3,
+      :specdoc              => :failure,
+      :console              => :failure,
+      :errors               => :failure,
+      :focus                => true,
+      :coverage             => false,
+      :coverage_html        => false,
+      :coverage_summary     => false,
+      :statements_threshold => 0,
+      :functions_threshold  => 0,
+      :branches_threshold   => 0,
+      :lines_threshold      => 0
     }
 
     # Initialize Guard::Jasmine.
@@ -77,9 +77,9 @@ module Guard
     # @option options [Symbol] :coverage options for enable coverage support
     # @option options [Symbol] :coverage_html options for enable coverage html support
     # @option options [Symbol] :coverage_summary options for enable coverage summary support
-    # @option options [Symbol] :statement_threshold options for the statement coverage threshold
-    # @option options [Symbol] :function_threshold options for the statement function threshold
-    # @option options [Symbol] :branch_threshold options for the statement branch threshold
+    # @option options [Symbol] :statements_threshold options for the statement coverage threshold
+    # @option options [Symbol] :functions_threshold options for the statement function threshold
+    # @option options [Symbol] :branches_threshold options for the statement branch threshold
     # @option options [Symbol] :lines_threshold options for the statement lines threshold
     # @option options [Hash] :run_all options overwrite options when run all specs
     #

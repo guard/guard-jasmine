@@ -74,19 +74,19 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--coverage', 'true'])
         end
 
-        it 'sets the coverage statement threshold' do
-          runner.should_receive(:run).with(anything(), hash_including(:statement_threshold => 90)).and_return [true, []]
-          cli.start(['spec', '--statement-threshold', '90'])
+        it 'sets the coverage statements threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:statements_threshold => 90)).and_return [true, []]
+          cli.start(['spec', '--statements-threshold', '90'])
         end
 
-        it 'sets the coverage function threshold' do
-          runner.should_receive(:run).with(anything(), hash_including(:function_threshold => 80)).and_return [true, []]
-          cli.start(['spec', '--function-threshold', '80'])
+        it 'sets the coverage functions threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:functions_threshold => 80)).and_return [true, []]
+          cli.start(['spec', '--functions-threshold', '80'])
         end
 
-        it 'sets the coverage branch threshold' do
-          runner.should_receive(:run).with(anything(), hash_including(:branch_threshold => 85)).and_return [true, []]
-          cli.start(['spec', '--branch-threshold', '85'])
+        it 'sets the coverage branches threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:branches_threshold => 85)).and_return [true, []]
+          cli.start(['spec', '--branches-threshold', '85'])
         end
 
         it 'sets the coverage lines threshold' do
@@ -129,18 +129,18 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec'])
         end
 
-        it 'sets the coverage statement threshold' do
-          runner.should_receive(:run).with(anything(), hash_including(:statement_threshold => 0)).and_return [true, []]
+        it 'sets the coverage statements threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:statements_threshold => 0)).and_return [true, []]
           cli.start(['spec'])
         end
 
-        it 'sets the coverage function threshold' do
-          runner.should_receive(:run).with(anything(), hash_including(:function_threshold => 0)).and_return [true, []]
+        it 'sets the coverage functions threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:functions_threshold => 0)).and_return [true, []]
           cli.start(['spec'])
         end
 
-        it 'sets the coverage branch threshold' do
-          runner.should_receive(:run).with(anything(), hash_including(:branch_threshold => 0)).and_return [true, []]
+        it 'sets the coverage branches threshold' do
+          runner.should_receive(:run).with(anything(), hash_including(:branches_threshold => 0)).and_return [true, []]
           cli.start(['spec'])
         end
 

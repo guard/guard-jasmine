@@ -16,6 +16,9 @@ module Guard
 
       class << self
 
+        # Name of the coverage threshold options
+        THRESHOLDS = [:statements_threshold, :functions_threshold, :branches_threshold, :lines_threshold]
+
         # Run the supplied specs.
         #
         # @param [Array<String>] paths the spec files or directories
@@ -250,47 +253,56 @@ module Guard
         def notify_coverage_result(coverage, options)
           File.write(last_coverage_file, MultiJson.encode(coverage, { :max_nesting => false }))
 
-          report_coverage_text(options)
+          report_last_coverage_text(options)
+          check_coverage(options, last_coverage_file)
 
           if options[:coverage_html] || options[:coverage_summary]
             update_all_coverage(coverage)
 
-            report_coverage_summary(options)
-            report_coverage_html(options)
+            if options[:coverage_summary]
+              report_all_coverage_summary(options)
+              check_coverage(options, all_coverage_file)
+            end
+
+            report_all_coverage_html(options)
+          end
+        end
+
+        # Uses the Istanbul text reported to output the result of the
+        # last coverage run.
+        #
+        # @param [Hash] options the options for the coverage
+        #
+        def report_last_coverage_text(options)
+          Formatter.info 'Current spec run coverage:'
+          puts ''
+
+          `#{ which('istanbul') } report --root #{ coverage_root } text #{ last_coverage_file }`.each_line do |line|
+            puts line if line =~ /[|+]$/
           end
 
-          check_coverage(options)
-
-        rescue Exception => e
-          Formatter.error "Failed to generate coverage report: #{ e.message }"
+          puts ''
         end
 
         # Uses the Istanbul text reported to output the result of the
         # last coverage run.
         #
         # @param [Hash] options the options for the coverage
+        # @param [Hash] coverage the coverage data to check
         #
-        def report_coverage_text(options)
-          system("#{ which('istanbul') } report --root #{ coverage_root } text #{ last_coverage_file }")
-        end
-
-        # Uses the Istanbul text reported to output the result of the
-        # last coverage run.
-        #
-        # @param [Hash] options the options for the coverage
-        # @return [Boolean] true if successfully covered
-        #
-        def check_coverage(options)
+        def check_coverage(options, coverage)
           if check_coverage?(options)
-            coverage = `#{ which('istanbul') } check-coverage #{ check_coverage_options } #{ last_coverage_file }`
+            coverage = `#{ which('istanbul') } check-coverage #{ check_coverage_options(options) } #{ coverage } 2>&1`
+            coverage = coverage.split("\n").grep(/ERROR/).join.sub('ERROR:', '')
+            success  = $?.to_i == 0
 
-            if $?.to_i == 0
-              Formatter.notify(coverage, :title => 'Code coverage succeed') if options[:notification] && !options[:hide_success]
+            if success
+              Formatter.success 'Code coverage succeed'
+              Formatter.notify('All code is adequately covered with specs', :title => 'Code coverage succeed') if options[:notification] && !options[:hide_success]
             else
+              Formatter.error coverage
               Formatter.notify(coverage, :title => 'Code coverage failed', :image => :failed, :priority => 2) if options[:notification]
             end
-          else
-            true
           end
         end
 
@@ -299,9 +311,10 @@ module Guard
         #
         # @param [Hash] options the options for the coverage
         #
-        def report_coverage_html(options)
+        def report_all_coverage_html(options)
           if options[:coverage_html]
-            system("#{ which('istanbul') } report --root #{ coverage_root } #{ all_coverage_file }")
+            `#{ which('istanbul') } report --root #{ coverage_root } html #{ all_coverage_file }`
+            Formatter.info "Updated HTML report available at: #{ File.expand_path(File.join('coverage', 'index.html')) }"
           end
         end
 
@@ -310,9 +323,17 @@ module Guard
         #
         # @param [Hash] options the options for the coverage
         #
-        def report_coverage_summary(options)
+        def report_all_coverage_summary(options)
+          Formatter.info 'Total spec coverage summary:'
+
           if options[:coverage_summary]
-            system("#{ which('istanbul') } report --root #{ coverage_root } text-summary #{ all_coverage_file }")
+            puts ''
+
+            `#{ which('istanbul') } report --root #{ coverage_root } text-summary #{ all_coverage_file }`.each_line do |line|
+              puts line if line =~ /\)$/
+            end
+
+            puts ''
           end
         end
 
@@ -568,10 +589,7 @@ module Guard
         # @return [Boolean] true if any coverage threshold is set
         #
         def check_coverage?(options)
-          @check_coverage ||= [:statement_threshold,
-                               :function_threshold,
-                               :branch_threshold,
-                               :lines_threshold].any? { |threshold| options[threshold] != 0 }
+          @check_coverage ||= THRESHOLDS.any? { |threshold| options[threshold] != 0 }
         end
 
         # Converts the options to Istanbul recognized options
@@ -580,12 +598,12 @@ module Guard
         # @return [String] the command line options
         #
         def check_coverage_options(options)
-          @check_coverage_options ||= [:statement_threshold,
-                                       :function_threshold,
-                                       :branch_threshold,
-                                       :lines_threshold].inject('') do |threshold|
-            options[threshold] != 0 ? "--#{ threshold.to_s.sub('_threshold', '') } #{ options[threshold] }" : ''
-          end.compact.join
+          @check_coverage_options ||= begin
+            THRESHOLDS.inject([]) do |coverage, name|
+              threshold = options[name]
+              coverage << (threshold != 0 ? "--#{ name.to_s.sub('_threshold', '') } #{ threshold }" : '')
+            end.reject(&:empty?).join(' ')
+          end
         end
 
         # Get the coverage file to save the last run coverage data.
@@ -603,7 +621,11 @@ module Guard
         # @return [String] the filename to use
         #
         def all_coverage_file
-          @all_coverage_file ||= File.join(coverage_root, 'all.json')
+          @all_coverage_file ||= begin
+            all = File.join(coverage_root, 'all.json')
+            File.write(all, MultiJson.encode({ })) unless File.exist?(all)
+            all
+          end
         end
 
         # Create and returns the coverage root directory.

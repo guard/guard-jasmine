@@ -519,13 +519,13 @@ By default Guard::Jasmine just outputs the coverage when enable without any effe
 make Guard::Jasmine fail the spec run when a given threshold is not met. You can set the following thresholds:
 
 ```ruby
-:statement_threshold => 95                    # Statement coverage threshold
+:statements_threshold => 95                   # Statements coverage threshold
                                               # default: 0
 
-:function_threshold => 85                     # Function coverage threshold
+:functions_threshold => 85                    # Functions coverage threshold
                                               # default: 0
 
-:branch_threshold => -10                      # Branch coverage threshold
+:branches_threshold => -10                    # Branches coverage threshold
                                               # default: 0
 
 :lines_threshold => -15                       # Lines coverage threshold
@@ -629,13 +629,13 @@ Options:
       [--specdoc=SPECDOC]        # Whether to show successes in the spec runner, either `always`, `never` or `failure`
                                  # Default: always
       [--coverage]               # Whether to enable the coverage support or not
-      [--statement-threshold=N]  # Statement coverage threshold
+      [--statements-threshold=N] # Statements coverage threshold
                                  # Default: 0
-      [--function-threshold=N]   # Function coverage threshold
+      [--functions-threshold=N]  # Functions coverage threshold
                                  # Default: 0
-      [--branch-threshold=N]     # Branch coverage threshold
+      [--branches-threshold=N]   # Branches coverage threshold
                                  # Default: 0
-      [--lines-threshold=N]      # Line coverage threshold
+      [--lines-threshold=N]      # Lines coverage threshold
                                  # Default: 0
 Run the Jasmine spec runner
 ```
