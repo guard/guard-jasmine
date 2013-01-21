@@ -23,4 +23,5 @@ unless ENV['TRAVIS']
   gem 'redcarpet'
   gem 'yajl-ruby'
   gem 'rb-fsevent'
+  gem 'pry-debugger'
 end

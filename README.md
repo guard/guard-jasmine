@@ -535,6 +535,24 @@ make Guard::Jasmine fail the spec run when a given threshold is not met. You can
 A positive threshold is taken to be the minimum percentage required, a negative threshold represents the maximum number
 of uncovered entities allowed.
 
+#### Coverage report
+
+Guard::Jasmine always shows the Istanbul text report after a spec run that contains the coverage results per file. You
+can also enable two more reports:
+
+```ruby
+:coverage_html => :true                       # Enable Istanbul HTML coverage report
+                                              # default: :false
+
+:coverage_summary => :true                    # Enable Istanbul summary coverage report
+                                              # default: :false
+```
+
+Both of these results are only useful if they are run against the coverage data from a full spec run, it's strongly
+advised to enable the `:all_on_start` option, so that an initial full coverage data set is generated. Guard::Jasmine
+replaces outdated coverage data on subsequent spec runs and keeps the full coverage data set up to date. This ensures
+that the HTML and summary reports are always messured against all your specs.
+
 ### System notifications options
 
 These options affects what system notifications are shown after a spec run:

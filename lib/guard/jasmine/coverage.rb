@@ -45,7 +45,7 @@ class JasmineCoverage < Tilt::Template
   #
   # @return [String] the path to the Rails assets
   #
-  def app_asset_path
+  def self.app_asset_path
     @app_asset_path ||= File.join(Rails.root, 'app', 'assets')
   end
 

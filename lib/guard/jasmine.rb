@@ -42,6 +42,8 @@ module Guard
       :errors              => :failure,
       :focus               => true,
       :coverage            => false,
+      :coverage_html       => false,
+      :coverage_summary    => false,
       :statement_threshold => 0,
       :function_threshold  => 0,
       :branch_threshold    => 0,
@@ -73,6 +75,8 @@ module Guard
     # @option options [Symbol] :errors options for the errors output, either :always, :never or :failure
     # @option options [Symbol] :focus options for focus on failures in the specdoc
     # @option options [Symbol] :coverage options for enable coverage support
+    # @option options [Symbol] :coverage_html options for enable coverage html support
+    # @option options [Symbol] :coverage_summary options for enable coverage summary support
     # @option options [Symbol] :statement_threshold options for the statement coverage threshold
     # @option options [Symbol] :function_threshold options for the statement function threshold
     # @option options [Symbol] :branch_threshold options for the statement branch threshold

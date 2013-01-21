@@ -100,6 +100,14 @@ describe Guard::Jasmine do
         guard.options[:coverage].should eql false
       end
 
+      it 'sets a default :coverage_html option' do
+        guard.options[:coverage_html].should eql false
+      end
+
+      it 'sets a default :coverage_summary option' do
+        guard.options[:coverage_summary].should eql false
+      end
+
       it 'sets a :statement_threshold option' do
         guard.options[:statement_threshold].should eql 0
       end
@@ -153,6 +161,8 @@ describe Guard::Jasmine do
         :errors              => :always,
         :console             => :always,
         :coverage            => true,
+        :coverage_html       => true,
+        :coverage_summary    => true,
         :statement_threshold => 95,
         :function_threshold  => 90,
         :branch_threshold    => 85,
@@ -237,6 +247,14 @@ describe Guard::Jasmine do
 
       it 'sets a :coverage option' do
         guard.options[:coverage].should eql true
+      end
+
+      it 'sets a default :coverage_html option' do
+        guard.options[:coverage_html].should eql true
+      end
+
+      it 'sets a default :coverage_summary option' do
+        guard.options[:coverage_summary].should eql true
       end
 
       it 'sets a :statement_threshold option' do
