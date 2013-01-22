@@ -617,14 +617,14 @@ With the given `guard-jasmine` script you're able to configure [Travis CI](http:
 Simply use the `script` setting in your `.travis.yml`:
 
 ```yaml
-script: 'bundle exec guard-jasmine'
+script: 'bundle exec guard-jasmine --server-timeout=60'
 ```
 
 You can also run your Guard::Jasmine specs after your specs that are ran with `rake` by using `after_script`:
 
 ```yaml
 script: 'rake spec'
-after_script: 'bundle exec guard-jasmine'
+after_script: 'bundle exec guard-jasmine --server-timeout=60'
 ```
 
 When using a PhantomJS version prior to 1.5, you need to start `xvfb` before running the specs:
@@ -634,6 +634,9 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
 ```
+
+**Tip**: It's highly recommended the have a server timeout of at least 60 seconds, since the performance of the Travis VMs seems to
+vary quite a bit; sometimes the Jasmine server starts in 5 seconds, sometimes it takes as long as 50 seconds.
 
 ## How to test a Rails engine with Jasmine Gem
 
