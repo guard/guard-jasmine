@@ -227,7 +227,7 @@ describe Guard::Jasmine::CLI do
         cli.start(['spec'])
       end
 
-      it 'attemps to stop the server process, that may be running' do
+      it 'attempts to stop the server process, that may be running' do
         server.should_receive(:stop)
         cli.start(['spec'])
       end
