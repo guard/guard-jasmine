@@ -132,7 +132,7 @@ describe Guard::Jasmine::Runner do
     JSON
   end
 
-  let(:phantomjs_partial_coverage_response) do
+  let(:phantomjs_coverage_response) do
     <<-JSON
     {
       "passed": true,
@@ -160,35 +160,7 @@ describe Guard::Jasmine::Runner do
     }
     JSON
   end
-  
-  let(:phantomjs_full_coverage_response) do
-    <<-JSON
-    {
-      "passed": true,
-      "stats": {
-        "specs": 1,
-        "failures": 0,
-        "time": 0.009
-      },
-      "coverage": {
-        "application.js": 100.0,
-        "todo.js": 100.0,
-        "total": 100.0
-      },
-      "suites": [
-        {
-          "description": "Success suite",
-          "specs": [
-            {
-              "description": "Success test tests something",
-              "passed": true
-            }
-          ]
-        }
-      ]
-    }
-    JSON
-  end
+
 
   let(:phantomjs_command) do
     "/usr/local/bin/phantomjs #@project_path/lib/guard/jasmine/phantomjs/guard-jasmine.js"
@@ -256,8 +228,8 @@ describe Guard::Jasmine::Runner do
         response.first.should be_false
         response.last.should =~ []
       end
-      
-      it "does not show coverage" do
+
+      it 'does not show coverage' do
         runner.should_not_receive(:notify_coverage_result)
         runner.run(['spec/javascripts/a.js.coffee'], defaults)
       end
@@ -301,7 +273,7 @@ describe Guard::Jasmine::Runner do
       end
 
 
-      it "does not show coverage" do
+      it 'does not show coverage' do
         runner.should_not_receive(:notify_coverage_result)
         runner.run(['spec/javascripts/a.js.coffee'], defaults)
       end
@@ -644,67 +616,182 @@ describe Guard::Jasmine::Runner do
         response.first.should be_true
         response.last.should =~ []
       end
-      
-      context "with coverage" do
-        
+
+      context 'with coverage' do
         context 'when coverage is present' do
           before do
-            IO.stub(:popen).and_return StringIO.new(phantomjs_full_coverage_response)
+            IO.stub(:popen).and_return StringIO.new(phantomjs_coverage_response)
+            runner.stub(:which).and_return('/bin/istanbul')
+            runner.stub(:coverage_file).and_return('tmp/coverage.json')
+            runner.stub(:coverage_root).and_return('/projects/secret')
           end
-          
-          
+
           it 'notifies coverage when present' do
             runner.should_receive(:notify_coverage_result)
-            runner.run(['spec/javascripts/t.js.coffee'], defaults)
+            runner.run(['spec/javascripts/t.js.coffee'], defaults.merge({ :coverage => true }))
           end
-          
-          it 'shows a success notification' do            
-            formatter.should_receive(:notify).with("1 spec, 0 failures\nin 0.009 seconds", :title=>"Jasmine suite passed")
-            formatter.should_receive(:notify).with('100% covered', :title => "Code Coverage")
-            runner.run(['spec/javascripts/t.js.coffee'], defaults)
-          end
-          
-          it 'logs the coverage to the console' do
-            formatter.should_receive(:success).with('Code Coverage: 100%')
-            runner.run(['spec/javascripts/t.js.coffee'], defaults)
-          end
-            
-          
-          context 'when coverage is below 100%' do
-            before do
-              IO.stub(:popen).and_return StringIO.new(phantomjs_partial_coverage_response)
-            end
-            
-            it 'shows a failure notification' do
-              formatter.should_receive(:notify).with(
-                  "85% covered",
-                  :title    => 'Code coverage below 100%',
-                  :image    => :failed,
-                  :priority => 2
-              )
-              runner.run(['spec/javascripts/t.js.coffee'], defaults)
-            end
-            
-            it 'logs the coverage to the console for all the files' do
-              formatter.should_receive(:error).with('Code Coverage: 85%')
-              formatter.should_receive(:error).with('application.js: 50%')
-              formatter.should_receive(:success).with('todo.js: 100%')
-              
-              runner.run(['spec/javascripts/t.js.coffee'], defaults)
-            end
-            
-            it 'fails the build' do
-              response = runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
-              response.first.should be_false
-              response.last.should =~ []
-            end
-            
 
+          context 'checking the coverage' do
+            before do
+              runner.stub(:generate_text_report)
+            end
+
+            it 'can check for statements coverage' do
+              runner.should_receive(:`).with('/bin/istanbul check-coverage --statements 12 tmp/coverage.json 2>&1').and_return ''
+              runner.run(['spec/javascripts/t.js.coffee'], defaults.merge({ :coverage => true, :statements_threshold => 12 }))
+            end
+
+            it 'can check for functions coverage' do
+              runner.should_receive(:`).with('/bin/istanbul check-coverage --functions 12 tmp/coverage.json 2>&1').and_return ''
+              runner.run(['spec/javascripts/t.js.coffee'], defaults.merge({ :coverage => true, :functions_threshold => 12 }))
+            end
+
+            it 'can check for branches coverage' do
+              runner.should_receive(:`).with('/bin/istanbul check-coverage --branches 12 tmp/coverage.json 2>&1').and_return ''
+              runner.run(['spec/javascripts/t.js.coffee'], defaults.merge({ :coverage => true, :branches_threshold => 12 }))
+            end
+
+            it 'can check for lines coverage' do
+              runner.should_receive(:`).with('/bin/istanbul check-coverage --lines 12 tmp/coverage.json 2>&1').and_return ''
+              runner.run(['spec/javascripts/t.js.coffee'], defaults.merge({ :coverage => true, :lines_threshold => 12 }))
+            end
+
+            context 'when enough is covered' do
+              before do
+                runner.should_receive(:`).and_return ''
+              end
+
+              it 'shows the success message' do
+                formatter.should_receive(:success).with('Code coverage succeed')
+                runner.run(['spec/javascripts/t.js.coffee'], defaults.merge({ :coverage => true, :lines_threshold => 12 }))
+              end
+
+              it 'notifies the coverage success when not turned off' do
+                formatter.should_receive(:notify).with('All code is adequately covered with specs', :title => 'Code coverage succeed')
+                runner.run(['spec/javascripts/t.js.coffee'], defaults.merge({ :coverage => true, :lines_threshold => 12 }))
+              end
+            end
+          end
+
+          context 'without coverage summary' do
+            let(:text_report) do
+              <<-EOL
+Using reporter [text]
+-------------------------------+-----------+-----------+-----------+-----------+
+File                           |   % Stmts |% Branches |   % Funcs |   % Lines |
+-------------------------------+-----------+-----------+-----------+-----------+
+   app/                        |     98.04 |     75.86 |     86.67 |     98.04 |
+      test1.js.coffee.erb      |     98.04 |     75.86 |     86.67 |     98.04 |
+      test2.js.coffee.erb      |     98.04 |     75.86 |     86.67 |     98.04 |
+-------------------------------+-----------+-----------+-----------+-----------+
+All files                      |     98.04 |     75.86 |     86.67 |     98.04 |
+-------------------------------+-----------+-----------+-----------+-----------+
+
+done
+              EOL
+            end
+
+            before do
+              runner.should_receive(:`).with('/bin/istanbul report --root /projects/secret text tmp/coverage.json').and_return text_report
+              runner.stub(:check_coverage)
+              runner.stub(:puts)
+            end
+
+            it 'shows the summary text info' do
+              formatter.should_receive(:info).with('Spec coverage details:')
+              runner.run(['app/test1.js.coffee'], defaults.merge({ :coverage => true }))
+            end
+
+
+            context 'when running all specs' do
+              it 'shows all the important text report entries' do
+                runner.should_receive(:puts).with ''
+                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                runner.should_receive(:puts).with 'File                           |   % Stmts |% Branches |   % Funcs |   % Lines |'
+                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                runner.should_receive(:puts).with '   app/                        |     98.04 |     75.86 |     86.67 |     98.04 |'
+                runner.should_receive(:puts).with '      test1.js.coffee.erb      |     98.04 |     75.86 |     86.67 |     98.04 |'
+                runner.should_receive(:puts).with '      test2.js.coffee.erb      |     98.04 |     75.86 |     86.67 |     98.04 |'
+                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                runner.should_receive(:puts).with 'All files                      |     98.04 |     75.86 |     86.67 |     98.04 |'
+                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                runner.should_receive(:puts).with ''
+                runner.run(['spec/javascripts'], defaults.merge({ :coverage => true }))
+              end
+            end
+
+            context 'when running a single spec' do
+              it 'shows the single text report entry with its directory' do
+                runner.should_receive(:puts).with ''
+                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                runner.should_receive(:puts).with 'File                           |   % Stmts |% Branches |   % Funcs |   % Lines |'
+                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                runner.should_receive(:puts).with '   app/                        |     98.04 |     75.86 |     86.67 |     98.04 |'
+                runner.should_receive(:puts).with '      test1.js.coffee.erb      |     98.04 |     75.86 |     86.67 |     98.04 |'
+                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                runner.should_receive(:puts).with 'All files                      |     98.04 |     75.86 |     86.67 |     98.04 |'
+                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                runner.should_receive(:puts).with ''
+                runner.run(['app/test1.js.coffee'], defaults.merge({ :coverage => true }))
+              end
+            end
+          end
+
+          context 'with coverage summary' do
+            let(:text_summary_report) do
+              <<-EOL
+Using reporter [text-summary]
+Statements   : 98.04% ( 50/51 )
+Branches     : 75.86% ( 22/29 )
+Functions    : 86.67% ( 13/15 )
+Lines        : 98.04% ( 50/51 )
+
+done
+              EOL
+            end
+
+            before do
+              runner.should_receive(:`).with('/bin/istanbul report --root /projects/secret text-summary tmp/coverage.json').and_return text_summary_report
+              runner.stub(:check_coverage)
+              runner.stub(:puts)
+            end
+
+            it 'shows the summary text info' do
+              formatter.should_receive(:info).with('Spec coverage summary:')
+              runner.run(['app/test1.js.coffee'], defaults.merge({ :coverage => true, :coverage_summary => true }))
+            end
+
+            it 'shows the summary text report' do
+              runner.should_receive(:puts).with ''
+              runner.should_receive(:puts).with 'Statements   : 98.04% ( 50/51 )'
+              runner.should_receive(:puts).with 'Branches     : 75.86% ( 22/29 )'
+              runner.should_receive(:puts).with 'Functions    : 86.67% ( 13/15 )'
+              runner.should_receive(:puts).with 'Lines        : 98.04% ( 50/51 )'
+              runner.should_receive(:puts).with ''
+              runner.run(['app/test1.js.coffee'], defaults.merge({ :coverage => true, :coverage_summary => true }))
+            end
+          end
+
+          context 'with coverage html report enabled' do
+            before do
+              runner.stub(:generate_text_report)
+              runner.stub(:`)
+              runner.stub(:check_coverage)
+            end
+
+            it 'generates the html report' do
+              runner.should_receive(:`).with('/bin/istanbul report --root /projects/secret html tmp/coverage.json')
+              runner.run(['app/test1.js.coffee'], defaults.merge({ :coverage => true, :coverage_html => true }))
+            end
+
+            it 'outputs the html report index page' do
+              formatter.should_receive(:info).with('Updated HTML report available at: coverage/index.html')
+              runner.run(['app/test1.js.coffee'], defaults.merge({ :coverage => true, :coverage_html => true }))
+            end
           end
         end
-          
       end
-      
+
       context 'with the specdoc set to :always' do
         it 'shows the specdoc in the console' do
           formatter.should_receive(:info).with(

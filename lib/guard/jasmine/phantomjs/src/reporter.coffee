@@ -85,24 +85,10 @@ class ConsoleReporter
       failures: runner.results().failedCount
       time: runtime
     }
-    
-    # Report jscoverage results if jscoverage data present
-    if window._$jscoverage?
-      @runnerResult['coverage'] = {}
-      totalLoc = 0
-      totalExecutedLoc = 0
-      
-      for own file of window._$jscoverage
-        lines = window._$jscoverage[file]
-        fileLoc  = lines.filter((line) -> line?).length
-        totalLoc += fileLoc
-        executedLoc = lines.filter((line) -> line? and line > 0).length
-        totalExecutedLoc += executedLoc
-        # Report one line for each file
-        @runnerResult['coverage'][file] = (executedLoc / fileLoc) * 100
 
-      # Report total coverage
-      @runnerResult['coverage']['total'] = (totalExecutedLoc / totalLoc) * 100
+    # Report coverage results if data present
+    if window.__coverage__
+      @runnerResult['coverage'] = window.__coverage__
 
     # Delay the end runner message, so that logs and errors can be retreived in between
     end = -> console.log "RUNNER_END"

@@ -62,7 +62,8 @@ class Result
 
     suite
 
-  # Writes the result output to the console.
+  # Processes the collected results and returns
+  # a single result object.
   #
   # @return [Object] the Jasmine result
   #

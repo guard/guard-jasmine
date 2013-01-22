@@ -1,6 +1,8 @@
 # coding: utf-8
 
 require 'multi_json'
+require 'fileutils'
+require 'guard/jasmine/util'
 
 module Guard
   class Jasmine
@@ -10,7 +12,12 @@ module Guard
     # writes the result to the console and triggers optional system notifications.
     #
     module Runner
+      extend ::Guard::Jasmine::Util
+
       class << self
+
+        # Name of the coverage threshold options
+        THRESHOLDS = [:statements_threshold, :functions_threshold, :branches_threshold, :lines_threshold]
 
         # Run the supplied specs.
         #
@@ -168,15 +175,11 @@ module Guard
               result['file'] = file
               notify_spec_result(result, options)
             end
-            
-            if result['coverage']
-              notify_coverage_result(result['coverage'], options)
-              
-              if result['coverage']['total'] < 100
-                result['error'] = "Coverage below 100%"
-              end
+
+            if result['coverage'] && options[:coverage]
+              notify_coverage_result(result['coverage'], file, options)
             end
-            
+
             result
 
           rescue MultiJson::DecodeError => e
@@ -238,37 +241,101 @@ module Guard
 
           Formatter.info("Done.\n")
         end
-        
-        
+
         # Notification about the coverage of a spec run, success or failure,
         # and some stats.
         #
         # @param [Hash] coverage the coverage hash from the JSON
+        # @param [String] file the file name of the spec
         # @param [Hash] options the options for the execution
         # @option options [Boolean] :notification show notifications
         # @option options [Boolean] :hide_success hide success message notification
         #
-        def notify_coverage_result(coverage, options)
-          percentage = '%.0f%' % coverage['total']
-          if coverage['total'] < 100.0
-            coverage.each_pair do |file, value|
-              next if file == 'total'
-              next unless value
-              coverage_for_file = "#{file}: #{'%.0f' % value}%"
-              if value < 100
-                Formatter.error(coverage_for_file)
-              else
-                Formatter.success(coverage_for_file)
-              end
-            end
-            Formatter.error("Code Coverage: #{percentage}")
-            Formatter.notify("#{percentage} covered", :title => "Code coverage below 100%", :image => :failed, :priority => 2) if options[:notification]
+        def notify_coverage_result(coverage, file, options)
+          FileUtils.mkdir_p(coverage_root) unless File.exist?(coverage_root)
+
+          update_coverage(coverage, file, options)
+
+          if options[:coverage_summary]
+            generate_summary_report
           else
-            Formatter.success('Code Coverage: 100%')
-            Formatter.notify("#{percentage} covered", :title => 'Code Coverage') if options[:notification] && !options[:hide_success]
+            generate_text_report(file, options)
           end
-        rescue Exception => e
-          puts e.backtrace
+
+          check_coverage(options)
+
+          if options[:coverage_html]
+            generate_html_report
+          end
+        end
+
+        # Uses the Istanbul text reported to output the result of the
+        # last coverage run.
+        #
+        # @param [String] file the file name of the spec
+        # @param [Hash] options the options for the execution
+        #
+        def generate_text_report(file, options)
+          Formatter.info 'Spec coverage details:'
+
+          if file == options[:spec_dir]
+            matcher = /[|+]$/
+          else
+            impl    = file.sub('_spec', '').sub(options[:spec_dir], '')
+            matcher = /(-+|All files|% Lines|#{ Regexp.escape(File.basename(impl)) }|#{ File.dirname(impl).sub(/^\//, '') }\/[^\/])/
+          end
+
+          puts ''
+
+          `#{ which('istanbul') } report --root #{ coverage_root } text #{ coverage_file }`.each_line do |line|
+            puts line.sub(/\n$/, '') if line =~ matcher
+          end
+
+          puts ''
+        end
+
+        # Uses the Istanbul text reported to output the result of the
+        # last coverage run.
+        #
+        # @param [Hash] options the options for the coverage
+        #
+        def check_coverage(options)
+          if any_coverage_threshold?(options)
+            coverage = `#{ which('istanbul') } check-coverage #{ istanbul_coverage_options(options) } #{ coverage_file } 2>&1`
+            coverage = coverage.split("\n").grep(/ERROR/).join.sub('ERROR:', '')
+            failed   = $? && $?.exitstatus != 0
+
+            if failed
+              Formatter.error coverage
+              Formatter.notify(coverage, :title => 'Code coverage failed', :image => :failed, :priority => 2) if options[:notification]
+            else
+              Formatter.success 'Code coverage succeed'
+              Formatter.notify('All code is adequately covered with specs', :title => 'Code coverage succeed') if options[:notification] && !options[:hide_success]
+            end
+          end
+        end
+
+        # Uses the Istanbul text reported to output the result of the
+        # last coverage run.
+        #
+        def generate_html_report
+          `#{ which('istanbul') } report --root #{ coverage_root } html #{ coverage_file }`
+          Formatter.info "Updated HTML report available at: #{ File.join('coverage', 'index.html') }"
+        end
+
+        # Uses the Istanbul text-summary reporter to output the
+        # summary of all the coverage runs combined.
+        #
+        def generate_summary_report
+          Formatter.info 'Spec coverage summary:'
+
+          puts ''
+
+          `#{ which('istanbul') } report --root #{ coverage_root } text-summary #{ coverage_file }`.each_line do |line|
+            puts line.sub(/\n$/, '') if line =~ /\)$/
+          end
+
+          puts ''
         end
 
         # Specdoc like formatting of the result.
@@ -336,7 +403,7 @@ module Guard
         #
         def console_logs_shown?(suite, passed, options = { })
           # Are console messages displayed?
-          console_enabled = options[:console] == :always || (options[:console] == :failure && !passed)
+          console_enabled          = options[:console] == :always || (options[:console] == :failure && !passed)
 
           # Are there any logs to display at all for this suite?
           logs_for_current_options = suite['specs'].select do |spec|
@@ -366,7 +433,7 @@ module Guard
         #
         def error_logs_shown?(suite, passed, options = { })
           # Are error messages displayed?
-          errors_enabled = options[:errors] == :always || (options[:errors] == :failure && !passed)
+          errors_enabled             = options[:errors] == :always || (options[:errors] == :failure && !passed)
 
           # Are there any errors to display at all for this suite?
           errors_for_current_options = suite['specs'].select do |spec|
@@ -499,6 +566,68 @@ module Guard
           end
         end
 
+        # Updates the coverage data with new data for the implementation file.
+        # It replaces the coverage data if the file is the spec dir.
+        #
+        # @param [Hash] coverage the last run coverage data
+        # @param [String] file the file name of the spec
+        # @param [Hash] options the options for the execution
+        #
+        def update_coverage(coverage, file, options)
+          if file == options[:spec_dir]
+            File.write(coverage_file, MultiJson.encode(coverage, { :max_nesting => false }))
+          else
+            if File.exist?(coverage_file)
+              impl     = file.sub('_spec', '').sub(options[:spec_dir], '')
+              coverage = MultiJson.decode(File.read(coverage_file), { :max_nesting => false })
+
+              coverage.each do |coverage_file, data|
+                coverage[coverage_file] = data if coverage_file == impl
+              end
+
+              File.write(coverage_file, MultiJson.encode(coverage, { :max_nesting => false }))
+            else
+              File.write(coverage_file, MultiJson.encode({ }))
+            end
+          end
+        end
+
+        # Do we should check the coverage?
+        #
+        # @return [Boolean] true if any coverage threshold is set
+        #
+        def any_coverage_threshold?(options)
+          THRESHOLDS.any? { |threshold| options[threshold] != 0 }
+        end
+
+        # Converts the options to Istanbul recognized options
+        #
+        # @param [Hash] options the options for the coverage
+        # @return [String] the command line options
+        #
+        def istanbul_coverage_options(options)
+          THRESHOLDS.inject([]) do |coverage, name|
+            threshold = options[name]
+            coverage << (threshold != 0 ? "--#{ name.to_s.sub('_threshold', '') } #{ threshold }" : '')
+          end.reject(&:empty?).join(' ')
+        end
+
+        # Get the coverage file to save all coverage data.
+        # Creates `tmp/coverage` if not exists.
+        #
+        # @return [String] the filename to use
+        #
+        def coverage_file
+          File.join(coverage_root, 'coverage.json')
+        end
+
+        # Create and returns the coverage root directory.
+        #
+        # @return [String] the coverage root
+        #
+        def coverage_root
+          File.expand_path(File.join('tmp', 'coverage'))
+        end
       end
     end
   end
