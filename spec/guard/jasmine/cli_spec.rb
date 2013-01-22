@@ -238,6 +238,20 @@ describe Guard::Jasmine::CLI do
           end
         end
       end
+
+      context 'when using the jasmine gem' do
+        it 'generates the default jasmine url' do
+          runner.should_receive(:run).with(anything(), hash_including(:jasmine_url => 'http://localhost:9876/')).and_return [true, []]
+          cli.start(['spec', '--port', '9876', '--server', 'jasmine_gem'])
+        end
+      end
+
+      context 'when using the jasminerice gem' do
+        it 'generates the default jasmine url' do
+          runner.should_receive(:run).with(anything(), hash_including(:jasmine_url => 'http://localhost:9876/jasmine')).and_return [true, []]
+          cli.start(['spec', '--port', '9876', '--server', 'thin'])
+        end
+      end
     end
 
     context 'for non changeable options' do

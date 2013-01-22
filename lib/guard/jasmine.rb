@@ -85,7 +85,7 @@ module Guard
     #
     def initialize(watchers = [], options = { })
       options[:port] ||= Jasmine.find_free_server_port
-      options[:jasmine_url] = "http://localhost:#{ options[:port] }/jasmine" unless options[:jasmine_url]
+      options[:jasmine_url] = "http://localhost:#{ options[:port] }#{ options[:server] == :jasmine_gem ? '/' : '/jasmine' }" unless options[:jasmine_url]
       options = DEFAULT_OPTIONS.merge(options)
       options[:specdoc] = :failure if ![:always, :never, :failure].include? options[:specdoc]
       options[:server] ||= :auto

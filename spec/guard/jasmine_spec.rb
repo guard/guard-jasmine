@@ -274,6 +274,18 @@ describe Guard::Jasmine do
       end
     end
 
+    context 'without the jasmine url' do
+      it 'sets the jasmine gem url' do
+        guard = Guard::Jasmine.new(nil, { :server => :jasmine_gem, :port   => 4321 })
+        guard.options[:jasmine_url].should eql 'http://localhost:4321/'
+      end
+
+      it 'sets the jasminerice url' do
+        guard = Guard::Jasmine.new(nil, { :server => :thin, :port   => 4321 })
+        guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
+      end
+    end
+
     context 'with run all options' do
       let(:guard) { Guard::Jasmine.new(nil, { :run_all => { :test => true } }) }
 

@@ -127,7 +127,7 @@ module Guard
 
         runner_options                        = { }
         runner_options[:port]                 = options.port || CLI.find_free_server_port
-        runner_options[:jasmine_url]          = options.url || "http://localhost:#{ runner_options[:port] }/jasmine"
+        runner_options[:jasmine_url]          = options.url || "http://localhost:#{ runner_options[:port] }#{ options.server.to_sym == :jasmine_gem ? '/' : '/jasmine' }"
         runner_options[:phantomjs_bin]        = options.bin || CLI.which('phantomjs')
         runner_options[:timeout]              = options.timeout
         runner_options[:server]               = options.server.to_sym
