@@ -506,6 +506,14 @@ You also need to explicit enable the coverage support in the options:
                                               # default: :false
 ```
 
+### Instrumentation
+
+Istanbul needs to instrument the implementation files so that the execution path can be detected. Guard::Jasmine comes
+with a tilt template that generates instrumented implementation files when using in the asset pipeline. If you do not
+use asset pipeline, than you need to instrument your files on your own, either manually or by using something like
+[Guard::Process](https://github.com/socialreferral/guard-process). You can get more information about the
+instrumentation with `instanbul help instrument`.
+
 **Important**: You need to clear the asset cache when you change this setting, so that already compiled assets will be
 recompiled. Just use the Sprockets supplied Rake task:
 
@@ -548,10 +556,15 @@ can also enable two more reports:
                                               # default: :false
 ```
 
-Both of these results are only useful if they are run against the coverage data from a full spec run, it's strongly
-advised to enable the `:all_on_start` option, so that an initial full coverage data set is generated. Guard::Jasmine
-replaces outdated coverage data on subsequent spec runs and keeps the full coverage data set up to date. This ensures
-that the HTML and summary reports are always messured against all your specs.
+The `:coverage_summary` options disables the detailed file based coverage report by a small summary coverage report.
+
+Both of these results are more useful if they are run against the coverage data from a full spec run, so it's strongly
+advised to enable the `:all_on_start` option.
+
+With Jasmine in the asset pipeline all instrumented implementation files are available in the runtime and when you
+execute a partial spec run it reports a lower coverage for the excluded files, since their associated specs aren't run.
+Guard::Jasmine tries to work around this by merge only the coverage data for the changed files (Istanbul knows the file
+name in opposite to Jasmine).
 
 ### System notifications options
 
