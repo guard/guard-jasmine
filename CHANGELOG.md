@@ -2,6 +2,7 @@
 
 ## Master
 
+- Switch coverage from [jscoverage](http://siliconforks.com/jscoverage/) to [Istanbul](https://github.com/gotwarlost/istanbul).
 - [#77](https://github.com/netzpirat/guard-jasmine/pull/77): Add coverage support. ([@alexspeller][])
 
 ## 1.11.1 - January 11, 2013
