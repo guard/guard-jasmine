@@ -18,6 +18,9 @@ various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 * Runs the standard Jasmine test runner, so you can use [Jasminerice][] for integrating [Jasmine][] into the
 [Rails asset pipeline][] and write your specs in [CoffeeScript][].
 
+* Integrates [Istanbul](https://github.com/gotwarlost/istanbul) to instrument your code in the asset pipeline and
+generate coverage reports.
+
 * Custom console logger implementation for pretty printing JavaScript objects and DOM elements.
 
 * Can be used to run [Jasmine-species](http://rudylattae.github.com/jasmine-species/) acceptance tests provided by
