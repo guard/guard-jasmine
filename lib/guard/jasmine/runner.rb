@@ -280,7 +280,7 @@ module Guard
             matcher = /[|+]$/
           else
             impl    = file.sub('_spec', '').sub(options[:spec_dir], '')
-            matcher = /(-+|All files|% Lines|#{ Regexp.escape(File.basename(impl)) }|#{ File.dirname(impl).sub(/^\//, '') })/
+            matcher = /(-+|All files|% Lines|#{ Regexp.escape(File.basename(impl)) }|#{ File.dirname(impl).sub(/^\//, '') }[^\/])/
           end
 
           puts ''
