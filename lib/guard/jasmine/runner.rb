@@ -252,6 +252,8 @@ module Guard
         # @option options [Boolean] :hide_success hide success message notification
         #
         def notify_coverage_result(coverage, file, options)
+          FileUtils.mkdir_p(coverage_root) unless File.exist?(coverage_root)
+
           update_coverage(coverage, file, options)
 
           if options[:coverage_summary]
@@ -263,7 +265,7 @@ module Guard
           check_coverage(options)
 
           if options[:coverage_html]
-            generate_html_report(options)
+            generate_html_report
           end
         end
 
@@ -274,19 +276,19 @@ module Guard
         # @param [Hash] options the options for the execution
         #
         def generate_text_report(file, options)
-          Formatter.info 'Current spec run coverage:'
+          Formatter.info 'Spec coverage details:'
 
           if file == options[:spec_dir]
             matcher = /[|+]$/
           else
             impl    = file.sub('_spec', '').sub(options[:spec_dir], '')
-            matcher = /(-+|All files|% Lines|#{ Regexp.escape(File.basename(impl)) }|#{ File.dirname(impl).sub(/^\//, '') }[^\/])/
+            matcher = /(-+|All files|% Lines|#{ Regexp.escape(File.basename(impl)) }|#{ File.dirname(impl).sub(/^\//, '') }\/[^\/])/
           end
 
           puts ''
 
           `#{ which('istanbul') } report --root #{ coverage_root } text #{ coverage_file }`.each_line do |line|
-            puts line if line =~ matcher
+            puts line.sub(/\n$/, '') if line =~ matcher
           end
 
           puts ''
@@ -301,14 +303,14 @@ module Guard
           if any_coverage_threshold?(options)
             coverage = `#{ which('istanbul') } check-coverage #{ istanbul_coverage_options(options) } #{ coverage_file } 2>&1`
             coverage = coverage.split("\n").grep(/ERROR/).join.sub('ERROR:', '')
-            success  = $?.to_i == 0
+            failed   = $? && $?.exitstatus != 0
 
-            if success
-              Formatter.success 'Code coverage succeed'
-              Formatter.notify('All code is adequately covered with specs', :title => 'Code coverage succeed') if options[:notification] && !options[:hide_success]
-            else
+            if failed
               Formatter.error coverage
               Formatter.notify(coverage, :title => 'Code coverage failed', :image => :failed, :priority => 2) if options[:notification]
+            else
+              Formatter.success 'Code coverage succeed'
+              Formatter.notify('All code is adequately covered with specs', :title => 'Code coverage succeed') if options[:notification] && !options[:hide_success]
             end
           end
         end
@@ -318,19 +320,19 @@ module Guard
         #
         def generate_html_report
           `#{ which('istanbul') } report --root #{ coverage_root } html #{ coverage_file }`
-          Formatter.info "Updated HTML report available at: #{ File.expand_path(File.join('coverage', 'index.html')) }"
+          Formatter.info "Updated HTML report available at: #{ File.join('coverage', 'index.html') }"
         end
 
         # Uses the Istanbul text-summary reporter to output the
         # summary of all the coverage runs combined.
         #
         def generate_summary_report
-          Formatter.info 'Total spec coverage summary:'
+          Formatter.info 'Spec coverage summary:'
 
           puts ''
 
           `#{ which('istanbul') } report --root #{ coverage_root } text-summary #{ coverage_file }`.each_line do |line|
-            puts line if line =~ /\)$/
+            puts line.sub(/\n$/, '') if line =~ /\)$/
           end
 
           puts ''
@@ -575,14 +577,18 @@ module Guard
           if file == options[:spec_dir]
             File.write(coverage_file, MultiJson.encode(coverage, { :max_nesting => false }))
           else
-            impl     = file.sub('_spec', '').sub(options[:spec_dir], '')
-            coverage = MultiJson.decode(File.read(coverage_file), { :max_nesting => false })
+            if File.exist?(coverage_file)
+              impl     = file.sub('_spec', '').sub(options[:spec_dir], '')
+              coverage = MultiJson.decode(File.read(coverage_file), { :max_nesting => false })
 
-            coverage.each do |coverage_file, data|
-              coverage[coverage_file] = data if coverage_file == impl
+              coverage.each do |coverage_file, data|
+                coverage[coverage_file] = data if coverage_file == impl
+              end
+
+              File.write(coverage_file, MultiJson.encode(coverage, { :max_nesting => false }))
+            else
+              File.write(coverage_file, MultiJson.encode({ }))
             end
-
-            File.write(coverage_file, MultiJson.encode(coverage, { :max_nesting => false }))
           end
         end
 
@@ -591,7 +597,7 @@ module Guard
         # @return [Boolean] true if any coverage threshold is set
         #
         def any_coverage_threshold?(options)
-          @any_coverage_threshold ||= THRESHOLDS.any? { |threshold| options[threshold] != 0 }
+          THRESHOLDS.any? { |threshold| options[threshold] != 0 }
         end
 
         # Converts the options to Istanbul recognized options
@@ -600,12 +606,10 @@ module Guard
         # @return [String] the command line options
         #
         def istanbul_coverage_options(options)
-          @istanbul_coverage_options ||= begin
-            THRESHOLDS.inject([]) do |coverage, name|
-              threshold = options[name]
-              coverage << (threshold != 0 ? "--#{ name.to_s.sub('_threshold', '') } #{ threshold }" : '')
-            end.reject(&:empty?).join(' ')
-          end
+          THRESHOLDS.inject([]) do |coverage, name|
+            threshold = options[name]
+            coverage << (threshold != 0 ? "--#{ name.to_s.sub('_threshold', '') } #{ threshold }" : '')
+          end.reject(&:empty?).join(' ')
         end
 
         # Get the coverage file to save all coverage data.
@@ -614,11 +618,7 @@ module Guard
         # @return [String] the filename to use
         #
         def coverage_file
-          @all_coverage_file ||= begin
-            coverage = File.join(coverage_root, 'coverage.json')
-            File.write(coverage, MultiJson.encode({ })) unless File.exist?(coverage)
-            coverage
-          end
+          File.join(coverage_root, 'coverage.json')
         end
 
         # Create and returns the coverage root directory.
@@ -626,11 +626,7 @@ module Guard
         # @return [String] the coverage root
         #
         def coverage_root
-          @coverage_root ||= begin
-            root = File.expand_path(File.join('tmp', 'coverage'))
-            FileUtils.mkdir_p(root) unless File.exist?(root)
-            root
-          end
+          File.expand_path(File.join('tmp', 'coverage'))
         end
       end
     end
