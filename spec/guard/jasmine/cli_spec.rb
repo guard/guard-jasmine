@@ -41,7 +41,7 @@ describe Guard::Jasmine::CLI do
 
         it 'sets the spec dir' do
           runner.should_receive(:run).with(anything(), hash_including(:spec_dir => 'specs')).and_return [true, []]
-          cli.start(['spec', '--spec_dir', 'specs'])
+          cli.start(['spec', '--spec-dir', 'specs'])
         end
 
         it 'enables focus mode' do
@@ -66,7 +66,7 @@ describe Guard::Jasmine::CLI do
 
         it 'sets the server environment' do
           runner.should_receive(:run).with(anything(), hash_including(:server_env => 'development')).and_return [true, []]
-          cli.start(['spec', '--server_env', 'development'])
+          cli.start(['spec', '--server-env', 'development'])
         end
 
         context 'for an invalid console option' do
