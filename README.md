@@ -170,7 +170,7 @@ Now you can access `/jasmine-stories` when you start your Rails server normally.
 accordingly:
 
 ```ruby
-guard :jasmine, :jasmine_url => 'http://127.0.0.1:8888/jasmine-stories' do
+guard :jasmine, :port => 8888, :jasmine_url => 'http://127.0.0.1:8888/jasmine-stories' do
   ...
 end
 ```
@@ -208,13 +208,7 @@ group :development, :test do
 end
 ```
 
-and generate the configuration files and change the Jasmine url:
-
-```ruby
-guard :jasmine, :jasmine_url => 'http://localhost:8888/' do
-  ...
-end
-```
+and generate the configuration files.
 
 #### Rails 3 without the asset pipeline
 
