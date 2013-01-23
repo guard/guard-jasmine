@@ -7,21 +7,19 @@ gem 'rake'
 gem 'rack'
 gem 'jasmine'
 
-gem 'coolline'
-gem 'ruby_gntp'
-
 gem 'guard-coffeescript'
 gem 'guard-shell'
 gem 'guard-rspec'
 gem 'rspec'
-gem 'pry'
-gem 'yajl-ruby'
 gem 'tilt'
 
 unless ENV['TRAVIS']
-  gem 'yard'
-  gem 'redcarpet'
-  gem 'yajl-ruby'
+  gem 'coolline'
   gem 'rb-fsevent'
+  gem 'redcarpet'
+  gem 'ruby_gntp'
+  gem 'pry'
   gem 'pry-debugger'
+  gem 'yard'
+  gem 'yajl-ruby'
 end
