@@ -174,6 +174,7 @@ describe Guard::Jasmine::Runner do
     formatter.stub(:spec_failed)
     formatter.stub(:suite_name)
     formatter.stub(:notify)
+    runner.stub(:`)
   end
 
   describe '#run' do
