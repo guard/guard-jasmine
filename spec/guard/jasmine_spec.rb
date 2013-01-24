@@ -31,7 +31,7 @@ describe Guard::Jasmine do
       end
 
       it 'sets a default :server_timeout option' do
-        guard.options[:server_timeout].should eql 15
+        guard.options[:server_timeout].should eql 60
       end
 
       it 'finds a free port for the :port option' do
@@ -45,7 +45,7 @@ describe Guard::Jasmine do
       end
 
       it 'sets a default :timeout option' do
-        guard.options[:timeout].should eql 10
+        guard.options[:timeout].should eql 60
       end
 
       it 'sets a default :spec_dir option' do

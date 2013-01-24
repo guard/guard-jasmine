@@ -2,6 +2,9 @@
 
 ## Master
 
+- Increase default server and runnder timeout.
+## 1.12.0 - January 24, 2013
+
 - [#102](https://github.com/netzpirat/guard-jasmine/pull/102): Jasmine gem server doesn't respond to `/jasmine` path.
 - Switch coverage from [jscoverage](http://siliconforks.com/jscoverage/) to [Istanbul](https://github.com/gotwarlost/istanbul).
 - [#77](https://github.com/netzpirat/guard-jasmine/pull/77): Add coverage support. ([@alexspeller][])

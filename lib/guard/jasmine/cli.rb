@@ -41,7 +41,7 @@ module Guard
 
       method_option :server_timeout,
                     :type    => :numeric,
-                    :default => 15,
+                    :default => 60,
                     :desc    => 'The number of seconds to wait for the Jasmine spec server'
 
       method_option :rackup_config,
@@ -68,7 +68,7 @@ module Guard
       method_option :timeout,
                     :type    => :numeric,
                     :aliases => '-t',
-                    :default => 10,
+                    :default => 60,
                     :desc    => 'The maximum time in seconds to wait for the spec runner to finish'
 
       method_option :console,

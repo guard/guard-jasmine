@@ -24,11 +24,11 @@ module Guard
     DEFAULT_OPTIONS = {
       :server               => :auto,
       :server_env           => ENV['RAILS_ENV'] || 'development',
-      :server_timeout       => 15,
+      :server_timeout       => 60,
       :port                 => nil,
       :rackup_config        => nil,
       :jasmine_url          => nil,
-      :timeout              => 10,
+      :timeout              => 60,
       :spec_dir             => 'spec/javascripts',
       :notification         => true,
       :hide_success         => false,
