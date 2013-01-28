@@ -702,11 +702,10 @@ Simply use the `script` setting in your `.travis.yml`:
 script: 'bundle exec guard-jasmine --server-timeout=60'
 ```
 
-You can also run your Guard::Jasmine specs after your specs that are ran with `rake` by using `after_script`:
+You can also run your Guard::Jasmine specs after your specs that are ran with `rake` by using `&&`:
 
 ```yaml
-script: 'rake spec'
-after_script: 'bundle exec guard-jasmine --server-timeout=60'
+script: 'rake spec && bundle exec guard-jasmine'
 ```
 
 When using a PhantomJS version prior to 1.5, you need to start `xvfb` before running the specs:
