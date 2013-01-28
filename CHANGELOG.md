@@ -1,8 +1,9 @@
 # Changelog
 
-## Master
+## 1.12.1 - January 28, 2013
 
-- Increase default server and runnder timeout.
+- Increase default server and runner timeout.
+
 ## 1.12.0 - January 24, 2013
 
 - [#102](https://github.com/netzpirat/guard-jasmine/pull/102): Jasmine gem server doesn't respond to `/jasmine` path.
