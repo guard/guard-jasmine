@@ -639,6 +639,8 @@ Options:
       [--specdoc=SPECDOC]        # Whether to show successes in the spec runner, either `always`, `never` or `failure`
                                  # Default: always
       [--coverage]               # Whether to enable the coverage support or not
+      [--coverage-html]          # Whether to generate html coverage report. Implies --coverage
+      [--coverage-summary]       # Whether to generate html coverage summary. Implies --coverage
       [--statements-threshold=N] # Statements coverage threshold
                                  # Default: 0
       [--functions-threshold=N]  # Functions coverage threshold
