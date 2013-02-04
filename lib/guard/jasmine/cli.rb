@@ -96,6 +96,16 @@ module Guard
                     :type    => :boolean,
                     :default => false,
                     :desc    => 'Whether to enable the coverage support or not'
+                    
+      method_option :coverage_html,
+                    :type    => :boolean,
+                    :default => false,
+                    :desc    => 'Whether to generate html coverage report.  Implies --coverage'
+
+      method_option :coverage_summary,
+                    :type    => :boolean,
+                    :default => false,
+                    :desc    => 'Whether to generate html coverage summary.  Implies --coverage'
 
       method_option :statements_threshold,
                     :type    => :numeric,
@@ -139,7 +149,9 @@ module Guard
         runner_options[:errors]               = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
         runner_options[:specdoc]              = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
         runner_options[:focus]                = options.focus
-        runner_options[:coverage]             = options.coverage
+        runner_options[:coverage]             = options.coverage || options.coverage_html || options.coverage_summary
+        runner_options[:coverage_html]        = options.coverage_html
+        runner_options[:coverage_summary]     = options.coverage_summary
         runner_options[:statements_threshold] = options.statements_threshold
         runner_options[:functions_threshold]  = options.functions_threshold
         runner_options[:branches_threshold]   = options.branches_threshold
