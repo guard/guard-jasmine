@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.2 - February 4, 2013
+
+- [#108](https://github.com/netzpirat/guard-jasmine/pull/108): Minor cleanups to coverage info. ([@ronen][])
+- [#109](https://github.com/netzpirat/guard-jasmine/pull/109): Add `--coverage-html` and `--coverage-summary` support to cli. ([@ronen][])
+- [#110](https://github.com/netzpirat/guard-jasmine/pull/110): Fix coverage hang for large files. ([@ronen][])
+
 ## 1.12.1 - January 28, 2013
 
 - Increase default server and runner timeout.
@@ -357,4 +363,5 @@
 [@pschyska]: https://github.com/pschyska
 [@richo]: https://github.com/richo
 [@robotarmy]: https://github.com/robotarmy
+[@ronan]: https://github.com/ronan
 [@rymai]: https://github.com/rymai
