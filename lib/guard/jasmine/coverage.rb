@@ -26,16 +26,12 @@ class JasmineCoverage < Tilt::Template
 
       File.write input, data
 
-      r, w = IO.pipe
-      proc = ChildProcess.build(JasmineCoverage.coverage_bin, 'instrument', '--embed-source', input)
-      proc.io.stdout = proc.io.stderr = w
-      proc.start
-      proc.wait
-      w.close
+      result = %x[#{JasmineCoverage.coverage_bin} instrument --embed-source #{input.shellescape}]
 
-      raise "Could not generate coverage instrumented file for #{ file }" unless proc.exit_code == 0
+      raise "Could not generate coverage instrumented file for #{ file }" unless $?.exitstatus == 0
 
-      r.read.gsub input, file
+      result.gsub input, file
+
     end
   end
 
