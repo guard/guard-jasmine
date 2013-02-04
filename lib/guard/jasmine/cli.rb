@@ -96,16 +96,16 @@ module Guard
                     :type    => :boolean,
                     :default => false,
                     :desc    => 'Whether to enable the coverage support or not'
-                    
+
       method_option :coverage_html,
                     :type    => :boolean,
                     :default => false,
-                    :desc    => 'Whether to generate html coverage report.  Implies --coverage'
+                    :desc    => 'Whether to generate html coverage report. Implies --coverage'
 
       method_option :coverage_summary,
                     :type    => :boolean,
                     :default => false,
-                    :desc    => 'Whether to generate html coverage summary.  Implies --coverage'
+                    :desc    => 'Whether to generate html coverage summary. Implies --coverage'
 
       method_option :statements_threshold,
                     :type    => :numeric,
