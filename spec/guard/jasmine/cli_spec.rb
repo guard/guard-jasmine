@@ -74,6 +74,16 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--coverage', 'true'])
         end
 
+        it 'sets the coverage and coverage html support' do
+          runner.should_receive(:run).with(anything(), hash_including(:coverage => true, :coverage_html => true)).and_return [true, []]
+          cli.start(['spec', '--coverage-html', 'true'])
+        end
+
+        it 'sets the coverage and coverage summary support' do
+          runner.should_receive(:run).with(anything(), hash_including(:coverage => true, :coverage_summary => true)).and_return [true, []]
+          cli.start(['spec', '--coverage-summary', 'true'])
+        end
+
         it 'sets the coverage statements threshold' do
           runner.should_receive(:run).with(anything(), hash_including(:statements_threshold => 90)).and_return [true, []]
           cli.start(['spec', '--statements-threshold', '90'])
@@ -126,6 +136,16 @@ describe Guard::Jasmine::CLI do
 
         it 'sets the coverage support' do
           runner.should_receive(:run).with(anything(), hash_including(:coverage => false)).and_return [true, []]
+          cli.start(['spec'])
+        end
+
+        it 'sets the coverage html support' do
+          runner.should_receive(:run).with(anything(), hash_including(:coverage_html => false)).and_return [true, []]
+          cli.start(['spec'])
+        end
+
+        it 'sets the coverage summary support' do
+          runner.should_receive(:run).with(anything(), hash_including(:coverage_summary => false)).and_return [true, []]
           cli.start(['spec'])
         end
 
