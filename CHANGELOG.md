@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [#111](https://github.com/netzpirat/guard-jasmine/pull/108): Configured Guardfile to watch for changes in fixtures directory. ([@andyw8][])
+
 ## 1.12.2 - February 4, 2013
 
 - [#108](https://github.com/netzpirat/guard-jasmine/pull/108): Minor cleanups to coverage info. ([@ronen][])
@@ -344,6 +348,7 @@
 
 [@alexspeller]: https://github.com/alexspeller
 [@andersjanmyr]: https://github.com/andersjanmyr
+[@andyw8]: https://github.com/andyw8 
 [@antono]: https://github.com/antono
 [@arr-ee]: https://github.com/arr-ee
 [@clumsysnake]: https://github.com/clumsysnake
