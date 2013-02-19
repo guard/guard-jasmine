@@ -67,8 +67,25 @@ page.open options.url, (status) ->
     console.log JSON.stringify({ error: "Unable to access Jasmine specs at #{ options.url }" })
     phantom.exit()
   else
-    done = -> phantom.exit()
-    waitFor specsReady, done, options.timeout
+    runnerAvailable = page.evaluate -> window.jasmine
+      
+    if runnerAvailable
+      done = -> phantom.exit()
+      waitFor specsReady, done, options.timeout
+    else
+      text = page.evaluate -> document.getElementsByTagName('body')[0]?.innerText
+
+      if text
+        error = """
+                The Jasmine reporter is not available!
+
+                #{ text }
+                """
+        console.log JSON.stringify({ error: error })
+      else
+        console.log JSON.stringify({ error: 'The Jasmine reporter is not available!' })
+
+      phantom.exit(1)
 
 # Test if the specs have finished.
 #
