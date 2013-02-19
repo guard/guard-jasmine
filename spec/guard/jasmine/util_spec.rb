@@ -13,7 +13,7 @@ describe Guard::Jasmine::Util do
       end
 
       it 'does show that the runner is available' do
-        Guard::Jasmine::Formatter.should_receive(:info).with "Waiting for Jasmine test runner at http://localhost:8888/jasmine"
+        Guard::Jasmine::Formatter.should_receive(:info).with 'Waiting for Jasmine test runner at http://localhost:8888/jasmine'
         util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
       end
     end
@@ -27,7 +27,7 @@ describe Guard::Jasmine::Util do
         end
 
         it 'does show that the runner is not available' do
-          Guard::Jasmine::Formatter.should_receive(:error).with "Jasmine test runner isn't available: Connection refused"
+          Guard::Jasmine::Formatter.should_receive(:error).with 'Jasmine test runner isn\'t available: Connection refused'
           util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
         end
       end
@@ -40,7 +40,7 @@ describe Guard::Jasmine::Util do
         end
 
         it 'does show that the runner is not available' do
-          Guard::Jasmine::Formatter.should_receive(:error).with 'Jasmine test runner fails with response code 404'
+          Guard::Jasmine::Formatter.should_receive(:error).with 'Jasmine test runner failed with status 404'
           util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
         end
 
@@ -50,8 +50,8 @@ describe Guard::Jasmine::Util do
           end
 
           it 'outputs the body for further analysis' do
-            Guard::Jasmine::Formatter.should_receive(:error).with 'Jasmine test runner fails with response code 404'
-            Guard::Jasmine::Formatter.should_receive(:error).with 'Something bad happened'
+            Guard::Jasmine::Formatter.should_receive(:error).with 'Jasmine test runner failed with status 404'
+            Guard::Jasmine::Formatter.should_receive(:error).with 'Please open the Jasmine runner in your browser for more information.'
             util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
           end
         end

@@ -30,8 +30,10 @@ module Guard
               available = response.code.to_i == 200
 
               unless available
-                ::Guard::Jasmine::Formatter.error "Jasmine test runner fails with response code #{ response.code }"
-                ::Guard::Jasmine::Formatter.error(response.body) if response.body
+                ::Guard::Jasmine::Formatter.error "Jasmine test runner failed with status #{ response.code }"
+                if response.body
+                  ::Guard::Jasmine::Formatter.error 'Please open the Jasmine runner in your browser for more information.'
+                end
               end
 
               available
