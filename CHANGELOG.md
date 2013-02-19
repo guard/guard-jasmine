@@ -2,6 +2,8 @@
 
 ## Master
 
+- [#112](https://github.com/netzpirat/guard-jasmine/pull/112): Faster Jasmine runner exception detection.
+- [#112](https://github.com/netzpirat/guard-jasmine/pull/112): Do not output a failing runner html on startup.
 - [#111](https://github.com/netzpirat/guard-jasmine/pull/108): Configured Guardfile to watch for changes in fixtures directory. ([@andyw8][])
 
 ## 1.12.2 - February 4, 2013
