@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.13.0 - February 19, 2013
 
 - [#112](https://github.com/netzpirat/guard-jasmine/pull/112): Faster Jasmine runner exception detection.
 - [#112](https://github.com/netzpirat/guard-jasmine/pull/112): Do not output a failing runner html on startup.
