@@ -509,7 +509,7 @@ Istanbul needs to instrument the implementation files so that the execution path
 with a tilt template that generates instrumented implementation files when using in the asset pipeline. If you do not
 use asset pipeline, than you need to instrument your files on your own, either manually or by using something like
 [Guard::Process](https://github.com/socialreferral/guard-process). You can get more information about the
-instrumentation with `instanbul help instrument`.
+instrumentation with `istanbul help instrument`.
 
 **Important**: You need to clear the asset cache when you change this setting, so that already compiled assets will be
 recompiled. Just use the Sprockets supplied Rake task:
