@@ -4,6 +4,7 @@ pkg/*
 .bundle
 .rbx
 .yardoc
+.idea
 doc
 Gemfile.lock
 node_modules
