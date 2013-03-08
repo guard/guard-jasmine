@@ -4,12 +4,20 @@ describe Guard::Jasmine::Util do
   let(:util) { Class.new { extend Guard::Jasmine::Util } }
 
   describe '.runner_available?' do
-    context 'with the Jasmine runner available' do
-      let(:http) { mock('http') }
+    let(:http) do
+      mock('http').tap do |http|
+        http.stub(:start).and_yield
+        http.stub(:read_timeout=).and_return(nil)
+      end
+    end
 
+    before do
+      Net::HTTP.stub(:new).and_return(http)
+    end
+
+    context 'with the Jasmine runner available' do
       before do
         http.stub_chain(:request, :code).and_return 200
-        Net::HTTP.stub(:start).and_yield http
       end
 
       it 'does show that the runner is available' do
@@ -19,11 +27,9 @@ describe Guard::Jasmine::Util do
     end
 
     context 'without the Jasmine runner available' do
-      let(:http) { mock('http') }
-
       context 'because the connection is refused' do
         before do
-          Net::HTTP.stub(:start).and_raise Errno::ECONNREFUSED.new
+          http.stub(:start).and_raise Errno::ECONNREFUSED.new
         end
 
         it 'does show that the runner is not available' do
@@ -36,7 +42,6 @@ describe Guard::Jasmine::Util do
         before do
           http.stub_chain(:request, :code).and_return 404
           http.stub_chain(:request, :body).and_return nil
-          Net::HTTP.stub(:start).and_yield http
         end
 
         it 'does show that the runner is not available' do
@@ -59,14 +64,13 @@ describe Guard::Jasmine::Util do
 
       context 'because a timeout occurs' do
         before do
-          Timeout.stub(:timeout).and_raise Timeout::Error
+          http.stub(:start).and_raise(Timeout::Error)
         end
 
         it 'does show that the runner is not available' do
           Guard::Jasmine::Formatter.should_receive(:error).with 'Timeout waiting for the Jasmine test runner.'
           util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
         end
-
       end
     end
   end

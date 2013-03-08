@@ -24,20 +24,20 @@ module Guard
         begin
           ::Guard::Jasmine::Formatter.info "Waiting for Jasmine test runner at #{ url }"
 
-          Timeout::timeout(options[:server_timeout]) do
-            Net::HTTP.start(url.host, url.port) do |http|
-              response  = http.request(Net::HTTP::Get.new(url.path))
-              available = response.code.to_i == 200
+          http = Net::HTTP.new(url.host, url.port)
+          http.read_timeout = options[:server_timeout]
+          http.start do
+            response  = http.request(Net::HTTP::Get.new(url.path))
+            available = response.code.to_i == 200
 
-              unless available
-                ::Guard::Jasmine::Formatter.error "Jasmine test runner failed with status #{ response.code }"
-                if response.body
-                  ::Guard::Jasmine::Formatter.error 'Please open the Jasmine runner in your browser for more information.'
-                end
+            unless available
+              ::Guard::Jasmine::Formatter.error "Jasmine test runner failed with status #{ response.code }"
+              if response.body
+                ::Guard::Jasmine::Formatter.error 'Please open the Jasmine runner in your browser for more information.'
               end
-
-              available
             end
+
+            available
           end
 
         rescue Timeout::Error => e
