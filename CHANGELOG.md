@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [#116](https://github.com/netzpirat/guard-jasmine/pull/116): Actually respect the server timeout option. ([@eventualbuddha][])
+
 ## 1.13.0 - February 19, 2013
 
 - [#112](https://github.com/netzpirat/guard-jasmine/pull/112): Faster Jasmine runner exception detection.
@@ -350,7 +354,7 @@
 
 [@alexspeller]: https://github.com/alexspeller
 [@andersjanmyr]: https://github.com/andersjanmyr
-[@andyw8]: https://github.com/andyw8 
+[@andyw8]: https://github.com/andyw8
 [@antono]: https://github.com/antono
 [@arr-ee]: https://github.com/arr-ee
 [@clumsysnake]: https://github.com/clumsysnake
@@ -359,7 +363,7 @@
 [@dnagir]: https://github.com/dnagir
 [@DouweM]: https://github.com/DouweM
 [@esposito]: https://github.com/esposito
-[@eventualbuddha]: https://github.com/DouweM
+[@eventualbuddha]: https://github.com/eventualbuddha
 [@huyhoang1970]: https://github.com/huyhoang1970
 [@jasonm]: https://github.com/jasonm
 [@mkdynamic]: https://github.com/mkdynamic
