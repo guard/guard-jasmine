@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.13.1 - March 12, 2013
 
 - [#116](https://github.com/netzpirat/guard-jasmine/pull/116): Actually respect the server timeout option. ([@eventualbuddha][])
 
