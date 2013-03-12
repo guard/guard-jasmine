@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'tilt'
 require 'childprocess'
+require 'guard/jasmine'
 require 'guard/jasmine/util'
 
 # Tilt template to generate coverage instrumented

@@ -114,7 +114,7 @@ module Guard
         def start_rake_server(port, task)
           ::Guard::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
 
-          self.process = ChildProcess.build('rake', task, "JASMINE_PORT=#{ port }")
+          self.process = ChildProcess.build('ruby', '-S', 'rake', task, "JASMINE_PORT=#{ port }")
           self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options && ::Guard.options[:verbose]
           self.process.start
 
