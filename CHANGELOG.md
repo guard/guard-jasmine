@@ -1,5 +1,10 @@
 # Changelog
 
+## Master
+
+- [#118](https://github.com/netzpirat/guard-jasmine/pull/118): Fix Rake task execution on Windows. ([@twill88][])
+- [#117](https://github.com/netzpirat/guard-jasmine/issues/117): Fix load path issues on Windows. ([@twill88][])
+
 ## 1.13.1 - March 12, 2013
 
 - [#116](https://github.com/netzpirat/guard-jasmine/pull/116): Actually respect the server timeout option. ([@eventualbuddha][])
@@ -376,3 +381,4 @@
 [@robotarmy]: https://github.com/robotarmy
 [@ronan]: https://github.com/ronan
 [@rymai]: https://github.com/rymai
+[@twill88]: https://github.com/twill88
