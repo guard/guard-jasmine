@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.13.2 - March 13, 2013
 
 - [#118](https://github.com/netzpirat/guard-jasmine/pull/118): Fix Rake task execution on Windows. ([@twill88][])
 - [#117](https://github.com/netzpirat/guard-jasmine/issues/117): Fix load path issues on Windows. ([@twill88][])
