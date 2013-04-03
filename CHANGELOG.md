@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.14.0 - April 3, 2013
 
 - [#119](https://github.com/netzpirat/guard-jasmine/issues/119): Add a `verbose` option to the CLI runner.
 
