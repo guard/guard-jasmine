@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [#120](https://github.com/netzpirat/guard-jasmine/issues/120): Proper Jasmine URL generation when server is `:auto` and using the Jasmine gem.
+
 ## 1.14.0 - April 3, 2013
 
 - [#119](https://github.com/netzpirat/guard-jasmine/issues/119): Add a `verbose` option to the CLI runner.

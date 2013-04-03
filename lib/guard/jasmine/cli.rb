@@ -5,6 +5,7 @@ require 'guard/jasmine/runner'
 require 'guard/jasmine/formatter'
 require 'guard/jasmine/server'
 require 'guard/jasmine/util'
+require 'guard/jasmine/server'
 
 module Guard
   class Jasmine
@@ -146,7 +147,7 @@ module Guard
         runner_options[:phantomjs_bin]        = options.bin || CLI.which('phantomjs')
         runner_options[:timeout]              = options.timeout
         runner_options[:verbose]              = options.verbose
-        runner_options[:server]               = options.server.to_sym
+        runner_options[:server]               = options.server.to_sym == :auto ? ::Guard::Jasmine::Server.detect_server(options.spec_dir) : options.server.to_sym
         runner_options[:server_env]           = options.server_env
         runner_options[:server_timeout]       = options.server_timeout
         runner_options[:rackup_config]        = options.rackup_config

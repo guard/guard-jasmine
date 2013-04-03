@@ -44,6 +44,11 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--spec-dir', 'specs'])
         end
 
+        it 'detects the server type' do
+          server.should_receive(:detect_server).with('specs')
+          cli.start(['spec', '--spec-dir', 'specs'])
+        end
+
         it 'enables focus mode' do
           runner.should_receive(:run).with(anything(), hash_including(:focus => true)).and_return [true, []]
           cli.start(['spec'])
@@ -134,8 +139,8 @@ describe Guard::Jasmine::CLI do
 
     context 'without specified options' do
       context 'for the server' do
-        it 'sets the server type' do
-          server.should_receive(:start).with(hash_including(:server => :auto))
+        it 'detects the server type' do
+          server.should_receive(:detect_server).with('spec/javascripts')
           cli.start(['spec'])
         end
 

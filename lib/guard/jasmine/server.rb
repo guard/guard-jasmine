@@ -27,7 +27,6 @@ module Guard
         #
         def start(options)
           server  = options[:server]
-          server  = detect_server(options[:spec_dir]) if server == :auto
           port    = options[:port]
           timeout = options[:server_timeout]
 
@@ -51,6 +50,29 @@ module Guard
           if self.process
             ::Guard::UI.info 'Guard::Jasmine stops server.'
             self.process.stop(5)
+          end
+        end
+
+        # Detect the server to use
+        #
+        # @param [String] spec_dir the spec directory
+        # @return [Symbol] the server strategy
+        #
+        def detect_server(spec_dir)
+          if File.exists?('config.ru')
+            %w(unicorn thin mongrel).each do |server|
+              begin
+                require server
+                return server.to_sym
+              rescue LoadError
+                # Ignore missing server and try next
+              end
+            end
+            :webrick
+          elsif spec_dir && File.exists?(File.join(spec_dir, 'support', 'jasmine.yml'))
+            :jasmine_gem
+          else
+            :none
           end
         end
 
@@ -121,29 +143,6 @@ module Guard
 
         rescue => e
           ::Guard::UI.error "Cannot start Rake task server: #{ e.message }"
-        end
-
-        # Detect the server to use
-        #
-        # @param [String] spec_dir the spec directory
-        # @return [Symbol] the server strategy
-        #
-        def detect_server(spec_dir)
-          if File.exists?('config.ru')
-            %w(unicorn thin mongrel).each do |server|
-              begin
-                require server
-                return server.to_sym
-              rescue LoadError
-                # Ignore missing server and try next
-              end
-            end
-            :webrick
-          elsif File.exists?(File.join(spec_dir, 'support', 'jasmine.yml'))
-            :jasmine_gem
-          else
-            :none
-          end
         end
 
         # Wait until the Jasmine test server is running.

@@ -22,11 +22,12 @@ describe Guard::Jasmine do
 
   describe '#initialize' do
     context 'when no options are provided' do
-      it 'sets a default :server option' do
-        guard.options[:server].should eql :auto
+      it 'detects the current server' do
+        server.should_receive(:detect_server).with('spec/javascripts')
+        guard.start
       end
 
-      it 'sets a default :server option' do
+      it 'sets a default :server_env option' do
         guard.options[:server_env].should eql defaults[:server_env]
       end
 
@@ -453,7 +454,7 @@ describe Guard::Jasmine do
 
     context 'without a specified spec dir' do
       it 'starts the Runner with the default spec dir' do
-        runner.should_receive(:run).with(['spec/javascripts'], options).and_return [['spec/javascripts/a.js.coffee'], true]
+        runner.should_receive(:run).with(['spec/javascripts'], kind_of(Hash)).and_return [['spec/javascripts/a.js.coffee'], true]
 
         guard.run_all
       end
@@ -464,7 +465,7 @@ describe Guard::Jasmine do
       let(:guard) { Guard::Jasmine.new(nil, options) }
 
       it 'starts the Runner with the default spec dir' do
-        runner.should_receive(:run).with(['specs'], options).and_return [['spec/javascripts/a.js.coffee'], true]
+        runner.should_receive(:run).with(['specs'], kind_of(Hash)).and_return [['spec/javascripts/a.js.coffee'], true]
 
         guard.run_all
       end
@@ -521,9 +522,9 @@ describe Guard::Jasmine do
 
     it 'starts the Runner with the cleaned files' do
       inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                             'spec/javascripts/b.js.coffee'], options).and_return ['spec/javascripts/a.js.coffee']
+                                             'spec/javascripts/b.js.coffee'], kind_of(Hash)).and_return ['spec/javascripts/a.js.coffee']
 
-      runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], options).and_return [['spec/javascripts/a.js.coffee'], true]
+      runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], kind_of(Hash)).and_return [['spec/javascripts/a.js.coffee'], true]
 
       guard.run_on_changes(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
     end
@@ -534,7 +535,7 @@ describe Guard::Jasmine do
 
       it 'passes the paths to the Inspector for cleanup' do
         inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                               'spec/javascripts/b.js.coffee'], options)
+                                               'spec/javascripts/b.js.coffee'], kind_of(Hash))
 
         guard.run_on_changes(['spec/javascripts/a.js.coffee',
                               'spec/javascripts/b.js.coffee'])
@@ -547,7 +548,7 @@ describe Guard::Jasmine do
 
       it 'does not pass the paths to the Inspector for cleanup' do
         inspector.should_not_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                                   'spec/javascripts/b.js.coffee'], options)
+                                                   'spec/javascripts/b.js.coffee'], kind_of(Hash))
 
         guard.run_on_changes(['spec/javascripts/a.js.coffee',
                               'spec/javascripts/b.js.coffee'])
@@ -564,14 +565,14 @@ describe Guard::Jasmine do
 
       it 'passes the paths to the Inspector for cleanup' do
         inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
-                                               'spec/javascripts/b.js.coffee'], options)
+                                               'spec/javascripts/b.js.coffee'], kind_of(Hash))
 
         guard.run_on_changes(['spec/javascripts/a.js.coffee'])
       end
 
       it 'appends the last failed paths to the current run' do
         runner.should_receive(:run).with(['spec/javascripts/a.js.coffee',
-                                          'spec/javascripts/b.js.coffee'], options)
+                                          'spec/javascripts/b.js.coffee'], kind_of(Hash))
 
         guard.run_on_changes(['spec/javascripts/a.js.coffee'])
       end

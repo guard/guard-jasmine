@@ -22,126 +22,6 @@ describe Guard::Jasmine::Server do
   end
 
   describe '.start' do
-    context 'with the :auto strategy' do
-      let(:options) do
-        defaults
-      end
-
-      context 'with a rackup config file' do
-        before do
-          File.should_receive(:exists?).with('config.ru').and_return true
-        end
-
-        it 'does wait for the server' do
-          server.should_receive(:wait_for_server)
-          server.start(options)
-        end
-
-        context 'with unicorn available' do
-          before do
-            Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_return true
-          end
-
-          it 'uses unicorn as server' do
-            server.should_receive(:start_unicorn_server).with(8888, options)
-            server.start(options)
-          end
-        end
-
-        context 'with thin available' do
-          before do
-            Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_raise LoadError
-            Guard::Jasmine::Server.should_receive(:require).with('thin').and_return true
-          end
-
-          it 'uses thin as server' do
-            server.should_receive(:start_rack_server).with(:thin, 8888, options)
-            server.start(options)
-          end
-        end
-
-        context 'with mongrel available' do
-          before do
-            Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_raise LoadError
-            Guard::Jasmine::Server.should_receive(:require).with('thin').and_raise LoadError
-            Guard::Jasmine::Server.should_receive(:require).with('mongrel').and_return true
-          end
-
-          it 'uses mongrel as server' do
-            server.should_receive(:start_rack_server).with(:mongrel, 8888, options)
-            server.start(options)
-          end
-        end
-
-        context 'with unicorn, thin or mongrel not being available' do
-          before do
-            Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_raise LoadError
-            Guard::Jasmine::Server.should_receive(:require).with('thin').and_raise LoadError
-            Guard::Jasmine::Server.should_receive(:require).with('mongrel').and_raise LoadError
-          end
-
-          it 'uses webrick as server' do
-            server.should_receive(:start_rack_server).with(:webrick, 8888, options)
-            server.start(options)
-          end
-        end
-      end
-
-      context 'with a jasmine config file' do
-        context 'with the default spec dir' do
-          before do
-            File.should_receive(:exists?).with('config.ru').and_return false
-            File.should_receive(:exists?).with(File.join('spec', 'javascripts', 'support', 'jasmine.yml')).and_return true
-          end
-
-          it 'chooses the jasmine_gem server strategy' do
-            server.should_receive(:start_rake_server)
-            server.start(options)
-          end
-
-          it 'does wait for the server' do
-            server.should_receive(:wait_for_server)
-            server.start(options)
-          end
-        end
-
-        context 'with a custom spec dir' do
-          let(:options) do
-            defaults.merge({ :spec_dir => 'specs' })
-          end
-
-          before do
-            File.should_receive(:exists?).with('config.ru').and_return false
-            File.should_receive(:exists?).with(File.join('specs', 'support', 'jasmine.yml')).and_return true
-          end
-
-          it 'chooses the jasmine_gem server strategy' do
-            server.should_receive(:start_rake_server)
-            server.start(options)
-          end
-
-          it 'does wait for the server' do
-            server.should_receive(:wait_for_server)
-            server.start(options)
-          end
-        end
-      end
-
-      context 'without any server config files' do
-        before do
-          File.should_receive(:exists?).with('config.ru').and_return false
-          File.should_receive(:exists?).with(File.join('spec', 'javascripts', 'support', 'jasmine.yml')).and_return false
-        end
-
-        it 'does not start a server' do
-          server.should_not_receive(:start_rack_server)
-          server.should_not_receive(:start_rake_server)
-          server.should_not_receive(:wait_for_server)
-          server.start(options)
-        end
-      end
-    end
-
     context 'with the :thin strategy' do
       let(:options) do
         defaults.merge({ :server => :thin })
@@ -319,4 +199,61 @@ describe Guard::Jasmine::Server do
     end
   end
 
+  describe '.detect_server' do
+    context 'with a `config.ru` file' do
+      before do
+        File.should_receive(:exists?).with('config.ru').and_return true
+      end
+
+      context 'with unicorn available' do
+        before do
+          Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_return true
+        end
+
+        it 'returns `:unicorn` as server' do
+          server.detect_server('spec/javascripts').should eql(:unicorn)
+        end
+      end
+
+      context 'with thin available' do
+        before do
+          Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_raise LoadError
+          Guard::Jasmine::Server.should_receive(:require).with('thin').and_return true
+        end
+
+        it 'returns `:thin` as server' do
+          server.detect_server('spec/javascripts').should eql(:thin)
+        end
+      end
+
+      context 'with mongrel available' do
+        before do
+          Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_raise LoadError
+          Guard::Jasmine::Server.should_receive(:require).with('thin').and_raise LoadError
+          Guard::Jasmine::Server.should_receive(:require).with('mongrel').and_return true
+        end
+
+        it 'returns `:mongrel` as server' do
+          server.detect_server('spec/javascripts').should eql(:mongrel)
+        end
+      end
+    end
+
+    context 'with a `support/jasmine.yml` file in the spec folder' do
+      before do
+        File.should_receive(:exists?).with('config.ru').and_return false
+        File.should_receive(:exists?).with(File.join('spec', 'javascripts', 'support', 'jasmine.yml')).and_return true
+      end
+
+      it 'returns `:jasmine_gem` as server' do
+        server.detect_server('spec/javascripts').should eql(:jasmine_gem)
+      end
+    end
+
+    context 'without a recognized server configuration' do
+      it 'returns `:none` as server' do
+        server.detect_server('spec/javascripts').should eql(:none)
+      end
+    end
+  end
 end

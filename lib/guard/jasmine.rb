@@ -84,11 +84,13 @@ module Guard
     # @option options [Hash] :run_all options overwrite options when run all specs
     #
     def initialize(watchers = [], options = { })
-      options[:port] ||= Jasmine.find_free_server_port
-      options[:jasmine_url] = "http://localhost:#{ options[:port] }#{ options[:server] == :jasmine_gem ? '/' : '/jasmine' }" unless options[:jasmine_url]
       options = DEFAULT_OPTIONS.merge(options)
-      options[:specdoc] = :failure if ![:always, :never, :failure].include? options[:specdoc]
-      options[:server] ||= :auto
+
+      options[:port]        ||= Jasmine.find_free_server_port
+      options[:server]      ||= :auto
+      options[:server]        = ::Guard::Jasmine::Server.detect_server(options[:spec_dir]) if options[:server] == :auto
+      options[:jasmine_url]   = "http://localhost:#{ options[:port] }#{ options[:server] == :jasmine_gem ? '/' : '/jasmine' }" unless options[:jasmine_url]
+      options[:specdoc]       = :failure if ![:always, :never, :failure].include? options[:specdoc]
       options[:phantomjs_bin] = Jasmine.which('phantomjs') unless options[:phantomjs_bin]
 
       self.run_all_options = options.delete(:run_all) || { }
