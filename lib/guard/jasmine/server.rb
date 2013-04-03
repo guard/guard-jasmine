@@ -37,9 +37,9 @@ module Guard
             when :unicorn
               start_unicorn_server(port, options)
             when :jasmine_gem
-              start_rake_server(port, 'jasmine')
+              start_rake_server(port, 'jasmine', options)
             else
-              start_rake_server(port, server.to_s) unless server == :none
+              start_rake_server(port, server.to_s, options) unless server == :none
           end
 
           wait_for_server(port, timeout) unless server == :none
@@ -76,7 +76,7 @@ module Guard
 
           self.process = ChildProcess.build(*['rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s, rackup_config].compact)
           self.process.environment['COVERAGE'] = options[:coverage].to_s
-          self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options && ::Guard.options[:verbose]
+          self.process.io.inherit! if options[:verbose]
           self.process.start
 
         rescue => e
@@ -99,7 +99,7 @@ module Guard
 
           self.process = ChildProcess.build('unicorn_rails', '-E', environment.to_s, '-p', port.to_s)
           self.process.environment['COVERAGE'] = options[:coverage].to_s
-          self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options && ::Guard.options[:verbose]
+          self.process.io.inherit! if options[:verbose]
           self.process.start
 
         rescue => e
@@ -110,12 +110,13 @@ module Guard
         #
         # @param [Number] port the server port
         # @param [String] task the rake task name
+        # @option options [Symbol] server the rack server to use
         #
-        def start_rake_server(port, task)
+        def start_rake_server(port, task, options)
           ::Guard::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
 
           self.process = ChildProcess.build('ruby', '-S', 'rake', task, "JASMINE_PORT=#{ port }")
-          self.process.io.inherit! if ::Guard.respond_to?(:options) && ::Guard.options && ::Guard.options[:verbose]
+          self.process.io.inherit! if options[:verbose]
           self.process.start
 
         rescue => e

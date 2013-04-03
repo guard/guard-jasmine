@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [#119](https://github.com/netzpirat/guard-jasmine/issues/119): Add a `verbose` option to the CLI runner.
+
 ## 1.13.2 - March 13, 2013
 
 - [#118](https://github.com/netzpirat/guard-jasmine/pull/118): Fix Rake task execution on Windows. ([@twill88][])

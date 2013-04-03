@@ -274,7 +274,7 @@ describe Guard::Jasmine::Server do
       end
 
       it 'starts the :jasmine rake task server' do
-        server.should_receive(:start_rake_server).with(8888, 'jasmine')
+        server.should_receive(:start_rake_server).with(8888, 'jasmine', options)
         server.start(options)
       end
     end
@@ -295,7 +295,7 @@ describe Guard::Jasmine::Server do
       end
 
       it 'starts a custom rake task server' do
-        server.should_receive(:start_rake_server).with(8888, 'custom_server_strategy')
+        server.should_receive(:start_rake_server).with(8888, 'custom_server_strategy', options)
         server.start(options)
       end
     end

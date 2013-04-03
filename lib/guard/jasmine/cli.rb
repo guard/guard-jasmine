@@ -44,6 +44,11 @@ module Guard
                     :default => 60,
                     :desc    => 'The number of seconds to wait for the Jasmine spec server'
 
+      method_option :verbose,
+                    :type    => :boolean,
+                    :default => false,
+                    :desc    => 'Show the server output in the console'
+
       method_option :rackup_config,
                     :type    => :string,
                     :aliases => '-c',
@@ -140,6 +145,7 @@ module Guard
         runner_options[:jasmine_url]          = options.url || "http://localhost:#{ runner_options[:port] }#{ options.server.to_sym == :jasmine_gem ? '/' : '/jasmine' }"
         runner_options[:phantomjs_bin]        = options.bin || CLI.which('phantomjs')
         runner_options[:timeout]              = options.timeout
+        runner_options[:verbose]              = options.verbose
         runner_options[:server]               = options.server.to_sym
         runner_options[:server_env]           = options.server_env
         runner_options[:server_timeout]       = options.server_timeout

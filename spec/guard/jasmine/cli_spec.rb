@@ -64,6 +64,11 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--timeout', '20000'])
         end
 
+        it 'sets the verbose mode' do
+          runner.should_receive(:run).with(anything(), hash_including(:verbose => true)).and_return [true, []]
+          cli.start(['spec', '--verbose'])
+        end
+
         it 'sets the server environment' do
           runner.should_receive(:run).with(anything(), hash_including(:server_env => 'development')).and_return [true, []]
           cli.start(['spec', '--server-env', 'development'])
@@ -131,6 +136,11 @@ describe Guard::Jasmine::CLI do
       context 'for the server' do
         it 'sets the server type' do
           server.should_receive(:start).with(hash_including(:server => :auto))
+          cli.start(['spec'])
+        end
+
+        it 'sets the verbose mode' do
+          runner.should_receive(:run).with(anything(), hash_including(:verbose => false)).and_return [true, []]
           cli.start(['spec'])
         end
 

@@ -616,6 +616,7 @@ Options:
                                  # Default: auto
   -p, [--port=N]                 # Server port to use
                                  # Default: Random free port
+      [--verbose]                # Show the server output in the console
   -e, [--server-env=SERVER_ENV]  # The server environment to use, for example `development`, `test` etc.
                                  # Default: test
       [--server-timeout=N]       # The number of seconds to wait for the Jasmine spec server
