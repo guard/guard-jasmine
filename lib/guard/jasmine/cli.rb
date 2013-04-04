@@ -63,7 +63,6 @@ module Guard
       method_option :spec_dir,
                     :type    => :string,
                     :aliases => '-d',
-                    :default => 'spec/javascripts',
                     :desc    => 'The directory with the Jasmine specs'
 
       method_option :url,
@@ -139,19 +138,17 @@ module Guard
       # @param [Array<String>] paths the name of the specs to run
       #
       def spec(*paths)
-        paths = [options.spec_dir] if paths.empty?
-
-        runner_options                        = { }
+        runner_options                        = {}
         runner_options[:port]                 = options.port || CLI.find_free_server_port
+        runner_options[:spec_dir]             = options.spec_dir || (File.exists?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec')
+        runner_options[:server]               = options.server.to_sym == :auto ? ::Guard::Jasmine::Server.detect_server(runner_options[:spec_dir]) : options.server.to_sym
         runner_options[:jasmine_url]          = options.url || "http://localhost:#{ runner_options[:port] }#{ options.server.to_sym == :jasmine_gem ? '/' : '/jasmine' }"
         runner_options[:phantomjs_bin]        = options.bin || CLI.which('phantomjs')
         runner_options[:timeout]              = options.timeout
         runner_options[:verbose]              = options.verbose
-        runner_options[:server]               = options.server.to_sym == :auto ? ::Guard::Jasmine::Server.detect_server(options.spec_dir) : options.server.to_sym
         runner_options[:server_env]           = options.server_env
         runner_options[:server_timeout]       = options.server_timeout
         runner_options[:rackup_config]        = options.rackup_config
-        runner_options[:spec_dir]             = options.spec_dir
         runner_options[:console]              = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
         runner_options[:errors]               = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
         runner_options[:specdoc]              = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
@@ -166,6 +163,8 @@ module Guard
         runner_options[:notification]         = false
         runner_options[:hide_success]         = true
         runner_options[:max_error_notify]     = 0
+
+        paths = [runner_options[:spec_dir]] if paths.empty?
 
         if CLI.phantomjs_bin_valid?(runner_options[:phantomjs_bin])
           catch(:task_has_failed) do

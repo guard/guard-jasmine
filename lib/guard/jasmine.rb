@@ -29,7 +29,7 @@ module Guard
       :rackup_config        => nil,
       :jasmine_url          => nil,
       :timeout              => 60,
-      :spec_dir             => 'spec/javascripts',
+      :spec_dir             => nil,
       :notification         => true,
       :hide_success         => false,
       :all_on_start         => true,
@@ -86,6 +86,7 @@ module Guard
     def initialize(watchers = [], options = { })
       options = DEFAULT_OPTIONS.merge(options)
 
+      options[:spec_dir]    ||= File.exists?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec'
       options[:port]        ||= Jasmine.find_free_server_port
       options[:server]      ||= :auto
       options[:server]        = ::Guard::Jasmine::Server.detect_server(options[:spec_dir]) if options[:server] == :auto

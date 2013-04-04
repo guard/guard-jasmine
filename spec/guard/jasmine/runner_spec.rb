@@ -8,8 +8,9 @@ describe Guard::Jasmine::Runner do
   let(:formatter) { Guard::Jasmine::Formatter }
 
   let(:defaults) { Guard::Jasmine::DEFAULT_OPTIONS.merge({
-                                                           :jasmine_url   => 'http://localhost:8888/jasmine',
-                                                           :phantomjs_bin => '/usr/local/bin/phantomjs' })
+    :jasmine_url   => 'http://localhost:8888/jasmine',
+    :phantomjs_bin => '/usr/local/bin/phantomjs',
+    :spec_dir      => 'spec/javascripts'  })
   }
 
   let(:phantomjs_error_response) do
@@ -160,7 +161,6 @@ describe Guard::Jasmine::Runner do
     }
     JSON
   end
-
 
   let(:phantomjs_command) do
     "/usr/local/bin/phantomjs #@project_path/lib/guard/jasmine/phantomjs/guard-jasmine.js"

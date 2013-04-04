@@ -12,6 +12,7 @@ describe Guard::Jasmine::CLI do
     runner.stub(:run)
     server.stub(:start)
     server.stub(:stop)
+    server.stub(:detect_server)
     cli.stub(:which).and_return '/usr/local/bin/phantomjs'
     cli.stub(:phantomjs_bin_valid?).and_return true
     cli.stub(:runner_available?).and_return true
@@ -140,7 +141,7 @@ describe Guard::Jasmine::CLI do
     context 'without specified options' do
       context 'for the server' do
         it 'detects the server type' do
-          server.should_receive(:detect_server).with('spec/javascripts')
+          server.should_receive(:detect_server).with('spec')
           cli.start(['spec'])
         end
 
@@ -188,9 +189,26 @@ describe Guard::Jasmine::CLI do
 
       context 'for the runner' do
         context 'without a specific spec dir' do
-          it 'runs all default specs when the paths are empty' do
-            runner.should_receive(:run).with(['spec/javascripts'], anything()).and_return [true, []]
-            cli.start(['spec'])
+          context 'with a spec/javascripts folder' do
+            before do
+              File.should_receive(:exists?).with('spec/javascripts').and_return true
+            end
+
+            it 'runs all specs in the spec/javascripts folder' do
+              runner.should_receive(:run).with(['spec/javascripts'], anything()).and_return [true, []]
+              cli.start(['spec'])
+            end
+          end
+
+          context 'without a spec/javascripts folder' do
+            before do
+              File.should_receive(:exists?).with('spec/javascripts').and_return false
+            end
+
+            it 'runs all specs in the spec folder' do
+              runner.should_receive(:run).with(['spec'], anything()).and_return [true, []]
+              cli.start(['spec'])
+            end
           end
         end
 
@@ -202,7 +220,7 @@ describe Guard::Jasmine::CLI do
         end
 
         it 'sets the spec dir' do
-          runner.should_receive(:run).with(anything(), hash_including(:spec_dir => 'spec/javascripts')).and_return [true, []]
+          runner.should_receive(:run).with(anything(), hash_including(:spec_dir => 'spec')).and_return [true, []]
           cli.start(['spec'])
         end
 

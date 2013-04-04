@@ -17,16 +17,12 @@ describe Guard::Jasmine do
     formatter.stub(:notify)
     server.stub(:start)
     server.stub(:stop)
+    server.stub(:detect_server)
     Guard::Jasmine.stub(:which).and_return '/usr/local/bin/phantomjs'
   end
 
   describe '#initialize' do
     context 'when no options are provided' do
-      it 'detects the current server' do
-        server.should_receive(:detect_server).with('spec/javascripts')
-        guard.start
-      end
-
       it 'sets a default :server_env option' do
         guard.options[:server_env].should eql defaults[:server_env]
       end
@@ -47,10 +43,6 @@ describe Guard::Jasmine do
 
       it 'sets a default :timeout option' do
         guard.options[:timeout].should eql 60
-      end
-
-      it 'sets a default :spec_dir option' do
-        guard.options[:spec_dir].should eql 'spec/javascripts'
       end
 
       it 'sets a default :all_on_start option' do
@@ -136,6 +128,36 @@ describe Guard::Jasmine do
       it 'tries to auto detect the :phantomjs_bin' do
         ::Guard::Jasmine.should_receive(:which).and_return '/bin/phantomjs'
         guard.options[:phantomjs_bin].should eql '/bin/phantomjs'
+      end
+
+      context 'with a spec/javascripts folder' do
+        before do
+          File.should_receive(:exists?).with('spec/javascripts').and_return true
+        end
+
+        it 'sets a default :spec_dir option' do
+          guard.options[:spec_dir].should eql 'spec/javascripts'
+        end
+
+        it 'detects the current server' do
+          server.should_receive(:detect_server).with('spec/javascripts')
+          ::Guard::Jasmine.new
+        end
+      end
+
+      context 'without a spec/javascripts folder' do
+        before do
+          File.should_receive(:exists?).with('spec/javascripts').and_return false
+        end
+
+        it 'sets a default :spec_dir option' do
+          guard.options[:spec_dir].should eql 'spec'
+        end
+
+        it 'detects the current server' do
+          server.should_receive(:detect_server).with('spec')
+          ::Guard::Jasmine.new
+        end
       end
     end
 
@@ -364,7 +386,7 @@ describe Guard::Jasmine do
           server.should_receive(:start).with(hash_including(:server        => :jasmine_gem,
                                                             :port          => 3333,
                                                             :server_env    => 'test',
-                                                            :spec_dir      => 'spec/javascripts',
+                                                            :spec_dir      => 'spec',
                                                             :rackup_config => nil))
           guard.start
         end
@@ -454,7 +476,7 @@ describe Guard::Jasmine do
 
     context 'without a specified spec dir' do
       it 'starts the Runner with the default spec dir' do
-        runner.should_receive(:run).with(['spec/javascripts'], kind_of(Hash)).and_return [['spec/javascripts/a.js.coffee'], true]
+        runner.should_receive(:run).with(['spec'], kind_of(Hash)).and_return [['spec/javascripts/a.js.coffee'], true]
 
         guard.run_all
       end
@@ -475,7 +497,7 @@ describe Guard::Jasmine do
       let(:guard) { Guard::Jasmine.new(nil, { :run_all => { :specdoc => :overwritten } }) }
 
       it 'starts the Runner with the merged run all options' do
-        runner.should_receive(:run).with(['spec/javascripts'], hash_including({ :specdoc => :overwritten })).and_return [['spec/javascripts/a.js.coffee'], true]
+        runner.should_receive(:run).with(['spec'], hash_including({ :specdoc => :overwritten })).and_return [['spec/javascripts/a.js.coffee'], true]
 
         guard.run_all
       end
