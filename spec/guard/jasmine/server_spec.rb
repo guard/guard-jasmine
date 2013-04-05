@@ -8,10 +8,10 @@ describe Guard::Jasmine::Server do
 
   let(:defaults) do
     {
-      :server     => :auto,
-      :port       => 8888,
-      :server_env => 'test',
-      :spec_dir   => 'spec/javascripts'
+      server:     :auto,
+      port:       8888,
+      server_env: 'test',
+      spec_dir:   'spec/javascripts'
     }
   end
 
@@ -24,7 +24,7 @@ describe Guard::Jasmine::Server do
   describe '.start' do
     context 'with the :thin strategy' do
       let(:options) do
-        defaults.merge({ :server => :thin })
+        defaults.merge({ server: :thin })
       end
 
       it 'does not auto detect a server' do
@@ -45,7 +45,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :puma strategy' do
       let(:options) do
-        defaults.merge({ :server => :puma })
+        defaults.merge({ server: :puma })
       end
 
       it 'does not auto detect a server' do
@@ -66,7 +66,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :mongrel strategy' do
       let(:options) do
-        defaults.merge({ :server => :mongrel })
+        defaults.merge({ server: :mongrel })
       end
 
       it 'does not auto detect a server' do
@@ -87,7 +87,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :webrick strategy' do
       let(:options) do
-        defaults.merge({ :server => :webrick })
+        defaults.merge({ server: :webrick })
       end
 
       it 'does not auto detect a server' do
@@ -108,7 +108,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :unicorn strategy' do
       let(:options) do
-        defaults.merge({ :server => :unicorn })
+        defaults.merge({ server: :unicorn })
       end
 
       it 'does not auto detect a server' do
@@ -129,7 +129,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :webrick strategy and a custom config.ru' do
       let(:options) do
-        defaults.merge({ :server => :webrick, :rackup_config => 'my/cool.ru' })
+        defaults.merge({ server: :webrick, rackup_config: 'my/cool.ru' })
       end
 
       it 'starts a :webrick rack server' do
@@ -140,7 +140,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :jasmine_gem strategy' do
       let(:options) do
-        defaults.merge({ :server => :jasmine_gem })
+        defaults.merge({ server: :jasmine_gem })
       end
 
       it 'does not auto detect a server' do
@@ -161,7 +161,7 @@ describe Guard::Jasmine::Server do
 
     context 'with a custom rake strategy' do
       let(:options) do
-        defaults.merge({ :server => :custom_server_strategy })
+        defaults.merge({ server: :custom_server_strategy })
       end
 
       it 'does not auto detect a server' do
@@ -182,7 +182,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :none strategy' do
       let(:options) do
-        defaults.merge({ :server => :none })
+        defaults.merge({ server: :none })
       end
 
       it 'does not auto detect a server' do

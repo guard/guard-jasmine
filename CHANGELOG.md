@@ -2,6 +2,7 @@
 
 ## Master
 
+- Drop support for Ruby 1.8.7
 - [#120](https://github.com/netzpirat/guard-jasmine/issues/120): Proper spec dir detection when using the Jasmine gem.
 - [#120](https://github.com/netzpirat/guard-jasmine/issues/120): Proper Jasmine URL generation when server is `:auto` and using the Jasmine gem.
 

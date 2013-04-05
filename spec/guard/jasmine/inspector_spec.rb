@@ -9,7 +9,7 @@ describe Guard::Jasmine::Inspector do
 
   subject { Guard::Jasmine::Inspector }
 
-  let(:options) { { :spec_dir => 'spec/javascripts' } }
+  let(:options) { { spec_dir: 'spec/javascripts' } }
 
   describe 'clean' do
     it 'allows the Jasmine spec dir' do

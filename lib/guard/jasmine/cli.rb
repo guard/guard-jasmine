@@ -24,113 +24,113 @@ module Guard
       desc 'spec', 'Run the Jasmine spec runner_options'
 
       method_option :server,
-                    :type    => :string,
-                    :aliases => '-s',
-                    :default => 'auto',
-                    :desc    => 'Server to start, either `auto`, `webrick`, `mongrel`, `thin`, `unicorn`, `jasmine_gem` or `none`'
+                    type:    :string,
+                    aliases: '-s',
+                    default: 'auto',
+                    desc:    'Server to start, either `auto`, `webrick`, `mongrel`, `thin`, `unicorn`, `jasmine_gem` or `none`'
 
       method_option :port,
-                    :type    => :numeric,
-                    :aliases => '-p',
-                    :desc    => 'Server port to use'
+                    type:    :numeric,
+                    aliases: '-p',
+                    desc:    'Server port to use'
 
       method_option :server_env,
-                    :type    => :string,
-                    :aliases => '-e',
-                    :default => ENV['RAILS_ENV'] || 'test',
-                    :desc    => 'The server environment to use, for example `development`, `test` etc.'
+                    type:    :string,
+                    aliases: '-e',
+                    default: ENV['RAILS_ENV'] || 'test',
+                    desc:    'The server environment to use, for example `development`, `test` etc.'
 
       method_option :server_timeout,
-                    :type    => :numeric,
-                    :default => 60,
-                    :desc    => 'The number of seconds to wait for the Jasmine spec server'
+                    type:    :numeric,
+                    default: 60,
+                    desc:    'The number of seconds to wait for the Jasmine spec server'
 
       method_option :verbose,
-                    :type    => :boolean,
-                    :default => false,
-                    :desc    => 'Show the server output in the console'
+                    type:    :boolean,
+                    default: false,
+                    desc:    'Show the server output in the console'
 
       method_option :rackup_config,
-                    :type    => :string,
-                    :aliases => '-c',
-                    :desc    => 'The rackup config to use (jasminerice only)'
+                    type:    :string,
+                    aliases: '-c',
+                    desc:    'The rackup config to use (jasminerice only)'
 
       method_option :bin,
-                    :type    => :string,
-                    :aliases => '-b',
-                    :desc    => 'The location of the PhantomJS binary'
+                    type:    :string,
+                    aliases: '-b',
+                    desc:    'The location of the PhantomJS binary'
 
       method_option :spec_dir,
-                    :type    => :string,
-                    :aliases => '-d',
-                    :desc    => 'The directory with the Jasmine specs'
+                    type:    :string,
+                    aliases: '-d',
+                    desc:    'The directory with the Jasmine specs'
 
       method_option :url,
-                    :type    => :string,
-                    :aliases => '-u',
-                    :desc    => 'The url of the Jasmine test runner'
+                    type:    :string,
+                    aliases: '-u',
+                    desc:    'The url of the Jasmine test runner'
 
       method_option :timeout,
-                    :type    => :numeric,
-                    :aliases => '-t',
-                    :default => 60,
-                    :desc    => 'The maximum time in seconds to wait for the spec runner to finish'
+                    type:    :numeric,
+                    aliases: '-t',
+                    default: 60,
+                    desc:    'The maximum time in seconds to wait for the spec runner to finish'
 
       method_option :console,
-                    :type    => :string,
-                    :default => 'failure',
-                    :desc    => 'Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`'
+                    type:    :string,
+                    default: 'failure',
+                    desc:    'Whether to show console.log statements in the spec runner, either `always`, `never` or `failure`'
 
       method_option :errors,
-                    :type    => :string,
-                    :default => 'failure',
-                    :desc    => 'Whether to show errors in the spec runner, either `always`, `never` or `failure`'
+                    type:    :string,
+                    default: 'failure',
+                    desc:    'Whether to show errors in the spec runner, either `always`, `never` or `failure`'
 
       method_option :focus,
-                    :type    => :boolean,
-                    :aliases => '-f',
-                    :default => true,
-                    :desc    => 'Specdoc focus to hide successful tests when at least one test fails'
+                    type:    :boolean,
+                    aliases: '-f',
+                    default: true,
+                    desc:    'Specdoc focus to hide successful tests when at least one test fails'
 
       method_option :specdoc,
-                    :type    => :string,
-                    :default => :always,
-                    :desc    => 'Whether to show successes in the spec runner, either `always`, `never` or `failure`'
+                    type:    :string,
+                    default: :always,
+                    desc:    'Whether to show successes in the spec runner, either `always`, `never` or `failure`'
 
       method_option :coverage,
-                    :type    => :boolean,
-                    :default => false,
-                    :desc    => 'Whether to enable the coverage support or not'
+                    type:    :boolean,
+                    default: false,
+                    desc:    'Whether to enable the coverage support or not'
 
       method_option :coverage_html,
-                    :type    => :boolean,
-                    :default => false,
-                    :desc    => 'Whether to generate html coverage report. Implies --coverage'
+                    type:    :boolean,
+                    default: false,
+                    desc:    'Whether to generate html coverage report. Implies --coverage'
 
       method_option :coverage_summary,
-                    :type    => :boolean,
-                    :default => false,
-                    :desc    => 'Whether to generate html coverage summary. Implies --coverage'
+                    type:    :boolean,
+                    default: false,
+                    desc:    'Whether to generate html coverage summary. Implies --coverage'
 
       method_option :statements_threshold,
-                    :type    => :numeric,
-                    :default => 0,
-                    :desc    => 'Statements coverage threshold'
+                    type:    :numeric,
+                    default: 0,
+                    desc:    'Statements coverage threshold'
 
       method_option :functions_threshold,
-                    :type    => :numeric,
-                    :default => 0,
-                    :desc    => 'Functions coverage threshold'
+                    type:    :numeric,
+                    default: 0,
+                    desc:    'Functions coverage threshold'
 
       method_option :branches_threshold,
-                    :type    => :numeric,
-                    :default => 0,
-                    :desc    => 'Branches coverage threshold'
+                    type:    :numeric,
+                    default: 0,
+                    desc:    'Branches coverage threshold'
 
       method_option :lines_threshold,
-                    :type    => :numeric,
-                    :default => 0,
-                    :desc    => 'Lines coverage threshold'
+                    type:    :numeric,
+                    default: 0,
+                    desc:    'Lines coverage threshold'
 
       # Run the Guard::Jasmine::Runner with options from
       # the command line.

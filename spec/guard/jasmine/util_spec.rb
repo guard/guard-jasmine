@@ -22,7 +22,7 @@ describe Guard::Jasmine::Util do
 
       it 'does show that the runner is available' do
         Guard::Jasmine::Formatter.should_receive(:info).with 'Waiting for Jasmine test runner at http://localhost:8888/jasmine'
-        util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
+        util.runner_available?({ jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15 })
       end
     end
 
@@ -34,7 +34,7 @@ describe Guard::Jasmine::Util do
 
         it 'does show that the runner is not available' do
           Guard::Jasmine::Formatter.should_receive(:error).with 'Jasmine test runner isn\'t available: Connection refused'
-          util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
+          util.runner_available?({ jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15 })
         end
       end
 
@@ -46,7 +46,7 @@ describe Guard::Jasmine::Util do
 
         it 'does show that the runner is not available' do
           Guard::Jasmine::Formatter.should_receive(:error).with 'Jasmine test runner failed with status 404'
-          util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
+          util.runner_available?({ jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15 })
         end
 
         context 'with a response body returned' do
@@ -57,7 +57,7 @@ describe Guard::Jasmine::Util do
           it 'outputs the body for further analysis' do
             Guard::Jasmine::Formatter.should_receive(:error).with 'Jasmine test runner failed with status 404'
             Guard::Jasmine::Formatter.should_receive(:error).with 'Please open the Jasmine runner in your browser for more information.'
-            util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
+            util.runner_available?({ jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15 })
           end
         end
       end
@@ -69,7 +69,7 @@ describe Guard::Jasmine::Util do
 
         it 'does show that the runner is not available' do
           Guard::Jasmine::Formatter.should_receive(:error).with 'Timeout waiting for the Jasmine test runner.'
-          util.runner_available?({ :jasmine_url => 'http://localhost:8888/jasmine', :server_timeout => 15 })
+          util.runner_available?({ jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15 })
         end
       end
     end

@@ -64,7 +64,7 @@ module Guard
                       "Run Jasmine suite#{ paths.size == 1 ? '' : 's' } #{ paths.join(' ') }"
                     end
 
-          Formatter.info(message, :reset => true)
+          Formatter.info(message, reset: true)
         end
 
         # Returns the failed spec file names.
@@ -167,7 +167,7 @@ module Guard
           json = json.encode('UTF-8') if json.respond_to?(:encode)
 
           begin
-            result = MultiJson.decode(json, { :max_nesting => false })
+            result = MultiJson.decode(json, { max_nesting: false })
 
             if result['error']
               notify_runtime_error(result, options)
@@ -204,7 +204,7 @@ module Guard
         def notify_runtime_error(result, options)
           message = "An error occurred: #{ result['error'] }"
           Formatter.error(message)
-          Formatter.notify(message, :title => 'Jasmine error', :image => :failed, :priority => 2) if options[:notification]
+          Formatter.notify(message, title: 'Jasmine error', image: :failed, priority: 2) if options[:notification]
         end
 
         # Notification about a spec run, success or failure,
@@ -231,12 +231,12 @@ module Guard
           if passed
             report_specdoc(result, passed, options)
             Formatter.success(message)
-            Formatter.notify(full_message, :title => 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
+            Formatter.notify(full_message, title: 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
           else
             report_specdoc(result, passed, options)
             Formatter.error(message)
             notify_errors(result, options)
-            Formatter.notify(full_message, :title => 'Jasmine suite failed', :image => :failed, :priority => 2) if options[:notification]
+            Formatter.notify(full_message, title: 'Jasmine suite failed', image: :failed, priority: 2) if options[:notification]
           end
 
           Formatter.info("Done.\n")
@@ -307,10 +307,10 @@ module Guard
 
             if failed
               Formatter.error coverage
-              Formatter.notify(coverage, :title => 'Code coverage failed', :image => :failed, :priority => 2) if options[:notification]
+              Formatter.notify(coverage, title: 'Code coverage failed', image: :failed, priority: 2) if options[:notification]
             else
               Formatter.success 'Code coverage succeed'
-              Formatter.notify('All code is adequately covered with specs', :title => 'Code coverage succeed') if options[:notification] && !options[:hide_success]
+              Formatter.notify('All code is adequately covered with specs', title: 'Code coverage succeed') if options[:notification] && !options[:hide_success]
             end
           end
         end
@@ -523,9 +523,9 @@ module Guard
             if !spec['passed'] && options[:max_error_notify] > index
               msg = spec['messages'].map { |message| format_message(message, true) }.join(', ')
               Formatter.notify("#{ spec['description'] }: #{ msg }",
-                               :title    => 'Jasmine spec failed',
-                               :image    => :failed,
-                               :priority => 2) if options[:notification]
+                               title:    'Jasmine spec failed',
+                               image:    :failed,
+                               priority: 2) if options[:notification]
             end
           end
         end
@@ -575,17 +575,17 @@ module Guard
         #
         def update_coverage(coverage, file, options)
           if file == options[:spec_dir]
-            File.write(coverage_file, MultiJson.encode(coverage, { :max_nesting => false }))
+            File.write(coverage_file, MultiJson.encode(coverage, { max_nesting: false }))
           else
             if File.exist?(coverage_file)
               impl     = file.sub('_spec', '').sub(options[:spec_dir], '')
-              coverage = MultiJson.decode(File.read(coverage_file), { :max_nesting => false })
+              coverage = MultiJson.decode(File.read(coverage_file), { max_nesting: false })
 
               coverage.each do |coverage_file, data|
                 coverage[coverage_file] = data if coverage_file == impl
               end
 
-              File.write(coverage_file, MultiJson.encode(coverage, { :max_nesting => false }))
+              File.write(coverage_file, MultiJson.encode(coverage, { max_nesting: false }))
             else
               File.write(coverage_file, MultiJson.encode({ }))
             end

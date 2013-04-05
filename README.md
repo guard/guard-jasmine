@@ -2,7 +2,7 @@
 
 Guard::Jasmine automatically tests your Jasmine specs when files are modified.
 
-Tested on MRI Ruby 1.8.7, 1.9.2, 1.9.3, REE and the latest versions of JRuby and Rubinius.
+Tested on MRI Ruby 1.9.2, 1.9.3, REE and the latest versions of JRuby and Rubinius.
 
 If you have any questions please join us on our [Google group](http://groups.google.com/group/guard-dev) or on `#guard`
 (irc.freenode.net).
@@ -170,7 +170,7 @@ Now you can access `/jasmine-stories` when you start your Rails server normally.
 accordingly:
 
 ```ruby
-guard :jasmine, :port => 8888, :jasmine_url => 'http://127.0.0.1:8888/jasmine-stories' do
+guard :jasmine, port: 8888, jasmine_url: 'http://127.0.0.1:8888/jasmine-stories' do
   ...
 end
 ```
@@ -234,8 +234,8 @@ It is also possible to use CoffeeScript in this setup, by using [Guard::CoffeeSc
 specs. Just add something like this *before* Guard::Jasmine:
 
 ```ruby
-guard 'coffeescript', :input => 'app/coffeescripts',  :output => 'public/javascripts'
-guard 'coffeescript', :input => 'spec/coffeescripts', :output => 'spec/javascripts'
+guard 'coffeescript', input: 'app/coffeescripts',  output: 'public/javascripts'
+guard 'coffeescript', input: 'spec/coffeescripts', output: 'spec/javascripts'
 ```
 
 ## Ruby projects
@@ -279,7 +279,7 @@ require 'jquery-rails'
 
 class JasmineTest < Rails::Application
   routes.append do
-    mount Jasminerice::Engine => '/jasmine'
+    mount Jasminerice::Engine: '/jasmine'
   end
 
   config.cache_classes = true
@@ -329,7 +329,7 @@ There are many options that can customize Guard::Jasmine to your needs. Options 
 defining the Guard in your `Guardfile`:
 
 ```ruby
-guard 'jasmine', :all_on_start => false, :specdoc => :always do
+guard 'jasmine', all_on_start: false, specdoc: :always do
   ...
 end
 ```
@@ -339,27 +339,27 @@ end
 The server options configures the server environment that is needed to run Guard::Jasmine:
 
 ```ruby
-:server => :jasmine_gem                       # Jasmine server to use, either :auto, :none,
+server:  :jasmine_gem                         # Jasmine server to use, either :auto, :none,
                                               # :webrick, :mongrel, :thin, :unicorn, :jasmine_gem, :puma
                                               # default: :auto
 
-:server_env => :test                          # Jasmine server Rails environment to set,
+server_env:  :test                            # Jasmine server Rails environment to set,
                                               # e.g. :development or :test
                                               # default: RAILS_ENV is exists, otherwise :development
 
-:server_timeout => 30                         # The number of seconds to wait for the Jasmine spec server
+server_timeout:  30                           # The number of seconds to wait for the Jasmine spec server
                                               # default: 15
 
-:port => 8888                                 # Jasmine server port to use.
+port:  8888                                   # Jasmine server port to use.
                                               # default: a random, free server port
 
-:phantomjs_bin => '~/bin/phantomjs'           # Path to phantomjs.
+phantomjs_bin:  '~/bin/phantomjs'             # Path to phantomjs.
                                               # default: auto-detect 'phantomjs'
 
-:timeout => 20                                # The time in seconds to wait for the spec runner to finish.
+timeout:  20                                  # The time in seconds to wait for the spec runner to finish.
                                               # default: 10
 
-:rackup_config => 'spec/dummy/config.ru'      # Path to rackup config file (i.e. for webrick, mongrel, thin, unicorn, puma).
+rackup_config:  'spec/dummy/config.ru'        # Path to rackup config file (i.e. for webrick, mongrel, thin, unicorn, puma).
                                               # default: ./config.ru
                                               # This option is useful when using guard-jasmine in a mountable engine
                                               # and the config.ru is within the dummy app
@@ -369,7 +369,7 @@ If you're setting the `:server` option to `:none` or need to access your specs o
 supply the Jasmine runner url manually:
 
 ```ruby
-:jasmine_url => 'http://192.168.1.5:1234/jasmine'  # URL where Jasmine is served.
+jasmine_url:  'http://192.168.1.5:1234/jasmine'  # URL where Jasmine is served.
                                                    # default: nil
 ```
 You may want to have also a fixed port instead of the random generated one.
@@ -382,7 +382,7 @@ instead of a ridiculous high line number in a single, very large JavaScript.
 
 If you supply an unknown server name as the `:server` option, then Guard::Jasmine will execute
 a `rake` task with the given server name as task in a child process. For example, if you configure
-`:server => 'start_my_server'`, then the command `rake start_my_server` will be executed and
+`server:  'start_my_server'`, then the command `rake start_my_server` will be executed and
 you have to make sure the server starts on the port that you can get from the `JASMINE_PORT`
 environment variable.
 
@@ -391,19 +391,19 @@ environment variable.
 The spec runner options configures the behavior driven development (or BDD) cycle:
 
 ```ruby
-:spec_dir => 'app/spec'                       # Directory with the Jasmine specs.
+spec_dir:  'app/spec'                         # Directory with the Jasmine specs.
                                               # default: 'spec/javascripts'
 
-:clean => false                               # Clean the spec list by only keep Jasmine specs within the project.
+clean:  false                                 # Clean the spec list by only keep Jasmine specs within the project.
                                               # default: true
 
-:all_on_start => false                        # Run all suites on start.
+all_on_start:  false                          # Run all suites on start.
                                               # default: true
 
-:keep_failed => false                         # Keep failed suites and add them to the next run again.
+keep_failed:  false                           # Keep failed suites and add them to the next run again.
                                               # default: true
 
-:all_after_pass => false                      # Run all suites after a suite has passed again
+all_after_pass:  false                        # Run all suites after a suite has passed again
                                               # after failing.
                                               # default: true
 ```
@@ -422,19 +422,19 @@ Guard::Jasmine can generate an RSpec like specdoc in the console after running t
 be shown in the console:
 
 ```ruby
-:specdoc => :always                           # Specdoc output options,
+specdoc: :always                              # Specdoc output options,
                                               # either :always, :never or :failure
                                               # default: :failure
 
-:focus => false                               # Specdoc focus to hide successful specs when
+focus: false                                  # Specdoc focus to hide successful specs when
                                               # at least one spec fails.
                                               # default: true
 
-:console => :always                           # Console.log output options,
+console: :always                              # Console.log output options,
                                               # either :always, :never or :failure
                                               # default: :failure
 
-:errors => :always                            # Error output options,
+errors: :always                               # Error output options,
                                               # either :always, :never or :failure
                                               # default: :failure
 ```
@@ -455,7 +455,7 @@ You may want to have different options when the spec runner runs all specs. You 
 as a Hash that contains any valid runner option and will overwrite the general options.
 
 ```ruby
-:run_all => { :specdoc => :never }            # Run all options,
+run_all: { specdoc:  :never }                 # Run all options,
                                               # Takes any valid option
                                               # default: {}
 ```
@@ -499,7 +499,7 @@ $ npm install -g istanbul
 You also need to explicit enable the coverage support in the options:
 
 ```ruby
-:coverage => true                             # Enable/disable JavaScript coverage support
+coverage: true                                # Enable/disable JavaScript coverage support
                                               # default: false
 ```
 
@@ -524,16 +524,16 @@ By default Guard::Jasmine just outputs the coverage when enable without any effe
 make Guard::Jasmine fail the spec run when a given threshold is not met. You can set the following thresholds:
 
 ```ruby
-:statements_threshold => 95                   # Statements coverage threshold
+statements_threshold: 95                      # Statements coverage threshold
                                               # default: 0
 
-:functions_threshold => 85                    # Functions coverage threshold
+functions_threshold: 85                       # Functions coverage threshold
                                               # default: 0
 
-:branches_threshold => -10                    # Branches coverage threshold
+branches_threshold: -10                       # Branches coverage threshold
                                               # default: 0
 
-:lines_threshold => -15                       # Lines coverage threshold
+lines_threshold: -15                          # Lines coverage threshold
                                               # default: 0
 ```
 
@@ -546,10 +546,10 @@ Guard::Jasmine always shows the Istanbul text report after a spec run that conta
 can also enable two more reports:
 
 ```ruby
-:coverage_html => true                        # Enable Istanbul HTML coverage report
+coverage_html: true                           # Enable Istanbul HTML coverage report
                                               # default: false
 
-:coverage_summary => true                     # Enable Istanbul summary coverage report
+coverage_summary: true                        # Enable Istanbul summary coverage report
                                               # default: false
 ```
 
@@ -568,13 +568,13 @@ name in opposite to Jasmine).
 These options affects what system notifications are shown after a spec run:
 
 ```ruby
-:notifications => false                       # Show success and error notifications.
+notifications: false                          # Show success and error notifications.
                                               # default: true
 
-:hide_success => true                         # Disable successful spec run notification.
+hide_success: true                            # Disable successful spec run notification.
                                               # default: false
 
-:max_error_notify => 5                        # Maximum error notifications to show.
+max_error_notify: 5                           # Maximum error notifications to show.
                                               # default: 3
 ```
 
