@@ -24,7 +24,7 @@ errors = {}
 # Catch JavaScript errors
 #
 page.onError = (msg, trace) ->
-  if currentSpecId && currentSpecId isnt -1
+  if currentSpecId
     errors[currentSpecId] ||= []
     errors[currentSpecId].push({ msg: msg, trace: trace })
 
@@ -42,7 +42,7 @@ page.onConsoleMessage = (msg, line, source) ->
     logs[currentSpecId] = []
 
   else
-    logs[currentSpecId].push(msg) if currentSpecId isnt -1
+    logs[currentSpecId].push(msg)
 
 # Initialize the page before the JavaScript is run.
 #
