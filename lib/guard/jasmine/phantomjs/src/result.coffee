@@ -45,6 +45,19 @@ class Result
 
     suite
 
+  addGlobalError: (suite) ->
+    noSuites = !suite.suites || suite.suites.length == 0
+    noSpecs = !suite.specs || suite.specs.length == 0
+    globalErrors = @errors[-1] && @errors[-1].length != 0
+
+    if noSuites && noSpecs && globalErrors
+      err = @errors[-1][0]
+      errMsg = [ err.msg ]
+      for b in err.trace
+        errMsg.push "\n  #{b.file}:#{b.line} #{b.function}"
+      suite.error = errMsg.join("")
+      suite.passed = false
+
   # Clean unnecessary properties from the result
   #
   # @param [Object] suite the suite result
@@ -69,7 +82,9 @@ class Result
   #
   process: ->
     @addLogs(@result) if @options.console isnt 'never'
-    @addErrors(@result) if @options.errors isnt 'never'
+    if @options.errors isnt 'never'
+      @addErrors(@result)
+      @addGlobalError(@result)
     @cleanResult(@result)
 
     @result
