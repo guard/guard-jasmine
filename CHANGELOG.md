@@ -1,7 +1,6 @@
 # Changelog
 
-## Master
-
+## 1.15.0 - April 8, 2013
 
 - [#123](https://github.com/netzpirat/guard-jasmine/issues/123): Report javascript errors that prevent specs from running. ([@swistak][])
 - Drop support for Ruby 1.8.7
