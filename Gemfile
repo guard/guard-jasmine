@@ -19,7 +19,6 @@ unless ENV['TRAVIS']
   gem 'redcarpet'
   gem 'ruby_gntp'
   gem 'pry'
-  gem 'pry-debugger'
   gem 'yard'
   gem 'yajl-ruby'
 end

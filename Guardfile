@@ -1,5 +1,3 @@
-interactor :coolline
-
 guard :coffeescript, :input => 'lib/guard/jasmine/phantomjs/src', :output => 'lib/guard/jasmine/phantomjs/lib'
 
 guard :coffeescript do
