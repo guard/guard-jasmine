@@ -563,6 +563,20 @@ execute a partial spec run it reports a lower coverage for the excluded files, s
 Guard::Jasmine tries to work around this by merge only the coverage data for the changed files (Istanbul knows the file
 name in opposite to Jasmine).
 
+#### Jenkins CI integration
+
+You can use the Cobertura format to bring coverage support to Jenkins CI, even that Guard::Jasmine has no built in
+support for it. The trick is to preprocess the coverage data with istanbul after the spec run:
+
+```ruby
+desc "Run all JavaScript specs with Istanbul"
+task :jscov => :environment do
+    # Run Jasmine tests with code coverage on and generate Jenkins-compatible Jasmine code coverage report file
+    # For some reason does not work if run as 2 separate exec's, so combine into one
+    exec('guard-jasmine --coverage --coverage-html --coverage-summary; istanbul report cobertura')
+end
+```
+
 ### System notifications options
 
 These options affects what system notifications are shown after a spec run:
