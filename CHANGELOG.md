@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.15.1 - April 10, 2013
 
 - Automatic detect Puma as spec server.
 - [#124](https://github.com/netzpirat/guard-jasmine/pull/124): Fix undefined global logs.
