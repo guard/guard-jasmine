@@ -571,9 +571,9 @@ support for it. The trick is to preprocess the coverage data with istanbul after
 ```ruby
 desc "Run all JavaScript specs with Istanbul"
 task :jscov => :environment do
-    # Run Jasmine tests with code coverage on and generate Jenkins-compatible Jasmine code coverage report file
-    # For some reason does not work if run as 2 separate exec's, so combine into one
-    exec('guard-jasmine --coverage --coverage-html --coverage-summary; istanbul report cobertura')
+  # Run Jasmine tests with code coverage on and generate Jenkins-compatible Jasmine code coverage
+  # report file. For some reason does not work if run as 2 separate exec's, so combine into one.
+  exec('guard-jasmine --coverage --coverage-html --coverage-summary; istanbul report cobertura')
 end
 ```
 
