@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [#124](https://github.com/netzpirat/guard-jasmine/pull/124): Fix undefined global logs.
+
 ## 1.15.0 - April 8, 2013
 
 - [#123](https://github.com/netzpirat/guard-jasmine/issues/123): Report javascript errors that prevent specs from running. ([@swistak][])

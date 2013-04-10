@@ -39,9 +39,9 @@ page.onConsoleMessage = (msg, line, source) ->
 
   else if /^SPEC_START: (\d+)$/.test(msg)
     currentSpecId = Number(RegExp.$1)
-    logs[currentSpecId] = []
 
   else
+    logs[currentSpecId] ||= []
     logs[currentSpecId].push(msg)
 
 # Initialize the page before the JavaScript is run.
@@ -68,7 +68,7 @@ page.open options.url, (status) ->
     phantom.exit()
   else
     runnerAvailable = page.evaluate -> window.jasmine
-      
+
     if runnerAvailable
       done = -> phantom.exit()
       waitFor specsReady, done, options.timeout
