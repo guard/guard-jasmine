@@ -566,7 +566,7 @@ name in opposite to Jasmine).
 #### Jenkins CI integration
 
 You can use the Cobertura format to bring coverage support to Jenkins CI, even that Guard::Jasmine has no built in
-support for it. The trick is to preprocess the coverage data with istanbul after the spec run:
+support for it. The trick is to post-process the coverage data with istanbul after the spec run:
 
 ```ruby
 desc "Run all JavaScript specs with Istanbul"
