@@ -60,7 +60,7 @@ module Guard
         #
         def detect_server(spec_dir)
           if File.exists?('config.ru')
-            %w(unicorn thin mongrel).each do |server|
+            %w(unicorn thin mongrel puma).each do |server|
               begin
                 require server
                 return server.to_sym

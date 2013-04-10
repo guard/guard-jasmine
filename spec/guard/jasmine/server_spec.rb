@@ -237,6 +237,19 @@ describe Guard::Jasmine::Server do
           server.detect_server('spec/javascripts').should eql(:mongrel)
         end
       end
+
+      context 'with puma available' do
+        before do
+          Guard::Jasmine::Server.should_receive(:require).with('unicorn').and_raise LoadError
+          Guard::Jasmine::Server.should_receive(:require).with('thin').and_raise LoadError
+          Guard::Jasmine::Server.should_receive(:require).with('mongrel').and_raise LoadError
+          Guard::Jasmine::Server.should_receive(:require).with('puma').and_return true
+        end
+
+        it 'returns `:puma` as server' do
+          server.detect_server('spec/javascripts').should eql(:puma)
+        end
+      end
     end
 
     context 'with a `support/jasmine.yml` file in the spec folder' do
