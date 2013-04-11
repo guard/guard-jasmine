@@ -761,17 +761,8 @@ Given your configuration, you could also need to set:
 There are many ways to get your Jasmine specs run within a headless environment. If Guard::Jasmine isn't for you,
 I recommend to check out these other brilliant Jasmine runners:
 
-### Guards
-
-* [guard-jasmine-headless-webkit][], a Guard for [jasmine-headless-webkit][], but doesn't run on JRuby.
-* [guard-jasmine-node][] automatically & intelligently executes Jasmine Node.js specs when files are modified.
-* [guard-jessie][] allows to automatically run you Jasmine specs under Node.js using Jessie runner.
-
-### Standalone
-
-* [Evergreen][], runs CoffeeScript specs headless, but has no continuous testing support.
-* [Jezebel][] a Node.js REPL and continuous test runner for [Jessie][], a Node runner for Jasmine, but has no full
-featured browser environment.
+* [guard-konacha][], Automatically run [konacha][] tests through Guard.
+* [Karma][] spectacular Test Runner for JavaScript.
 
 ## How to file an issue
 
@@ -896,14 +887,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [CoffeeScript]: http://jashkenas.github.com/coffee-script/
 [Rails 3.1 asset pipeline]: http://guides.rubyonrails.org/asset_pipeline.html
 [Homebrew]: http://mxcl.github.com/homebrew/
-[Jezebel]: https://github.com/benrady/jezebel
-[Jessie]: https://github.com/futuresimple/jessie
-[guard-jasmine-headless-webkit]: https://github.com/johnbintz/guard-jasmine-headless-webkit
-[jasmine-headless-webkit]: https://github.com/johnbintz/jasmine-headless-webkit/
-[Evergreen]: https://github.com/jnicklas/evergreen
 [PhantomJS script]: https://github.com/netzpirat/guard-jasmine/blob/master/lib/guard/jasmine/phantomjs/guard-jasmine.coffee
 [Guard::CoffeeScript]: https://github.com/guard/guard-coffeescript
 [Sinon.JS]: http://sinonjs.org
-[guard-jasmine-node]: https://github.com/guard/guard-jasmine-node
-[guard-jessie]: https://github.com/guard/guard-jessie
 [Rails asset pipeline]: http://guides.rubyonrails.org/asset_pipeline.html
+[guard-konacha]: https://github.com/alexgb/guard-konacha
+[konacha]: https://github.com/jfirebaugh/konacha
+[Karma]: https://github.com/karma-runner/karma
