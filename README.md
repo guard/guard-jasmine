@@ -762,6 +762,7 @@ There are many ways to get your Jasmine specs run within a headless environment.
 I recommend to check out these other brilliant Jasmine runners:
 
 * [guard-konacha][], Automatically run [konacha][] tests through Guard.
+* [guard-teabag][], Guard-Teabag: Run Javascript tests with Guard and all the features of [Teabag][]
 * [Karma][] spectacular Test Runner for JavaScript.
 
 ## How to file an issue
@@ -894,3 +895,5 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [guard-konacha]: https://github.com/alexgb/guard-konacha
 [konacha]: https://github.com/jfirebaugh/konacha
 [Karma]: https://github.com/karma-runner/karma
+[guard-teabag]: https://github.com/modeset/guard-teabag
+[Teabag]: https://github.com/modeset/teabag
