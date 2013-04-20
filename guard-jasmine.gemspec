@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'multi_json'
   s.add_dependency 'childprocess'
   s.add_dependency 'thor'
+  s.add_dependency 'tilt'
 
   s.add_development_dependency 'bundler'
 
