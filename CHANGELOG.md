@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [#130](https://github.com/netzpirat/guard-jasmine/pull/130): Add tilt as dependency ([@masarakki][]).
+
 ## 1.15.1 - April 10, 2013
 
 - Automatic detect Puma as spec server.
@@ -387,6 +391,7 @@
 [@eventualbuddha]: https://github.com/eventualbuddha
 [@huyhoang1970]: https://github.com/huyhoang1970
 [@jasonm]: https://github.com/jasonm
+[@masarakki]: https://github.com/masarakki
 [@mkdynamic]: https://github.com/mkdynamic
 [@mrship]: https://github.com/mrship
 [@mutru]: https:///github.com/mutru
