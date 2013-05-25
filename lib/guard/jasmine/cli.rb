@@ -110,7 +110,7 @@ module Guard
       method_option :coverage_html_directory,
                     type:    :string,
                     default: "./coverage",
-                    desc:    'Where to save html coverage reports. Implies --coverage_html'
+                    desc:    'Where to save html coverage reports. Defaults to ./coverage'
 
       method_option :coverage_summary,
                     type:    :boolean,
