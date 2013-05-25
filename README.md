@@ -658,7 +658,7 @@ Options:
                                         # Default: always
       [--coverage]                      # Whether to enable the coverage support or not
       [--coverage-html]                 # Whether to generate html coverage report. Implies --coverage
-      [--coverage-html-dir=REPORT_DIR]  # Where to save html coverage reports. Defaults to ./coverage
+      [--coverage-html-dir=REPORT_DIR]  # Where to save html coverage reports. Defaults to ./coverage. Implies --coverage-html
       [--coverage-summary]              # Whether to generate html coverage summary. Implies --coverage
       [--statements-threshold=N]        # Statements coverage threshold
                                         # Default: 0
