@@ -628,45 +628,46 @@ Usage:
   guard-jasmine spec
 
 Options:
-  -s, [--server=SERVER]          # Server to start, either `auto`, `webrick`, `mongrel`, `thin`, `puma`
-                                 # `unicorn`, `jasmine_gem` or `none`
-                                 # Default: auto
-  -p, [--port=N]                 # Server port to use
-                                 # Default: Random free port
-      [--verbose]                # Show the server output in the console
-  -e, [--server-env=SERVER_ENV]  # The server environment to use, for example `development`, `test` etc.
-                                 # Default: test
-      [--server-timeout=N]       # The number of seconds to wait for the Jasmine spec server
-                                 # Default: 15
-  -b, [--bin=BIN]                # The location of the PhantomJS binary
-  -d, [--spec-dir=SPEC_DIR]      # The directory with the Jasmine specs
-                                 # Default: spec/javascripts
-  -u, [--url=URL]                # The url of the Jasmine test runner_options
-                                 # Default: nil
-  -t, [--timeout=N]              # The maximum time in milliseconds to wait for the spec
-                                 # runner to finish
-                                 # Default: 10000
-      [--console=CONSOLE]        # Whether to show console.log statements in the spec runner,
-                                 # either `always`, `never` or `failure`
-                                 # Default: failure
-      [--errors=ERRORS]          # Whether to show errors in the spec runner,
-                                 # either `always`, `never` or `failure`
-                                 # Default: failure
-      [--focus]                  # Specdoc focus to hide successful tests when at least one test fails
-                                 # Default: true
-      [--specdoc=SPECDOC]        # Whether to show successes in the spec runner, either `always`, `never` or `failure`
-                                 # Default: always
-      [--coverage]               # Whether to enable the coverage support or not
-      [--coverage-html]          # Whether to generate html coverage report. Implies --coverage
-      [--coverage-summary]       # Whether to generate html coverage summary. Implies --coverage
-      [--statements-threshold=N] # Statements coverage threshold
-                                 # Default: 0
-      [--functions-threshold=N]  # Functions coverage threshold
-                                 # Default: 0
-      [--branches-threshold=N]   # Branches coverage threshold
-                                 # Default: 0
-      [--lines-threshold=N]      # Lines coverage threshold
-                                 # Default: 0
+  -s, [--server=SERVER]                 # Server to start, either `auto`, `webrick`, `mongrel`, `thin`, `puma`
+                                        # `unicorn`, `jasmine_gem` or `none`
+                                        # Default: auto
+  -p, [--port=N]                        # Server port to use
+                                        # Default: Random free port
+      [--verbose]                       # Show the server output in the console
+  -e, [--server-env=SERVER_ENV]         # The server environment to use, for example `development`, `test` etc.
+                                        # Default: test
+      [--server-timeout=N]              # The number of seconds to wait for the Jasmine spec server
+                                        # Default: 15
+  -b, [--bin=BIN]                       # The location of the PhantomJS binary
+  -d, [--spec-dir=SPEC_DIR]             # The directory with the Jasmine specs
+                                        # Default: spec/javascripts
+  -u, [--url=URL]                       # The url of the Jasmine test runner_options
+                                        # Default: nil
+  -t, [--timeout=N]                     # The maximum time in milliseconds to wait for the spec
+                                        # runner to finish
+                                        # Default: 10000
+      [--console=CONSOLE]               # Whether to show console.log statements in the spec runner,
+                                        # either `always`, `never` or `failure`
+                                        # Default: failure
+      [--errors=ERRORS]                 # Whether to show errors in the spec runner,
+                                        # either `always`, `never` or `failure`
+                                        # Default: failure
+      [--focus]                         # Specdoc focus to hide successful tests when at least one test fails
+                                        # Default: true
+      [--specdoc=SPECDOC]               # Whether to show successes in the spec runner, either `always`, `never` or `failure`
+                                        # Default: always
+      [--coverage]                      # Whether to enable the coverage support or not
+      [--coverage-html]                 # Whether to generate html coverage report. Implies --coverage
+      [--coverage-html-dir=REPORT_DIR]  # Where to save html coverage reports. Defaults to ./coverage. Implies --coverage-html
+      [--coverage-summary]              # Whether to generate html coverage summary. Implies --coverage
+      [--statements-threshold=N]        # Statements coverage threshold
+                                        # Default: 0
+      [--functions-threshold=N]         # Functions coverage threshold
+                                        # Default: 0
+      [--branches-threshold=N]          # Branches coverage threshold
+                                        # Default: 0
+      [--lines-threshold=N]             # Lines coverage threshold
+                                        # Default: 0
 Run the Jasmine spec runner
 ```
 

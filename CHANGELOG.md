@@ -2,6 +2,7 @@
 
 ## Master
 
+- Added CLI runner option for setting directory to save coverage reports in.
 - [#130](https://github.com/netzpirat/guard-jasmine/pull/130): Add tilt as dependency ([@masarakki][]).
 
 ## 1.15.1 - April 10, 2013
