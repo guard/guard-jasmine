@@ -802,7 +802,7 @@ done
             end
 
             it 'uses the passed in file path' do
-              options = defaults.merge({ coverage: true, coverage_html: true, coverage_html_directory: "test/directory/" })
+              options = defaults.merge({ coverage: true, coverage_html: true, coverage_html_dir: "test/directory/" })
               runner.should_receive(:coverage_report_directory).with(options)
               runner.run(['app/test1.js.coffee'], options)
             end

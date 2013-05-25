@@ -107,7 +107,7 @@ module Guard
                     default: false,
                     desc:    'Whether to generate html coverage report. Implies --coverage'
 
-      method_option :coverage_html_directory,
+      method_option :coverage_html_dir,
                     type:    :string,
                     default: "./coverage",
                     desc:    'Where to save html coverage reports. Defaults to ./coverage'
@@ -160,7 +160,7 @@ module Guard
         runner_options[:focus]                    = options.focus
         runner_options[:coverage]                 = options.coverage || options.coverage_html || options.coverage_summary
         runner_options[:coverage_html]            = options.coverage_html
-        runner_options[:coverage_html_directory]  = options.coverage_html_directory
+        runner_options[:coverage_html_dir]        = options.coverage_html_dir
         runner_options[:coverage_summary]         = options.coverage_summary
         runner_options[:statements_threshold]     = options.statements_threshold
         runner_options[:functions_threshold]      = options.functions_threshold

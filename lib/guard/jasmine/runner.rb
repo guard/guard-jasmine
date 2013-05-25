@@ -638,7 +638,7 @@ module Guard
         # @return [String] the coverage report directory
         #
         def coverage_report_directory(options)
-          File.expand_path(options[:coverage_html_directory])
+          File.expand_path(options[:coverage_html_dir])
         end
       end
     end

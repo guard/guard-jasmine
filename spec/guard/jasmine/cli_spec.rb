@@ -91,8 +91,8 @@ describe Guard::Jasmine::CLI do
         end
 
         it 'sets the coverage and coverage html directory' do
-          runner.should_receive(:run).with(anything(), hash_including(coverage_html_directory: "./coverage/js")).and_return [true, []]
-          cli.start(['spec', '--coverage-html-directory', './coverage/js'])
+          runner.should_receive(:run).with(anything(), hash_including(coverage_html_dir: "./coverage/js")).and_return [true, []]
+          cli.start(['spec', '--coverage-html-dir', './coverage/js'])
         end
 
         it 'sets the coverage and coverage summary support' do
@@ -166,7 +166,7 @@ describe Guard::Jasmine::CLI do
         end
 
         it 'sets the coverage html directory' do
-          runner.should_receive(:run).with(anything(), hash_including(coverage_html_directory: "./coverage")).and_return [true, []]
+          runner.should_receive(:run).with(anything(), hash_including(coverage_html_dir: "./coverage")).and_return [true, []]
           cli.start(['spec'])
         end
 
