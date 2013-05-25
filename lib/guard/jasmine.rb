@@ -43,7 +43,7 @@ module Guard
       focus:                    true,
       coverage:                 false,
       coverage_html:            false,
-      coverage_html_dir:  "./coverage",
+      coverage_html_dir:        "./coverage",
       coverage_summary:         false,
       statements_threshold:     0,
       functions_threshold:      0,
