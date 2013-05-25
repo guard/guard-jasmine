@@ -627,6 +627,7 @@ describe Guard::Jasmine::Runner do
             runner.stub(:which).and_return('/bin/istanbul')
             runner.stub(:coverage_file).and_return('tmp/coverage.json')
             runner.stub(:coverage_root).and_return('/projects/secret')
+            runner.stub(:coverage_report_directory).and_return('/coverage/report/directory')
           end
 
           it 'notifies coverage when present' do
@@ -783,7 +784,7 @@ done
             end
 
             it 'generates the html report' do
-              runner.should_receive(:`).with('/bin/istanbul report --root /projects/secret html tmp/coverage.json')
+              runner.should_receive(:`).with('/bin/istanbul report --dir /coverage/report/directory --root /projects/secret html tmp/coverage.json')
               runner.run(['app/test1.js.coffee'], defaults.merge({ coverage: true, coverage_html: true }))
             end
 

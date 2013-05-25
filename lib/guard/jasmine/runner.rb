@@ -319,7 +319,7 @@ module Guard
         # last coverage run.
         #
         def generate_html_report
-          `#{ which('istanbul') } report --root #{ coverage_root } html #{ coverage_file }`
+          `#{ which('istanbul') } report --dir #{ coverage_report_directory } --root #{ coverage_root } html #{ coverage_file }`
           Formatter.info "Updated HTML report available at: #{ File.join('coverage', 'index.html') }"
         end
 
@@ -627,6 +627,14 @@ module Guard
         #
         def coverage_root
           File.expand_path(File.join('tmp', 'coverage'))
+        end
+
+        # Creates and returns the coverage report directory.
+        #
+        # @return [String] the coverage report directory
+        #
+        def coverage_report_directory
+          File.expand_path(File.join('coverage'))
         end
       end
     end
