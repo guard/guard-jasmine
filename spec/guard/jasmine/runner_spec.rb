@@ -627,7 +627,6 @@ describe Guard::Jasmine::Runner do
             runner.stub(:which).and_return('/bin/istanbul')
             runner.stub(:coverage_file).and_return('tmp/coverage.json')
             runner.stub(:coverage_root).and_return('/projects/secret')
-            runner.stub(:coverage_report_directory).and_return('/coverage/report/directory')
           end
 
           it 'notifies coverage when present' do
@@ -781,6 +780,7 @@ done
               runner.stub(:generate_text_report)
               runner.stub(:`)
               runner.stub(:check_coverage)
+              runner.stub(:coverage_report_directory).and_return('/coverage/report/directory')
             end
 
             it 'generates the html report' do
@@ -789,9 +789,24 @@ done
             end
 
             it 'outputs the html report index page' do
-              formatter.should_receive(:info).with('Updated HTML report available at: coverage/index.html')
+              formatter.should_receive(:info).with('Updated HTML report available at: /coverage/report/directory/index.html')
               runner.run(['app/test1.js.coffee'], defaults.merge({ coverage: true, coverage_html: true }))
             end
+          end
+
+          context 'with the coverage html directory set' do
+            before do
+              runner.stub(:generate_text_report)
+              runner.stub(:`)
+              runner.stub(:check_coverage)
+            end
+
+            it 'uses the passed in file path' do
+              options = defaults.merge({ coverage: true, coverage_html: true, coverage_html_directory: "test/directory/" })
+              runner.should_receive(:coverage_report_directory).with(options)
+              runner.run(['app/test1.js.coffee'], options)
+            end
+
           end
         end
       end

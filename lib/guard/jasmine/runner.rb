@@ -265,7 +265,7 @@ module Guard
           check_coverage(options)
 
           if options[:coverage_html]
-            generate_html_report
+            generate_html_report(options)
           end
         end
 
@@ -318,9 +318,12 @@ module Guard
         # Uses the Istanbul text reported to output the result of the
         # last coverage run.
         #
-        def generate_html_report
-          `#{ which('istanbul') } report --dir #{ coverage_report_directory } --root #{ coverage_root } html #{ coverage_file }`
-          Formatter.info "Updated HTML report available at: #{ File.join('coverage', 'index.html') }"
+        # @param [Hash] options for the HTML report
+        #
+        def generate_html_report(options)
+          report_directory = coverage_report_directory(options)
+          `#{ which('istanbul') } report --dir #{ report_directory } --root #{ coverage_root } html #{ coverage_file }`
+          Formatter.info "Updated HTML report available at: #{ report_directory }/index.html"
         end
 
         # Uses the Istanbul text-summary reporter to output the
@@ -631,10 +634,11 @@ module Guard
 
         # Creates and returns the coverage report directory.
         #
+        # @param [Hash] options for the coverage report directory
         # @return [String] the coverage report directory
         #
-        def coverage_report_directory
-          File.expand_path(File.join('coverage'))
+        def coverage_report_directory(options)
+          File.expand_path(options[:coverage_html_directory])
         end
       end
     end
