@@ -1,8 +1,8 @@
 # Changelog
 
-## Master
+## 1.16.0 - Mai 27, 2013
 
-- Added CLI runner option for setting directory to save coverage reports in.
+- Added CLI runner option for setting directory to save coverage reports in. ([@michaelcarter][]).
 - [#130](https://github.com/netzpirat/guard-jasmine/pull/130): Add tilt as dependency ([@masarakki][]).
 
 ## 1.15.1 - April 10, 2013
@@ -394,6 +394,7 @@
 [@jasonm]: https://github.com/jasonm
 [@masarakki]: https://github.com/masarakki
 [@mkdynamic]: https://github.com/mkdynamic
+[@michaelcarter]: https://github.com/michaelcarter
 [@mrship]: https://github.com/mrship
 [@mutru]: https:///github.com/mutru
 [@obrie]: https://github.com/obrie
