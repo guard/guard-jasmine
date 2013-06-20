@@ -170,6 +170,8 @@ module Guard
         runner_options[:hide_success]             = true
         runner_options[:max_error_notify]         = 0
 
+        ::Guard::UI.options = ::Guard::UI.options.merge({ :template => ':message' })
+
         paths = [runner_options[:spec_dir]] if paths.empty?
 
         if CLI.phantomjs_bin_valid?(runner_options[:phantomjs_bin])
