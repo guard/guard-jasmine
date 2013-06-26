@@ -25,6 +25,7 @@ module Guard
       server:                   :auto,
       server_env:               ENV['RAILS_ENV'] || 'development',
       server_timeout:           60,
+      server_mount:             '/jasmine',
       port:                     nil,
       rackup_config:            nil,
       jasmine_url:              nil,
@@ -91,7 +92,7 @@ module Guard
       options[:port]        ||= Jasmine.find_free_server_port
       options[:server]      ||= :auto
       options[:server]        = ::Guard::Jasmine::Server.detect_server(options[:spec_dir]) if options[:server] == :auto
-      options[:jasmine_url]   = "http://localhost:#{ options[:port] }#{ options[:server] == :jasmine_gem ? '/' : '/jasmine' }" unless options[:jasmine_url]
+      options[:jasmine_url]   = "http://localhost:#{ options[:port] }#{ options[:server] == :jasmine_gem ? '/' : options[:server_mount] }" unless options[:jasmine_url]
       options[:specdoc]       = :failure if ![:always, :never, :failure].include? options[:specdoc]
       options[:phantomjs_bin] = Jasmine.which('phantomjs') unless options[:phantomjs_bin]
 
