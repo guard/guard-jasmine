@@ -31,6 +31,10 @@ describe Guard::Jasmine do
         guard.options[:server_timeout].should eql 60
       end
 
+      it 'sets a default :server_mount option' do
+        guard.options[:server_mount].should eql defaults[:server_mount]
+      end
+
       it 'finds a free port for the :port option' do
         Guard::Jasmine.should_receive(:find_free_server_port).and_return 9999
         guard = Guard::Jasmine.new
@@ -166,6 +170,7 @@ describe Guard::Jasmine do
         server:               :jasmine_gem,
         server_env:           'test',
         server_timeout:       20,
+        server_mount:         '/foo',
         port:                 4321,
         rackup_config:        'spec/dummy/config.ru',
         jasmine_url:          'http://192.168.1.5/jasmine',
@@ -202,6 +207,10 @@ describe Guard::Jasmine do
 
       it 'sets the :server_timeout option' do
         guard.options[:server_timeout].should eql 20
+      end
+
+      it 'sets the :server_mount option' do
+        guard.options[:server_mount].should eq '/foo'
       end
 
       it 'sets the :port option' do
@@ -303,9 +312,14 @@ describe Guard::Jasmine do
         guard.options[:jasmine_url].should eql 'http://localhost:4321/'
       end
 
-      it 'sets the jasminerice url' do
+      it 'sets the jasminerice url by default' do
         guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321 })
         guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
+      end
+
+      it 'sets the jasmine runner url as configured' do
+        guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321, server_mount: '/specs' })
+        guard.options[:jasmine_url].should eql 'http://localhost:4321/specs'
       end
     end
 
