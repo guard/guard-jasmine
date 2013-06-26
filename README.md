@@ -643,9 +643,9 @@ Options:
                                         # Default: spec/javascripts
   -u, [--url=URL]                       # The url of the Jasmine test runner_options
                                         # Default: nil
-  -t, [--timeout=N]                     # The maximum time in milliseconds to wait for the spec
+  -t, [--timeout=N]                     # The maximum time in seconds to wait for the spec
                                         # runner to finish
-                                        # Default: 10000
+                                        # Default: 10
       [--console=CONSOLE]               # Whether to show console.log statements in the spec runner,
                                         # either `always`, `never` or `failure`
                                         # Default: failure

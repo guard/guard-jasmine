@@ -5,7 +5,7 @@ phantom.injectJs 'lib/result.js'
 # Set default values
 options =
   url: phantom.args[0] || 'http://127.0.0.1:3000/jasmine'
-  timeout: parseInt(phantom.args[1] || 5000)
+  timeout: parseInt(phantom.args[1] || 10000)
   specdoc: phantom.args[2] || 'failure'
   focus: /true/i.test phantom.args[3]
   console: phantom.args[4] || 'failure'
@@ -53,44 +53,70 @@ page.onInitialized = ->
   page.evaluate ->
     # Attach the console reporter when the document is ready.
     window.onload = ->
+      window.onload = null
       window.resultReceived = false
       window.reporter = new ConsoleReporter()
-      jasmine.getEnv().addReporter(window.reporter)
+      if window.jasmine
+        jasmine.getEnv().addReporter(window.reporter)
 
 # Open web page and run the Jasmine test runner
 #
 page.open options.url, (status) ->
   # Avoid that a failed iframe load breaks the runner, see https://github.com/netzpirat/guard-jasmine/pull/19
   page.onLoadFinished = ->
-
   if status isnt 'success'
     console.log JSON.stringify({ error: "Unable to access Jasmine specs at #{ options.url }" })
     phantom.exit()
   else
-    runnerAvailable = page.evaluate -> window.jasmine
+    waitFor jasmineReady, jasmineAvailable, options.timeout, jasmineMissing
 
-    if runnerAvailable
-      done = -> phantom.exit()
-      waitFor specsReady, done, options.timeout
-    else
-      text = page.evaluate -> document.getElementsByTagName('body')[0]?.innerText
 
-      if text
-        error = """
-                The Jasmine reporter is not available!
+# Test if the jasmine has been loaded
+#
+jasmineReady = ->
+  page.evaluate -> window.jasmine
 
-                #{ text }
-                """
-        console.log JSON.stringify({ error: error })
-      else
-        console.log JSON.stringify({ error: 'The Jasmine reporter is not available!' })
+# Start specs after they are have been loaded
+#
+jasmineAvailable = ->
+  waitFor specsReady, specsDone, options.timeout, specsTimedout
 
-      phantom.exit(1)
+# Error message for when jasmine never loaded asynchronously
+#
+jasmineMissing = ->
+  text = page.evaluate -> document.getElementsByTagName('body')[0].innerText
+
+  if text
+    error = """
+            The Jasmine reporter is not available!
+
+            #{ text }
+            """
+    console.log JSON.stringify({ error: error })
+  else
+    console.log JSON.stringify({ error: 'The Jasmine reporter is not available!' })
 
 # Test if the specs have finished.
 #
 specsReady = ->
   page.evaluate -> window.resultReceived
+
+# Error message for when specs time out
+#
+specsTimedout = ->
+  text = page.evaluate -> document.getElementsByTagName('body')[0].innerText
+  if text
+    error = """
+            Timeout waiting for the Jasmine test results!
+
+            #{ text }
+            """
+    console.log JSON.stringify({ error: error })
+  else
+    console.log JSON.stringify({ error: 'Timeout for the Jasmine test results!' })
+
+specsDone = ->
+  phantom.exit()
 
 # Wait until the test condition is true or a timeout occurs.
 #
@@ -98,30 +124,19 @@ specsReady = ->
 # @param [Function] ready the action when the condition is fulfilled
 # @param [Number] timeout the max amount of time to wait in milliseconds
 #
-waitFor = (test, ready, timeout = 5000) ->
-    start = new Date().getTime()
-    condition = false
+waitFor = (test, ready, timeout = 10000, timeoutFunction) ->
+  start = Date.now()
+  condition = false
 
-    wait = ->
-      if (new Date().getTime() - start < timeout) and not condition
-        condition = test()
+  wait = ->
+    if (Date.now() - start < timeout) and not condition
+      condition = test()
+    else
+      clearInterval interval
+      if condition
+        ready()
       else
-        if not condition
-          text = page.evaluate -> document.getElementsByTagName('body')[0]?.innerText
+        timeoutFunction()
+        phantom.exit(1)
 
-          if text
-            error = """
-                    Timeout waiting for the Jasmine test results!
-
-                    #{ text }
-                    """
-            console.log JSON.stringify({ error: error })
-          else
-            console.log JSON.stringify({ error: 'Timeout waiting for the Jasmine test results!' })
-
-          phantom.exit(1)
-        else
-          ready()
-          clearInterval interval
-
-    interval = setInterval wait, 250
+  interval = setInterval wait, 250
