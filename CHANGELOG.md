@@ -2,6 +2,7 @@
 
 ## Master
 
+- [#134](https://github.com/netzpirat/guard-jasmine/pull/134): Add config option to customize guard-jasmine's server mount point. ([@adamstrickland][]).
 - [#133](https://github.com/netzpirat/guard-jasmine/pull/133): Remove logger timestamp and severity for `guard-jasmine` CI helper. ([@christiannelson][]).
 
 ## 1.16.0 - Mai 27, 2013
@@ -382,6 +383,7 @@
 - Fix inspector glob to get also non-coffee specs.
 - Finish the runner phantomjs bridge.
 
+[@adamstrickland]: https://github.com/adamstrickland
 [@alexspeller]: https://github.com/alexspeller
 [@andersjanmyr]: https://github.com/andersjanmyr
 [@andyw8]: https://github.com/andyw8
