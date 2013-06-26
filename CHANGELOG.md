@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [#133](https://github.com/netzpirat/guard-jasmine/pull/133): Remove logger timestamp and severity for `guard-jasmine` CI helper. ([@christiannelson][]).
+
 ## 1.16.0 - Mai 27, 2013
 
 - Added CLI runner option for setting directory to save coverage reports in. ([@michaelcarter][]).
@@ -383,6 +387,7 @@
 [@andyw8]: https://github.com/andyw8
 [@antono]: https://github.com/antono
 [@arr-ee]: https://github.com/arr-ee
+[@christiannelson]: https://github.com/christiannelson
 [@clumsysnake]: https://github.com/clumsysnake
 [@darrinholst]: https://github.com/darrinholst
 [@dmathieu]: https://github.com/dmathieu
