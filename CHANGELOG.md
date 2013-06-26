@@ -2,6 +2,7 @@
 
 ## Master
 
+- [#135](https://github.com/netzpirat/guard-jasmine/pull/135): Allows Jasmine to be loaded asynchronously, ([@mdeschamps][]).
 - [#134](https://github.com/netzpirat/guard-jasmine/pull/134): Add config option to customize guard-jasmine's server mount point. ([@adamstrickland][]).
 - [#133](https://github.com/netzpirat/guard-jasmine/pull/133): Remove logger timestamp and severity for `guard-jasmine` CI helper. ([@christiannelson][]).
 
@@ -400,6 +401,7 @@
 [@huyhoang1970]: https://github.com/huyhoang1970
 [@jasonm]: https://github.com/jasonm
 [@masarakki]: https://github.com/masarakki
+[@mdeschamp]: https:://github.com/mdeschamps
 [@mkdynamic]: https://github.com/mkdynamic
 [@michaelcarter]: https://github.com/michaelcarter
 [@mrship]: https://github.com/mrship
