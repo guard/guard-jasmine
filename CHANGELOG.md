@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.17.0 - June 27, 2013
 
 - [#135](https://github.com/netzpirat/guard-jasmine/pull/135): Allows Jasmine to be loaded asynchronously, ([@mdeschamps][]).
 - [#134](https://github.com/netzpirat/guard-jasmine/pull/134): Add config option to customize guard-jasmine's server mount point. ([@adamstrickland][]).
