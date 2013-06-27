@@ -127,12 +127,14 @@ specsDone = ->
 waitFor = (test, ready, timeout = 10000, timeoutFunction) ->
   start = Date.now()
   condition = false
+  interval = undefined
 
   wait = ->
     if (Date.now() - start < timeout) and not condition
       condition = test()
     else
       clearInterval interval
+
       if condition
         ready()
       else
