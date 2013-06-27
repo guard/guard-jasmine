@@ -84,7 +84,7 @@ jasmineAvailable = ->
 # Error message for when jasmine never loaded asynchronously
 #
 jasmineMissing = ->
-  text = page.evaluate -> document.getElementsByTagName('body')[0].innerText
+  text = page.evaluate -> document.getElementsByTagName('body')[0]?.innerText
 
   if text
     error = """
@@ -104,7 +104,7 @@ specsReady = ->
 # Error message for when specs time out
 #
 specsTimedout = ->
-  text = page.evaluate -> document.getElementsByTagName('body')[0].innerText
+  text = page.evaluate -> document.getElementsByTagName('body')[0]?.innerText
   if text
     error = """
             Timeout waiting for the Jasmine test results!
