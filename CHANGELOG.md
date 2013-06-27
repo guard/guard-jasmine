@@ -401,7 +401,7 @@
 [@huyhoang1970]: https://github.com/huyhoang1970
 [@jasonm]: https://github.com/jasonm
 [@masarakki]: https://github.com/masarakki
-[@mdeschamp]: https:://github.com/mdeschamps
+[@mdeschamps]: https:://github.com/mdeschamps
 [@mkdynamic]: https://github.com/mkdynamic
 [@michaelcarter]: https://github.com/michaelcarter
 [@mrship]: https://github.com/mrship
