@@ -31,7 +31,7 @@ describe Guard::Jasmine do
         guard.options[:server_timeout].should eql 60
       end
 
-      it 'sets a default :server_mount option' do
+      it 'otherwise the default should be /jasmine' do
         guard.options[:server_mount].should eql defaults[:server_mount]
       end
 
@@ -312,14 +312,28 @@ describe Guard::Jasmine do
         guard.options[:jasmine_url].should eql 'http://localhost:4321/'
       end
 
-      it 'sets the jasminerice url by default' do
-        guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321 })
-        guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
+      context 'sets the url automatically' do
+        it 'when jasmine-rails is in the load path, it sets the jasmine-rails url by default' do
+          # module JasmineRails; end
+          Kernel.const_set('JasmineRails', Module.new)
+          defined?(JasmineRails).should be_true
+
+          guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321 })
+          guard.options[:jasmine_url].should eql 'http://localhost:4321/specs'
+
+          Kernel.send(:remove_const, 'JasmineRails')
+          defined?(JasmineRails).should_not be_true
+        end
+
+        it 'otherwise, it sets the jasminerice url by default' do
+          guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321 })
+          guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
+        end
       end
 
       it 'sets the jasmine runner url as configured' do
-        guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321, server_mount: '/specs' })
-        guard.options[:jasmine_url].should eql 'http://localhost:4321/specs'
+        guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321, server_mount: '/foo' })
+        guard.options[:jasmine_url].should eql 'http://localhost:4321/foo'
       end
     end
 
