@@ -25,7 +25,7 @@ module Guard
       server:                   :auto,
       server_env:               ENV['RAILS_ENV'] || 'development',
       server_timeout:           60,
-      server_mount:             '/jasmine',  # set here for documnetation puprposes; actually determiend at runtime by presence (or lack thereof) of the JasmineRails constant
+      server_mount:             '/jasmine',  # set here for documentation purposes; actually determiend at runtime by presence (or lack thereof) of the JasmineRails constant
       port:                     nil,
       rackup_config:            nil,
       jasmine_url:              nil,
