@@ -60,6 +60,11 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--url', 'http://smackaho.st:3000/jasmine'])
         end
 
+        it 'sets the jasmine mount point' do
+          runner.should_receive(:run).with(anything(), hash_including(server_mount: '/foo')).and_return [true, []]
+          cli.start(['spec', '--mount', '/foo'])
+        end
+
         it 'sets the PhantomJS binary' do
           runner.should_receive(:run).with(anything(), hash_including(phantomjs_bin: '/bin/phantomjs')).and_return [true, []]
           cli.start(['spec', '--bin', '/bin/phantomjs'])

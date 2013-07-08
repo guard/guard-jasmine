@@ -15,7 +15,7 @@ Ruby.
 * Fast headless testing on [PhantomJS][], a full featured WebKit browser with native support for
 various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 
-* Runs the standard Jasmine test runner, so you can use [Jasminerice][] for integrating [Jasmine][] into the
+* Runs the standard Jasmine test runner, so you can use [Jasminerice][] or [jasmine-rails][] for integrating [Jasmine][] into the
 [Rails asset pipeline][] and write your specs in [CoffeeScript][].
 
 * Integrates [Istanbul](https://github.com/gotwarlost/istanbul) to instrument your code in the asset pipeline and
@@ -142,6 +142,34 @@ asset pipeline manifest in `spec/javascripts/spec.js.coffee`:
 It also creates an empty `spec/javascripts/spec.css` file as it is always requested when running specs.
 
 Now you can access `/jasmine` when you start your Rails server normally.
+
+### Jasmine-Rails
+
+[jasmine-rails][] is another option for integrating your [Jasmine][] tests with an asset pipeline-enabled Rails application.  The quick-and-dirty recipe for this is:
+
+1. Add `jasmine-rails` to your `Gemfile`:
+
+    ```ruby
+    group :test do
+      gem "jasmine-rails"
+    end
+    ```
+    
+2. Configure a mount point in your application's `routes.rb` (please refer to the [jasmine-rails][] documentation for more details):
+
+    ```ruby
+    mount JasmineRails::Engine => '/spec' if defined?(JasmineRails)
+    ```
+    
+3. Configure **Guard::Jasmine** to reference the mount point in your `Guardfile`:
+
+    ```ruby
+    guard 'jasmine', :server => :webrick, :server_mount => '/specs' do
+      # watch stuff
+    end
+    ```
+    
+4. Profit!  Seriously, you should be able to access the Jasmine runner at `/specs` within your Rails application, *and* **Guard::Jasmine** should run the same specs.  Now no more excuses, get that javascript tested!
 
 ### Jasmine Stories acceptance tests
 
@@ -884,6 +912,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [PhantomJS build instructions]: http://code.google.com/p/phantomjs/wiki/BuildInstructions
 [Brad Phelan]: http://twitter.com/#!/bradgonesurfing
 [Jasminerice]: https://github.com/bradphelan/jasminerice
+[jasmine-rails]: https://github.com/searls/jasmine-rails
 [Pivotal Labs]: http://pivotallabs.com/
 [Jasmine]: http://pivotal.github.com/jasmine/
 [the Jasmine Gem]: https://github.com/pivotal/jasmine-gem

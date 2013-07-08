@@ -70,6 +70,11 @@ module Guard
                     aliases: '-u',
                     desc:    'The url of the Jasmine test runner'
 
+      method_option :mount,
+                    type:    :string,
+                    aliases: '-m',
+                    desc:    'The mount point of the Jasmine test runner'
+
       method_option :timeout,
                     type:    :numeric,
                     aliases: '-t',
@@ -148,6 +153,7 @@ module Guard
         runner_options[:spec_dir]                 = options.spec_dir || (File.exists?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec')
         runner_options[:server]                   = options.server.to_sym == :auto ? ::Guard::Jasmine::Server.detect_server(runner_options[:spec_dir]) : options.server.to_sym
         runner_options[:jasmine_url]              = options.url || "http://localhost:#{ runner_options[:port] }#{ options.server.to_sym == :jasmine_gem ? '/' : '/jasmine' }"
+        runner_options[:server_mount]             = options.mount || '/jasmine'
         runner_options[:phantomjs_bin]            = options.bin || CLI.which('phantomjs')
         runner_options[:timeout]                  = options.timeout
         runner_options[:verbose]                  = options.verbose

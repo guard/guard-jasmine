@@ -25,7 +25,7 @@ module Guard
       server:                   :auto,
       server_env:               ENV['RAILS_ENV'] || 'development',
       server_timeout:           60,
-      server_mount:             '/jasmine',
+      server_mount:             '/jasmine',  # set here for documentation purposes; actually determiend at runtime by presence (or lack thereof) of the JasmineRails constant
       port:                     nil,
       rackup_config:            nil,
       jasmine_url:              nil,
@@ -61,6 +61,7 @@ module Guard
     # @option options [Integer] :server_timeout the number of seconds to wait for the Jasmine spec server
     # @option options [String] :port the port for the Jasmine test server
     # @option options [String] :rackup_config custom rackup config to use
+    # @option options [String] :server_mount custom mount point to use; defaults to '/specs' if JasmineRails is on the load path, otherwise '/jasmine'
     # @option options [String] :jasmine_url the url of the Jasmine test runner
     # @option options [String] :phantomjs_bin the location of the PhantomJS binary
     # @option options [Integer] :timeout the maximum time in seconds to wait for the spec runner to finish
@@ -86,6 +87,8 @@ module Guard
     # @option options [Hash] :run_all options overwrite options when run all specs
     #
     def initialize(watchers = [], options = { })
+      options[:server_mount] ||= defined?(JasmineRails) ? '/specs' : '/jasmine'
+
       options = DEFAULT_OPTIONS.merge(options)
 
       options[:spec_dir]    ||= File.exists?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec'
