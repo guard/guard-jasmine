@@ -1,8 +1,13 @@
 # Changelog
 
+## Master
+
+- [#141](https://github.com/netzpirat/guard-jasmine/pull/141): Add JUnit XML output ([@edspencer][]).
+- [#138](https://github.com/netzpirat/guard-jasmine/pull/138): Auto detect Jasmine-Rails server mount option. ([@adamstrickland][]).
+
 ## 1.17.0 - June 27, 2013
 
-- [#135](https://github.com/netzpirat/guard-jasmine/pull/135): Allows Jasmine to be loaded asynchronously, ([@mdeschamps][]).
+- [#135](https://github.com/netzpirat/guard-jasmine/pull/135): Allows Jasmine to be loaded asynchronously. ([@mdeschamps][]).
 - [#134](https://github.com/netzpirat/guard-jasmine/pull/134): Add config option to customize guard-jasmine's server mount point. ([@adamstrickland][]).
 - [#133](https://github.com/netzpirat/guard-jasmine/pull/133): Remove logger timestamp and severity for `guard-jasmine` CI helper. ([@christiannelson][]).
 
@@ -396,6 +401,7 @@
 [@dmathieu]: https://github.com/dmathieu
 [@dnagir]: https://github.com/dnagir
 [@DouweM]: https://github.com/DouweM
+[@edspencer]: https://github.com/edspencer
 [@esposito]: https://github.com/esposito
 [@eventualbuddha]: https://github.com/eventualbuddha
 [@huyhoang1970]: https://github.com/huyhoang1970
