@@ -318,14 +318,14 @@ describe Guard::Jasmine do
             stub_const 'JasmineRails', Module.new
           end
 
-          it 'when jasmine-rails is in the load path, it sets the jasmine-rails url by default' do
+          it 'it sets the proper jasmine-rails url by default' do
             guard = Guard::Jasmine.new(nil, { server: :thin, port: 4321 })
             guard.options[:jasmine_url].should eql 'http://localhost:4321/specs'
           end
         end
 
         context 'without JasmineRails module available' do
-          it 'otherwise, it sets the jasminerice url by default' do
+          it 'it sets the jasminerice url by default' do
             guard = Guard::Jasmine.new(nil, { server: :thin, port: 4321 })
             guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
           end
