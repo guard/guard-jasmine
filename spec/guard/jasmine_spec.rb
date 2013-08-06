@@ -313,21 +313,22 @@ describe Guard::Jasmine do
       end
 
       context 'sets the url automatically' do
-        it 'when jasmine-rails is in the load path, it sets the jasmine-rails url by default' do
-          # module JasmineRails; end
-          Kernel.const_set('JasmineRails', Module.new)
-          defined?(JasmineRails).should be_true
+        context 'with JasmineRails module available' do
+          before do
+            stub_const 'JasmineRails', Module.new
+          end
 
-          guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321 })
-          guard.options[:jasmine_url].should eql 'http://localhost:4321/specs'
-
-          Kernel.send(:remove_const, 'JasmineRails')
-          defined?(JasmineRails).should_not be_true
+          it 'when jasmine-rails is in the load path, it sets the jasmine-rails url by default' do
+            guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321 })
+            guard.options[:jasmine_url].should eql 'http://localhost:4321/specs'
+          end
         end
 
-        it 'otherwise, it sets the jasminerice url by default' do
-          guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321 })
-          guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
+        context 'without JasmineRails module available' do
+          it 'otherwise, it sets the jasminerice url by default' do
+            guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321 })
+            guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
+          end
         end
       end
 
