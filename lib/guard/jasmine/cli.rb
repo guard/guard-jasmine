@@ -142,6 +142,21 @@ module Guard
                     default: 0,
                     desc:    'Lines coverage threshold'
 
+      method_option :junit,
+                    type: :boolean,
+                    default: false
+                    desc: 'Whether to save jasmine test results in JUnit-compatible xml files'
+
+      method_option :junit_consolidate,
+                    type: :boolean,
+                    default: false
+                    desc: 'Whether to save nested describes within the same xml file as their parent'
+
+      method_option :junit_save_path,
+                    type: :string,
+                    default: ''
+                    desc: 'The directory to save junit xml files into'
+
       # Run the Guard::Jasmine::Runner with options from
       # the command line.
       #
@@ -175,6 +190,9 @@ module Guard
         runner_options[:notification]             = false
         runner_options[:hide_success]             = true
         runner_options[:max_error_notify]         = 0
+        runner_options[:junit]                    = options.junit
+        runner_options[:junit_consolidate]        = options.junit_consolidate
+        runner_options[:junit_save_path]          = options.junit_save_path
 
         ::Guard::UI.options = ::Guard::UI.options.merge({ :template => ':message' })
 
