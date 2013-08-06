@@ -103,10 +103,10 @@ module Guard
             options[:errors],
             options[:junit],
             options[:junit_consolidate],
-            "\"#{options[:junit_save_path]}\""
+            "'#{ options[:junit_save_path] }'"
           ]
 
-          IO.popen("#{ phantomjs_command(options) } \"#{ suite }\" #{arguments.collect {|i| i.to_s}.join(" ")}", 'r:UTF-8')
+          IO.popen("#{ phantomjs_command(options) } \"#{ suite }\" #{ arguments.collect { |i| i.to_s }.join(' ')}", 'r:UTF-8')
         end
 
         # Get the PhantomJS binary and script to execute.

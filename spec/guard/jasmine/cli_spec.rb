@@ -145,6 +145,23 @@ describe Guard::Jasmine::CLI do
             cli.start(['spec', '--errors', 'wrong'])
           end
         end
+
+        context 'for the junit options' do
+          it 'sets the junit options to false' do
+            runner.should_receive(:run).with(anything(), hash_including(junit: true)).and_return [true, []]
+            cli.start(['spec', '--junit'])
+          end
+
+          it 'sets the junit consolidate option' do
+            runner.should_receive(:run).with(anything(), hash_including(junit_consolidate: true)).and_return [true, []]
+            cli.start(['spec', '--junit-consolidate'])
+          end
+
+          it 'sets the junit save path' do
+            runner.should_receive(:run).with(anything(), hash_including(junit_save_path: '/home/user')).and_return [true, []]
+            cli.start(['spec', '--junit-save-path', '/home/user'])
+          end
+        end
       end
     end
 

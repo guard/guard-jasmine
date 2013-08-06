@@ -202,7 +202,7 @@ describe Guard::Jasmine::Runner do
 
     context 'when passed the spec directory' do
       it 'requests all jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure", "r:UTF-8")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false true ''", "r:UTF-8")
         runner.run(['spec/javascripts'], defaults.merge({ notification: false }))
       end
 
@@ -213,9 +213,26 @@ describe Guard::Jasmine::Runner do
       end
     end
 
+    context 'when passing junit options' do
+      it 'passes the junit option to the runner' do
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure true true ''", "r:UTF-8")
+        runner.run(['spec/javascripts'], defaults.merge({ junit: true }))
+      end
+
+      it 'passes the junit consolidate option' do
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false false ''", "r:UTF-8")
+        runner.run(['spec/javascripts'], defaults.merge({ junit_consolidate: false }))
+      end
+
+      it 'passes the junit save path' do
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false true '/home/user'", "r:UTF-8")
+        runner.run(['spec/javascripts'], defaults.merge({ junit_save_path: '/home/user' }))
+      end
+    end
+
     context 'for an erroneous Jasmine runner' do
       it 'requests the jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=ErrorTest\" 60000 failure true failure failure", "r:UTF-8")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=ErrorTest\" 60000 failure true failure failure false true ''", "r:UTF-8")
         runner.run(['spec/javascripts/a.js.coffee'], defaults)
       end
 
@@ -265,7 +282,7 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=FailureTest\" 60000 failure true failure failure", "r:UTF-8")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=FailureTest\" 60000 failure true failure failure false true ''", "r:UTF-8")
         runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
       end
 
@@ -609,7 +626,7 @@ describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=SuccessTest\" 60000 failure true failure failure", "r:UTF-8")
+        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=SuccessTest\" 60000 failure true failure failure false true ''", "r:UTF-8")
 
         runner.run(['spec/javascripts/t.js'], defaults)
       end
