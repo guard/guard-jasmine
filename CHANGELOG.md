@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.18.0 - August 6, 2013
 
 - [#141](https://github.com/netzpirat/guard-jasmine/pull/141): Add JUnit XML output ([@edspencer][]).
 - [#138](https://github.com/netzpirat/guard-jasmine/pull/138): Auto detect Jasmine-Rails server mount option. ([@adamstrickland][]).
