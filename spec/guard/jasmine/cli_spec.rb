@@ -234,6 +234,24 @@ describe Guard::Jasmine::CLI do
           end
         end
 
+        context 'with JasmineRails module available' do
+          before do
+          stub_const 'JasmineRails', Module.new
+          end
+
+          it 'sets the server mount' do
+            runner.should_receive(:run).with(anything(), hash_including(server_mount: '/specs')).and_return [true, []]
+            cli.start(['spec'])
+          end
+        end
+
+        context 'without JasmineRails module available' do
+          it 'sets the server mount' do
+            runner.should_receive(:run).with(anything(), hash_including(server_mount: '/jasmine')).and_return [true, []]
+            cli.start(['spec'])
+          end
+        end
+
         it 'sets the spec dir' do
           runner.should_receive(:run).with(anything(), hash_including(spec_dir: 'spec')).and_return [true, []]
           cli.start(['spec'])
