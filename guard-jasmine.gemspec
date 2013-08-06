@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/netzpirat/guard-jasmine'
   s.summary     = 'Guard gem for headless testing with Jasmine'
   s.description = 'Guard::Jasmine automatically tests your Jasmine specs on PhantomJS'
+  s.license     = 'MIT'
 
   s.required_rubygems_version = '>= 1.3.6'
   s.rubyforge_project = 'guard-jasmine'
