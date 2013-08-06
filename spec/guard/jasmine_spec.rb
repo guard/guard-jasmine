@@ -319,21 +319,21 @@ describe Guard::Jasmine do
           end
 
           it 'when jasmine-rails is in the load path, it sets the jasmine-rails url by default' do
-            guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321 })
+            guard = Guard::Jasmine.new(nil, { server: :thin, port: 4321 })
             guard.options[:jasmine_url].should eql 'http://localhost:4321/specs'
           end
         end
 
         context 'without JasmineRails module available' do
           it 'otherwise, it sets the jasminerice url by default' do
-            guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321 })
+            guard = Guard::Jasmine.new(nil, { server: :thin, port: 4321 })
             guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
           end
         end
       end
 
       it 'sets the jasmine runner url as configured' do
-        guard = Guard::Jasmine.new(nil, { server: :thin, port:   4321, server_mount: '/foo' })
+        guard = Guard::Jasmine.new(nil, { server: :thin, port: 4321, server_mount: '/foo' })
         guard.options[:jasmine_url].should eql 'http://localhost:4321/foo'
       end
     end
