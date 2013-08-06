@@ -49,7 +49,10 @@ module Guard
       statements_threshold:     0,
       functions_threshold:      0,
       branches_threshold:       0,
-      lines_threshold:          0
+      lines_threshold:          0,
+      junit:                    false,
+      junit_consolidate:        true,
+      junit_save_path:          ''
     }
 
     # Initialize Guard::Jasmine.
