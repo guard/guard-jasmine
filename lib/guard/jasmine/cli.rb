@@ -143,19 +143,19 @@ module Guard
                     desc:    'Lines coverage threshold'
 
       method_option :junit,
-                    type: :boolean,
-                    default: false
-                    desc: 'Whether to save jasmine test results in JUnit-compatible xml files'
+                    type:    :boolean,
+                    default: false,
+                    desc:    'Whether to save jasmine test results in JUnit-compatible xml files'
 
       method_option :junit_consolidate,
-                    type: :boolean,
-                    default: false
-                    desc: 'Whether to save nested describes within the same xml file as their parent'
+                    type:    :boolean,
+                    default: false,
+                    desc:    'Whether to save nested describes within the same xml file as their parent'
 
       method_option :junit_save_path,
-                    type: :string,
-                    default: ''
-                    desc: 'The directory to save junit xml files into'
+                    type:    :string,
+                    default: '',
+                    desc:    'The directory to save junit xml files into'
 
       # Run the Guard::Jasmine::Runner with options from
       # the command line.
