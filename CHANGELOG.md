@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.18.1 - August 22, 2013
 
 - [#143](https://github.com/netzpirat/guard-jasmine/issue/143): Use Engine initializer to register postprocessor.
 
