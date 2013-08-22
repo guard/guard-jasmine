@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [#143](https://github.com/netzpirat/guard-jasmine/issue/143): Use Engine initializer to register postprocessor.
+
 ## 1.18.0 - August 6, 2013
 
 - [#141](https://github.com/netzpirat/guard-jasmine/pull/141): Add JUnit XML output ([@edspencer][]).
