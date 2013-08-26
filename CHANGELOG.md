@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [#145](https://github.com/netzpirat/guard-jasmine/issue/145): Exit CLI runner with nonzero exit code when PhantomJS crashes, send empty or invalid response.
+
 ## 1.18.1 - August 22, 2013
 
 - [#143](https://github.com/netzpirat/guard-jasmine/issue/143): Use Engine initializer to register postprocessor.

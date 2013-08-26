@@ -193,6 +193,7 @@ module Guard
         runner_options[:junit]                    = options.junit
         runner_options[:junit_consolidate]        = options.junit_consolidate
         runner_options[:junit_save_path]          = options.junit_save_path
+        runner_options[:is_cli]                   = true
 
         ::Guard::UI.options = ::Guard::UI.options.merge({ :template => ':message' })
 

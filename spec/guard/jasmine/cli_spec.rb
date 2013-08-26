@@ -372,6 +372,12 @@ describe Guard::Jasmine::CLI do
         runner.should_receive(:run).with(anything(), hash_including(max_error_notify: 0)).and_return [true, []]
         cli.start(['spec'])
       end
+
+      it 'sets :is_cli option to true' do
+        runner.should_receive(:run).with(anything(), hash_including(is_cli: true)).and_return [true, []]
+        cli.start(['spec'])
+      end
+
     end
 
     context 'without a valid phantomjs executable' do

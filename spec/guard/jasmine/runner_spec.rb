@@ -13,6 +13,17 @@ describe Guard::Jasmine::Runner do
     spec_dir:      'spec/javascripts'  })
   }
 
+  let(:phantomjs_empty_response) do
+    <<-JSON
+    JSON
+  end
+
+  let(:phantomjs_invalid_response) do
+    <<-JSON
+      { 1 }
+    JSON
+  end
+
   let(:phantomjs_error_response) do
     <<-JSON
     {
@@ -274,6 +285,36 @@ describe Guard::Jasmine::Runner do
       end
     end
 
+    context 'exceptions for the CLI runner' do
+      before do
+        File.stub(:foreach).and_yield 'describe "FailureTest", ->'
+      end
+
+      it 'raises an error with an empty JSON response' do
+        IO.stub(:popen).and_return StringIO.new(phantomjs_empty_response)
+
+        expect do
+          runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge(is_cli: true))
+        end.to raise_error 'No response from Jasmine runner'
+      end
+
+      it 'raises an error with an invalid JSON response' do
+        IO.stub(:popen).and_return StringIO.new(phantomjs_invalid_response)
+
+        expect do
+          runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge(is_cli: true))
+        end.to raise_error 'Cannot decode JSON from PhantomJS runner'
+      end
+
+      it 'raises an error with an error JSON response' do
+        IO.stub(:popen).and_return StringIO.new(phantomjs_error_response)
+
+        expect do
+          runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge(is_cli: true))
+        end.to raise_error 'An error occurred in the Jasmine runner'
+      end
+    end
+
     context 'for a failing Jasmine runner' do
       before do
         File.stub(:foreach).and_yield 'describe "FailureTest", ->'
@@ -291,7 +332,6 @@ describe Guard::Jasmine::Runner do
         response.first.should be_false
         response.last.should =~ ['spec/javascripts/x/b.js.coffee']
       end
-
 
       it 'does not show coverage' do
         runner.should_not_receive(:notify_coverage_result)

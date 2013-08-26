@@ -180,15 +180,20 @@ module Guard
 
           begin
             result = MultiJson.decode(json, { max_nesting: false })
+            raise 'No response from Jasmine runner' if !result && options[:is_cli]
 
             if result['error']
-              notify_runtime_error(result, options)
-            else
+              if options[:is_cli]
+                raise 'An error occurred in the Jasmine runner'
+              else
+                notify_runtime_error(result, options)
+              end
+            elsif result
               result['file'] = file
               notify_spec_result(result, options)
             end
 
-            if result['coverage'] && options[:coverage]
+            if result && result['coverage'] && options[:coverage]
               notify_coverage_result(result['coverage'], file, options)
             end
 
@@ -196,10 +201,18 @@ module Guard
 
           rescue MultiJson::DecodeError => e
             if e.data == ''
-              Formatter.error('No response from the Jasmine runner!')
+              if options[:is_cli]
+                raise 'No response from Jasmine runner'
+              else
+                Formatter.error('No response from the Jasmine runner!')
+              end
             else
-              Formatter.error("Cannot decode JSON from PhantomJS runner: #{ e.message }")
-              Formatter.error("JSON response: #{ e.data }")
+              if options[:is_cli]
+                raise 'Cannot decode JSON from PhantomJS runner'
+              else
+                Formatter.error("Cannot decode JSON from PhantomJS runner: #{ e.message }")
+                Formatter.error("JSON response: #{ e.data }")
+              end
             end
           ensure
             output.close
