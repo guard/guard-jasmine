@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.18.2 - August 26, 2013
 
 - [#145](https://github.com/netzpirat/guard-jasmine/issue/145): Exit CLI runner with nonzero exit code when PhantomJS crashes, send empty or invalid response.
 
