@@ -577,6 +577,9 @@ can also enable two more reports:
 coverage_html: true                           # Enable Istanbul HTML coverage report
                                               # default: false
 
+coverage_html_dir: './coverage'               # Directory to write Istanbul HTML coverage report to
+                                              # default: './coverage'
+
 coverage_summary: true                        # Enable Istanbul summary coverage report
                                               # default: false
 ```
