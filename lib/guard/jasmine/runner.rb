@@ -277,20 +277,24 @@ module Guard
         # @option options [Boolean] :hide_success hide success message notification
         #
         def notify_coverage_result(coverage, file, options)
-          FileUtils.mkdir_p(coverage_root) unless File.exist?(coverage_root)
+          if coverage_bin
+            FileUtils.mkdir_p(coverage_root) unless File.exist?(coverage_root)
 
-          update_coverage(coverage, file, options)
+            update_coverage(coverage, file, options)
 
-          if options[:coverage_summary]
-            generate_summary_report
+            if options[:coverage_summary]
+              generate_summary_report
+            else
+              generate_text_report(file, options)
+            end
+
+            check_coverage(options)
+
+            if options[:coverage_html]
+              generate_html_report(options)
+            end
           else
-            generate_text_report(file, options)
-          end
-
-          check_coverage(options)
-
-          if options[:coverage_html]
-            generate_html_report(options)
+            Formatter.error('Skipping coverage report: unable to locate istanbul in your PATH')
           end
         end
 
