@@ -14,8 +14,6 @@ class JasmineCoverage < Tilt::Template
   end
 
   # Returns a coverage instrumented JavaScript file
-  # when the environment variable `JSCOVERAGE` is `true`
-  # and the `jscoverage` binary is in the `$PATH`.
   #
   def evaluate(context, locals)
     return data unless JasmineCoverage.coverage_bin
