@@ -312,7 +312,7 @@ module Guard
 
           puts ''
 
-          `#{ which('istanbul') } report --root #{ coverage_root } text #{ coverage_file }`.each_line do |line|
+          `#{coverage_bin} report --root #{ coverage_root } text #{ coverage_file }`.each_line do |line|
             puts line.sub(/\n$/, '') if line =~ matcher
           end
 
@@ -326,7 +326,7 @@ module Guard
         #
         def check_coverage(options)
           if any_coverage_threshold?(options)
-            coverage = `#{ which('istanbul') } check-coverage #{ istanbul_coverage_options(options) } #{ coverage_file } 2>&1`
+            coverage = `#{coverage_bin} check-coverage #{ istanbul_coverage_options(options) } #{ coverage_file } 2>&1`
             coverage = coverage.split("\n").grep(/ERROR/).join.sub('ERROR:', '')
             failed   = $? && $?.exitstatus != 0
 
@@ -347,7 +347,7 @@ module Guard
         #
         def generate_html_report(options)
           report_directory = coverage_report_directory(options)
-          `#{ which('istanbul') } report --dir #{ report_directory } --root #{ coverage_root } html #{ coverage_file }`
+          `#{coverage_bin} report --dir #{ report_directory } --root #{ coverage_root } html #{ coverage_file }`
           Formatter.info "Updated HTML report available at: #{ report_directory }/index.html"
         end
 
@@ -359,7 +359,7 @@ module Guard
 
           puts ''
 
-          `#{ which('istanbul') } report --root #{ coverage_root } text-summary #{ coverage_file }`.each_line do |line|
+          `#{coverage_bin} report --root #{ coverage_root } text-summary #{ coverage_file }`.each_line do |line|
             puts line.sub(/\n$/, '') if line =~ /\)$/
           end
 
@@ -638,6 +638,14 @@ module Guard
             threshold = options[name]
             coverage << (threshold != 0 ? "--#{ name.to_s.sub('_threshold', '') } #{ threshold }" : '')
           end.reject(&:empty?).join(' ')
+        end
+
+        # Returns the coverage executable path.
+        #
+        # @return [String] the path
+        #
+        def coverage_bin
+          @coverage_bin ||= which 'istanbul'
         end
 
         # Get the coverage file to save all coverage data.
