@@ -1,6 +1,6 @@
 # Changelog
 
-## Master
+## 1.18.3 - August 31, 2013
 
 - [#146](https://github.com/netzpirat/guard-jasmine/issue/146): Gracefully fail if istanbul is not installed. ([@nfm][])
 
