@@ -1,5 +1,9 @@
 # Changelog
 
+## Master
+
+- [#146](https://github.com/netzpirat/guard-jasmine/issue/146): Gracefully fail if istanbul is not installed. ([@nfm][])
+
 ## 1.18.2 - August 26, 2013
 
 - [#145](https://github.com/netzpirat/guard-jasmine/issue/145): Exit CLI runner with nonzero exit code when PhantomJS crashes, send empty or invalid response.
@@ -420,6 +424,7 @@
 [@michaelcarter]: https://github.com/michaelcarter
 [@mrship]: https://github.com/mrship
 [@mutru]: https:///github.com/mutru
+[@nfm]: https:///github.com/nfm
 [@obrie]: https://github.com/obrie
 [@pushbang]: https://github.com/pushbang
 [@pschyska]: https://github.com/pschyska
