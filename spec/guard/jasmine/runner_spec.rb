@@ -681,7 +681,7 @@ describe Guard::Jasmine::Runner do
         context 'when coverage is present' do
           before do
             IO.stub(:popen).and_return StringIO.new(phantomjs_coverage_response)
-            runner.stub(:which).and_return('/bin/istanbul')
+            runner.stub(:coverage_bin).and_return('/bin/istanbul')
             runner.stub(:coverage_file).and_return('tmp/coverage.json')
             runner.stub(:coverage_root).and_return('/projects/secret')
           end
@@ -864,6 +864,14 @@ done
               runner.run(['app/test1.js.coffee'], options)
             end
 
+          end
+
+          context "when istanbul is not found" do
+            it "prints an error message telling the user istanbul could not be found" do
+              runner.stub(:coverage_bin).and_return(nil)
+              formatter.should_receive(:error).with('Skipping coverage report: unable to locate istanbul in your PATH')
+              runner.run(['spec/javascripts/t.js.coffee'], defaults.merge({ coverage: true, statements_threshold: 12 }))
+            end
           end
         end
       end
