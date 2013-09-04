@@ -158,7 +158,7 @@ Now you can access `/jasmine` when you start your Rails server normally.
 2. Configure a mount point in your application's `routes.rb` (please refer to the [jasmine-rails][] documentation for more details):
 
     ```ruby
-    mount JasmineRails::Engine => '/spec' if defined?(JasmineRails)
+    mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
     ```
     
 3. Configure **Guard::Jasmine** to reference the mount point in your `Guardfile`:
