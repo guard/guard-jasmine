@@ -5,7 +5,7 @@ describe Guard::Jasmine::Util do
 
   describe '.runner_available?' do
     let(:http) do
-      mock('http').tap do |http|
+      double('http').tap do |http|
         http.stub(:start).and_yield
         http.stub(:read_timeout=).and_return(nil)
       end
