@@ -17,7 +17,6 @@ unless ENV['TRAVIS']
   gem 'coolline'
   gem 'rb-fsevent'
   gem 'redcarpet'
-  gem 'ruby_gntp'
   gem 'pry'
   gem 'yard'
   gem 'yajl-ruby'
