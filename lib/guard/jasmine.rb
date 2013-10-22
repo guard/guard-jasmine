@@ -103,7 +103,7 @@ module Guard
 
       self.run_all_options = options.delete(:run_all) || { }
 
-      super(options)
+      super
 
       self.last_run_failed   = false
       self.last_failed_paths = []
