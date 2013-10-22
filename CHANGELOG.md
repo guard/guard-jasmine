@@ -1,5 +1,10 @@
 # Changelog
 
+## Master
+
+- Upgrade to Guard 2.0
+- [#152](https://github.com/netzpirat/guard-jasmine/issue/152): Change `run_on_change` to `run_on_modifications`. ([@pjurczynski][])
+
 ## 1.18.3 - August 31, 2013
 
 - [#146](https://github.com/netzpirat/guard-jasmine/issue/146): Gracefully fail if istanbul is not installed. ([@nfm][])
@@ -426,6 +431,7 @@
 [@mutru]: https:///github.com/mutru
 [@nfm]: https:///github.com/nfm
 [@obrie]: https://github.com/obrie
+[@pjurczynski]: https://github.com/pjurczynski
 [@pushbang]: https://github.com/pushbang
 [@pschyska]: https://github.com/pschyska
 [@richo]: https://github.com/richo
