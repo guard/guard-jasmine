@@ -1,4 +1,4 @@
-guard :coffeescript, :input => 'lib/guard/jasmine/phantomjs/src', :output => 'lib/guard/jasmine/phantomjs/lib'
+guard :coffeescript, input: 'lib/guard/jasmine/phantomjs/src', output: 'lib/guard/jasmine/phantomjs/lib'
 
 guard :coffeescript do
   watch(%r{lib/guard/jasmine/phantomjs/guard-jasmine\.coffee})
