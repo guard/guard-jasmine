@@ -9,7 +9,7 @@ module Guard
   # The Jasmine guard that gets notifications about the following
   # Guard events: `start`, `stop`, `reload`, `run_all` and `run_on_modifications`.
   #
-  class Jasmine < Guard
+  class Jasmine < Plugin
 
     require 'guard/jasmine/coverage'
     require 'guard/jasmine/inspector'
@@ -57,7 +57,6 @@ module Guard
 
     # Initialize Guard::Jasmine.
     #
-    # @param [Array<Guard::Watcher>] watchers the watchers in the Guard block
     # @param [Hash] options the options for the Guard
     # @option options [String] :server the server to use, either :auto, :none, :webrick, :mongrel, :thin, :jasmine_gem, or a custom rake task
     # @option options [String] :server_env the server environment to use, for example :development, :test
@@ -89,7 +88,7 @@ module Guard
     # @option options [Symbol] :lines_threshold options for the statement lines threshold
     # @option options [Hash] :run_all options overwrite options when run all specs
     #
-    def initialize(watchers = [], options = { })
+    def initialize(options = { })
       options[:server_mount] ||= defined?(JasmineRails) ? '/specs' : '/jasmine'
 
       options = DEFAULT_OPTIONS.merge(options)
@@ -104,7 +103,7 @@ module Guard
 
       self.run_all_options = options.delete(:run_all) || { }
 
-      super(watchers, options)
+      super(options)
 
       self.last_run_failed   = false
       self.last_failed_paths = []

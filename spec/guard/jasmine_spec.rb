@@ -166,7 +166,7 @@ describe Guard::Jasmine do
     end
 
     context 'with other options than the default ones' do
-      let(:guard) { Guard::Jasmine.new(nil, {
+      let(:guard) { Guard::Jasmine.new({
         server:               :jasmine_gem,
         server_env:           'test',
         server_timeout:       20,
@@ -308,7 +308,7 @@ describe Guard::Jasmine do
 
     context 'without the jasmine url' do
       it 'sets the jasmine gem url' do
-        guard = Guard::Jasmine.new(nil, { server: :jasmine_gem, port:   4321 })
+        guard = Guard::Jasmine.new({ server: :jasmine_gem, port:   4321 })
         guard.options[:jasmine_url].should eql 'http://localhost:4321/'
       end
 
@@ -319,27 +319,27 @@ describe Guard::Jasmine do
           end
 
           it 'it sets the proper jasmine-rails url by default' do
-            guard = Guard::Jasmine.new(nil, { server: :thin, port: 4321 })
+            guard = Guard::Jasmine.new({ server: :thin, port: 4321 })
             guard.options[:jasmine_url].should eql 'http://localhost:4321/specs'
           end
         end
 
         context 'without JasmineRails module available' do
           it 'it sets the jasminerice url by default' do
-            guard = Guard::Jasmine.new(nil, { server: :thin, port: 4321 })
+            guard = Guard::Jasmine.new({ server: :thin, port: 4321 })
             guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
           end
         end
       end
 
       it 'sets the jasmine runner url as configured' do
-        guard = Guard::Jasmine.new(nil, { server: :thin, port: 4321, server_mount: '/foo' })
+        guard = Guard::Jasmine.new({ server: :thin, port: 4321, server_mount: '/foo' })
         guard.options[:jasmine_url].should eql 'http://localhost:4321/foo'
       end
     end
 
     context 'with run all options' do
-      let(:guard) { Guard::Jasmine.new(nil, { run_all: { test: true } }) }
+      let(:guard) { Guard::Jasmine.new({ run_all: { test: true } }) }
 
       it 'removes them from the default options' do
         guard.options[:run_all].should be_nil
@@ -352,7 +352,7 @@ describe Guard::Jasmine do
     end
 
     context 'with a port but no jasmine_url option set' do
-      let(:guard) { Guard::Jasmine.new(nil, { port: 4321 }) }
+      let(:guard) { Guard::Jasmine.new({ port: 4321 }) }
 
       it 'sets the port on the jasmine_url' do
         guard.options[:jasmine_url].should eql 'http://localhost:4321/jasmine'
@@ -368,7 +368,7 @@ describe Guard::Jasmine do
     end
 
     context 'with illegal options' do
-      let(:guard) { Guard::Jasmine.new(nil, defaults.merge({ specdoc: :wrong, server: :unknown })) }
+      let(:guard) { Guard::Jasmine.new(defaults.merge({ specdoc: :wrong, server: :unknown })) }
 
       it 'sets default :specdoc option' do
         guard.options[:specdoc].should eql :failure
@@ -389,7 +389,7 @@ describe Guard::Jasmine do
     end
 
     context 'with a valid PhantomJS executable' do
-      let(:guard) { Guard::Jasmine.new(nil, { phantomjs_bin: '/bin/phantomjs' }) }
+      let(:guard) { Guard::Jasmine.new({ phantomjs_bin: '/bin/phantomjs' }) }
 
       before do
         ::Guard::Jasmine.stub(:phantomjs_bin_valid?).and_return true
@@ -422,7 +422,7 @@ describe Guard::Jasmine do
       end
 
       context 'with :all_on_start set to true' do
-        let(:guard) { Guard::Jasmine.new(nil, { all_on_start: true }) }
+        let(:guard) { Guard::Jasmine.new({ all_on_start: true }) }
 
         context 'with the Jasmine runner available' do
           before do
@@ -448,7 +448,7 @@ describe Guard::Jasmine do
       end
 
       context 'with :all_on_start set to false' do
-        let(:guard) { Guard::Jasmine.new(nil, { all_on_start: false }) }
+        let(:guard) { Guard::Jasmine.new({ all_on_start: false }) }
 
         before do
           ::Guard::Jasmine.stub(:runner_available?).and_return true
@@ -464,7 +464,7 @@ describe Guard::Jasmine do
 
   describe '.stop' do
     context 'with a configured server' do
-      let(:guard) { Guard::Jasmine.new(nil, { server: :thin }) }
+      let(:guard) { Guard::Jasmine.new({ server: :thin }) }
 
       it 'stops the server' do
         server.should_receive(:stop)
@@ -473,7 +473,7 @@ describe Guard::Jasmine do
     end
 
     context 'without a configured server' do
-      let(:guard) { Guard::Jasmine.new(nil, { server: :none }) }
+      let(:guard) { Guard::Jasmine.new({ server: :none }) }
 
       it 'does not stop the server' do
         server.should_not_receive(:stop)
@@ -501,7 +501,7 @@ describe Guard::Jasmine do
 
   describe '.run_all' do
     let(:options) { defaults.merge({ phantomjs_bin: '/bin/phantomjs' }) }
-    let(:guard) { Guard::Jasmine.new(nil, options) }
+    let(:guard) { Guard::Jasmine.new(options) }
 
     context 'without a specified spec dir' do
       it 'starts the Runner with the default spec dir' do
@@ -513,7 +513,7 @@ describe Guard::Jasmine do
 
     context 'with a specified spec dir' do
       let(:options) { defaults.merge({ phantomjs_bin: '/bin/phantomjs', spec_dir: 'specs' }) }
-      let(:guard) { Guard::Jasmine.new(nil, options) }
+      let(:guard) { Guard::Jasmine.new(options) }
 
       it 'starts the Runner with the default spec dir' do
         runner.should_receive(:run).with(['specs'], kind_of(Hash)).and_return [['spec/javascripts/a.js.coffee'], true]
@@ -523,7 +523,7 @@ describe Guard::Jasmine do
     end
 
     context 'with run all options' do
-      let(:guard) { Guard::Jasmine.new(nil, { run_all: { specdoc: :overwritten } }) }
+      let(:guard) { Guard::Jasmine.new({ run_all: { specdoc: :overwritten } }) }
 
       it 'starts the Runner with the merged run all options' do
         runner.should_receive(:run).with(['spec'], hash_including({ specdoc: :overwritten })).and_return [['spec/javascripts/a.js.coffee'], true]
@@ -564,7 +564,7 @@ describe Guard::Jasmine do
 
   describe '.run_on_modifications' do
     let(:options) { defaults.merge({ phantomjs_bin: '/Users/michi/.bin/phantomjs' }) }
-    let(:guard) { Guard::Jasmine.new(nil, options) }
+    let(:guard) { Guard::Jasmine.new(options) }
 
     it 'returns false when no valid paths are passed' do
       inspector.should_receive(:clean).and_return []
@@ -582,7 +582,7 @@ describe Guard::Jasmine do
 
     context 'with :clean enabled' do
       let(:options) { defaults.merge({ clean: true, phantomjs_bin: '/usr/bin/phantomjs' }) }
-      let(:guard) { Guard::Jasmine.new(nil, options) }
+      let(:guard) { Guard::Jasmine.new(options) }
 
       it 'passes the paths to the Inspector for cleanup' do
         inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
@@ -595,7 +595,7 @@ describe Guard::Jasmine do
 
     context 'with :clean disabled' do
       let(:options) { defaults.merge({ clean: false, phantomjs_bin: '/usr/bin/phantomjs' }) }
-      let(:guard) { Guard::Jasmine.new(nil, options) }
+      let(:guard) { Guard::Jasmine.new(options) }
 
       it 'does not pass the paths to the Inspector for cleanup' do
         inspector.should_not_receive(:clean).with(['spec/javascripts/a.js.coffee',
@@ -608,7 +608,7 @@ describe Guard::Jasmine do
 
     context 'with :keep_failed enabled' do
       let(:options) { defaults.merge({ keep_failed: true, phantomjs_bin: '/usr/bin/phantomjs' }) }
-      let(:guard) { Guard::Jasmine.new(nil, options) }
+      let(:guard) { Guard::Jasmine.new(options) }
 
       before do
         guard.last_failed_paths = ['spec/javascripts/b.js.coffee']
@@ -647,7 +647,7 @@ describe Guard::Jasmine do
       end
 
       context 'when :all_after_pass is enabled' do
-        let(:guard) { Guard::Jasmine.new(nil, { all_after_pass: true }) }
+        let(:guard) { Guard::Jasmine.new({ all_after_pass: true }) }
 
         it 'runs all specs' do
           guard.should_receive(:run_all)
@@ -656,7 +656,7 @@ describe Guard::Jasmine do
       end
 
       context 'when :all_after_pass is enabled' do
-        let(:guard) { Guard::Jasmine.new(nil, { all_after_pass: false }) }
+        let(:guard) { Guard::Jasmine.new({ all_after_pass: false }) }
 
         it 'does not run all specs' do
           guard.should_not_receive(:run_all)
