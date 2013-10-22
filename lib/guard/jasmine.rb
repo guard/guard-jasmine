@@ -7,7 +7,7 @@ require 'guard/watcher'
 module Guard
 
   # The Jasmine guard that gets notifications about the following
-  # Guard events: `start`, `stop`, `reload`, `run_all` and `run_on_change`.
+  # Guard events: `start`, `stop`, `reload`, `run_all` and `run_on_modification`.
   #
   class Jasmine < Guard
 
@@ -112,7 +112,7 @@ module Guard
 
     # Gets called once when Guard starts.
     #
-    # @raise [:task_has_failed] when run_on_change has failed
+    # @raise [:task_has_failed] when run_on_modification has failed
     #
     def start
       if Jasmine.phantomjs_bin_valid?(options[:phantomjs_bin])
@@ -137,7 +137,7 @@ module Guard
 
     # Gets called when the Guard should reload itself.
     #
-    # @raise [:task_has_failed] when run_on_change has failed
+    # @raise [:task_has_failed] when run_on_modification has failed
     #
     def reload
       self.last_run_failed   = false
@@ -146,7 +146,7 @@ module Guard
 
     # Gets called when all specs should be run.
     #
-    # @raise [:task_has_failed] when run_on_change has failed
+    # @raise [:task_has_failed] when run_on_modification has failed
     #
     def run_all
       passed, failed_specs = Runner.run([options[:spec_dir]], options.merge(self.run_all_options))
@@ -160,9 +160,9 @@ module Guard
     # Gets called when watched paths and files have changes.
     #
     # @param [Array<String>] paths the changed paths and files
-    # @raise [:task_has_failed] when run_on_change has failed
+    # @raise [:task_has_failed] when run_on_modification has failed
     #
-    def run_on_changes(paths)
+    def run_on_modifications(paths)
       specs = options[:keep_failed] ? paths + self.last_failed_paths : paths
       specs = Inspector.clean(specs, options) if options[:clean]
       return false if specs.empty?
