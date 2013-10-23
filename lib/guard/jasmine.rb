@@ -1,8 +1,7 @@
 require 'net/http'
 
 require 'guard'
-require 'guard/guard'
-require 'guard/watcher'
+require 'guard/plugin'
 
 module Guard
 
@@ -103,7 +102,7 @@ module Guard
 
       self.run_all_options = options.delete(:run_all) || { }
 
-      super
+      super(options)
 
       self.last_run_failed   = false
       self.last_failed_paths = []
