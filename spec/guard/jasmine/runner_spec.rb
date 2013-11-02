@@ -211,6 +211,40 @@ describe Guard::Jasmine::Runner do
       end
     end
 
+    context 'when passed a line number' do
+      before do
+        File.stub(:readlines).and_return([
+          'describe "TestContext", ->',
+          '  it "does something", ->',
+          '    # some assertion'
+        ])
+      end
+
+      context 'with the spec file name' do
+        it 'executes the example for line number on example' do
+          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20does%20something\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          runner.run(['spec/javascripts/a.js.coffee:2'], defaults)
+        end
+
+        it 'executes the example for line number within example' do
+          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20does%20something\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          runner.run(['spec/javascripts/a.js.coffee:3'], defaults)
+        end
+
+        it 'executes all examples within describe' do
+          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          runner.run(['spec/javascripts/a.js.coffee:1'], defaults)
+        end
+      end
+
+      context 'with the cli argument' do
+        it 'executes the example for line number on example' do
+          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20does%20something\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          runner.run(['spec/javascripts/a.js.coffee'], defaults.merge(line_number: 2))
+        end
+      end
+    end
+
     context 'when passed the spec directory' do
       it 'requests all jasmine specs from the server' do
         IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false true ''", "r:UTF-8")

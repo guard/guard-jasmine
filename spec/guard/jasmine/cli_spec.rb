@@ -45,6 +45,11 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--spec-dir', 'specs'])
         end
 
+        it 'sets the line number' do
+          runner.should_receive(:run).with(anything(), hash_including(line_number: 1)).and_return [true, []]
+          cli.start(['spec', '--line-number', 1])
+        end
+
         it 'detects the server type' do
           server.should_receive(:detect_server).with('specs')
           cli.start(['spec', '--spec-dir', 'specs'])
@@ -271,6 +276,11 @@ describe Guard::Jasmine::CLI do
 
         it 'sets the spec dir' do
           runner.should_receive(:run).with(anything(), hash_including(spec_dir: 'spec')).and_return [true, []]
+          cli.start(['spec'])
+        end
+
+        it 'sets the line number' do
+          runner.should_receive(:run).with(anything(), hash_including(line_number: nil)).and_return [true, []]
           cli.start(['spec'])
         end
 

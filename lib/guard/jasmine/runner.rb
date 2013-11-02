@@ -155,10 +155,24 @@ module Guard
 
           query_string = ''
 
-          File.foreach(file) do |line|
-            if line =~ /describe\s*[("']+(.*?)["')]+/
-              query_string = "?spec=#{ $1 }"
-              break
+          if options[:line_number].to_s =~ /\A(\d+)$/ || file =~/\A[^:]+:(\d+)$/
+            line_number = $1.to_i
+
+            spec = File.readlines(file)[0, line_number].
+              map(&:strip).
+              select { |x| x.start_with?('it') || x.start_with?('describe') }.
+              map { |x| x[/['"](.+?)['"]/, 1] }.
+              join(' ')
+
+            if spec && !spec.empty?
+              query_string = "?spec=#{ spec }"
+            end
+          else
+            File.foreach(file) do |line|
+              if line =~ /describe\s*[("']+(.*?)["')]+/
+                query_string = "?spec=#{ $1 }"
+                break
+              end
             end
           end
 
