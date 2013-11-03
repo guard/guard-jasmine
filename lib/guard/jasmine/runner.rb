@@ -41,7 +41,7 @@ module Guard
           notify_start_message(paths, options)
 
           results = paths.inject([]) do |results, file|
-            results << evaluate_response(run_jasmine_spec(file, options), file, options) if File.exist?(file)
+            results << evaluate_response(run_jasmine_spec(file, options), file, options) if File.exist?(file[/\A(.+?)(:\d+)?$/, 1])
 
             results
           end.compact
@@ -158,9 +158,14 @@ module Guard
           if options[:line_number].to_s =~ /\A(\d+)$/ || file =~/\A[^:]+:(\d+)$/
             line_number = $1.to_i
 
-            spec = File.readlines(file)[0, line_number].
+            groups = File.readlines(file[/\A(.+?):\d+$/, 1])[0, line_number].
               map(&:strip).
               select { |x| x.start_with?('it') || x.start_with?('describe') }.
+              group_by { |x| x[0,2] }
+
+            spec = groups["de"]
+            spec << groups["it"][-1] if groups["it"]
+            spec = spec.
               map { |x| x[/['"](.+?)['"]/, 1] }.
               join(' ')
 
