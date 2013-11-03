@@ -672,6 +672,7 @@ Options:
   -b, [--bin=BIN]                       # The location of the PhantomJS binary
   -d, [--spec-dir=SPEC_DIR]             # The directory with the Jasmine specs
                                         # Default: spec/javascripts
+  -l, [--line-number=N]                 # The line which identifies the spec to be run
   -u, [--url=URL]                       # The url of the Jasmine test runner_options
                                         # Default: nil
   -t, [--timeout=N]                     # The maximum time in seconds to wait for the spec
