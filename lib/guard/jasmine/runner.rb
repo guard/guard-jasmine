@@ -41,7 +41,7 @@ module Guard
           notify_start_message(paths, options)
 
           results = paths.inject([]) do |results, file|
-            results << evaluate_response(run_jasmine_spec(file, options), file, options) if File.exist?(file)
+            results << evaluate_response(run_jasmine_spec(file, options), file, options) if File.exist?(file_and_line_number_parts(file)[0])
 
             results
           end.compact
@@ -141,9 +141,7 @@ module Guard
         end
 
         # The suite name must be extracted from the spec that
-        # will be run. This is done by parsing from the head of
-        # the spec file until the first `describe` function is
-        # found.
+        # will be run.
         #
         # @param [String] file the spec file
         # @param [Hash] options the options for the execution
@@ -153,16 +151,97 @@ module Guard
         def query_string_for_suite(file, options)
           return '' if file == options[:spec_dir]
 
-          query_string = ''
+          query_string = query_string_for_suite_from_line_number(file, options)
 
-          File.foreach(file) do |line|
-            if line =~ /describe\s*[("']+(.*?)["')]+/
-              query_string = "?spec=#{ $1 }"
-              break
-            end
+          unless query_string
+            query_string = query_string_for_suite_from_first_describe(file, options)
           end
 
+          query_string = query_string ? "?spec=#{ query_string }" : ''
+
           URI.encode(query_string)
+        end
+
+        # When providing a line number by either the option or by
+        # a number directly after the file name the suite is extracted
+        # fromt the corresponding line number in the file.
+        #
+        # @param [String] file the spec file
+        # @param [Hash] options the options for the execution
+        # @option options [Fixnum] :line_number the line number to run
+        # @return [String] the suite name
+        #
+        def query_string_for_suite_from_line_number(file, options)
+          file_name, line_number = file_and_line_number_parts(file)
+          line_number ||= options[:line_number]
+
+          if line_number
+            lines = it_and_describe_lines(file_name, 0, line_number)
+            last = lines.pop
+
+            last_indentation = last[/^\s*/].length
+            # keep only lines with lower indentation
+            lines.delete_if { |x| x[/^\s*/].length >= last_indentation }
+            # remove all 'it'
+            lines.delete_if { |x| x =~ /^\s*it/ }
+
+            lines << last
+            lines.map { |x| spec_title(x) }.join(' ')
+          end
+        end
+
+        # The suite name must be extracted from the spec that
+        # will be run. This is done by parsing from the head of
+        # the spec file until the first `describe` function is
+        # found.
+        #
+        # @param [String] file the spec file
+        # @param [Hash] options the options for the execution
+        # @return [String] the suite name
+        #
+        def query_string_for_suite_from_first_describe(file, options)
+          File.foreach(file) do |line|
+            if line =~ /describe\s*[("']+(.*?)["')]+/
+              return $1
+            end
+          end
+        end
+
+        # Splits the file name into the physical file name
+        # and the line number if present. E.g.:
+        # 'some_spec.js.coffee:10' -> ['some_spec.js.coffee', 10].
+        #
+        # If the line number is missing the second part of the
+        # returned array is `nil`.
+        #
+        # @param [String] file the spec file
+        # @return [Array] `[file_name, line_number]`
+        #
+        def file_and_line_number_parts(file)
+          match = file.match(/^(.+?)(?::(\d+))?$/)
+          [match[1], match[2].nil? ? nil : match[2].to_i]
+        end
+
+        # Returns all lines of the file that are either a
+        # 'describe' or a 'it' declaration.
+        #
+        # @param [String] file the spec file
+        # @param [Numeric] from the first line in the range
+        # @param [Numeric] to the last line in the range
+        # @Return [Array] the line contents
+        #
+        def it_and_describe_lines(file, from, to)
+          File.readlines(file)[from, to].
+            select { |x| x =~ /^\s*(it|describe)/ }
+        end
+
+        # Extracts the title of a 'description' or a 'it' declaration.
+        #
+        # @param [String] the line content
+        # @return [String] the extracted title
+        #
+        def spec_title(line)
+          line[/['"](.+?)['"]/, 1]
         end
 
         # Evaluates the JSON response that the PhantomJS script

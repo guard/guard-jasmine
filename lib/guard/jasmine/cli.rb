@@ -65,6 +65,11 @@ module Guard
                     aliases: '-d',
                     desc:    'The directory with the Jasmine specs'
 
+      method_option :line_number,
+                    type:    :numeric,
+                    aliases: '-l',
+                    desc:    'The line which identifies the spec to be run'
+
       method_option :url,
                     type:    :string,
                     aliases: '-u',
@@ -166,6 +171,7 @@ module Guard
         runner_options                            = {}
         runner_options[:port]                     = options.port || CLI.find_free_server_port
         runner_options[:spec_dir]                 = options.spec_dir || (File.exists?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec')
+        runner_options[:line_number]              = options.line_number
         runner_options[:server]                   = options.server.to_sym == :auto ? ::Guard::Jasmine::Server.detect_server(runner_options[:spec_dir]) : options.server.to_sym
         runner_options[:server_mount]             = options.mount || (defined?(JasmineRails) ? '/specs' : '/jasmine')
         runner_options[:jasmine_url]              = options.url || "http://localhost:#{ runner_options[:port] }#{ options.server.to_sym == :jasmine_gem ? '/' : runner_options[:server_mount] }"
