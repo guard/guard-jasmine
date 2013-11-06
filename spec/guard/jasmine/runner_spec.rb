@@ -214,23 +214,28 @@ describe Guard::Jasmine::Runner do
     context 'when passed a line number' do
       before do
         File.stub(:readlines).and_return([
-          'describe "TestContext", ->',
-          '  it "does something", ->',
-          '    # some assertion',
-          '  it "does something else", ->',
-          '    # some assertion'
+          'describe "TestContext", ->',                # 1
+          '  describe "Inner TestContext", ->',        # 2
+          '    describe "Unrelated TestContext", ->',  # 3
+          '      it "does something", ->',             # 4
+          '        # some code',                       # 5
+          '        # some assertion',                  # 6
+          '    it "does something else", ->',          # 7
+          '      # some assertion',                    # 8
+          '  it "does something a lot else", ->',      # 9
+          '    # some assertion'                       # 10
         ])
       end
 
       context 'with the spec file name' do
         it 'executes the example for line number on example' do
-          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
-          runner.run(['spec/javascripts/a.js.coffee:4'], defaults)
+          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          runner.run(['spec/javascripts/a.js.coffee:7'], defaults)
         end
 
         it 'executes the example for line number within example' do
-          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
-          runner.run(['spec/javascripts/a.js.coffee:5'], defaults)
+          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          runner.run(['spec/javascripts/a.js.coffee:8'], defaults)
         end
 
         it 'executes all examples within describe' do
@@ -241,8 +246,8 @@ describe Guard::Jasmine::Runner do
 
       context 'with the cli argument' do
         it 'executes the example for line number on example' do
-          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
-          runner.run(['spec/javascripts/a.js.coffee'], defaults.merge(line_number: 4))
+          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          runner.run(['spec/javascripts/a.js.coffee'], defaults.merge(line_number: 7))
         end
       end
     end

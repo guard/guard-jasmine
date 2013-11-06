@@ -176,12 +176,17 @@ module Guard
           line_number ||= options[:line_number]
 
           if line_number
-            groups = it_and_describe_lines(file_name)[0, line_number].
-              group_by { |x| x[0,2] }
+            lines = it_and_describe_lines(file_name, 0, line_number)
+            last = lines.pop
 
-            specs = groups["de"]
-            specs << groups["it"][-1] if groups["it"]
-            specs.map { |x| spec_title(x) }.join(' ')
+            last_indentation = last[/^\s*/].length
+            # keep only lines with lower indentation
+            lines.delete_if { |x| x[/^\s*/].length >= last_indentation }
+            # remove all 'it'
+            lines.delete_if { |x| x =~ /^\s*it/ }
+
+            lines << last
+            lines.map { |x| spec_title(x) }.join(' ')
           end
         end
 
@@ -213,7 +218,7 @@ module Guard
         # @return [Array] `[file_name, line_number]`
         #
         def file_and_line_number_parts(file)
-          match = file.match(/\A(.+?)(?::(\d+))?$/)
+          match = file.match(/^(.+?)(?::(\d+))?$/)
           [match[1], match[2].nil? ? nil : match[2].to_i]
         end
 
@@ -221,12 +226,13 @@ module Guard
         # 'describe' or a 'it' declaration.
         #
         # @param [String] file the spec file
+        # @param [Numeric] from the first line in the range
+        # @param [Numeric] to the last line in the range
         # @Return [Array] the line contents
         #
-        def it_and_describe_lines(file)
-          File.readlines(file).
-            map(&:strip).
-            select { |x| x.start_with?('it') || x.start_with?('describe') }
+        def it_and_describe_lines(file, from, to)
+          File.readlines(file)[from, to].
+            select { |x| x =~ /^\s*(it|describe)/ }
         end
 
         # Extracts the title of a 'description' or a 'it' declaration.
