@@ -2,6 +2,7 @@
 
 ## Master
 
+- [#154](https://github.com/netzpirat/guard-jasmine/pull/154): Run with line number. ([@koffeinfrei][])
 - Upgrade to Guard 2.0
 - [#152](https://github.com/netzpirat/guard-jasmine/issue/152): Change `run_on_change` to `run_on_modifications`. ([@pjurczynski][])
 
@@ -406,6 +407,7 @@
 - Fix inspector glob to get also non-coffee specs.
 - Finish the runner phantomjs bridge.
 
+[@DouweM]: https://github.com/DouweM
 [@adamstrickland]: https://github.com/adamstrickland
 [@alexspeller]: https://github.com/alexspeller
 [@andersjanmyr]: https://github.com/andersjanmyr
@@ -417,23 +419,23 @@
 [@darrinholst]: https://github.com/darrinholst
 [@dmathieu]: https://github.com/dmathieu
 [@dnagir]: https://github.com/dnagir
-[@DouweM]: https://github.com/DouweM
 [@edspencer]: https://github.com/edspencer
 [@esposito]: https://github.com/esposito
 [@eventualbuddha]: https://github.com/eventualbuddha
 [@huyhoang1970]: https://github.com/huyhoang1970
 [@jasonm]: https://github.com/jasonm
+[@koffeinfrei]: https://github.com/koffeinfrei
 [@masarakki]: https://github.com/masarakki
 [@mdeschamps]: https:://github.com/mdeschamps
-[@mkdynamic]: https://github.com/mkdynamic
 [@michaelcarter]: https://github.com/michaelcarter
+[@mkdynamic]: https://github.com/mkdynamic
 [@mrship]: https://github.com/mrship
 [@mutru]: https:///github.com/mutru
 [@nfm]: https:///github.com/nfm
 [@obrie]: https://github.com/obrie
 [@pjurczynski]: https://github.com/pjurczynski
-[@pushbang]: https://github.com/pushbang
 [@pschyska]: https://github.com/pschyska
+[@pushbang]: https://github.com/pushbang
 [@richo]: https://github.com/richo
 [@robotarmy]: https://github.com/robotarmy
 [@ronan]: https://github.com/ronan
