@@ -307,7 +307,7 @@ require 'jquery-rails'
 
 class JasmineTest < Rails::Application
   routes.append do
-    mount Jasminerice::Engine: '/jasmine'
+    mount Jasminerice::Engine, at: '/jasmine'
   end
 
   config.cache_classes = true
