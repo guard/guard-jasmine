@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Guard::JasmineVersion::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Michael Kessler']
-  s.email       = ['michi@netzpiraten.ch']
+  s.email       = ['michi@flinkfinger.com']
   s.homepage    = 'https://github.com/netzpirat/guard-jasmine'
   s.summary     = 'Guard gem for headless testing with Jasmine'
   s.description = 'Guard::Jasmine automatically tests your Jasmine specs on PhantomJS'
