@@ -861,7 +861,7 @@ $ guard-jasmine-debug http://127.0.0.1:3000/Jasmine?spec=YourSpec
 
 ## Author
 
-Developed by Michael Kessler, sponsored by [mksoft.ch](https://mksoft.ch).
+Developed by Michael Kessler, sponsored by [FlinkFinger](http://www.flinkfinger.com).
 
 If you like Guard::Jasmine, you can watch the repository at [GitHub](https://github.com/netzpirat/guard-jasmine) and
 follow [@netzpirat](https://twitter.com/#!/netzpirat) on Twitter for project updates.
