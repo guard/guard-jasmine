@@ -1,8 +1,11 @@
 # Changelog
 
-## 1.19.0 - March 27, 2014
+## 1.19.1 - March 27, 2014
 
 - [#164](https://github.com/netzpirat/guard-jasmine/pull/164): Ignore files when instrumenting. ([@matstc][])
+
+## 1.19.0 - November 24, 2013
+
 - [#154](https://github.com/netzpirat/guard-jasmine/pull/154): Run with line number. ([@koffeinfrei][])
 - Upgrade to Guard 2.0
 - [#152](https://github.com/netzpirat/guard-jasmine/issue/152): Change `run_on_change` to `run_on_modifications`. ([@pjurczynski][])
