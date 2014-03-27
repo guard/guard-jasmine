@@ -582,6 +582,9 @@ coverage_html_dir: './coverage'               # Directory to write Istanbul HTML
 
 coverage_summary: true                        # Enable Istanbul summary coverage report
                                               # default: false
+
+ignore_instrumentation: 'vendor'              # Ignore files matching this regex when instrumenting
+                                              # default: ''
 ```
 
 The `:coverage_summary` options disables the detailed file based coverage report by a small summary coverage report.

@@ -98,6 +98,7 @@ module Guard
 
           self.process = ChildProcess.build(*['rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s, rackup_config].compact)
           self.process.environment['COVERAGE'] = options[:coverage].to_s
+          self.process.environment['IGNORE_INSTRUMENTATION'] = options[:ignore_instrumentation].to_s
           self.process.io.inherit! if options[:verbose]
           self.process.start
 

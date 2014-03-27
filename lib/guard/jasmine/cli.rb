@@ -127,6 +127,11 @@ module Guard
                     default: false,
                     desc:    'Whether to generate html coverage summary. Implies --coverage'
 
+      method_option :ignore_instrumentation,
+                    type:    :string,
+                    default: "",
+                    desc:    'Files matching this regex will not be instrumented (e.g. vendor)'
+
       method_option :statements_threshold,
                     type:    :numeric,
                     default: 0,
@@ -189,6 +194,7 @@ module Guard
         runner_options[:coverage_html]            = options.coverage_html || options.coverage_html_dir != "./coverage"
         runner_options[:coverage_html_dir]        = options.coverage_html_dir
         runner_options[:coverage_summary]         = options.coverage_summary
+        runner_options[:ignore_instrumentation]   = options.ignore_instrumentation
         runner_options[:statements_threshold]     = options.statements_threshold
         runner_options[:functions_threshold]      = options.functions_threshold
         runner_options[:branches_threshold]       = options.branches_threshold

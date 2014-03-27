@@ -16,6 +16,7 @@ class JasmineCoverage < Tilt::Template
   # Returns a coverage instrumented JavaScript file
   #
   def evaluate(context, locals)
+    return data if !ENV['IGNORE_INSTRUMENTATION'].to_s.empty? && file =~ Regexp.new(ENV['IGNORE_INSTRUMENTATION'])
     return data unless JasmineCoverage.coverage_bin
     return data unless file.include?(JasmineCoverage.app_asset_path)
 
