@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.19.2 - April 2, 2014
+
+- [#165](https://github.com/netzpirat/guard-jasmine/pull/165): Ensure PhantomJS check for a file and not directory. ([@jorgemanrubia][])
+
 ## 1.19.1 - March 27, 2014
 
 - [#164](https://github.com/netzpirat/guard-jasmine/pull/164): Ignore files when instrumenting. ([@matstc][])
@@ -428,6 +432,7 @@
 [@eventualbuddha]: https://github.com/eventualbuddha
 [@huyhoang1970]: https://github.com/huyhoang1970
 [@jasonm]: https://github.com/jasonm
+[@jorgemanrubia]: https://github.com/jorgemanrubia
 [@koffeinfrei]: https://github.com/koffeinfrei
 [@masarakki]: https://github.com/masarakki
 [@mdeschamps]: https:://github.com/mdeschamps
