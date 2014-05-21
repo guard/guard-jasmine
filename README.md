@@ -154,13 +154,13 @@ Now you can access `/jasmine` when you start your Rails server normally.
       gem "jasmine-rails"
     end
     ```
-    
+
 2. Configure a mount point in your application's `routes.rb` (please refer to the [jasmine-rails][] documentation for more details):
 
     ```ruby
     mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
     ```
-    
+
 3. Configure **Guard::Jasmine** to reference the mount point in your `Guardfile`:
 
     ```ruby
@@ -168,7 +168,7 @@ Now you can access `/jasmine` when you start your Rails server normally.
       # watch stuff
     end
     ```
-    
+
 4. Profit!  Seriously, you should be able to access the Jasmine runner at `/specs` within your Rails application, *and* **Guard::Jasmine** should run the same specs.  Now no more excuses, get that javascript tested!
 
 ### Jasmine Stories acceptance tests
@@ -702,6 +702,8 @@ Options:
       [--branches-threshold=N]          # Branches coverage threshold
                                         # Default: 0
       [--lines-threshold=N]             # Lines coverage threshold
+                                        # Default: 0
+      [--min-specs=N]                   # The expected number of specs that should be run
                                         # Default: 0
 Run the Jasmine spec runner
 ```

@@ -718,6 +718,14 @@ describe Guard::Jasmine::Runner do
         response.last.should =~ []
       end
 
+      context 'with a minimum number of specs expected' do
+        it 'fails the run' do
+          response = runner.run(['spec/javascripts/x/t.js'], defaults.merge({ specdoc: :always, min_specs: 4 }))
+          response.first.should be_false
+          response.last.should =~ []
+        end
+      end
+
       context 'with coverage' do
         context 'when coverage is present' do
           before do

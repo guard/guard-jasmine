@@ -33,6 +33,7 @@ module Guard
         # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never
         # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
         # @option options [String] :spec_dir the directory with the Jasmine specs
+        # @option options [Integer] :min_specs the minimum amount of specs expected to be run
         # @return [Boolean, Array<String>] the status of the run and the failed files
         #
         def run(paths, options = { })
@@ -46,7 +47,7 @@ module Guard
             results
           end.compact
 
-          [response_status_for(results), failed_paths_from(results)]
+          [response_status_for(results, options), failed_paths_from(results)]
         end
 
         private
@@ -81,8 +82,14 @@ module Guard
         # @param [Array<Object>] results the spec runner results
         # @return [Boolean] whether it has passed or not
         #
-        def response_status_for(results)
-          results.none? { |r| r.has_key?('error') || !r['passed'] }
+        def response_status_for(results, options)
+          min_specs = options.fetch(:min_specs, 0)
+
+          specs_ran = results.reduce 0 do |sum, r|
+            sum + (r.has_key?('error') ? 0 : r['stats']['specs'])
+          end
+
+          results.none? { |r| r.has_key?('error') || !r['passed'] } && specs_ran >= min_specs
         end
 
         # Run the Jasmine spec by executing the PhantomJS script.
@@ -320,15 +327,18 @@ module Guard
         # @option options [Boolean] :hide_success hide success message notification
         #
         def notify_spec_result(result, options)
-          specs           = result['stats']['specs']
-          failures        = result['stats']['failures']
-          time            = result['stats']['time']
-          specs_plural    = specs == 1 ? '' : 's'
-          failures_plural = failures == 1 ? '' : 's'
+          specs             = result['stats']['specs']
+          failures          = result['stats']['failures']
+          time              = result['stats']['time']
+          specs_plural      = specs == 1 ? '' : 's'
+          failures_plural   = failures == 1 ? '' : 's'
+          min_specs         = options.fetch(:min_specs, 0)
+          min_specs_prlural = min_specs == 1 ? '' : 's'
 
           Formatter.info("\nFinished in #{ time } seconds")
 
           message      = "#{ specs } spec#{ specs_plural }, #{ failures } failure#{ failures_plural }"
+          message = message << ", #{ min_specs } spec#{ min_specs_prlural } expected at least" if min_specs > 0
           full_message = "#{ message }\nin #{ time } seconds"
           passed       = failures == 0
 
