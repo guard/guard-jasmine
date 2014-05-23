@@ -33,6 +33,7 @@ module Guard
         # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never
         # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
         # @option options [String] :spec_dir the directory with the Jasmine specs
+        # @option options [Boolean] :debug display raw JSON output from the runner
         # @return [Boolean, Array<String>] the status of the run and the failed files
         #
         def run(paths, options = { })
@@ -260,7 +261,7 @@ module Guard
           begin
             result = MultiJson.decode(json, { max_nesting: false })
             raise 'No response from Jasmine runner' if !result && options[:is_cli]
-            # pp result # for debug
+            pp result if options[:debug]
             if result['error']
               if options[:is_cli]
                 raise 'An error occurred in the Jasmine runner'
@@ -287,10 +288,11 @@ module Guard
               end
             else
               if options[:is_cli]
-                raise 'Cannot decode JSON from PhantomJS runner'
+                raise "Cannot decode JSON from PhantomJS runner, message received was:\n#{json}"
               else
                 Formatter.error("Cannot decode JSON from PhantomJS runner: #{ e.message }")
                 Formatter.error("JSON response: #{ e.data }")
+                Formatter.error("message received was:\n#{json}")
               end
             end
           ensure
@@ -585,10 +587,11 @@ module Guard
         #
         def report_specdoc_logs(spec, options, level)
           if spec['logs'] && (options[:console] == :always || (options[:console] == :failure && !spec['passed']))
-            spec['logs'].each do |log|
-              log.split("\n").each_with_index do |message, index|
-                Formatter.info(indent("    #{ index == 0 ? '•' : ' ' } #{ message }", level))
-              end
+            first = true
+            spec['logs'].each do |log_level,message|
+              log_level = log_level == 'log' ? '' : "#{log_level.upcase}:"
+              Formatter.info(indent("    #{ first ? '•' : ' ' } #{log_level} #{ message }", level))
+              first=false
             end
           end
         end
