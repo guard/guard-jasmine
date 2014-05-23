@@ -47,15 +47,13 @@ describe Guard::Jasmine::Runner do
           "specs": [
             {
               "description": "Failure spec tests something",
-              "messages": [
-                "ReferenceError: Can't find variable: a in http://localhost:8888/assets/backbone/models/model_spec.js?body=1 (line 27)"
-              ],
               "logs": [
                 "console.log message"
               ],
               "errors": [
                 {
-                  "msg": "Error message",
+                  "message": "ReferenceError: Can't find variable: a in http://localhost:8888/assets/backbone/models/model_spec.js?body=1 (line 27)",
+                  "actual": "", "expected": "", "matcherName": "", "passed": false,
                   "trace" : [{
                     "file": "/path/to/file.js",
                     "line": "255"
@@ -71,9 +69,6 @@ describe Guard::Jasmine::Runner do
               "specs": [
                 {
                   "description": "Failure spec 2 tests something",
-                  "messages": [
-                    "ReferenceError: Can't find variable: b in http://localhost:8888/assets/backbone/models/model_spec.js?body=1 (line 27)"
-                  ],
                   "passed": false
                 },
                 {
@@ -85,10 +80,18 @@ describe Guard::Jasmine::Runner do
                   ],
                   "errors": [
                     {
-                      "msg": "Another error message",
+                      "message": "Expected true to equal false.",
+                      "actual": true, "expected": false, "matcherName": "toEqual", "passed": false,
                       "trace" : [{
                         "file": "/path/to/file.js",
                         "line": "255"
+                      }]
+                    },{
+                      "message": "undefined' is not an object (evaluating 'killer.deployRobots') in http://localhost:8888/__spec__/screens_spec.coffee (line 19)",
+                      "actual": "", "expected": "", "matcherName": "", "passed": false,
+                      "trace" : [{
+                        "file": "model_spec.js",
+                        "line": "27"
                       }]
                     }
                   ]
@@ -479,16 +482,16 @@ describe Guard::Jasmine::Runner do
             '  ✘ Failure spec tests something'
           )
           formatter.should_receive(:spec_failed).with(
-            '    ➤ ReferenceError: Can\'t find variable: a in backbone/models/model_spec.js on line 27'
+            '    ➤ ReferenceError: Can\'t find variable: a'
+          )
+          formatter.should_receive(:spec_failed).with(
+            '      ➜ /path/to/file.js on line 255'
           )
           formatter.should_receive(:suite_name).with(
             '  Nested failure suite'
           )
           formatter.should_receive(:spec_failed).with(
             '    ✘ Failure spec 2 tests something'
-          )
-          formatter.should_receive(:spec_failed).with(
-            '      ➤ ReferenceError: Can\'t find variable: b in backbone/models/model_spec.js on line 27'
           )
           runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ console: :always }))
         end
@@ -582,7 +585,7 @@ describe Guard::Jasmine::Runner do
         context 'with error logs set to :always' do
           it 'shows the errors logs' do
             formatter.should_receive(:spec_failed).with(
-              '    ➜ Exception: Error message in /path/to/file.js on line 255'
+              "    ➤ ReferenceError: Can't find variable: a"
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ errors: :always }))
           end
@@ -633,7 +636,7 @@ describe Guard::Jasmine::Runner do
         context 'with error logs set to :failure' do
           it 'shows the error logs for failed specs' do
             formatter.should_receive(:spec_failed).with(
-              '    ➜ Exception: Error message in /path/to/file.js on line 255'
+              "    ➤ ReferenceError: Can't find variable: a"
             )
             formatter.should_not_receive(:spec_failed).with(
               '    ➜ Exception: Another error message in /path/to/file.js on line 255'
@@ -652,7 +655,7 @@ describe Guard::Jasmine::Runner do
             priority: 2
           )
           formatter.should_receive(:notify).with(
-            'Failure spec 2 tests something: ReferenceError: Can\'t find variable: b',
+            'Failure spec 2 tests something: No error messages',
             title:    'Jasmine spec failed',
             image:    :failed,
             priority: 2

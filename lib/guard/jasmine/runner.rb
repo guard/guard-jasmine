@@ -117,6 +117,7 @@ module Guard
         #
         def phantomjs_command(options)
           options[:phantomjs_bin] + ' ' + phantomjs_script
+          #options[:phantomjs_bin] + ' --remote-debugger-port=9000 ' + phantomjs_script
         end
 
         # Get the Jasmine test runner URL with the appended suite name
@@ -256,11 +257,10 @@ module Guard
         def evaluate_response(output, file, options)
           json = output.read
           json = json.encode('UTF-8') if json.respond_to?(:encode)
-
           begin
             result = MultiJson.decode(json, { max_nesting: false })
             raise 'No response from Jasmine runner' if !result && options[:is_cli]
-
+            # pp result # for debug
             if result['error']
               if options[:is_cli]
                 raise 'An error occurred in the Jasmine runner'
@@ -486,9 +486,9 @@ module Guard
               end
             else
               Formatter.spec_failed(indent("  ✘ #{ spec['description'] }", level)) if description_shown?(passed, spec, options)
-              spec['messages'].each do |message|
-                Formatter.spec_failed(indent("    ➤ #{ format_message(message, false) }", level)) if specdoc_shown?(passed, options)
-              end
+              # spec['errors'].each do |error|
+              #   Formatter.spec_failed(indent("    ➤ #{ format_message(error['message'], false) }", level)) if specdoc_shown?(passed, options)
+              # end
               report_specdoc_errors(spec, options, level)
               report_specdoc_logs(spec, options, level)
             end
@@ -602,12 +602,11 @@ module Guard
         def report_specdoc_errors(spec, options, level)
           if spec['errors'] && (options[:errors] == :always || (options[:errors] == :failure && !spec['passed']))
             spec['errors'].each do |error|
+              Formatter.spec_failed(indent("    ➤ #{ format_message(error['message'],true)  }", level))
               if error['trace']
                 error['trace'].each do |trace|
-                  Formatter.spec_failed(indent("    ➜ Exception: #{ error['msg']  } in #{ trace['file'] } on line #{ trace['line'] }", level))
+                  Formatter.spec_failed(indent("    ➜ #{ trace['file'] } on line #{ trace['line'] }", level+2))
                 end
-              else
-                Formatter.spec_failed(indent("    ➜ Exception: #{ error['msg']  }", level))
               end
             end
           end
@@ -632,7 +631,11 @@ module Guard
         def notify_errors(result, options)
           collect_specs(result['suites']).each_with_index do |spec, index|
             if !spec['passed'] && options[:max_error_notify] > index
-              msg = spec['messages'].map { |message| format_message(message, true) }.join(', ')
+              msg = if spec['errors']
+                      spec['errors'].map { |error| format_message(error['message'], true) }.join(', ')
+                    else
+                      "No error messages"
+                    end
               Formatter.notify("#{ spec['description'] }: #{ msg }",
                                title:    'Jasmine spec failed',
                                image:    :failed,
