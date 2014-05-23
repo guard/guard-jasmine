@@ -16,7 +16,7 @@ class ConsoleCapture
         this._reassign_level( level ) for level in ConsoleCapture.levels
 
     revert: ->
-        for level in ConsoleOverride.levels
+        for level in ConsoleCapture.levels
             ConsoleCapture.original[level] = ConsoleCapture.original_levels[level]
 
     _reassign_level: ( level )->
@@ -67,7 +67,7 @@ class window.GuardReporter
 
     resetConsoleLog: ->
         @console.revert()
-        @console = new ConsoleOverride
+        @console = new ConsoleCapture
 
     eachSuite: (suite)->
         suites = [].concat( suite.suites )
