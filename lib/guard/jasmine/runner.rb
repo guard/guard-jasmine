@@ -307,7 +307,8 @@ module Guard
         #
         def notify_runtime_error(result, options)
           message = "An error occurred: #{ result['error'] }"
-          Formatter.error(message + "\n" + result['trace'] )
+          Formatter.error(message )
+          Formatter.error( result['trace'] ) if result['trace']
           Formatter.notify(message, title: 'Jasmine error', image: :failed, priority: 2) if options[:notification]
         end
 
