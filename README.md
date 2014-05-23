@@ -1,4 +1,4 @@
-# Guard::Jasmine [![Build Status](https://secure.travis-ci.org/netzpirat/guard-jasmine.png)](http://travis-ci.org/netzpirat/guard-jasmine)
+# Guard::Jasmine [![Build Status](https://secure.travis-ci.org/guard/guard-jasmine.png)](http://travis-ci.org/guard/guard-jasmine)
 
 Guard::Jasmine automatically tests your Jasmine specs when files are modified.
 
@@ -57,7 +57,7 @@ Add the default Guard::Jasmine template to your `Guardfile` by running:
 $ guard init jasmine
 ```
 
-Please have a look at the [CHANGELOG](https://github.com/netzpirat/guard-jasmine/blob/master/CHANGELOG.md) when
+Please have a look at the [CHANGELOG](https://github.com/guard/guard-jasmine/blob/master/CHANGELOG.md) when
 upgrading to a newer Guard::Jasmine version.
 
 ### PhantomJS
@@ -98,7 +98,7 @@ Guard::Jasmine will start a Rails Rack server to run your specs.
 
 ### How it works
 
-![Guard Jasmine](https://github.com/netzpirat/guard-jasmine/raw/master/resources/guard-jasmine-with-asset-pipeline.jpg)
+![Guard Jasmine](https://github.com/guard/guard-jasmine/raw/master/resources/guard-jasmine-with-asset-pipeline.jpg)
 
 1. Guard is triggered by a file modification.
 2. Guard::Jasmine executes the [PhantomJS script][].
@@ -213,7 +213,7 @@ Guard::Jasmine will start a Jasmine Gem Rack server to run your specs.
 
 ### How it works
 
-![Guard Jasmine](https://github.com/netzpirat/guard-jasmine/raw/master/resources/guard-jasmine-without-asset-pipeline.jpg)
+![Guard Jasmine](https://github.com/guard/guard-jasmine/raw/master/resources/guard-jasmine-without-asset-pipeline.jpg)
 
 1. Guard is triggered by a file modification.
 2. Guard::Jasmine executes the [PhantomJS script][].
@@ -271,7 +271,7 @@ guard 'coffeescript', input: 'spec/coffeescripts', output: 'spec/javascripts'
 If you like to use Guard::Jasmine with a plain Ruby project, you can create a Rack configuration file
 that starts a Rails instance with the asset pipeline and Jasminerice, having the full Rails testing
 comfort for non-Rails projects. Please have a look at the
-[Rails with the asset pipeline](https://github.com/netzpirat/guard-jasmine#rails-with-the-asset-pipeline-setup)
+[Rails with the asset pipeline](https://github.com/guard/guard-jasmine#rails-with-the-asset-pipeline-setup)
 section to see how the setup works.
 
 First you have the add the needed Gems to your `Gemfile`:
@@ -805,7 +805,7 @@ I recommend to check out these other brilliant Jasmine runners:
 
 ## How to file an issue
 
-You can report issues and feature requests to [GitHub Issues](https://github.com/netzpirat/guard-jasmine/issues). Try to figure out
+You can report issues and feature requests to [GitHub Issues](https://github.com/guard/guard-jasmine/issues). Try to figure out
 where the issue belongs to: Is it an issue with Guard itself or with Guard::Jasmine? Please don't
 ask question in the issue tracker, instead join us in our [Google group](http://groups.google.com/group/guard-dev) or on
 `#guard` (irc.freenode.net).
@@ -821,7 +821,7 @@ When you file an issue, please try to follow to these simple rules if applicable
 ## Development information
 
 - Documentation hosted at [RubyDoc](http://rubydoc.info/github/guard/guard-jasmine/master/frames).
-- Source hosted at [GitHub](https://github.com/netzpirat/guard-jasmine).
+- Source hosted at [GitHub](https://github.com/guard/guard-jasmine).
 
 Pull requests are very welcome! Please try to follow these simple rules if applicable:
 
@@ -866,13 +866,16 @@ $ guard-jasmine-debug http://127.0.0.1:3000/Jasmine?spec=YourSpec
 
 Developed by Michael Kessler, sponsored by [FlinkFinger](http://www.flinkfinger.com).
 
-If you like Guard::Jasmine, you can watch the repository at [GitHub](https://github.com/netzpirat/guard-jasmine) and
-follow [@netzpirat](https://twitter.com/#!/netzpirat) on Twitter for project updates.
+If you like Guard::Jasmine, you can watch the repository at [GitHub](https://github.com/guard/guard-jasmine).
+
+## Maintainer
+
+Maintained by [Nathan Stitt](https://github.com/nathanstitt).
 
 ## Contributors
 
-See the [CHANGELOG](https://github.com/netzpirat/guard-jasmine/blob/master/CHANGELOG.md) and the GitHub list of
-[contributors](https://github.com/netzpirat/guard-jasmine/contributors).
+See the [CHANGELOG](https://github.com/guard/guard-jasmine/blob/master/CHANGELOG.md) and the GitHub list of
+[contributors](https://github.com/guard/guard-jasmine/contributors).
 
 ## Acknowledgment
 
@@ -889,7 +892,7 @@ for it!
 
 (The MIT License)
 
-Copyright (c) 2011-2013 Michael Kessler
+Copyright (c) 2011-2014 Michael Kessler
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
