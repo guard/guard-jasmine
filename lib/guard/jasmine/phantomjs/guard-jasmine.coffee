@@ -18,7 +18,7 @@ page.onInitialized = ->
     page.evaluate ->
         window.onload = ->
             window.reporter =  new GuardReporter()
-            window.jasmine.getEnv().addReporter(window.reporter)
+            window.jasmine.getEnv().addReporter(window.reporter) if window.jasmine
 
 # Once the page is finished loading
 page.onLoadFinished = (status)->
