@@ -94,7 +94,6 @@ module Guard
         #
         def run_jasmine_spec(file, options)
           suite = jasmine_suite(file, options)
-          Formatter.info("Run Jasmine suite at #{ suite }")
 
           arguments = [
             options[:timeout] * 1000,
@@ -329,24 +328,23 @@ module Guard
           specs_plural    = specs == 1 ? '' : 's'
           failures_plural = failures == 1 ? '' : 's'
 
-          Formatter.info("\nFinished in #{ time } seconds")
+          Formatter.info("Finished in #{ time } seconds")
 
           message      = "#{ specs } spec#{ specs_plural }, #{ failures } failure#{ failures_plural }"
           full_message = "#{ message }\nin #{ time } seconds"
           passed       = failures == 0
 
+          report_specdoc(result, passed, options) if specdoc_shown?(passed, options)
+
           if passed
-            report_specdoc(result, passed, options)
             Formatter.success(message)
             Formatter.notify(full_message, title: 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
           else
-            report_specdoc(result, passed, options)
             Formatter.error(message)
             notify_errors(result, options)
             Formatter.notify(full_message, title: 'Jasmine suite failed', image: :failed, priority: 2) if options[:notification]
           end
 
-          Formatter.info("Done.\n")
         end
 
         # Notification about the coverage of a spec run, success or failure,
@@ -474,30 +472,25 @@ module Guard
         # @option options [Symbol] :focus options for focus on failures in the specdoc
         # @param [Number] level the indention level
         #
-        def report_specdoc_suite(suite, passed, options, level = 0)
-          # Print the suite description when the specdoc is shown or there are logs to display
-          if specdoc_shown?(passed, options) || console_logs_shown?(suite, passed, options) || error_logs_shown?(suite, passed, options)
-            Formatter.suite_name((' ' * level) + suite['description']) if passed || options[:focus] && contains_failed_spec?(suite)
-          end
+        def report_specdoc_suite(suite, run_passed, options, level = 0)
+
+         # Print the suite description when the specdoc is shown or there are logs to display
+          Formatter.suite_name((' ' * level) + suite['description'])
 
           suite['specs'].each do |spec|
+            # Specs are shown if they failed, or if they passed and the "focus" option is falsey
+            # If the focus option is set, then only failing tests are shown
+            next unless :always==options[:specdoc] || !spec['passed'] || ( !run_passed && !options[:focus] )
             if spec['passed']
-              if passed || !options[:focus] || console_for_spec?(spec, options) || errors_for_spec?(spec, options)
-                Formatter.success(indent("  ✔ #{ spec['description'] }", level)) if description_shown?(passed, spec, options)
-                report_specdoc_errors(spec, options, level)
-                report_specdoc_logs(spec, options, level)
-              end
+              Formatter.success(indent("  ✔ #{ spec['description'] }", level))
             else
-              Formatter.spec_failed(indent("  ✘ #{ spec['description'] }", level)) if description_shown?(passed, spec, options)
-              # spec['errors'].each do |error|
-              #   Formatter.spec_failed(indent("    ➤ #{ format_message(error['message'], false) }", level)) if specdoc_shown?(passed, options)
-              # end
-              report_specdoc_errors(spec, options, level)
-              report_specdoc_logs(spec, options, level)
+              Formatter.spec_failed(indent("  ✘ #{ spec['description'] }", level))
             end
+            report_specdoc_errors(spec, options, level)
+            report_specdoc_logs(spec, options, level)
           end
 
-          suite['suites'].each { |s| report_specdoc_suite(s, passed, options, level + 2) } if suite['suites']
+          suite['suites'].each { |s| report_specdoc_suite(s, run_passed, options, level + 2) } if suite['suites']
         end
 
         # Is the specdoc shown for this suite?
@@ -586,12 +579,11 @@ module Guard
         # @param [Number] level the indention level
         #
         def report_specdoc_logs(spec, options, level)
-          if spec['logs'] && (options[:console] == :always || (options[:console] == :failure && !spec['passed']))
-            first = true
-            spec['logs'].each do |log_level,message|
-              log_level = log_level == 'log' ? '' : "#{log_level.upcase}:"
-              Formatter.info(indent("    #{ first ? '•' : ' ' } #{log_level} #{ message }", level))
-              first=false
+          if console_for_spec?(spec,options)
+
+            spec['logs'].each do |log_level, message|
+              log_level = log_level == 'log' ? '' : "#{log_level.upcase}: "
+              Formatter.info(indent("    • #{log_level}#{ message }", level))
             end
           end
         end
