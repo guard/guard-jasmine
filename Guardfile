@@ -1,8 +1,4 @@
-guard :coffeescript, input: 'lib/guard/jasmine/phantomjs/src', output: 'lib/guard/jasmine/phantomjs/lib'
-
-guard :coffeescript do
-  watch(%r{lib/guard/jasmine/phantomjs/guard-jasmine\.coffee})
-end
+guard :coffeescript, input: 'lib/guard/jasmine/phantomjs/src', output: 'lib/guard/jasmine/phantomjs'
 
 guard :shell do
   watch(%r{(lib/guard/jasmine/phantomjs/test/.+_spec\.coffee)}) { |m| `mocha --ui bdd --growl #{ m[1]}` }
