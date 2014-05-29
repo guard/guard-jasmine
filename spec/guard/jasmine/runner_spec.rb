@@ -414,7 +414,7 @@ describe Guard::Jasmine::Runner do
                       "Run Jasmine suite spec/javascripts/x/b.js.coffee", { reset: true }
                   )
                   formatter.should_receive(:info).with(
-                      "Finished in 0.007 seconds"
+                      "Finished in 0.01 seconds"
                   )
                   runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ specdoc: :never }))
               end
@@ -433,7 +433,7 @@ describe Guard::Jasmine::Runner do
                   "Run Jasmine suite spec/javascripts/x/b.js.coffee", { reset: true }
               )
               formatter.should_receive(:info).with(
-                  "Finished in 0.007 seconds"
+                  "Finished in 0.01 seconds"
               )
               runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ specdoc: :never, console: :always }))
           end
@@ -610,48 +610,32 @@ describe Guard::Jasmine::Runner do
       context 'with notifications' do
         it 'shows the failing spec notification' do
           formatter.should_receive(:notify).with(
-            'Failure spec tests something: ReferenceError: Can\'t find variable: a',
-            title:    'Jasmine spec failed',
-            image:    :failed,
-            priority: 2
-          )
-          formatter.should_receive(:notify).with(
-            'Failure spec 2 tests something: No error messages',
-            title:    'Jasmine spec failed',
-            image:    :failed,
-            priority: 2
-          )
-          formatter.should_receive(:notify).with(
-            "3 specs, 2 failures\nin 0.007 seconds",
-            title:    'Jasmine suite failed',
-            image:    :failed,
-            priority: 2
+                "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\nundefined' is not an object (evaluating 'killer.deployRobots') in model_spec.js:27\n3 specs, 2 failures\nin 0.01 seconds",
+                title:    'Jasmine suite failed',
+                image:    :failed,
+                priority: 2
           )
           runner.run(['spec/javascripts/x/b.js.coffee'], defaults)
         end
 
         context 'with :max_error_notify' do
-          it 'shows the failing spec notification' do
+          it 'shows only a single failing spec notification when set to 1' do
             formatter.should_receive(:notify).with(
-              'Failure spec tests something: ReferenceError: Can\'t find variable: a',
-              title:    'Jasmine spec failed',
-              image:    :failed,
-              priority: 2
-            )
-            formatter.should_not_receive(:notify).with(
-              'Failure spec 2 tests something: ReferenceError: Can\'t find variable: b',
-              title:    'Jasmine spec failed',
-              image:    :failed,
-              priority: 2
-            )
-            formatter.should_receive(:notify).with(
-              "3 specs, 2 failures\nin 0.007 seconds",
-              title:    'Jasmine suite failed',
-              image:    :failed,
-              priority: 2
+                  "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\n3 specs, 2 failures\nin 0.01 seconds",
+                  title:    'Jasmine suite failed',
+                  image:    :failed, priority: 2
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ max_error_notify: 1 }))
           end
+          it 'shows two failing specs notification when set to 2' do
+              formatter.should_receive(:notify).with(
+                  "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\nundefined' is not an object (evaluating 'killer.deployRobots') in model_spec.js:27\n3 specs, 2 failures\nin 0.01 seconds",
+                  title:    'Jasmine suite failed',
+                  image:    :failed, priority: 2
+              )
+              runner.run(['spec/javascripts/x/b.js.coffee'], defaults.merge({ max_error_notify: 2 }))
+          end
+
         end
 
         context 'without notifications' do
@@ -945,7 +929,7 @@ done
       context 'with notifications' do
         it 'shows a success notification' do
           formatter.should_receive(:notify).with(
-            "3 specs, 0 failures\nin 0.009 seconds",
+            "3 specs, 0 failures\nin 0.01 seconds",
             title: 'Jasmine suite passed'
           )
           runner.run(['spec/javascripts/t.js'], defaults)

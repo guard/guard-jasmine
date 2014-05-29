@@ -86,7 +86,7 @@ class window.GuardReporter
             stats: {
                 specs: spec_count,
                 failures: failure_count,
-                time: Date.now() - @statedAt
+                time: ( Date.now() - @startedAt ) / 1000
             },
             suites: @stack[0].suites
         }

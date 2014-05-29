@@ -324,10 +324,9 @@ module Guard
         def notify_spec_result(result, options)
           specs           = result['stats']['specs']
           failures        = result['stats']['failures']
-          time            = result['stats']['time']
+          time            = sprintf( '%0.2f', result['stats']['time'] )
           specs_plural    = specs == 1 ? '' : 's'
           failures_plural = failures == 1 ? '' : 's'
-
           Formatter.info("Finished in #{ time } seconds")
 
           message      = "#{ specs } spec#{ specs_plural }, #{ failures } failure#{ failures_plural }"
@@ -340,9 +339,17 @@ module Guard
             Formatter.success(message)
             Formatter.notify(full_message, title: 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
           else
+            errors = collect_specs(result['suites']||[]).map { |spec|
+              (spec['errors']||[]).map { |error| format_error(error,false,options) }
+            }.flatten
+
+            error_message = errors[0..options[:max_error_notify]].join("\n")
+
             Formatter.error(message)
-            notify_errors(result, options)
-            Formatter.notify(full_message, title: 'Jasmine suite failed', image: :failed, priority: 2) if options[:notification]
+            if options[:notification]
+              Formatter.notify( "#{error_message}\n#{full_message}",
+                title: 'Jasmine suite failed', image: :failed, priority: 2)
+            end
           end
 
         end
@@ -598,7 +605,7 @@ module Guard
         def report_specdoc_errors(spec, options, level)
           if spec['errors'] && (options[:errors] == :always || (options[:errors] == :failure && !spec['passed']))
             spec['errors'].each do |error|
-              Formatter.spec_failed(indent("    ➤ #{ format_message(error['message'],true)  }", level))
+              Formatter.spec_failed(indent("    ➤ #{ format_error(error,true,options)  }", level))
               if error['trace']
                 error['trace'].each do |trace|
                   Formatter.spec_failed(indent("    ➜ #{ trace['file'] } on line #{ trace['line'] }", level+2))
@@ -617,28 +624,6 @@ module Guard
           (' ' * level) + message
         end
 
-        # Show system notifications about the occurred errors.
-        #
-        # @param [Hash] result the suite result
-        # @param [Hash] options the options
-        # @option options [Integer] :max_error_notify maximum error notifications to show
-        # @option options [Boolean] :notification show notifications
-        #
-        def notify_errors(result, options)
-          collect_specs(result['suites']).each_with_index do |spec, index|
-            if !spec['passed'] && options[:max_error_notify] > index
-              msg = if spec['errors']
-                      spec['errors'].map { |error| format_message(error['message'], true) }.join(', ')
-                    else
-                      "No error messages"
-                    end
-              Formatter.notify("#{ spec['description'] }: #{ msg }",
-                               title:    'Jasmine spec failed',
-                               image:    :failed,
-                               priority: 2) if options[:notification]
-            end
-          end
-        end
 
         # Tests if the given suite has a failing spec underneath.
         #
@@ -668,9 +653,11 @@ module Guard
         # @param [Boolean] short show a short version of the message
         # @return [String] the cleaned error message
         #
-        def format_message(message, short)
-          if message =~ /(.*?) in http.+?assets\/(.*)\?body=\d+\s\((line\s\d+)/
-            short ? $1 : "#{ $1 } in #{ $2 } on #{ $3 }"
+        def format_error(error, short, options)
+          message = error['message'].gsub(%r{ in http.*\(line \d+\)$},'')
+          if !short && error['trace'] && error['trace'].length > 0
+            location = error['trace'][0]
+            "#{message} in #{location['file']}:#{location['line']}"
           else
             message
           end
