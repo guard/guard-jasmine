@@ -10,7 +10,7 @@ gem 'jasmine'
 gem 'guard-coffeescript'
 gem 'guard-shell'
 gem 'guard-rspec'
-gem 'rspec'
+gem 'rspec', '~> 2.14.1'
 gem 'tilt'
 
 unless ENV['TRAVIS']
