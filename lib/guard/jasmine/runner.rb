@@ -118,8 +118,8 @@ module Guard
         # @return [String] the command
         #
         def phantomjs_command
-          #options[:phantomjs_bin] + ' ' + phantomjs_script
-          options[:phantomjs_bin] + ' --remote-debugger-port=9000 ' + phantomjs_script
+          options[:phantomjs_bin] + ' ' + phantomjs_script
+          #options[:phantomjs_bin] + ' --remote-debugger-port=9000 ' + phantomjs_script
         end
 
         # Get the Jasmine test runner URL with the appended suite name

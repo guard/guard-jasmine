@@ -186,42 +186,42 @@ describe Guard::Jasmine::Runner do
   end
 
   before do
-    formatter.stub(:info)
-    formatter.stub(:debug)
-    formatter.stub(:error)
-    formatter.stub(:success)
-    formatter.stub(:spec_failed)
-    formatter.stub(:suite_name)
-    formatter.stub(:notify)
+    allow(formatter).to receive(:info)
+    allow(formatter).to receive(:debug)
+    allow(formatter).to receive(:error)
+    allow(formatter).to receive(:sucess)
+    allow(formatter).to receive(:spec_failed)
+    allow(formatter).to receive(:suite_name)
+    allow(formatter).to receive(:notify)
 
-    runner.stub(:`) #`
-    runner.stub(:update_coverage)
+    allow(runner).to receive(:`) #`
+    allow(runner).to receive(:update_coverage)
   end
 
   describe '#run' do
     before do
-      File.stub(:foreach).and_yield 'describe "ErrorTest", ->'
-      File.stub(:exist?).and_return(true)
-      IO.stub(:popen).and_return StringIO.new(phantomjs_error_response)
+      allow(File).to receive(:foreach).and_yield 'describe "ErrorTest", ->'
+      allow(File).to receive(:exist?).and_return(true)
+      allow(IO).to   receive(:popen).and_return StringIO.new(phantomjs_error_response)
     end
 
     context 'when passed an empty paths list' do
       it 'returns false' do
-        runner.run([]).should eql [false, []]
+        expect(runner.run([])).to eql [false, []]
       end
     end
 
     context 'when the spec file does not exist' do
       it 'does nothing' do
-        File.stub(:exist?).with('spec/javascripts').and_return(false)
-        runner.should_not_receive(:evaluate_response)
+        allow(File).to receive(:exist?).with('spec/javascripts').and_return(false)
+        expect(runner).not_to receive(:evaluate_response)
         runner.run(['spec/javascripts'])
       end
     end
 
     context 'when passed a line number' do
       before do
-        File.stub(:readlines).and_return([
+        allow(File).to receive(:readlines).and_return([
           'describe "TestContext", ->',                # 1
           '  describe "Inner TestContext", ->',        # 2
           '    describe "Unrelated TestContext", ->',  # 3
@@ -237,24 +237,24 @@ describe Guard::Jasmine::Runner do
 
       context 'with the spec file name' do
         it 'executes the example for line number on example' do
-          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
           runner.run(['spec/javascripts/a.js.coffee:7'])
         end
 
         it 'executes the example for line number within example' do
-          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
           runner.run(['spec/javascripts/a.js.coffee:8'])
         end
 
         it 'executes all examples within describe' do
-          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext\" 60000 failure true failure failure false true ''", "r:UTF-8")
           runner.run(['spec/javascripts/a.js.coffee:1'])
         end
       end
 
       context 'with the cli argument' do
         it 'executes the example for line number on example' do
-          IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
           runner.run(['spec/javascripts/a.js.coffee'],{ line_number: 7 })
         end
       end
@@ -262,41 +262,41 @@ describe Guard::Jasmine::Runner do
 
     context 'when passed the spec directory' do
       it 'requests all jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false true ''", "r:UTF-8")
+        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false true ''", "r:UTF-8")
         runner.run(['spec/javascripts'],{ notification: false })
       end
 
       it 'shows a start information in the console' do
-        formatter.should_receive(:info).with('Run all Jasmine suites', { reset: true })
+        expect(formatter).to receive(:info).with('Run all Jasmine suites', { reset: true })
         runner.run(['spec/javascripts'])
       end
     end
 
     context 'when passing junit options' do
       it 'passes the junit option to the runner' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure true true ''", "r:UTF-8")
+        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure true true ''", "r:UTF-8")
         runner.run(['spec/javascripts'], { junit: true })
       end
 
       it 'passes the junit consolidate option' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false false ''", "r:UTF-8")
+        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false false ''", "r:UTF-8")
         runner.run(['spec/javascripts'], { junit_consolidate: false })
       end
 
       it 'passes the junit save path' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false true '/home/user'", "r:UTF-8")
+        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false true '/home/user'", "r:UTF-8")
         runner.run(['spec/javascripts'], { junit_save_path: '/home/user' })
       end
     end
 
     context 'for an erroneous Jasmine runner' do
       it 'requests the jasmine specs from the server' do
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=ErrorTest\" 60000 failure true failure failure false true ''", "r:UTF-8")
+        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=ErrorTest\" 60000 failure true failure failure false true ''", "r:UTF-8")
         runner.run(['spec/javascripts/a.js.coffee'])
       end
 
       it 'shows the error in the console' do
-        formatter.should_receive(:error).with(
+        expect(formatter).to receive(:error).with(
           'An error occurred: Cannot request Jasmine specs'
         )
         runner.run(['spec/javascripts/a.js.coffee'])
@@ -304,18 +304,18 @@ describe Guard::Jasmine::Runner do
 
       it 'returns the errors' do
         response = runner.run(['spec/javascripts/a.js.coffee'])
-        response.first.should be_false
-        response.last.should =~ []
+        expect(response.first).to eql false
+        expect(response.last).to eql []
       end
 
       it 'does not show coverage' do
-        runner.should_not_receive(:notify_coverage_result)
+        expect(runner).not_to receive(:notify_coverage_result)
         runner.run(['spec/javascripts/a.js.coffee'])
       end
 
       context 'with notifications' do
         it 'shows an error notification' do
-          formatter.should_receive(:notify).with(
+          expect(formatter).to receive(:notify).with(
             'An error occurred: Cannot request Jasmine specs',
             title:    'Jasmine error',
             image:    :failed,
@@ -327,7 +327,7 @@ describe Guard::Jasmine::Runner do
 
       context 'without notifications' do
         it 'does not shows an error notification' do
-          formatter.should_not_receive(:notify)
+          expect(formatter).not_to receive(:notify)
           runner.run(['spec/javascripts/a.js.coffee'], notification: false)
         end
       end
@@ -335,11 +335,11 @@ describe Guard::Jasmine::Runner do
 
     context 'exceptions for the CLI runner' do
       before do
-        File.stub(:foreach).and_yield 'describe "FailureTest", ->'
+        allow(File).to receive(:foreach).and_yield 'describe "FailureTest", ->'
       end
 
       it 'raises an error with an empty JSON response' do
-        IO.stub(:popen).and_return StringIO.new(phantomjs_empty_response)
+        allow(IO).to receive(:popen).and_return StringIO.new(phantomjs_empty_response)
 
         expect do
           runner.run(['spec/javascripts/x/b.js.coffee'], is_cli: true)
@@ -347,7 +347,7 @@ describe Guard::Jasmine::Runner do
       end
 
       it 'raises an error with an invalid JSON response' do
-        IO.stub(:popen).and_return StringIO.new(phantomjs_invalid_response)
+        allow(IO).to receive(:popen).and_return StringIO.new(phantomjs_invalid_response)
 
         expect do
           runner.run(['spec/javascripts/x/b.js.coffee'], is_cli: true)
@@ -355,7 +355,7 @@ describe Guard::Jasmine::Runner do
       end
 
       it 'raises an error with an error JSON response' do
-        IO.stub(:popen).and_return StringIO.new(phantomjs_error_response)
+        allow(IO).to receive(:popen).and_return StringIO.new(phantomjs_error_response)
 
         expect do
           runner.run(['spec/javascripts/x/b.js.coffee'], is_cli: true)
@@ -365,55 +365,53 @@ describe Guard::Jasmine::Runner do
 
     context 'for a failing Jasmine runner' do
       before do
-        File.stub(:foreach).and_yield 'describe "FailureTest", ->'
-        IO.stub(:popen).and_return StringIO.new(phantomjs_failure_response)
+        allow(File).to receive(:foreach).and_yield 'describe "FailureTest", ->'
+        allow(IO).to receive(:popen).and_return StringIO.new(phantomjs_failure_response)
       end
 
       it 'requests the jasmine specs from the server' do
-        File.should_receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=FailureTest\" 60000 failure true failure failure false true ''", "r:UTF-8")
+        expect(File).to receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
+        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=FailureTest\" 60000 failure true failure failure false true ''", "r:UTF-8")
         runner.run(['spec/javascripts/x/b.js.coffee'])
       end
 
       it 'returns the failures' do
         response = runner.run(['spec/javascripts/x/b.js.coffee'])
-        response.first.should be_false
-        response.last.should =~ ['spec/javascripts/x/b.js.coffee']
+        expect(response.first).to eql false
+        expect(response.last).to include 'spec/javascripts/x/b.js.coffee'
       end
 
       it 'does not show coverage' do
-        runner.should_not_receive(:notify_coverage_result)
+        expect(runner).not_to receive(:notify_coverage_result)
         runner.run(['spec/javascripts/a.js.coffee'])
       end
 
       context 'with the specdoc set to :never' do
           context 'and console and errors set to :never' do
               it 'shows the summary in the console' do
-                  formatter.should_receive(:info).with(
+                  expect(formatter).to receive(:info).with(
                       'Run Jasmine suite spec/javascripts/x/b.js.coffee', { reset: true }
                   )
-                  formatter.should_not_receive(:suite_name)
-                  formatter.should_not_receive(:spec_failed)
-                  formatter.should_receive(:error).with(
-                      '3 specs, 2 failures'
-                  )
+                  expect(formatter).not_to receive(:suite_name)
+                  expect(formatter).not_to receive(:spec_failed)
+                  expect(formatter).to receive(:error).with('3 specs, 2 failures')
                   runner.run(['spec/javascripts/x/b.js.coffee'], { specdoc: :never, console: :never, errors: :never })
               end
           end
 
           context 'and console set to :failure' do
               it 'hides all messages' do
-                  formatter.should_not_receive(:suite_name)
-                  formatter.should_not_receive(:spec_failed)
-                  formatter.should_not_receive(:spec_failed)
-                  formatter.should_not_receive(:suite_name)
-                  formatter.should_not_receive(:spec_failed)
-                  formatter.should_not_receive(:spec_failed)
-                  formatter.should_not_receive(:success)
-                  formatter.should_receive(:info).with(
+                  expect(formatter).not_to receive(:suite_name)
+                  expect(formatter).not_to receive(:spec_failed)
+                  expect(formatter).not_to receive(:spec_failed)
+                  expect(formatter).not_to receive(:suite_name)
+                  expect(formatter).not_to receive(:spec_failed)
+                  expect(formatter).not_to receive(:spec_failed)
+                  expect(formatter).not_to receive(:success)
+                  expect(formatter).to receive(:info).with(
                       "Run Jasmine suite spec/javascripts/x/b.js.coffee", { reset: true }
                   )
-                  formatter.should_receive(:info).with(
+                  expect(formatter).to receive(:info).with(
                       "Finished in 0.01 seconds"
                   )
                   runner.run(['spec/javascripts/x/b.js.coffee'], { specdoc: :never })
@@ -422,17 +420,17 @@ describe Guard::Jasmine::Runner do
 
         context 'and console set to :always' do
           it "hides all messages" do
-              formatter.should_not_receive(:suite_name)
-              formatter.should_not_receive(:spec_failed)
-              formatter.should_not_receive(:spec_failed)
-              formatter.should_not_receive(:suite_name)
-              formatter.should_not_receive(:spec_failed)
-              formatter.should_not_receive(:spec_failed)
-              formatter.should_not_receive(:success)
-              formatter.should_receive(:info).with(
+              expect(formatter).not_to receive(:suite_name)
+              expect(formatter).not_to receive(:spec_failed)
+              expect(formatter).to_not receive(:spec_failed)
+              expect(formatter).to_not receive(:suite_name)
+              expect(formatter).to_not receive(:spec_failed)
+              expect(formatter).to_not receive(:spec_failed)
+              expect(formatter).to_not receive(:success)
+              expect(formatter).to receive(:info).with(
                   "Run Jasmine suite spec/javascripts/x/b.js.coffee", { reset: true }
               )
-              formatter.should_receive(:info).with(
+              expect(formatter).to receive(:info).with(
                   "Finished in 0.01 seconds"
               )
               runner.run(['spec/javascripts/x/b.js.coffee'], { specdoc: :never, console: :always })
@@ -442,22 +440,22 @@ describe Guard::Jasmine::Runner do
 
       context 'with the specdoc set either :always or :failure' do
         it 'shows the failed suites' do
-          formatter.should_receive(:suite_name).with(
+          expect(formatter).to receive(:suite_name).with(
             'Failure suite'
           )
-          formatter.should_receive(:spec_failed).with(
+          expect(formatter).to receive(:spec_failed).with(
             '  ✘ Failure spec tests something'
           )
-          formatter.should_receive(:spec_failed).with(
+          expect(formatter).to receive(:spec_failed).with(
             '    ➤ ReferenceError: Can\'t find variable: a'
           )
-          formatter.should_receive(:spec_failed).with(
+          expect(formatter).to receive(:spec_failed).with(
             '      ➜ /path/to/file.js on line 255'
           )
-          formatter.should_receive(:suite_name).with(
+          expect(formatter).to receive(:suite_name).with(
             '  Nested failure suite'
           )
-          formatter.should_receive(:spec_failed).with(
+          expect(formatter).to receive(:spec_failed).with(
             '    ✘ Failure spec 2 tests something'
           )
           runner.run(['spec/javascripts/x/b.js.coffee'], { console: :always })
@@ -466,16 +464,16 @@ describe Guard::Jasmine::Runner do
         context 'with focus enabled' do
           context 'and console and error set to :never' do
             it 'does not show the passed specs' do
-              formatter.should_not_receive(:success).with(
+              expect(formatter).not_to receive(:success).with(
                 '    ✔ Success spec tests something'
               )
-              formatter.should_not_receive(:spec_failed).with(
+              expect(formatter).not_to receive(:spec_failed).with(
                 '    ➜ Exception: Another error message in /path/to/file.js on line 255'
               )
-              formatter.should_not_receive(:info).with(
+              expect(formatter).not_to receive(:info).with(
                 '      • Another console.log message'
               )
-              formatter.should_not_receive(:info).with(
+              expect(formatter).not_to receive(:info).with(
                 '      • WARN: And even more console.log messages'
               )
               runner.run(['spec/javascripts/x/b.js.coffee'], { console: :never, errors: :never, focus: true })
@@ -484,19 +482,19 @@ describe Guard::Jasmine::Runner do
 
           context 'and console and errors set to :failure' do
             it 'shows the failed specs with logs' do
-              formatter.should_receive(:info).with(
+              expect(formatter).to receive(:info).with(
                 '    • console.log message'
               )
-              formatter.should_not_receive(:success).with(
+              expect(formatter).to_not receive(:success).with(
                 '    ✔ Success spec tests something'
               )
-              formatter.should_not_receive(:spec_failed).with(
+              expect(formatter).to_not receive(:spec_failed).with(
                 '    ➜ Exception: Another error message in /path/to/file.js on line 255'
               )
-              formatter.should_not_receive(:info).with(
+              expect(formatter).to_not receive(:info).with(
                 '      • Another console.log message'
               )
-              formatter.should_not_receive(:info).with(
+              expect(formatter).to_not receive(:info).with(
                 '      • WARN: And even more console.log messages'
               )
               runner.run(['spec/javascripts/x/b.js.coffee'], { console: :failure, errors: :failure, focus: true })
@@ -505,16 +503,16 @@ describe Guard::Jasmine::Runner do
 
           context 'and console set to :always' do
             it 'shows the passed specs with logs' do
-              formatter.should_not_receive(:success).with(
+              expect(formatter).to_not receive(:success).with(
                 '    ✔ Success spec tests something'
               )
-              formatter.should_not_receive(:spec_failed).with(
+              expect(formatter).to_not receive(:spec_failed).with(
                 '    ➜ Exception: Another error message in /path/to/file.js on line 255'
               )
-              formatter.should_not_receive(:info).with(
+              expect(formatter).to_not receive(:info).with(
                 '      • Another console.log message'
               )
-              formatter.should_not_receive(:info).with(
+              expect(formatter).to_not receive(:info).with(
                 '      • WARN: And even more console.log messages'
               )
               runner.run(['spec/javascripts/x/b.js.coffee'], { console: :always, errors: :always, focus: true })
@@ -524,13 +522,13 @@ describe Guard::Jasmine::Runner do
 
         context 'with focus disabled' do
           it 'does show the passed specs' do
-              formatter.should_receive(:info).with(
+              expect(formatter).to receive(:info).with(
                   "      • Another console.log message"
               )
-              formatter.should_receive(:info).with(
+              expect(formatter).to receive(:info).with(
                   "      • WARN: And even more console.log messages"
               )
-              formatter.should_receive(:success).with(
+              expect(formatter).to receive(:success).with(
                   '    ✔ Success spec tests something'
               )
             runner.run(['spec/javascripts/x/b.js.coffee'], { console: :always, focus: false })
@@ -539,7 +537,7 @@ describe Guard::Jasmine::Runner do
 
         context 'with console logs set to :always' do
           it 'shows the failed console logs' do
-            formatter.should_receive(:info).with(
+            expect(formatter).to receive(:info).with(
                   '    • console.log message'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], { console: :always })
@@ -548,7 +546,7 @@ describe Guard::Jasmine::Runner do
 
         context 'with error logs set to :always' do
           it 'shows the errors logs' do
-            formatter.should_receive(:spec_failed).with(
+            expect(formatter).to receive(:spec_failed).with(
               "    ➤ ReferenceError: Can't find variable: a"
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], { errors: :always })
@@ -557,13 +555,13 @@ describe Guard::Jasmine::Runner do
 
         context 'with console logs set to :never' do
           it 'does not shows the console logs' do
-            formatter.should_not_receive(:info).with(
+            expect(formatter).to_not receive(:info).with(
               '    • console.log message'
             )
-            formatter.should_not_receive(:info).with(
+            expect(formatter).to_not receive(:info).with(
               '      • Another console.log message'
             )
-            formatter.should_not_receive(:info).with(
+            expect(formatter).to_not receive(:info).with(
               '      • WARN: And even more console.log messages'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], { console: :never })
@@ -572,10 +570,10 @@ describe Guard::Jasmine::Runner do
 
         context 'with error logs set to :never' do
           it 'does not show the errors logs' do
-            formatter.should_not_receive(:spec_failed).with(
+            expect(formatter).to_not receive(:spec_failed).with(
               '    ➜ Exception: Error message in /path/to/file.js on line 255'
             )
-            formatter.should_not_receive(:spec_failed).with(
+            expect(formatter).to_not receive(:spec_failed).with(
               '    ➜ Exception: Another error message in /path/to/file.js on line 255'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], { errors: :never })
@@ -584,10 +582,10 @@ describe Guard::Jasmine::Runner do
 
         context 'with console logs set to :failure' do
           it 'shows the console logs for failed specs' do
-            formatter.should_receive(:info).with(
+            expect(formatter).to receive(:info).with(
               '    • console.log message'
             )
-            formatter.should_not_receive(:info).with(
+            expect(formatter).to_not receive(:info).with(
               '      • WARN: And even more console.log messages'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], { console: :failure })
@@ -596,10 +594,10 @@ describe Guard::Jasmine::Runner do
 
         context 'with error logs set to :failure' do
           it 'shows the error logs for failed specs' do
-            formatter.should_receive(:spec_failed).with(
+            expect(formatter).to receive(:spec_failed).with(
               "    ➤ ReferenceError: Can't find variable: a"
             )
-            formatter.should_not_receive(:spec_failed).with(
+            expect(formatter).to_not receive(:spec_failed).with(
               '    ➜ Exception: Another error message in /path/to/file.js on line 255'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], { errors: :failure })
@@ -609,7 +607,7 @@ describe Guard::Jasmine::Runner do
 
       context 'with notifications' do
         it 'shows the failing spec notification' do
-          formatter.should_receive(:notify).with(
+          expect(formatter).to receive(:notify).with(
                 "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\nundefined' is not an object (evaluating 'killer.deployRobots') in model_spec.js:27\n3 specs, 2 failures\nin 0.01 seconds",
                 title:    'Jasmine suite failed',
                 image:    :failed,
@@ -620,7 +618,7 @@ describe Guard::Jasmine::Runner do
 
         context 'with :max_error_notify' do
           it 'shows only a single failing spec notification when set to 1' do
-            formatter.should_receive(:notify).with(
+            expect(formatter).to receive(:notify).with(
                   "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\n3 specs, 2 failures\nin 0.01 seconds",
                   title:    'Jasmine suite failed',
                   image:    :failed, priority: 2
@@ -628,7 +626,7 @@ describe Guard::Jasmine::Runner do
             runner.run(['spec/javascripts/x/b.js.coffee'], max_error_notify: 1 )
           end
           it 'shows two failing specs notification when set to 2' do
-              formatter.should_receive(:notify).with(
+              expect(formatter).to receive(:notify).with(
                   "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\nundefined' is not an object (evaluating 'killer.deployRobots') in model_spec.js:27\n3 specs, 2 failures\nin 0.01 seconds",
                   title:    'Jasmine suite failed',
                   image:    :failed, priority: 2
@@ -640,7 +638,7 @@ describe Guard::Jasmine::Runner do
 
         context 'without notifications' do
           it 'does not show a failure notification' do
-            formatter.should_not_receive(:notify)
+            expect(formatter).to_not receive(:notify)
             runner.run(['spec/javascripts/x/b.js.coffee'], notification: false )
           end
         end
@@ -649,74 +647,75 @@ describe Guard::Jasmine::Runner do
 
     context 'for a successful Jasmine runner' do
       before do
-        File.stub(:foreach).and_yield 'describe("SuccessTest", function() {'
-        IO.stub(:popen).and_return StringIO.new(phantomjs_success_response)
+        allow(File).to receive(:foreach).and_yield 'describe("SuccessTest", function() {'
+        allow(IO).to receive(:popen).and_return StringIO.new(phantomjs_success_response)
       end
 
       it 'requests the jasmine specs from the server' do
-        File.should_receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
-        IO.should_receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=SuccessTest\" 60000 failure true failure failure false true ''", "r:UTF-8")
+        expect(File).to receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
+        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=SuccessTest\" 60000 failure true failure failure false true ''", "r:UTF-8")
 
         runner.run(['spec/javascripts/t.js'])
       end
 
       it 'returns the success' do
         response = runner.run(['spec/javascripts/x/b.js.coffee'])
-        response.first.should be_true
-        response.last.should =~ []
+        expect(response.first).to  eql true
+        expect(response.last).to eql []
       end
 
       context 'with coverage' do
         context 'when coverage is present' do
           before do
-            IO.stub(:popen).and_return StringIO.new(phantomjs_coverage_response)
-            runner.stub(:coverage_bin).and_return('/bin/istanbul')
-            runner.stub(:coverage_file).and_return('tmp/coverage.json')
-            runner.stub(:coverage_root).and_return('/projects/secret')
+            allow(IO).to receive(:popen).and_return StringIO.new(phantomjs_coverage_response)
+            allow(runner).to receive(:coverage_bin).and_return('/bin/istanbul')
+            allow(runner).to receive(:coverage_file).and_return('tmp/coverage.json')
+            allow(runner).to receive(:coverage_root).and_return('/projects/secret')
           end
 
           it 'notifies coverage when present' do
-            runner.should_receive(:notify_coverage_result)
+            expect(runner).to receive(:notify_coverage_result)
             runner.run(['spec/javascripts/t.js.coffee'], coverage: true )
           end
 
           context 'checking the coverage' do
             before do
-              runner.stub(:generate_text_report)
+              allow(runner).to receive(:generate_text_report)
             end
 
             it 'can check for statements coverage' do
-              runner.should_receive(:`).with('/bin/istanbul check-coverage --statements 12 tmp/coverage.json 2>&1').and_return '' # `
+              expect(runner).to receive(:`).with('/bin/istanbul check-coverage --statements 12 tmp/coverage.json 2>&1').and_return '' # `
               runner.run(['spec/javascripts/t.js.coffee'], coverage: true, statements_threshold: 12)
             end
 
             it 'can check for functions coverage' do
-              runner.should_receive(:`).with('/bin/istanbul check-coverage --functions 12 tmp/coverage.json 2>&1').and_return '' # `
+              expect(runner).to receive(:`).with('/bin/istanbul check-coverage --functions 12 tmp/coverage.json 2>&1').and_return '' # `
               runner.run(['spec/javascripts/t.js.coffee'], coverage: true, functions_threshold: 12 )
             end
 
             it 'can check for branches coverage' do
-              runner.should_receive(:`).with('/bin/istanbul check-coverage --branches 12 tmp/coverage.json 2>&1').and_return '' #`
+              expect(runner).to receive(:`).with('/bin/istanbul check-coverage --branches 12 tmp/coverage.json 2>&1').and_return '' #`
               runner.run(['spec/javascripts/t.js.coffee'], { coverage: true, branches_threshold: 12 })
             end
 
             it 'can check for lines coverage' do
-              runner.should_receive(:`).with('/bin/istanbul check-coverage --lines 12 tmp/coverage.json 2>&1').and_return ''
+              expect(runner).to receive(:`).with('/bin/istanbul check-coverage --lines 12 tmp/coverage.json 2>&1').and_return ''
               runner.run(['spec/javascripts/t.js.coffee'], { coverage: true, lines_threshold: 12 })
             end
 
             context 'when enough is covered' do
               before do
-                runner.should_receive(:`).and_return '' # `
+                expect(runner).to receive(:`).and_return '' # `
               end
 
               it 'shows the success message' do
-                formatter.should_receive(:success).with('Code coverage succeed')
+                expect(formatter).to receive(:success).with("1 spec, 0 failures")
+                expect(formatter).to receive(:success).with('Code coverage succeed')
                 runner.run(['spec/javascripts/t.js.coffee'], { coverage: true, lines_threshold: 12 })
               end
 
               it 'notifies the coverage success when not turned off' do
-                formatter.should_receive(:notify).with('All code is adequately covered with specs', title: 'Code coverage succeed')
+                expect(formatter).to receive(:notify).with('All code is adequately covered with specs', title: 'Code coverage succeed')
                 runner.run(['spec/javascripts/t.js.coffee'], { coverage: true, lines_threshold: 12 })
               end
             end
@@ -741,46 +740,46 @@ done
             end
 
             before do
-              runner.should_receive(:`).with('/bin/istanbul report --root /projects/secret text tmp/coverage.json').and_return text_report # `
-              runner.stub(:check_coverage)
-              runner.stub(:puts)
+              expect(runner).to receive(:`).with('/bin/istanbul report --root /projects/secret text tmp/coverage.json').and_return text_report # `
+              allow(runner).to receive(:check_coverage)
+              allow(runner).to receive(:puts)
             end
 
             it 'shows the summary text info' do
-              formatter.should_receive(:info).with('Spec coverage details:')
+              expect(formatter).to receive(:info).with('Spec coverage details:')
               runner.run(['app/test1.js.coffee'], { coverage: true })
             end
 
 
             context 'when running all specs' do
               it 'shows all the important text report entries' do
-                runner.should_receive(:puts).with ''
-                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
-                runner.should_receive(:puts).with 'File                           |   % Stmts |% Branches |   % Funcs |   % Lines |'
-                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
-                runner.should_receive(:puts).with '   app/                        |     98.04 |     75.86 |     86.67 |     98.04 |'
-                runner.should_receive(:puts).with '      test1.js.coffee.erb      |     98.04 |     75.86 |     86.67 |     98.04 |'
-                runner.should_receive(:puts).with '      test2.js.coffee.erb      |     98.04 |     75.86 |     86.67 |     98.04 |'
-                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
-                runner.should_receive(:puts).with 'All files                      |     98.04 |     75.86 |     86.67 |     98.04 |'
-                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
-                runner.should_receive(:puts).with ''
+                expect(runner).to receive(:puts).with ''
+                expect(runner).to receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                expect(runner).to receive(:puts).with 'File                           |   % Stmts |% Branches |   % Funcs |   % Lines |'
+                expect(runner).to receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                expect(runner).to receive(:puts).with '   app/                        |     98.04 |     75.86 |     86.67 |     98.04 |'
+                expect(runner).to receive(:puts).with '      test1.js.coffee.erb      |     98.04 |     75.86 |     86.67 |     98.04 |'
+                expect(runner).to receive(:puts).with '      test2.js.coffee.erb      |     98.04 |     75.86 |     86.67 |     98.04 |'
+                expect(runner).to receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                expect(runner).to receive(:puts).with 'All files                      |     98.04 |     75.86 |     86.67 |     98.04 |'
+                expect(runner).to receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                expect(runner).to receive(:puts).with ''
                 runner.run(['spec/javascripts'], { coverage: true })
               end
             end
 
             context 'when running a single spec' do
               it 'shows the single text report entry with its directory' do
-                runner.should_receive(:puts).with ''
-                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
-                runner.should_receive(:puts).with 'File                           |   % Stmts |% Branches |   % Funcs |   % Lines |'
-                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
-                runner.should_receive(:puts).with '   app/                        |     98.04 |     75.86 |     86.67 |     98.04 |'
-                runner.should_receive(:puts).with '      test1.js.coffee.erb      |     98.04 |     75.86 |     86.67 |     98.04 |'
-                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
-                runner.should_receive(:puts).with 'All files                      |     98.04 |     75.86 |     86.67 |     98.04 |'
-                runner.should_receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
-                runner.should_receive(:puts).with ''
+                expect(runner).to receive(:puts).with ''
+                expect(runner).to receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                expect(runner).to receive(:puts).with 'File                           |   % Stmts |% Branches |   % Funcs |   % Lines |'
+                expect(runner).to receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                expect(runner).to receive(:puts).with '   app/                        |     98.04 |     75.86 |     86.67 |     98.04 |'
+                expect(runner).to receive(:puts).with '      test1.js.coffee.erb      |     98.04 |     75.86 |     86.67 |     98.04 |'
+                expect(runner).to receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                expect(runner).to receive(:puts).with 'All files                      |     98.04 |     75.86 |     86.67 |     98.04 |'
+                expect(runner).to receive(:puts).with '-------------------------------+-----------+-----------+-----------+-----------+'
+                expect(runner).to receive(:puts).with ''
                 runner.run(['app/test1.js.coffee'], { coverage: true })
               end
             end
@@ -800,55 +799,55 @@ done
             end
 
             before do
-              runner.should_receive(:`).with('/bin/istanbul report --root /projects/secret text-summary tmp/coverage.json').and_return text_summary_report #`
-              runner.stub(:check_coverage)
-              runner.stub(:puts)
+              expect(runner).to receive(:`).with('/bin/istanbul report --root /projects/secret text-summary tmp/coverage.json').and_return text_summary_report #`
+              allow(runner).to receive(:check_coverage)
+              allow(runner).to receive(:puts)
             end
 
             it 'shows the summary text info' do
-              formatter.should_receive(:info).with('Spec coverage summary:')
+              expect(formatter).to receive(:info).with('Spec coverage summary:')
               runner.run(['app/test1.js.coffee'], { coverage: true, coverage_summary: true })
             end
 
             it 'shows the summary text report' do
-              runner.should_receive(:puts).with ''
-              runner.should_receive(:puts).with 'Statements   : 98.04% ( 50/51 )'
-              runner.should_receive(:puts).with 'Branches     : 75.86% ( 22/29 )'
-              runner.should_receive(:puts).with 'Functions    : 86.67% ( 13/15 )'
-              runner.should_receive(:puts).with 'Lines        : 98.04% ( 50/51 )'
-              runner.should_receive(:puts).with ''
+              expect(runner).to receive(:puts).with ''
+              expect(runner).to receive(:puts).with 'Statements   : 98.04% ( 50/51 )'
+              expect(runner).to receive(:puts).with 'Branches     : 75.86% ( 22/29 )'
+              expect(runner).to receive(:puts).with 'Functions    : 86.67% ( 13/15 )'
+              expect(runner).to receive(:puts).with 'Lines        : 98.04% ( 50/51 )'
+              expect(runner).to receive(:puts).with ''
               runner.run(['app/test1.js.coffee'], { coverage: true, coverage_summary: true })
             end
           end
 
           context 'with coverage html report enabled' do
             before do
-              runner.stub(:generate_text_report)
-              runner.stub(:`) # `
-              runner.stub(:check_coverage)
-              runner.stub(:coverage_report_directory).and_return('/coverage/report/directory')
+              allow(runner).to receive(:generate_text_report)
+              allow(runner).to receive(:`) # `
+              allow(runner).to receive(:check_coverage)
+              allow(runner).to receive(:coverage_report_directory).and_return('/coverage/report/directory')
             end
 
             it 'generates the html report' do
-              runner.should_receive(:`).with('/bin/istanbul report --dir /coverage/report/directory --root /projects/secret html tmp/coverage.json') # `
+              expect(runner).to receive(:`).with('/bin/istanbul report --dir /coverage/report/directory --root /projects/secret html tmp/coverage.json') # `
               runner.run(['app/test1.js.coffee'], { coverage: true, coverage_html: true })
             end
 
             it 'outputs the html report index page' do
-              formatter.should_receive(:info).with('Updated HTML report available at: /coverage/report/directory/index.html')
+              expect(formatter).to receive(:info).with('Updated HTML report available at: /coverage/report/directory/index.html')
               runner.run(['app/test1.js.coffee'], { coverage: true, coverage_html: true })
             end
           end
 
           context 'with the coverage html directory set' do
             before do
-              runner.stub(:generate_text_report)
-              runner.stub(:`) #`
-              runner.stub(:check_coverage)
+              allow(runner).to receive(:generate_text_report)
+              allow(runner).to receive(:`) #`
+              allow(runner).to receive(:check_coverage)
             end
 
             it 'uses the passed in file path' do
-              runner.should_receive(:coverage_report_directory)
+              expect(runner).to receive(:coverage_report_directory)
               runner.run(['app/test1.js.coffee'], { coverage: true, coverage_html: true, coverage_html_dir: "test/directory/" })
             end
 
@@ -856,8 +855,8 @@ done
 
           context "when istanbul is not found" do
             it "prints an error message telling the user istanbul could not be found" do
-              runner.stub(:coverage_bin).and_return(nil)
-              formatter.should_receive(:error).with('Skipping coverage report: unable to locate istanbul in your PATH')
+              allow(runner).to receive(:coverage_bin).and_return(nil)
+              expect(formatter).to receive(:error).with('Skipping coverage report: unable to locate istanbul in your PATH')
               runner.run(['spec/javascripts/t.js.coffee'], { coverage: true, statements_threshold: 12 })
             end
           end
@@ -866,38 +865,47 @@ done
 
       context 'with the specdoc set to :always' do
         it 'shows the specdoc in the console' do
-          formatter.should_receive(:info).with(
+          expect(formatter).to receive(:info).with(
             'Run Jasmine suite spec/javascripts/x/t.js', { reset: true }
           )
-          formatter.should_receive(:suite_name).with(
+          expect(formatter).to receive(:suite_name).with(
             'Success suite'
           )
-          formatter.should_receive(:suite_name).with(
+          expect(formatter).to receive(:suite_name).with(
             '  Nested success suite'
           )
-          formatter.should_receive(:success).with(
+          expect(formatter).to receive(:success).with(
+            "    ✔ Success nested test tests something"
+          )
+          expect(formatter).to receive(:success).with(
             '3 specs, 0 failures'
+          )
+          expect(formatter).to receive(:success).with(
+            "  ✔ Success test tests something"
+          )
+          expect(formatter).to receive(:success).with(
+            "  ✔ Another success test tests something"
           )
           runner.run(['spec/javascripts/x/t.js'], { specdoc: :always })
         end
 
         context 'with console logs set to :always' do
           it 'shows the console logs' do
-            formatter.should_receive(:info).with(
+            expect(formatter).to receive(:info).with(
               'Run Jasmine suite spec/javascripts/x/b.js.coffee', { reset: true }
             )
-            # formatter.should_receive(:info).with(
-            #   '    •  I can haz console.logs'
-            # )
+            expect(formatter).to receive(:info).with(
+              "    • I can haz console.logs"
+            )
             runner.run(['spec/javascripts/x/b.js.coffee'], { specdoc: :always, console: :always })
           end
         end
 
         context 'with console logs set to :never' do
           it 'does not shows the console logs' do
-            # formatter.should_not_receive(:info).with(
-            #   '    •  I can haz console.logs'
-            # )
+            expect(formatter).to_not receive(:info).with(
+              "    • I can haz console.logs"
+            )
             runner.run(['spec/javascripts/x/b.js.coffee'], { specdoc: :always, console: :never})
           end
         end
@@ -905,11 +913,11 @@ done
 
       context 'with the specdoc set to :never or :failure' do
         it 'shows the summary in the console' do
-          formatter.should_receive(:info).with(
+          expect(formatter).to receive(:info).with(
             'Run Jasmine suite spec/javascripts/x/t.js', { reset: true }
           )
-          formatter.should_not_receive(:suite_name)
-          formatter.should_receive(:success).with(
+          expect(formatter).to_not receive(:suite_name)
+          expect(formatter).to receive(:success).with(
             '3 specs, 0 failures'
           )
           runner.run(['spec/javascripts/x/t.js'], { specdoc: :never })
@@ -917,7 +925,7 @@ done
 
         context 'with console logs set to :always' do
           it 'does not show the console logs' do
-            formatter.should_not_receive(:info).with(
+            expect(formatter).to_not receive(:info).with(
               '    •  I\'m a nested spec'
             )
             runner.run(['spec/javascripts/x/b.js.coffee'], { console: :always })
@@ -927,7 +935,7 @@ done
 
       context 'with notifications' do
         it 'shows a success notification' do
-          formatter.should_receive(:notify).with(
+          expect(formatter).to receive(:notify).with(
             "3 specs, 0 failures\nin 0.01 seconds",
             title: 'Jasmine suite passed'
           )
@@ -936,7 +944,7 @@ done
 
         context 'with hide success notifications' do
           it 'does not shows a success notification' do
-            formatter.should_not_receive(:notify)
+            expect(formatter).to_not receive(:notify)
             runner.run(['spec/javascripts/t.js'], { notification: true, hide_success: true })
           end
         end
@@ -944,7 +952,7 @@ done
 
       context 'without notifications' do
         it 'does not shows a success notification' do
-          formatter.should_not_receive(:notify)
+          expect(formatter).to_not receive(:notify)
           runner.run(['spec/javascripts/t.js'], { notification: false })
         end
       end
