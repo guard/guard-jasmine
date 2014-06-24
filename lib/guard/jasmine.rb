@@ -18,7 +18,7 @@ module Guard
 
     extend ::Guard::Jasmine::Util
 
-    attr_accessor :last_run_failed, :last_failed_paths, :run_all_options
+    attr_accessor :last_run_failed, :last_failed_paths, :run_all_options, :runner
 
     DEFAULT_OPTIONS = {
       server:                   :auto,
@@ -101,12 +101,13 @@ module Guard
       options[:specdoc]       = :failure if ![:always, :never, :failure].include? options[:specdoc]
       options[:phantomjs_bin] = Jasmine.which('phantomjs') unless options[:phantomjs_bin]
 
-      self.run_all_options = options.delete(:run_all) || { }
+      self.run_all_options = options.delete(:run_all) || {}
 
       super(options)
 
       self.last_run_failed   = false
       self.last_failed_paths = []
+      @runner = Runner.new( options.merge(self.run_all_options) )
     end
 
     # Gets called once when Guard starts.
@@ -148,7 +149,8 @@ module Guard
     # @raise [:task_has_failed] when run_all has failed
     #
     def run_all
-      passed, failed_specs = Runner.run([options[:spec_dir]], options.merge(self.run_all_options))
+
+      passed, failed_specs = runner.run([options[:spec_dir]])
 
       self.last_failed_paths = failed_specs
       self.last_run_failed   = !passed
@@ -165,9 +167,7 @@ module Guard
       specs = options[:keep_failed] ? paths + self.last_failed_paths : paths
       specs = Inspector.clean(specs, options) if options[:clean]
       return false if specs.empty?
-
-      passed, failed_specs = Runner.run(specs, options)
-
+      passed, failed_specs = runner.run(specs)
       if passed
         self.last_failed_paths = self.last_failed_paths - paths
         run_all if self.last_run_failed && options[:all_after_pass]

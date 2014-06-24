@@ -13,7 +13,7 @@ describe Guard::Jasmine do
 
   before do
     inspector.stub(:clean).and_return { |specs, options| specs }
-    runner.stub(:run).and_return [true, []]
+    runner.any_instance.stub(:run).and_return [true, []]
     formatter.stub(:notify)
     server.stub(:start)
     server.stub(:stop)
@@ -346,7 +346,7 @@ describe Guard::Jasmine do
       end
 
       it 'saves the run_all options' do
-        guard.run_all_options.should eql({ test: true })
+        guard.run_all_options.should eql({ test: true }) 
       end
 
     end
@@ -505,7 +505,7 @@ describe Guard::Jasmine do
 
     context 'without a specified spec dir' do
       it 'starts the Runner with the default spec dir' do
-        runner.should_receive(:run).with(['spec'], kind_of(Hash)).and_return [['spec/javascripts/a.js.coffee'], true]
+        runner.any_instance.should_receive(:run).with(['spec']).and_return [['spec/javascripts/a.js.coffee'], true]
 
         guard.run_all
       end
@@ -516,7 +516,7 @@ describe Guard::Jasmine do
       let(:guard) { Guard::Jasmine.new(options) }
 
       it 'starts the Runner with the default spec dir' do
-        runner.should_receive(:run).with(['specs'], kind_of(Hash)).and_return [['spec/javascripts/a.js.coffee'], true]
+        runner.any_instance.should_receive(:run).with(['specs']).and_return [['spec/javascripts/a.js.coffee'], true]
 
         guard.run_all
       end
@@ -526,17 +526,17 @@ describe Guard::Jasmine do
       let(:guard) { Guard::Jasmine.new({ run_all: { specdoc: :overwritten } }) }
 
       it 'starts the Runner with the merged run all options' do
-        runner.should_receive(:run).with(['spec'], hash_including({ specdoc: :overwritten })).and_return [['spec/javascripts/a.js.coffee'], true]
-
+        guard.runner.options[:specdoc].should( eql( :overwritten))
+        runner.any_instance.should_receive(:run).with(['spec']).and_return [['spec/javascripts/a.js.coffee'], true]
         guard.run_all
       end
     end
 
-    context 'with all specs passing' do
+    context  'with all specs passing' do
       before do
         guard.last_failed_paths = ['spec/javascripts/a.js.coffee']
         guard.last_run_failed   = true
-        runner.stub(:run).and_return [true, []]
+        runner.any_instance.stub(:run).and_return [true, []]
       end
 
       it 'sets the last run failed to false' do
@@ -552,7 +552,7 @@ describe Guard::Jasmine do
 
     context 'with failing specs' do
       before do
-        runner.stub(:run).and_return [false, []]
+        runner.any_instance.stub(:run).and_return [false, []]
       end
 
       it 'throws :task_has_failed' do
@@ -575,7 +575,7 @@ describe Guard::Jasmine do
       inspector.should_receive(:clean).with(['spec/javascripts/a.js.coffee',
                                              'spec/javascripts/b.js.coffee'], kind_of(Hash)).and_return ['spec/javascripts/a.js.coffee']
 
-      runner.should_receive(:run).with(['spec/javascripts/a.js.coffee'], kind_of(Hash)).and_return [['spec/javascripts/a.js.coffee'], true]
+      runner.any_instance.should_receive(:run).with(['spec/javascripts/a.js.coffee']).and_return [['spec/javascripts/a.js.coffee'], true]
 
       guard.run_on_modifications(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
     end
@@ -622,8 +622,8 @@ describe Guard::Jasmine do
       end
 
       it 'appends the last failed paths to the current run' do
-        runner.should_receive(:run).with(['spec/javascripts/a.js.coffee',
-                                          'spec/javascripts/b.js.coffee'], kind_of(Hash))
+        runner.any_instance.should_receive(:run).with(['spec/javascripts/a.js.coffee',
+                                                       'spec/javascripts/b.js.coffee'])
 
         guard.run_on_modifications(['spec/javascripts/a.js.coffee'])
       end
@@ -633,7 +633,7 @@ describe Guard::Jasmine do
       before do
         guard.last_failed_paths = ['spec/javascripts/a.js.coffee']
         guard.last_run_failed   = true
-        runner.stub(:run).and_return [true, []]
+        runner.any_instance.stub(:run).and_return [true, []]
       end
 
       it 'sets the last run failed to false' do
@@ -668,7 +668,7 @@ describe Guard::Jasmine do
     context 'with failing specs' do
       before do
         guard.last_run_failed = false
-        runner.stub(:run).and_return [false, ['spec/javascripts/a.js.coffee']]
+        runner.any_instance.stub(:run).and_return [false, ['spec/javascripts/a.js.coffee']]
       end
 
       it 'throws :task_has_failed' do

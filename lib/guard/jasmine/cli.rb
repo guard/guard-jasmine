@@ -217,7 +217,7 @@ module Guard
           end
 
           if CLI.runner_available?(runner_options)
-            result = ::Guard::Jasmine::Runner.run(paths, runner_options)
+            result = ::Guard::Jasmine::Runner.new(runner_options).run(paths)
             ::Guard::Jasmine::Server.stop
 
             Process.exit result.first ? 0 : 1
@@ -231,7 +231,7 @@ module Guard
         end
 
       rescue => e
-        ::Guard::UI.error e.message
+        ::Guard::UI.error "Something went wrong: #{e.message}"
         Process.exit 2
       end
 

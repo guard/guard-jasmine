@@ -11,54 +11,60 @@ module Guard
     # evaluates the JSON response from the PhantomJS Script `guard_jasmine.coffee`,
     # writes the result to the console and triggers optional system notifications.
     #
-    module Runner
-      extend ::Guard::Jasmine::Util
+    class Runner
+      include ::Guard::Jasmine::Util
 
-      class << self
+      attr_reader :results, :options
 
-        # Name of the coverage threshold options
-        THRESHOLDS = [:statements_threshold, :functions_threshold, :branches_threshold, :lines_threshold]
+      # Name of the coverage threshold options
+      THRESHOLDS = [:statements_threshold, :functions_threshold, :branches_threshold, :lines_threshold]
 
-        # Run the supplied specs.
-        #
+      # Run the supplied specs.
+      #
+      # @param [Array<String>] paths the spec files or directories
+      # @param [Hash] options the options for the execution
+      # @option options [String] :jasmine_url the url of the Jasmine test runner
+      # @option options [String] :phantomjs_bin the location of the PhantomJS binary
+      # @option options [Integer] :timeout the maximum time in seconds to wait for the spec runner to finish
+      # @option options [String] :rackup_config custom rackup config to use
+      # @option options [Boolean] :notification show notifications
+      # @option options [Boolean] :hide_success hide success message notification
+      # @option options [Integer] :max_error_notify maximum error notifications to show
+      # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never
+      # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
+      # @option options [String] :spec_dir the directory with the Jasmine specs
+      # @option options [Boolean] :debug display raw JSON output from the runner
+      # @return [Boolean, Array<String>] the status of the run and the failed files
+      #
+      def initialize(options)
+        @options = options
+      end
+
+      def run(paths, per_run_options = {})
+        previous_options = @options
+        @options.merge!( per_run_options )
+        return [false, []] if paths.empty?
+
+        notify_start_message(paths)
+
+        @results = paths.inject([]) do |results, file|
+          if File.exist?(file_and_line_number_parts(file)[0])
+            results << evaluate_response(run_jasmine_spec(file), file) 
+          end
+          results
+        end.compact
+        [response_status, failed_paths]
+      ensure
+        @options=previous_options
+      end
+
+    private
+
+      # Shows a notification in the console that the runner starts.
+      #
         # @param [Array<String>] paths the spec files or directories
-        # @param [Hash] options the options for the execution
-        # @option options [String] :jasmine_url the url of the Jasmine test runner
-        # @option options [String] :phantomjs_bin the location of the PhantomJS binary
-        # @option options [Integer] :timeout the maximum time in seconds to wait for the spec runner to finish
-        # @option options [String] :rackup_config custom rackup config to use
-        # @option options [Boolean] :notification show notifications
-        # @option options [Boolean] :hide_success hide success message notification
-        # @option options [Integer] :max_error_notify maximum error notifications to show
-        # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never
-        # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
-        # @option options [String] :spec_dir the directory with the Jasmine specs
-        # @option options [Boolean] :debug display raw JSON output from the runner
-        # @return [Boolean, Array<String>] the status of the run and the failed files
         #
-        def run(paths, options = { })
-          return [false, []] if paths.empty?
-
-          notify_start_message(paths, options)
-
-          results = paths.inject([]) do |results, file|
-            results << evaluate_response(run_jasmine_spec(file, options), file, options) if File.exist?(file_and_line_number_parts(file)[0])
-
-            results
-          end.compact
-
-          [response_status_for(results), failed_paths_from(results)]
-        end
-
-        private
-
-        # Shows a notification in the console that the runner starts.
-        #
-        # @param [Array<String>] paths the spec files or directories
-        # @param [Hash] options the options for the execution
-        # @option options [String] :spec_dir the directory with the Jasmine specs
-        #
-        def notify_start_message(paths, options)
+        def notify_start_message(paths)
           message = if paths == [options[:spec_dir]]
                       'Run all Jasmine suites'
                     else
@@ -73,8 +79,8 @@ module Guard
         # @param [Array<Object>] results the spec runner results
         # @return [Array<String>] the list of failed spec files
         #
-        def failed_paths_from(results)
-          results.map { |r| !r['passed'] ? r['file'] : nil }.compact
+        def failed_paths
+          @results.map { |r| !r['passed'] ? r['file'] : nil }.compact
         end
 
         # Returns the response status for the given result set.
@@ -82,18 +88,16 @@ module Guard
         # @param [Array<Object>] results the spec runner results
         # @return [Boolean] whether it has passed or not
         #
-        def response_status_for(results)
-          results.none? { |r| r.has_key?('error') || !r['passed'] }
+        def response_status
+          @results.none? { |r| r.has_key?('error') || !r['passed'] }
         end
 
         # Run the Jasmine spec by executing the PhantomJS script.
         #
         # @param [String] file the path of the spec
-        # @param [Hash] options the options for the execution
-        # @option options [Integer] :timeout the maximum time in seconds to wait for the spec runner to finish
         #
-        def run_jasmine_spec(file, options)
-          suite = jasmine_suite(file, options)
+        def run_jasmine_spec(file)
+          suite = jasmine_suite(file)
 
           arguments = [
             options[:timeout] * 1000,
@@ -106,30 +110,26 @@ module Guard
             "'#{ options[:junit_save_path] }'"
           ]
 
-          IO.popen("#{ phantomjs_command(options) } \"#{ suite }\" #{ arguments.collect { |i| i.to_s }.join(' ')}", 'r:UTF-8')
+          IO.popen("#{ phantomjs_command } \"#{ suite }\" #{ arguments.collect { |i| i.to_s }.join(' ')}", 'r:UTF-8')
         end
 
         # Get the PhantomJS binary and script to execute.
         #
-        # @param [Hash] options the options for the execution
-        # @option options [String] :phantomjs_bin the location of the PhantomJS binary
         # @return [String] the command
         #
-        def phantomjs_command(options)
-          options[:phantomjs_bin] + ' ' + phantomjs_script
-          #options[:phantomjs_bin] + ' --remote-debugger-port=9000 ' + phantomjs_script
+        def phantomjs_command
+          #options[:phantomjs_bin] + ' ' + phantomjs_script
+          options[:phantomjs_bin] + ' --remote-debugger-port=9000 ' + phantomjs_script
         end
 
         # Get the Jasmine test runner URL with the appended suite name
         # that acts as the spec filter.
         #
         # @param [String] file the spec file
-        # @param [Hash] options the options for the execution
-        # @option options [String] :jasmine_url the url of the Jasmine test runner
         # @return [String] the Jasmine url
         #
-        def jasmine_suite(file, options)
-          options[:jasmine_url] + query_string_for_suite(file, options)
+        def jasmine_suite(file)
+          options[:jasmine_url] + query_string_for_suite(file)
         end
 
         # Get the PhantomJS script that executes the spec and extracts
@@ -145,17 +145,15 @@ module Guard
         # will be run.
         #
         # @param [String] file the spec file
-        # @param [Hash] options the options for the execution
-        # @option options [String] :spec_dir the directory with the Jasmine specs
         # @return [String] the suite name
         #
-        def query_string_for_suite(file, options)
+        def query_string_for_suite(file)
           return '' if file == options[:spec_dir]
 
-          query_string = query_string_for_suite_from_line_number(file, options)
+          query_string = query_string_for_suite_from_line_number(file)
 
           unless query_string
-            query_string = query_string_for_suite_from_first_describe(file, options)
+            query_string = query_string_for_suite_from_first_describe(file)
           end
 
           query_string = query_string ? "?spec=#{ query_string }" : ''
@@ -168,11 +166,9 @@ module Guard
         # fromt the corresponding line number in the file.
         #
         # @param [String] file the spec file
-        # @param [Hash] options the options for the execution
-        # @option options [Fixnum] :line_number the line number to run
         # @return [String] the suite name
         #
-        def query_string_for_suite_from_line_number(file, options)
+        def query_string_for_suite_from_line_number(file)
           file_name, line_number = file_and_line_number_parts(file)
           line_number ||= options[:line_number]
 
@@ -197,10 +193,9 @@ module Guard
         # found.
         #
         # @param [String] file the spec file
-        # @param [Hash] options the options for the execution
         # @return [String] the suite name
         #
-        def query_string_for_suite_from_first_describe(file, options)
+        def query_string_for_suite_from_first_describe(file)
           File.foreach(file) do |line|
             if line =~ /describe\s*[("']+(.*?)["')]+/
               return $1
@@ -251,10 +246,9 @@ module Guard
         #
         # @param [String] output the JSON output the spec run
         # @param [String] file the file name of the spec
-        # @param [Hash] options the options for the execution
         # @return [Hash] the suite result
         #
-        def evaluate_response(output, file, options)
+        def evaluate_response(output, file)
           json = output.read
           json = json.encode('UTF-8') if json.respond_to?(:encode)
           begin
@@ -265,15 +259,15 @@ module Guard
               if options[:is_cli]
                 raise 'An error occurred in the Jasmine runner'
               else
-                notify_runtime_error(result, options)
+                notify_runtime_error(result)
               end
             elsif result
               result['file'] = file
-              notify_spec_result(result, options)
+              notify_spec_result(result)
             end
 
             if result && result['coverage'] && options[:coverage]
-              notify_coverage_result(result['coverage'], file, options)
+              notify_coverage_result(result['coverage'], file)
             end
 
             result
@@ -303,10 +297,8 @@ module Guard
         # prohibits the execution of the Jasmine spec.
         #
         # @param [Hash] result the suite result
-        # @param [Hash] options the options for the execution
-        # @option options [Boolean] :notification show notifications
         #
-        def notify_runtime_error(result, options)
+        def notify_runtime_error(result)
           message = "An error occurred: #{ result['error'] }"
           Formatter.error(message )
           Formatter.error( result['trace'] ) if result['trace']
@@ -317,11 +309,8 @@ module Guard
         # and some stats.
         #
         # @param [Hash] result the suite result
-        # @param [Hash] options the options for the execution
-        # @option options [Boolean] :notification show notifications
-        # @option options [Boolean] :hide_success hide success message notification
         #
-        def notify_spec_result(result, options)
+        def notify_spec_result(result)
           specs           = result['stats']['specs']
           failures        = result['stats']['failures']
           time            = sprintf( '%0.2f', result['stats']['time'] )
@@ -333,14 +322,14 @@ module Guard
           full_message = "#{ message }\nin #{ time } seconds"
           passed       = failures == 0
 
-          report_specdoc(result, passed, options) if specdoc_shown?(passed, options)
+          report_specdoc(result, passed) if specdoc_shown?(passed)
 
           if passed
             Formatter.success(message)
             Formatter.notify(full_message, title: 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
           else
             errors = collect_specs(result['suites']||[]).map { |spec|
-              (spec['errors']||[]).map { |error| format_error(error,false,options) }
+              (spec['errors']||[]).map { |error| format_error(error,false) }
             }.flatten
 
             error_message = errors[0..options[:max_error_notify]].join("\n")
@@ -359,26 +348,23 @@ module Guard
         #
         # @param [Hash] coverage the coverage hash from the JSON
         # @param [String] file the file name of the spec
-        # @param [Hash] options the options for the execution
-        # @option options [Boolean] :notification show notifications
-        # @option options [Boolean] :hide_success hide success message notification
         #
-        def notify_coverage_result(coverage, file, options)
+        def notify_coverage_result(coverage, file)
           if coverage_bin
             FileUtils.mkdir_p(coverage_root) unless File.exist?(coverage_root)
 
-            update_coverage(coverage, file, options)
+            update_coverage(coverage, file)
 
             if options[:coverage_summary]
               generate_summary_report
             else
-              generate_text_report(file, options)
+              generate_text_report(file)
             end
 
-            check_coverage(options)
+            check_coverage
 
             if options[:coverage_html]
-              generate_html_report(options)
+              generate_html_report
             end
           else
             Formatter.error('Skipping coverage report: unable to locate istanbul in your PATH')
@@ -389,9 +375,8 @@ module Guard
         # last coverage run.
         #
         # @param [String] file the file name of the spec
-        # @param [Hash] options the options for the execution
         #
-        def generate_text_report(file, options)
+        def generate_text_report(file)
           Formatter.info 'Spec coverage details:'
 
           if file == options[:spec_dir]
@@ -413,11 +398,9 @@ module Guard
         # Uses the Istanbul text reported to output the result of the
         # last coverage run.
         #
-        # @param [Hash] options the options for the coverage
-        #
-        def check_coverage(options)
-          if any_coverage_threshold?(options)
-            coverage = `#{coverage_bin} check-coverage #{ istanbul_coverage_options(options) } #{ coverage_file } 2>&1`
+        def check_coverage
+          if any_coverage_threshold?
+            coverage = `#{coverage_bin} check-coverage #{ istanbul_coverage_options } #{ coverage_file } 2>&1`
             coverage = coverage.split("\n").grep(/ERROR/).join.sub('ERROR:', '')
             failed   = $? && $?.exitstatus != 0
 
@@ -434,10 +417,8 @@ module Guard
         # Uses the Istanbul text reported to output the result of the
         # last coverage run.
         #
-        # @param [Hash] options for the HTML report
-        #
-        def generate_html_report(options)
-          report_directory = coverage_report_directory(options)
+        def generate_html_report
+          report_directory = coverage_report_directory
           `#{coverage_bin} report --dir #{ report_directory } --root #{ coverage_root } html #{ coverage_file }`
           Formatter.info "Updated HTML report available at: #{ report_directory }/index.html"
         end
@@ -461,12 +442,10 @@ module Guard
         #
         # @param [Hash] result the suite result
         # @param [Boolean] passed status
-        # @param [Hash] options the options
-        # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
         #
-        def report_specdoc(result, passed, options)
+        def report_specdoc(result, passed)
           result['suites'].each do |suite|
-            report_specdoc_suite(suite, passed, options)
+            report_specdoc_suite(suite, passed)
           end
         end
 
@@ -474,12 +453,9 @@ module Guard
         #
         # @param [Hash] suite the suite
         # @param [Boolean] passed status
-        # @param [Hash] options the options
-        # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
-        # @option options [Symbol] :focus options for focus on failures in the specdoc
         # @param [Number] level the indention level
         #
-        def report_specdoc_suite(suite, run_passed, options, level = 0)
+        def report_specdoc_suite(suite, run_passed, level = 0)
 
          # Print the suite description when the specdoc is shown or there are logs to display
           Formatter.suite_name((' ' * level) + suite['description'])
@@ -493,19 +469,18 @@ module Guard
             else
               Formatter.spec_failed(indent("  ✘ #{ spec['description'] }", level))
             end
-            report_specdoc_errors(spec, options, level)
-            report_specdoc_logs(spec, options, level)
+            report_specdoc_errors(spec, level)
+            report_specdoc_logs(spec, level)
           end
 
-          suite['suites'].each { |s| report_specdoc_suite(s, run_passed, options, level + 2) } if suite['suites']
+          suite['suites'].each { |s| report_specdoc_suite(s, run_passed, level + 2) } if suite['suites']
         end
 
         # Is the specdoc shown for this suite?
         #
         # @param [Boolean] passed the spec status
-        # @param [Hash] options the options
         #
-        def specdoc_shown?(passed, options = { })
+        def specdoc_shown?(passed)
           options[:specdoc] == :always || (options[:specdoc] == :failure && !passed)
         end
 
@@ -513,9 +488,8 @@ module Guard
         #
         # @param [Hash] suite the suite
         # @param [Boolean] passed the spec status
-        # @param [Hash] options the options
         #
-        def console_logs_shown?(suite, passed, options = { })
+        def console_logs_shown?(suite, passed)
           # Are console messages displayed?
           console_enabled          = options[:console] == :always || (options[:console] == :failure && !passed)
 
@@ -532,9 +506,8 @@ module Guard
         # Are console logs shown for this spec?
         #
         # @param [Hash] spec the spec
-        # @param [Hash] options the options
         #
-        def console_for_spec?(spec, options = { })
+        def console_for_spec?(spec)
           spec['logs'] && ((spec['passed'] && options[:console] == :always) ||
             (!spec['passed'] && options[:console] != :never))
         end
@@ -543,9 +516,8 @@ module Guard
         #
         # @param [Hash] suite the suite
         # @param [Boolean] passed the spec status
-        # @param [Hash] options the options
         #
-        def error_logs_shown?(suite, passed, options = { })
+        def error_logs_shown?(suite, passed)
           # Are error messages displayed?
           errors_enabled             = options[:errors] == :always || (options[:errors] == :failure && !passed)
 
@@ -562,8 +534,7 @@ module Guard
         # Are errors shown for this spec?
         #
         # @param [Hash] spec the spec
-        # @param [Hash] options the options
-        def errors_for_spec?(spec, options = { })
+        def errors_for_spec?(spec)
           spec['errors'] && ((spec['passed'] && options[:errors] == :always) ||
             (!spec['passed'] && options[:errors] != :never))
         end
@@ -572,22 +543,18 @@ module Guard
         #
         # @param [Boolean] passed the spec status
         # @param [Hash] spec the spec
-        # @param [Hash] options the options
         #
-        def description_shown?(passed, spec, options = { })
-          specdoc_shown?(passed, options) || console_for_spec?(spec, options) || errors_for_spec?(spec, options)
+        def description_shown?(passed, spec)
+          specdoc_shown?(passed) || console_for_spec?(spec) || errors_for_spec?(spec)
         end
 
         # Shows the logs for a given spec.
         #
         # @param [Hash] spec the spec result
-        # @param [Hash] options the options
-        # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
         # @param [Number] level the indention level
         #
-        def report_specdoc_logs(spec, options, level)
-          if console_for_spec?(spec,options)
-
+        def report_specdoc_logs(spec, level)
+          if console_for_spec?(spec)
             spec['logs'].each do |log_level, message|
               log_level = log_level == 'log' ? '' : "#{log_level.upcase}: "
               Formatter.info(indent("    • #{log_level}#{ message }", level))
@@ -598,14 +565,12 @@ module Guard
         # Shows the errors for a given spec.
         #
         # @param [Hash] spec the spec result
-        # @param [Hash] options the options
-        # @option options [Symbol] :errors options for the errors output, either :always, :never or :failure
         # @param [Number] level the indention level
         #
-        def report_specdoc_errors(spec, options, level)
+        def report_specdoc_errors(spec, level)
           if spec['errors'] && (options[:errors] == :always || (options[:errors] == :failure && !spec['passed']))
             spec['errors'].each do |error|
-              Formatter.spec_failed(indent("    ➤ #{ format_error(error,true,options)  }", level))
+              Formatter.spec_failed(indent("    ➤ #{ format_error(error,true)  }", level))
               if error['trace']
                 error['trace'].each do |trace|
                   Formatter.spec_failed(indent("    ➜ #{ trace['file'] } on line #{ trace['line'] }", level+2))
@@ -653,7 +618,7 @@ module Guard
         # @param [Boolean] short show a short version of the message
         # @return [String] the cleaned error message
         #
-        def format_error(error, short, options)
+        def format_error(error, short)
           message = error['message'].gsub(%r{ in http.*\(line \d+\)$},'')
           if !short && error['trace'] && error['trace'].length > 0
             location = error['trace'][0]
@@ -668,9 +633,8 @@ module Guard
         #
         # @param [Hash] coverage the last run coverage data
         # @param [String] file the file name of the spec
-        # @param [Hash] options the options for the execution
         #
-        def update_coverage(coverage, file, options)
+        def update_coverage(coverage, file)
           if file == options[:spec_dir]
             File.write(coverage_file, MultiJson.encode(coverage, { max_nesting: false }))
           else
@@ -693,16 +657,15 @@ module Guard
         #
         # @return [Boolean] true if any coverage threshold is set
         #
-        def any_coverage_threshold?(options)
+        def any_coverage_threshold?
           THRESHOLDS.any? { |threshold| options[threshold] != 0 }
         end
 
         # Converts the options to Istanbul recognized options
         #
-        # @param [Hash] options the options for the coverage
         # @return [String] the command line options
         #
-        def istanbul_coverage_options(options)
+        def istanbul_coverage_options
           THRESHOLDS.inject([]) do |coverage, name|
             threshold = options[name]
             coverage << (threshold != 0 ? "--#{ name.to_s.sub('_threshold', '') } #{ threshold }" : '')
@@ -736,13 +699,12 @@ module Guard
 
         # Creates and returns the coverage report directory.
         #
-        # @param [Hash] options for the coverage report directory
         # @return [String] the coverage report directory
         #
-        def coverage_report_directory(options)
+        def coverage_report_directory
           File.expand_path(options[:coverage_html_dir])
         end
-      end
     end
   end
 end
+
