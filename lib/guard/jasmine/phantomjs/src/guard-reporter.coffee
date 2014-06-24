@@ -3,6 +3,12 @@
 #
 # To do so it substitues it's own functions for the console.<levels>
 #
+extendObject = (a, b)->
+    for key,value of b
+        a[key] = value if b.hasOwnProperty(key)
+    return a
+
+
 class ConsoleCapture
     @levels: ['log','info','warn','error','debug' ]
     @original = console
@@ -28,7 +34,7 @@ class ConsoleCapture
 
 
 # Implements a Jasmine reporter
-class window.GuardReporter
+class GuardReporter
     @STACK_MATCHER=new RegExp("__spec__\/(.*):([0-9]+)","g")
 
     jasmineStarted: ->
@@ -38,7 +44,7 @@ class window.GuardReporter
         @stack     = [ @currentSuite ]
 
     suiteStarted: (suite)->
-        suite = jQuery.extend({ specs: [], suites: [] }, suite )
+        suite = extendObject({ specs: [], suites: [] }, suite )
         @currentSuite.suites.push( suite )
         @currentSuite = suite
         @stack.push(suite)
@@ -52,9 +58,9 @@ class window.GuardReporter
 
     specDone: (spec)->
         @resultReceived = true
-        spec = jQuery.extend({ logs: @console.captured, errors: [], passed: 'passed' == spec.status }, spec )
+        spec = extendObject({ logs: @console.captured, errors: [], passed: 'passed' == spec.status }, spec )
         for failure in spec.failedExpectations
-            error = jQuery.extend({trace:[]}, failure )
+            error = extendObject({trace:[]}, failure )
             while match = GuardReporter.STACK_MATCHER.exec( failure.stack )
                 error.trace.push({ file: match[1], line: parseInt(match[2]) })
             delete error.stack
@@ -63,7 +69,7 @@ class window.GuardReporter
         @currentSuite.specs.push( spec )
 
         this.resetConsoleLog()
-        true
+        spec
 
     resetConsoleLog: ->
         @console.revert()
@@ -90,3 +96,9 @@ class window.GuardReporter
             },
             suites: @stack[0].suites
         }
+
+
+if typeof module isnt 'undefined' and module.exports
+  module.exports = GuardReporter
+else
+  window.GuardReporter = GuardReporter

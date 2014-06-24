@@ -1,8 +1,9 @@
 guard :coffeescript, input: 'lib/guard/jasmine/phantomjs/src', output: 'lib/guard/jasmine/phantomjs'
 
+mocha_cmd = "mocha --compilers coffee:coffee-script/register --ui bdd --growl"
 guard :shell do
-  watch(%r{(lib/guard/jasmine/phantomjs/test/.+_spec\.coffee)}) { |m| `mocha --ui bdd --growl #{ m[1]}` }
-  watch(%r{lib/guard/jasmine/phantomjs/src/(.+)\.coffee}) { |m| `mocha --ui bdd --growl lib/guard/jasmine/phantomjs/test/#{ m[1] }_spec.coffee` }
+  watch(%r{(lib/guard/jasmine/phantomjs/test/.+_spec\.coffee)}) { |m| `#{mocha_cmd} #{ m[1]}` }
+  watch(%r{lib/guard/jasmine/phantomjs/src/(.+)\.coffee}) { |m| `#{mocha_cmd} lib/guard/jasmine/phantomjs/test/#{ m[1] }_spec.coffee` }
 end
 
 guard :rspec do
