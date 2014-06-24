@@ -23,6 +23,17 @@ Gem::Specification.new do |s|
   s.add_dependency 'tilt'
 
   s.add_development_dependency 'bundler'
+  s.add_development_dependency 'rake'
+
+  s.add_development_dependency 'rack'
+  s.add_development_dependency 'jasmine'
+
+  s.add_development_dependency 'guard-coffeescript'
+  s.add_development_dependency 'guard-shell'
+  s.add_development_dependency 'guard-rspec'
+  s.add_development_dependency 'rspec', '~> 3'
+  s.add_development_dependency 'pry-plus'
+  s.add_development_dependency 'yard'
 
   s.files        = Dir.glob('{bin,lib}/**/*') + %w[LICENSE README.md]
   s.executables  = ['guard-jasmine', 'guard-jasmine-debug']
