@@ -207,7 +207,7 @@ describe Guard::Jasmine::Runner do
 
     context 'when passed an empty paths list' do
       it 'returns false' do
-        expect(runner.run([])).to eql [false, []]
+        expect( runner.run([]) ).to be_empty
       end
     end
 
@@ -304,8 +304,7 @@ describe Guard::Jasmine::Runner do
 
       it 'returns the errors' do
         response = runner.run(['spec/javascripts/a.js.coffee'])
-        expect(response.first).to eql false
-        expect(response.last).to eql []
+        expect(response).to have_key('spec/javascripts/a.js.coffee')
       end
 
       it 'does not show coverage' do
@@ -377,8 +376,7 @@ describe Guard::Jasmine::Runner do
 
       it 'returns the failures' do
         response = runner.run(['spec/javascripts/x/b.js.coffee'])
-        expect(response.first).to eql false
-        expect(response.last).to include 'spec/javascripts/x/b.js.coffee'
+        expect(response).to have_key('spec/javascripts/x/b.js.coffee' )
       end
 
       it 'does not show coverage' do
@@ -660,8 +658,7 @@ describe Guard::Jasmine::Runner do
 
       it 'returns the success' do
         response = runner.run(['spec/javascripts/x/b.js.coffee'])
-        expect(response.first).to  eql true
-        expect(response.last).to eql []
+        expect(response).to be_empty
       end
 
       context 'with coverage' do

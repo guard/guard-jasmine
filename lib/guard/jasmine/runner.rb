@@ -14,14 +14,13 @@ module Guard
     class Runner
       include ::Guard::Jasmine::Util
 
-      attr_reader :results, :options
+      attr_reader :options
 
       # Name of the coverage threshold options
       THRESHOLDS = [:statements_threshold, :functions_threshold, :branches_threshold, :lines_threshold]
 
       # Run the supplied specs.
       #
-      # @param [Array<String>] paths the spec files or directories
       # @param [Hash] options the options for the execution
       # @option options [String] :jasmine_url the url of the Jasmine test runner
       # @option options [String] :phantomjs_bin the location of the PhantomJS binary
@@ -34,26 +33,34 @@ module Guard
       # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
       # @option options [String] :spec_dir the directory with the Jasmine specs
       # @option options [Boolean] :debug display raw JSON output from the runner
-      # @return [Boolean, Array<String>] the status of the run and the failed files
       #
       def initialize(options)
         @options = options
       end
 
+      # @param [Array<String>] paths the spec files or directories
+      # @return [Hash<String,Array>] keys for the spec_file, value is array of failure messages.
+      #    Only specs with failures will be returned.  Therefore an empty? return hash indicates success.
       def run(paths, per_run_options = {})
         previous_options = @options
         @options.merge!( per_run_options )
-        return [false, []] if paths.empty?
+
+        return {} if paths.empty?
 
         notify_start_message(paths)
 
-        @results = paths.inject([]) do |results, file|
+        run_results = paths.each_with_object({}) do |file, results|
           if File.exist?(file_and_line_number_parts(file)[0])
-            results << evaluate_response(run_jasmine_spec(file), file) 
+            results[file] = evaluate_response(run_jasmine_spec(file), file)
           end
-          results
-        end.compact
-        [response_status, failed_paths]
+        end
+        # return the errors
+        return run_results.each_with_object({}) do | spec_run, hash |
+          file, r = spec_run
+          errors = collect_spec_errors(r['suites']||[])
+          errors.push( r['error'] ) if r.has_key? 'error'
+          hash[file] = errors unless errors.empty?
+        end
       ensure
         @options=previous_options
       end
@@ -72,24 +79,6 @@ module Guard
                     end
 
           Formatter.info(message, reset: true)
-        end
-
-        # Returns the failed spec file names.
-        #
-        # @param [Array<Object>] results the spec runner results
-        # @return [Array<String>] the list of failed spec files
-        #
-        def failed_paths
-          @results.map { |r| !r['passed'] ? r['file'] : nil }.compact
-        end
-
-        # Returns the response status for the given result set.
-        #
-        # @param [Array<Object>] results the spec runner results
-        # @return [Boolean] whether it has passed or not
-        #
-        def response_status
-          @results.none? { |r| r.has_key?('error') || !r['passed'] }
         end
 
         # Run the Jasmine spec by executing the PhantomJS script.
@@ -197,7 +186,7 @@ module Guard
         #
         def query_string_for_suite_from_first_describe(file)
           File.foreach(file) do |line|
-            if line =~ /describe\s*[("']+(.*?)["')]+/
+            if line =~ /describe\s*[("']+(.*?)["')]+/ #'
               return $1
             end
           end
@@ -237,7 +226,7 @@ module Guard
         # @return [String] the extracted title
         #
         def spec_title(line)
-          line[/['"](.+?)['"]/, 1]
+          line[/['"](.+?)["']/, 1]
         end
 
         # Evaluates the JSON response that the PhantomJS script
@@ -246,7 +235,7 @@ module Guard
         #
         # @param [String] output the JSON output the spec run
         # @param [String] file the file name of the spec
-        # @return [Hash] the suite result
+        # @return [Hash] results of the suite's specs
         #
         def evaluate_response(output, file)
           json = output.read
@@ -270,7 +259,7 @@ module Guard
               notify_coverage_result(result['coverage'], file)
             end
 
-            result
+            return result
 
           rescue MultiJson::DecodeError => e
             if e.data == ''
@@ -328,10 +317,7 @@ module Guard
             Formatter.success(message)
             Formatter.notify(full_message, title: 'Jasmine suite passed') if options[:notification] && !options[:hide_success]
           else
-            errors = collect_specs(result['suites']||[]).map { |spec|
-              (spec['errors']||[]).map { |error| format_error(error,false) }
-            }.flatten
-
+            errors = collect_spec_errors(result['suites'])
             error_message = errors[0..options[:max_error_notify]].join("\n")
 
             Formatter.error(message)
@@ -599,16 +585,27 @@ module Guard
           collect_specs([suite]).any? { |spec| !spec['passed'] }
         end
 
+
+        # Get all failures specs from the suites and its nested suites.
+        #
+        # @param suites [Array<Hash>] the suites results
+        # @return [Array<Hash>] all failures
+        #
+        def collect_spec_errors(suites)
+          collect_specs(suites).map { |spec|
+            (spec['errors']||[]).map { |error| format_error(error,false) }
+          }.flatten
+        end
+
         # Get all specs from the suites and its nested suites.
         #
         # @param suites [Array<Hash>] the suites results
         # @return [Array<Hash>] all specs
         #
         def collect_specs(suites)
-          suites.inject([]) do |specs, suite|
-            specs = (specs | suite['specs']) if suite['specs']
-            specs = (specs | collect_specs(suite['suites'])) if suite['suites']
-            specs
+          suites.each_with_object([]) do |suite, specs|
+            specs.concat( suite['specs'] )
+            specs.concat( collect_specs(suite['suites']) ) if suite['suites']
           end
         end
 
