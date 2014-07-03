@@ -220,7 +220,7 @@ module Guard
             result = ::Guard::Jasmine::Runner.new(runner_options).run(paths)
             ::Guard::Jasmine::Server.stop
 
-            Process.exit result.first ? 0 : 1
+            Process.exit result.empty? ? 0 : 1
           else
             ::Guard::Jasmine::Server.stop
             Process.exit 2
