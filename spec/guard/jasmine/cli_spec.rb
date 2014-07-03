@@ -12,7 +12,7 @@ describe Guard::Jasmine::CLI do
     allow(Process).to receive(:info)
     new_method = runner.method(:new)
     allow(runner).to receive(:new){ |*args| new_method.call(*args) }
-    allow_any_instance_of(runner).to receive(:run).and_return([true, []])
+    allow_any_instance_of(runner).to receive(:run).and_return({})
     allow(server).to receive(:start)
     allow(server).to receive(:stop)
     allow(server).to receive(:detect_server)
@@ -41,7 +41,7 @@ describe Guard::Jasmine::CLI do
         it 'passes the spec paths' do
           allow_any_instance_of(runner).to receive(:run)
             .with(['spec/javascripts/a_spec.js', 'spec/javascripts/another_spec.js'])
-            .and_return [true, []]
+            .and_return {}
           cli.start(['spec', 'spec/javascripts/a_spec.js', 'spec/javascripts/another_spec.js'])
         end
 
@@ -430,19 +430,20 @@ describe Guard::Jasmine::CLI do
       end
     end
 
-    # context 'exit status' do
-    #   it 'is 0 for a successful spec run' do
-    #     expect(Process).to receive(:exit).with(0)
-    #     expect(runner).to receive(:run)
-    #     cli.start(['spec'])
-    #   end
+    context 'exit status' do
+      it 'is 0 for a successful spec run' do
+        expect(runner).to receive(:new).with(hash_including(spec_dir: 'specs'))
+        expect(Process).to receive(:exit).with(0)
+        cli.start(['spec','--spec-dir', 'specs'])
+      end
 
-    #   it 'is 1 for a failed spec run' do
-    #     expect(Process).to receive(:exit).with(1)
-    #     expect(runner).to receive(:run).and_return [false, ['spec/javascript/a_failed_spec.js']]
-    #     cli.start(['spec'])
-    #   end
-    # end
+      it 'is 1 for a failed spec run' do
+        expect(Process).to receive(:exit).with(1)
+        allow_any_instance_of(runner).to receive(:run)
+            .and_return({'spec/javascript/a_failed_spec.js'=>['a bad error occured']})
+        cli.start(['spec','--spec-dir', 'specs'])
+      end
+    end
   end
 
   describe '.version' do
