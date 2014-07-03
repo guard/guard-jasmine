@@ -149,15 +149,13 @@ module Guard
     # @raise [:task_has_failed] when run_all has failed
     #
     def run_all
+      results = runner.run([options[:spec_dir]])
 
-      passed, failed_specs = runner.run([options[:spec_dir]])
+      self.last_failed_paths = results.keys
+      self.last_run_failed   = !results.empty?
 
-      self.last_failed_paths = failed_specs
-      self.last_run_failed   = !passed
-
-      throw :task_has_failed unless passed
+      throw :task_has_failed if self.last_run_failed
     end
-
     # Gets called when watched paths and files have changes.
     #
     # @param [Array<String>] paths the changed paths and files
@@ -167,17 +165,19 @@ module Guard
       specs = options[:keep_failed] ? paths + self.last_failed_paths : paths
       specs = Inspector.clean(specs, options) if options[:clean]
       return false if specs.empty?
-      passed, failed_specs = runner.run(specs)
-      if passed
+
+      results = runner.run(specs)
+
+      if results.empty?
         self.last_failed_paths = self.last_failed_paths - paths
         run_all if self.last_run_failed && options[:all_after_pass]
       else
-        self.last_failed_paths = self.last_failed_paths + failed_specs
+        self.last_failed_paths = self.last_failed_paths + results.keys
       end
 
-      self.last_run_failed = !passed
+      self.last_run_failed = !results.empty?
 
-      throw :task_has_failed unless passed
+      throw :task_has_failed if self.last_run_failed
     end
 
   end

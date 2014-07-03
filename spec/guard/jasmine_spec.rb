@@ -13,7 +13,7 @@ describe Guard::Jasmine do
 
   before do
     allow(inspector).to receive(:clean){ |specs, options| specs }
-    allow_any_instance_of(runner).to receive(:run).and_return [true, []]
+    allow(guard.runner).to receive(:run).and_return({})
     allow(formatter).to receive(:notify)
     allow(server).to receive(:start)
     allow(server).to receive(:stop)
@@ -130,17 +130,17 @@ describe Guard::Jasmine do
       end
 
       it 'tries to auto detect the :phantomjs_bin' do
-        expect(::Guard::Jasmine).to receive(:which).and_return '/bin/phantomjs'
-        expect(guard.options[:phantomjs_bin]).to eql '/bin/phantomjs'
+        allow(::Guard::Jasmine).to receive(:which).and_return '/bin/phantomjs'
+        expect(::Guard::Jasmine.new.options[:phantomjs_bin]).to eql '/bin/phantomjs'
       end
 
       context 'with a spec/javascripts folder' do
         before do
-          expect(File).to receive(:exists?).with('spec/javascripts').and_return true
+          allow(File).to receive(:exists?).with('spec/javascripts').and_return true
         end
 
         it 'sets a default :spec_dir option' do
-          expect(guard.options[:spec_dir]).to eql 'spec/javascripts'
+          expect(::Guard::Jasmine.new.options[:spec_dir]).to eql 'spec/javascripts'
         end
 
         it 'detects the current server' do
@@ -151,11 +151,11 @@ describe Guard::Jasmine do
 
       context 'without a spec/javascripts folder' do
         before do
-          expect(File).to receive(:exists?).with('spec/javascripts').and_return false
+          allow(File).to receive(:exists?).with('spec/javascripts').and_return false
         end
 
         it 'sets a default :spec_dir option' do
-          expect(guard.options[:spec_dir]).to eql 'spec'
+          expect(::Guard::Jasmine.new.options[:spec_dir]).to eql 'spec'
         end
 
         it 'detects the current server' do
@@ -505,7 +505,7 @@ describe Guard::Jasmine do
 
     context 'without a specified spec dir' do
       it 'starts the Runner with the default spec dir' do
-        expect_any_instance_of(runner).to receive(:run).with(['spec']).and_return [['spec/javascripts/a.js.coffee'], true]
+        expect_any_instance_of(runner).to receive(:run).with(['spec']).and_return({})
 
         guard.run_all
       end
@@ -516,7 +516,7 @@ describe Guard::Jasmine do
       let(:guard) { Guard::Jasmine.new(options) }
 
       it 'starts the Runner with the default spec dir' do
-        expect_any_instance_of(runner).to receive(:run).with(['specs']).and_return [['spec/javascripts/a.js.coffee'], true]
+        expect_any_instance_of(runner).to receive(:run).with(['specs']).and_return({})
 
         guard.run_all
       end
@@ -527,7 +527,7 @@ describe Guard::Jasmine do
 
       it 'starts the Runner with the merged run all options' do
         expect(guard.runner.options[:specdoc]).to eql( :overwritten)
-        expect_any_instance_of(runner).to receive(:run).with(['spec']).and_return [['spec/javascripts/a.js.coffee'], true]
+        expect_any_instance_of(runner).to receive(:run).with(['spec']).and_return({})
         guard.run_all
       end
     end
@@ -536,7 +536,7 @@ describe Guard::Jasmine do
       before do
         guard.last_failed_paths = ['spec/javascripts/a.js.coffee']
         guard.last_run_failed   = true
-        expect_any_instance_of(runner).to receive(:run).and_return [true, []]
+        expect_any_instance_of(runner).to receive(:run).and_return({})
       end
 
       it 'sets the last run failed to false' do
@@ -552,7 +552,7 @@ describe Guard::Jasmine do
 
     context 'with failing specs' do
       before do
-        expect_any_instance_of(runner).to receive(:run).and_return [false, []]
+        expect_any_instance_of(runner).to receive(:run).and_return({'a_spec_file'=>['had an error']})
       end
 
       it 'throws :task_has_failed' do
@@ -575,7 +575,7 @@ describe Guard::Jasmine do
       expect(inspector).to receive(:clean).with(['spec/javascripts/a.js.coffee',
                                              'spec/javascripts/b.js.coffee'], kind_of(Hash)).and_return ['spec/javascripts/a.js.coffee']
 
-      expect_any_instance_of(runner).to receive(:run).with(['spec/javascripts/a.js.coffee']).and_return [['spec/javascripts/a.js.coffee'], true]
+      expect_any_instance_of(runner).to receive(:run).with(['spec/javascripts/a.js.coffee']).and_return({})
 
       guard.run_on_modifications(['spec/javascripts/a.js.coffee', 'spec/javascripts/b.js.coffee'])
     end
@@ -622,10 +622,15 @@ describe Guard::Jasmine do
       end
 
       it 'appends the last failed paths to the current run' do
-        expect_any_instance_of(runner).to receive(:run).with(['spec/javascripts/a.js.coffee',
-                                                       'spec/javascripts/b.js.coffee'])
+        expect(guard.runner).to receive(:run)
+            .with(['spec/javascripts/a.js.coffee',
+                   'spec/javascripts/b.js.coffee'])
+            .and_return({'spec/javascripts/b.js.coffee'=>['failure']})
 
-        guard.run_on_modifications(['spec/javascripts/a.js.coffee'])
+        expect(guard.last_failed_paths).to include('spec/javascripts/b.js.coffee')
+        expect(guard.last_failed_paths).to_not include('spec/javascripts/a.js.coffee')
+
+        expect { guard.run_on_modifications(['spec/javascripts/a.js.coffee']) }.to raise_error(/task_has_failed/)
       end
     end
 
@@ -633,7 +638,7 @@ describe Guard::Jasmine do
       before do
         guard.last_failed_paths = ['spec/javascripts/a.js.coffee']
         guard.last_run_failed   = true
-        expect_any_instance_of(runner).to receive(:run).and_return [true, []]
+        expect(guard.runner).to receive(:run).with(kind_of(Array)).and_return({})
       end
 
       it 'sets the last run failed to false' do
@@ -668,7 +673,7 @@ describe Guard::Jasmine do
     context 'with failing specs' do
       before do
         guard.last_run_failed = false
-        expect_any_instance_of(runner).to receive(:run).and_return [false, ['spec/javascripts/a.js.coffee']]
+        expect_any_instance_of(runner).to receive(:run).and_return( {'spec/javascripts/a.js.coffee'=>["A message failed"]} )
       end
 
       it 'throws :task_has_failed' do
