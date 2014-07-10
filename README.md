@@ -154,13 +154,13 @@ Now you can access `/jasmine` when you start your Rails server normally.
       gem "jasmine-rails"
     end
     ```
-    
+
 2. Configure a mount point in your application's `routes.rb` (please refer to the [jasmine-rails][] documentation for more details):
 
     ```ruby
     mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
     ```
-    
+
 3. Configure **Guard::Jasmine** to reference the mount point in your `Guardfile`:
 
     ```ruby
@@ -168,7 +168,7 @@ Now you can access `/jasmine` when you start your Rails server normally.
       # watch stuff
     end
     ```
-    
+
 4. Profit!  Seriously, you should be able to access the Jasmine runner at `/specs` within your Rails application, *and* **Guard::Jasmine** should run the same specs.  Now no more excuses, get that javascript tested!
 
 ### Jasmine Stories acceptance tests
@@ -378,7 +378,8 @@ server_env:  :test                            # Jasmine server Rails environment
 server_timeout:  30                           # The number of seconds to wait for the Jasmine spec server
                                               # default: 15
 
-port:  8888                                   # Jasmine server port to use.
+port:  8888                                   # Jasmine server port to use. Note that some ports (e.g. 6665) won't work.
+                                              # This is due to the fact that Webkit considers them unsafe.
                                               # default: a random, free server port
 
 phantomjs_bin:  '~/bin/phantomjs'             # Path to phantomjs.
