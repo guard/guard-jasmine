@@ -1,0 +1,28 @@
+{
+  "failed": false,
+  "stats": {
+    "specs": 1,
+    "failures": 0,
+    "disabled": 0,
+    "time": 0.009
+  },
+  "coverage": {
+    "application.js": 50.12,
+    "todo.js": 100.0,
+    "total": 84.78260869565217
+  },
+  "suites": [
+    {
+      "description": "Success suite",
+      "specs": [
+        {
+          "description": "Success coverage something",
+          "status": "passed",
+          "logs": [
+            ["log","I have excellent coverage"]
+          ]
+        }
+      ]
+    }
+  ]
+}

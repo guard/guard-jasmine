@@ -1,0 +1,39 @@
+{
+  "stats": {
+    "specs": 3,
+    "failures": 0,
+    "pending": 0,
+    "time": 0.009
+  },
+  "suites": [
+    {
+      "description": "Success suite",
+      "specs": [
+        {
+          "description": "Success test tests something",
+          "status": "passed"
+        },{
+          "description": "Another success test tests something",
+          "status": "passed",
+          "logs": [
+            ["log","I can haz console.logs"]
+          ]
+        }
+      ],
+      "suites": [
+        {
+          "description": "Nested success suite",
+          "specs": [
+            {
+              "description": "Success nested test tests something",
+              "status":"passed",
+              "logs": [
+                ["log","I'm a nested spec"]
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
