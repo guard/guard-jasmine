@@ -62,7 +62,7 @@ class GuardReporter
 
     specDone: (spec)->
         @resultReceived = true
-        spec = extendObject({ logs: @console.captured, errors: [], passed: 'passed' == spec.status }, spec )
+        spec = extendObject({ logs: @console.captured, errors: [] }, spec )
         for failure in spec.failedExpectations
             error = extendObject({trace:[]}, failure )
             while match = GuardReporter.STACK_MATCHER.exec( failure.stack )
@@ -87,15 +87,19 @@ class GuardReporter
 
     results: ->
         spec_count    = 0
-        failure_count = 0
+        failure_count  = 0
+        pending_count = 0
         for suite in this.eachSuite(@stack[0])
             spec_count += suite.specs.length
             for spec in suite.specs
-                failure_count += 1 unless spec.passed
+                failure_count  += 1 if "failed"  ==  spec.status
+                pending_count += 1 if "pending" ==  spec.status
+
         {
             stats: {
                 specs: spec_count,
                 failures: failure_count,
+                pending: pending_count,
                 time: ( Date.now() - @startedAt ) / 1000
             },
             suites: @stack[0].suites

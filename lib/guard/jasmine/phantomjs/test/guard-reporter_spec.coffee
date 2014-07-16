@@ -22,14 +22,20 @@ describe 'Reporter', ->
 
     it "reports counts", ->
         @reporter.suiteStarted({name:'Blank'})
-
         console.log("A %s Logging", "Test")
         console.warn("This is your last warning")
-        @reporter.specDone( { failedExpectations: [{},stack:''] } )
-        @reporter.specDone( { failedExpectations: [], status: 'passed' } )
+        @reporter.specDone( { status: 'passed', failedExpectations: [] } )
+        @reporter.specDone( { status: 'failed', failedExpectations: [{
+            matcherName:"toEqual",
+            message: "Expected 2 to equal 5"
+        }] })
+        @reporter.specDone( { status: 'passed', failedExpectations: [] } )
+        @reporter.specDone( { status: 'pending', failedExpectations: [] } )
         results = @reporter.results()
         expect( results ).to.have.property('stats')
         expect( results.stats )
-            .to.have.property('specs').and.equal(2)
+            .to.have.property('specs').and.equal(4)
         expect( results.stats )
             .to.have.property('failures').and.equal(1)
+        expect( results.stats )
+            .to.have.property('pending').and.equal(1)

@@ -1,6 +1,10 @@
 # coding: utf-8
 
 require 'spec_helper'
+require 'pathname'
+def read_fixture(name)
+  Pathname.new(__FILE__).dirname.join('fixtures',name+'.json').read
+end
 
 describe Guard::Jasmine::Runner do
 
@@ -228,6 +232,15 @@ describe Guard::Jasmine::Runner do
         runner.run(['spec/javascripts/a.js.coffee'])
       end
 
+      context 'with the specdoc set to :always' do
+        it 'shows the pendign specs' do
+          expect(formatter).to receive(:spec_pending).with(
+            '  ○ Horribly Broken Spec'
+          )
+          runner.run(['spec/javascripts/x/b.js.coffee'], { specdoc: :always, console: :never, errors: :never })
+        end
+      end
+
       context 'with the specdoc set to :never' do
           context 'and console and errors set to :never' do
               it 'shows the summary in the console' do
@@ -236,8 +249,15 @@ describe Guard::Jasmine::Runner do
                   )
                   expect(formatter).not_to receive(:suite_name)
                   expect(formatter).not_to receive(:spec_failed)
-                  expect(formatter).to receive(:error).with('3 specs, 2 failures')
+                  expect(formatter).to receive(:error).with('4 specs, 1 pending, 2 failures')
                   runner.run(['spec/javascripts/x/b.js.coffee'], { specdoc: :never, console: :never, errors: :never })
+              end
+
+              it 'hides the pending specs' do
+                expect(formatter).to_not receive(:spec_pending).with(
+                  '  ○ Horribly Broken Spec'
+                )
+                runner.run(['spec/javascripts/x/b.js.coffee'], { specdoc: :never, console: :never, errors: :never })
               end
           end
 
@@ -362,7 +382,7 @@ describe Guard::Jasmine::Runner do
           end
         end
 
-        context 'with focus disabled' do
+        context 'with focus pending' do
           it 'does show the passed specs' do
               expect(formatter).to receive(:info).with(
                   "      • Another console.log message"
@@ -450,7 +470,7 @@ describe Guard::Jasmine::Runner do
       context 'with notifications' do
         it 'shows the failing spec notification' do
           expect(formatter).to receive(:notify).with(
-                "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\nundefined' is not an object (evaluating 'killer.deployRobots') in model_spec.js:27\n3 specs, 2 failures\nin 0.01 seconds",
+                "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\nundefined' is not an object (evaluating 'killer.deployRobots') in model_spec.js:27\n4 specs, 1 pending, 2 failures\nin 0.01 seconds",
                 title:    'Jasmine suite failed',
                 image:    :failed,
                 priority: 2
@@ -461,7 +481,7 @@ describe Guard::Jasmine::Runner do
         context 'with :max_error_notify' do
           it 'shows only a single failing spec notification when set to 1' do
             expect(formatter).to receive(:notify).with(
-                  "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\n3 specs, 2 failures\nin 0.01 seconds",
+                  "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\n4 specs, 1 pending, 2 failures\nin 0.01 seconds",
                   title:    'Jasmine suite failed',
                   image:    :failed, priority: 2
             )
@@ -469,7 +489,7 @@ describe Guard::Jasmine::Runner do
           end
           it 'shows two failing specs notification when set to 2' do
               expect(formatter).to receive(:notify).with(
-                  "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\nundefined' is not an object (evaluating 'killer.deployRobots') in model_spec.js:27\n3 specs, 2 failures\nin 0.01 seconds",
+                  "ReferenceError: Can't find variable: a in /path/to/file.js:255\nExpected true to equal false. in /path/to/file.js:255\nundefined' is not an object (evaluating 'killer.deployRobots') in model_spec.js:27\n4 specs, 1 pending, 2 failures\nin 0.01 seconds",
                   title:    'Jasmine suite failed',
                   image:    :failed, priority: 2
               )
@@ -719,7 +739,7 @@ done
             "    ✔ Success nested test tests something"
           )
           expect(formatter).to receive(:success).with(
-            '3 specs, 0 failures'
+            "3 specs, 0 failures"
           )
           expect(formatter).to receive(:success).with(
             "  ✔ Success test tests something"
