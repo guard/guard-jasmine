@@ -10,6 +10,9 @@ extendObject = (a, b)->
 
 
 class ConsoleCapture
+    # Instead of attempting to de-activate the console dot reporter in hacky ways,
+    # just ignore it's output
+    @DOT_REPORTER_MATCH = /\[\d+m[F.]..0m/
     @levels: ['log','info','warn','error','debug' ]
     @original = console
 
@@ -29,6 +32,7 @@ class ConsoleCapture
         my = this
         console[level] = ->
             args = Array.prototype.slice.call(arguments, 0)
+            return if args[0]?.match( ConsoleCapture.DOT_REPORTER_MATCH )
             my.captured.push( [ level ].concat( args ) )
             ConsoleCapture.original_levels[ level ].apply( ConsoleCapture.original, arguments )
 
