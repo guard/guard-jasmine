@@ -218,11 +218,9 @@ module Guard
 
           if CLI.runner_available?(runner_options)
             result = ::Guard::Jasmine::Runner.run(paths, runner_options)
-            ::Guard::Jasmine::Server.stop
 
             Process.exit result.first ? 0 : 1
           else
-            ::Guard::Jasmine::Server.stop
             Process.exit 2
           end
 
@@ -233,6 +231,8 @@ module Guard
       rescue => e
         ::Guard::UI.error e.message
         Process.exit 2
+      ensure
+        ::Guard::Jasmine::Server.stop
       end
 
       desc 'version', 'Show the Guard::Jasmine version'
