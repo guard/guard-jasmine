@@ -167,6 +167,11 @@ module Guard
                     default: '',
                     desc:    'The directory to save junit xml files into'
 
+      method_option :min_specs,
+                    type:    :numeric,
+                    default: 0,
+                    desc:    'The expected number of specs that should be run'
+
       # Run the Guard::Jasmine::Runner with options from
       # the command line.
       #
@@ -206,6 +211,7 @@ module Guard
         runner_options[:junit_consolidate]        = options.junit_consolidate
         runner_options[:junit_save_path]          = options.junit_save_path
         runner_options[:is_cli]                   = true
+        runner_options[:min_specs]                = options.min_specs
 
         ::Guard::UI.options = ::Guard::UI.options.merge({ :template => ':message' })
 

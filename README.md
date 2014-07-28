@@ -704,6 +704,8 @@ Options:
                                         # Default: 0
       [--lines-threshold=N]             # Lines coverage threshold
                                         # Default: 0
+      [--min-specs=N]                   # The expected number of specs that should be run
+                                        # Default: 0
 Run the Jasmine spec runner
 ```
 

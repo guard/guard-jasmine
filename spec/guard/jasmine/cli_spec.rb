@@ -130,6 +130,11 @@ describe Guard::Jasmine::CLI do
           cli.start(['spec', '--lines-threshold', '95'])
         end
 
+        it 'sets the minimum specs' do
+          runner.should_receive(:run).with(anything(), hash_including(min_specs: 100)).and_return [true, []]
+          cli.start(['spec', '--min-specs', '100'])
+        end
+
         context 'for an invalid console option' do
           it 'sets the console option to failure' do
             runner.should_receive(:run).with(anything(), hash_including(console: :failure)).and_return [true, []]
