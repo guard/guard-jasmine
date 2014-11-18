@@ -82,15 +82,20 @@ describe Guard::Jasmine::Runner do
           '    # some assertion'                       # 10
         ])
       end
-
+      context "with custom parameters" do
+        it 'sets the url query parmeters' do
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?debug=true&myval=1&spec=ErrorTest\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          runner.run(['spec/javascripts/a.js.coffee'], query_params: {debug:true, myval:1})
+        end
+      end
       context 'with the spec file name' do
         it 'executes the example for line number on example' do
-          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext+Inner+TestContext+does+something+else\" 60000 failure true failure failure false true ''", "r:UTF-8")
           runner.run(['spec/javascripts/a.js.coffee:7'])
         end
 
         it 'executes the example for line number within example' do
-          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext+Inner+TestContext+does+something+else\" 60000 failure true failure failure false true ''", "r:UTF-8")
           runner.run(['spec/javascripts/a.js.coffee:8'])
         end
 
@@ -102,10 +107,15 @@ describe Guard::Jasmine::Runner do
 
       context 'with the cli argument' do
         it 'executes the example for line number on example' do
-          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext+Inner+TestContext+does+something+else\" 60000 failure true failure failure false true ''", "r:UTF-8")
           runner.run(['spec/javascripts/a.js.coffee'],{ line_number: 7 })
         end
+        it 'also sets custom parameters' do
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?debug=true&spec=TestContext+Inner+TestContext+does+something+else\" 60000 failure true failure failure false true ''", "r:UTF-8")
+          runner.run(['spec/javascripts/a.js.coffee'],{ line_number: 7, query_params:{debug: true} })
+        end
       end
+
     end
 
     context 'when passed the spec directory' do

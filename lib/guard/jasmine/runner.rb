@@ -32,6 +32,7 @@ module Guard
       # @option options [Symbol] :specdoc options for the specdoc output, either :always, :never
       # @option options [Symbol] :console options for the console.log output, either :always, :never or :failure
       # @option options [String] :spec_dir the directory with the Jasmine specs
+      # @option options [Hash]   :query_params Parameters to pass along with the request
       # @option options [Boolean] :debug display raw JSON output from the runner
       #
       def initialize(options)
@@ -137,17 +138,14 @@ module Guard
         # @return [String] the suite name
         #
         def query_string_for_suite(file)
-          return '' if file == options[:spec_dir]
-
-          query_string = query_string_for_suite_from_line_number(file)
-
-          unless query_string
-            query_string = query_string_for_suite_from_first_describe(file)
+          params = {}
+          if options[:query_params]
+            params.merge!(options[:query_params])
           end
-
-          query_string = query_string ? "?spec=#{ query_string }" : ''
-
-          URI.encode(query_string)
+          if file != options[:spec_dir]
+            params[:spec] = suite_from_line_number(file) || suite_from_first_describe(file)
+          end
+          params.empty? ? "" : "?"+URI.encode_www_form(params)
         end
 
         # When providing a line number by either the option or by
@@ -157,7 +155,7 @@ module Guard
         # @param [String] file the spec file
         # @return [String] the suite name
         #
-        def query_string_for_suite_from_line_number(file)
+        def suite_from_line_number(file)
           file_name, line_number = file_and_line_number_parts(file)
           line_number ||= options[:line_number]
 
@@ -184,7 +182,7 @@ module Guard
         # @param [String] file the spec file
         # @return [String] the suite name
         #
-        def query_string_for_suite_from_first_describe(file)
+        def suite_from_first_describe(file)
           File.foreach(file) do |line|
             if line =~ /describe\s*[("']+(.*?)["')]+/ #'
               return $1
