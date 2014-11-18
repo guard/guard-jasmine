@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.name        = 'guard-jasmine'
   s.version     = Guard::JasmineVersion::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ['Michael Kessler']
-  s.email       = ['michi@flinkfinger.com']
+  s.authors     = ['Michael Kessler', "Nathan Stitt"]
+  s.email       = ['michi@flinkfinger.com', 'nathan@stitt.org']
   s.homepage    = 'https://github.com/netzpirat/guard-jasmine'
   s.summary     = 'Guard gem for headless testing with Jasmine'
   s.description = 'Guard::Jasmine automatically tests your Jasmine specs on PhantomJS'
@@ -16,7 +16,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.6'
   s.rubyforge_project = 'guard-jasmine'
 
-  s.add_dependency 'guard',        '>= 2.0.0'
+  s.add_dependency 'guard',       '~> 2.8'
+  s.add_dependency 'jasmine',     '>= 2.0.2'
   s.add_dependency 'multi_json'
   s.add_dependency 'childprocess'
   s.add_dependency 'thor'
@@ -26,7 +27,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake'
 
   s.add_development_dependency 'rack'
-  s.add_development_dependency 'jasmine'
 
   s.add_development_dependency 'guard-coffeescript'
   s.add_development_dependency 'guard-shell'
