@@ -94,9 +94,9 @@ module Guard
       options = DEFAULT_OPTIONS.merge(options)
 
       options[:spec_dir]    ||= File.exists?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec'
-      options[:port]        ||= Jasmine.find_free_server_port
       options[:server]      ||= :auto
-      options[:server]        = ::Guard::Jasmine::Server.detect_server(options[:spec_dir]) if options[:server] == :auto
+      options[:server]       =  ::Guard::Jasmine::Server.detect_server(options[:spec_dir]) if options[:server] == :auto
+      options[:port]        ||= ::Guard::Jasmine::Server.choose_server_port(options)
       options[:jasmine_url]   = "http://localhost:#{ options[:port] }#{ options[:server] == :jasmine_gem ? '/' : options[:server_mount] }" unless options[:jasmine_url]
       options[:specdoc]       = :failure if ![:always, :never, :failure].include? options[:specdoc]
       options[:phantomjs_bin] = Jasmine.which('phantomjs') unless options[:phantomjs_bin]
@@ -162,8 +162,10 @@ module Guard
     # @raise [:task_has_failed] when run_on_modifications has failed
     #
     def run_on_modifications(paths)
+
       specs = options[:keep_failed] ? paths + self.last_failed_paths : paths
       specs = Inspector.clean(specs, options) if options[:clean]
+
       return false if specs.empty?
 
       results = runner.run(specs)

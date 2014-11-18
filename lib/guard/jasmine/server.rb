@@ -3,6 +3,7 @@
 require 'socket'
 require 'timeout'
 require 'childprocess'
+require 'jasmine'
 
 module Guard
   class Jasmine
@@ -53,13 +54,27 @@ module Guard
           end
         end
 
+        # A port was not specified, therefore we attempt to detect the best port to use
+        # @param [Hash] options the server options
+        # @option options [Symbol] server the rack server to use
+        # @return [Integer] port number
+        def choose_server_port(options)
+          if options[:server] == :jasmine_gem
+            ::Jasmine.config.port(:server)
+          else
+            ::Jasmine.find_unused_port
+          end
+        end
+
         # Detect the server to use
         #
         # @param [String] spec_dir the spec directory
         # @return [Symbol] the server strategy
         #
         def detect_server(spec_dir)
-          if File.exists?('config.ru')
+          if spec_dir && File.exists?(File.join(spec_dir, 'support','jasmine.yml'))
+            :jasmine_gem
+          elsif File.exists?('config.ru')
             %w(unicorn thin mongrel puma).each do |server|
               begin
                 require server
@@ -69,8 +84,6 @@ module Guard
               end
             end
             :webrick
-          elsif spec_dir && File.exists?(File.join(spec_dir, 'support', 'jasmine.yml'))
-            :jasmine_gem
           else
             :none
           end
@@ -136,6 +149,7 @@ module Guard
         # @option options [Symbol] server the rack server to use
         #
         def start_rake_server(port, task, options)
+
           ::Guard::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
 
           self.process = ChildProcess.build('ruby', '-S', 'rake', task, "JASMINE_PORT=#{ port }")
