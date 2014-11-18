@@ -20,7 +20,6 @@ module Guard
         def clean(paths, options)
           paths.uniq!
           paths.compact!
-
           if paths.include?(options[:spec_dir])
             paths = [options[:spec_dir]]
           else
@@ -38,7 +37,7 @@ module Guard
         # @return [Boolean] when the file valid
         #
         def jasmine_spec?(path)
-          path =~ /_spec\.(js|coffee|js\.coffee)$/ && File.exists?(path)
+          path =~ /(?:_s|S)pec\.(js|coffee|js\.coffee)$/ && File.exists?(path)
         end
 
       end

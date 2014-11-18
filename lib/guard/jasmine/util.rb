@@ -86,13 +86,7 @@ module Guard
       # @return [Integer] a free server port
       #
       def find_free_server_port
-        server = TCPServer.new('127.0.0.1', 0)
-        port   = server.addr[1]
-        server.close
-
-        port
-      rescue Errno::EADDRINUSE
-        retry
+        ::Jasmine.find_unused_port
       end
 
       # Cross-platform way of finding an executable in the $PATH.

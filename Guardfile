@@ -1,15 +1,12 @@
-guard :coffeescript, input: 'lib/guard/jasmine/phantomjs/src', output: 'lib/guard/jasmine/phantomjs/lib'
+guard :coffeescript, input: 'lib/guard/jasmine/phantomjs/src', output: 'lib/guard/jasmine/phantomjs'
 
-guard :coffeescript do
-  watch(%r{lib/guard/jasmine/phantomjs/guard-jasmine\.coffee})
-end
-
+mocha_cmd = "mocha --compilers coffee:coffee-script/register --ui bdd --growl"
 guard :shell do
-  watch(%r{(lib/guard/jasmine/phantomjs/test/.+_spec\.coffee)}) { |m| `mocha --ui bdd --growl #{ m[1]}` }
-  watch(%r{lib/guard/jasmine/phantomjs/src/(.+)\.coffee}) { |m| `mocha --ui bdd --growl lib/guard/jasmine/phantomjs/test/#{ m[1] }_spec.coffee` }
+  watch(%r{(lib/guard/jasmine/phantomjs/test/.+_spec\.coffee)}) { |m| `#{mocha_cmd} #{ m[1]}` }
+  watch(%r{lib/guard/jasmine/phantomjs/src/(.+)\.coffee}) { |m| `#{mocha_cmd} lib/guard/jasmine/phantomjs/test/#{ m[1] }_spec.coffee` }
 end
 
-guard :rspec do
+guard :rspec, cmd: "rspec" do
   watch('spec/spec_helper.rb') { 'spec' }
   watch(%r{spec/.+_spec.rb})
   watch(%r{lib/(.+).rb})       { |m| "spec/#{ m[1] }_spec.rb" }
