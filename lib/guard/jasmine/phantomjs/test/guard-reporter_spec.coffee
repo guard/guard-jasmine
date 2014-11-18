@@ -36,6 +36,6 @@ describe 'Reporter', ->
         expect( results.stats )
             .to.have.property('specs').and.equal(4)
         expect( results.stats )
-            .to.have.property('failures').and.equal(1)
+            .to.have.property('failed').and.equal(1)
         expect( results.stats )
             .to.have.property('pending').and.equal(1)

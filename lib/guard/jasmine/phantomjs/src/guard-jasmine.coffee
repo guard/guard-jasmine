@@ -1,3 +1,4 @@
+
 # Set default values
 options =
   url: phantom.args[0] || 'http://127.0.0.1:3000/jasmine'
@@ -17,7 +18,7 @@ page.onInitialized = ->
     page.injectJs 'guard-reporter.js'
     page.evaluate ->
         window.onload = ->
-            window.reporter =  new GuardReporter()
+            window.reporter = new GuardReporter()
             window.jasmine.getEnv().addReporter(window.reporter) if window.jasmine
 
 # Once the page is finished loading

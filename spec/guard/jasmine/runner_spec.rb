@@ -570,7 +570,6 @@ describe Guard::Jasmine::Runner do
               end
 
               it 'shows the success message' do
-                expect(formatter).to receive(:success).with("1 spec, 0 failures")
                 expect(formatter).to receive(:success).with('Code coverage succeed')
                 runner.run(['spec/javascripts/t.js.coffee'], { coverage: true, lines_threshold: 12 })
               end

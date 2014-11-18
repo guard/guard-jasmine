@@ -98,8 +98,8 @@ module Guard
             options[:junit_consolidate],
             "'#{ options[:junit_save_path] }'"
           ]
-
-          IO.popen("#{ phantomjs_command } \"#{ suite }\" #{ arguments.collect { |i| i.to_s }.join(' ')}", 'r:UTF-8')
+          cmd = "#{ phantomjs_command } \"#{ suite }\" #{ arguments.collect { |i| i.to_s }.join(' ')}"
+          IO.popen(cmd, 'r:UTF-8')
         end
 
         # Get the PhantomJS binary and script to execute.
@@ -300,16 +300,16 @@ module Guard
         # @param [Hash] result the suite result
         #
         def notify_spec_result(result)
-          specs           = result['stats']['specs']
-          failures        = result['stats']['failures']
-          time            = sprintf( '%0.2f', result['stats']['time'] )
-          specs_plural    = specs == 1 ? '' : 's'
-          failures_plural = failures == 1 ? '' : 's'
+          specs         = result['stats']['specs'] - result['stats']['disabled']
+          failed        = result['stats']['failed']
+          time          = sprintf( '%0.2f', result['stats']['time'] )
+          specs_plural  = specs == 1 ? '' : 's'
+          failed_plural = failed == 1 ? '' : 's'
           Formatter.info("Finished in #{ time } seconds")
           pending = result['stats']['pending'].to_i > 0 ? " #{result['stats']['pending']} pending," : ""
-          message      = "#{ specs } spec#{ specs_plural },#{pending} #{ failures } failure#{ failures_plural }"
+          message      = "#{ specs } spec#{ specs_plural },#{pending} #{ failed } failure#{ failed_plural }"
           full_message = "#{ message }\nin #{ time } seconds"
-          passed       = failures == 0
+          passed       = failed == 0
 
           report_specdoc(result, passed) if specdoc_shown?(passed)
 
@@ -329,7 +329,7 @@ module Guard
 
         end
 
-        # Notification about the coverage of a spec run, success or failure,
+        # Notification about the coverage of a spec run, success or failed,
         # and some stats.
         #
         # @param [Hash] coverage the coverage hash from the JSON
@@ -553,10 +553,10 @@ module Guard
         end
 
 
-        # Get all failures specs from the suites and its nested suites.
+        # Get all failed specs from the suites and its nested suites.
         #
         # @param suites [Array<Hash>] the suites results
-        # @return [Array<Hash>] all failures
+        # @return [Array<Hash>] all failed
         #
         def collect_spec_errors(suites)
           collect_specs(suites).map { |spec|

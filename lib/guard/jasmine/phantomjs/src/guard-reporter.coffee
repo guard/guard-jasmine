@@ -32,7 +32,7 @@ class ConsoleCapture
         my = this
         console[level] = ->
             args = Array.prototype.slice.call(arguments, 0)
-            return if args[0]?.match( ConsoleCapture.DOT_REPORTER_MATCH )
+            return if args[0] && args[0].toString && args[0].toString().match( ConsoleCapture.DOT_REPORTER_MATCH )
             my.captured.push( [ level ].concat( args ) )
             ConsoleCapture.original_levels[ level ].apply( ConsoleCapture.original, arguments )
 
@@ -53,7 +53,7 @@ class GuardReporter
         @currentSuite = suite
         @stack.push(suite)
 
-    suiteDone: (suite)->
+    suiteDone: (Suite)->
         @stack.pop()
         @currentSuite = @stack[@stack.length-1]
 
@@ -86,27 +86,24 @@ class GuardReporter
         suites
 
     results: ->
-        spec_count    = 0
-        failure_count  = 0
-        pending_count = 0
+        stats = {
+            time     : ( Date.now() - @startedAt ) / 1000
+            specs    : 0
+            failed   : 0
+            pending  : 0
+            disabled : 0
+        }
         for suite in this.eachSuite(@stack[0])
-            spec_count += suite.specs.length
+            stats.specs += suite.specs.length
             for spec in suite.specs
-                failure_count  += 1 if "failed"  ==  spec.status
-                pending_count += 1 if "pending" ==  spec.status
-
+                stats[spec.status] += 1 unless undefined == stats[spec.status]
         {
-            stats: {
-                specs: spec_count,
-                failures: failure_count,
-                pending: pending_count,
-                time: ( Date.now() - @startedAt ) / 1000
-            },
+            jasmine_version: jasmine?.version
+            stats: stats
             suites: @stack[0].suites
         }
 
-
 if typeof module isnt 'undefined' and module.exports
-  module.exports = GuardReporter
+    module.exports = GuardReporter
 else
-  window.GuardReporter = GuardReporter
+    window.GuardReporter = GuardReporter

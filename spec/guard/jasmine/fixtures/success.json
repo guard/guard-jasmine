@@ -1,7 +1,8 @@
 {
   "stats": {
     "specs": 3,
-    "failures": 0,
+    "failed": 0,
+    "disabled": 0,
     "pending": 0,
     "time": 0.009
   },
