@@ -6,7 +6,7 @@ guard :shell do
   watch(%r{lib/guard/jasmine/phantomjs/src/(.+)\.coffee}) { |m| `#{mocha_cmd} lib/guard/jasmine/phantomjs/test/#{ m[1] }_spec.coffee` }
 end
 
-guard :rspec do
+guard :rspec, cmd: "rspec" do
   watch('spec/spec_helper.rb') { 'spec' }
   watch(%r{spec/.+_spec.rb})
   watch(%r{lib/(.+).rb})       { |m| "spec/#{ m[1] }_spec.rb" }
