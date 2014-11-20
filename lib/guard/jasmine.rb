@@ -18,7 +18,7 @@ module Guard
 
     extend ::Guard::Jasmine::Util
 
-    attr_accessor :last_run_failed, :last_failed_paths, :run_all_options
+    attr_accessor :last_run_failed, :last_failed_paths, :run_all_options, :runner
 
     DEFAULT_OPTIONS = {
       server:                   :auto,
@@ -51,7 +51,8 @@ module Guard
       lines_threshold:          0,
       junit:                    false,
       junit_consolidate:        true,
-      junit_save_path:          ''
+      junit_save_path:          '',
+      debug:                    false
     }
 
     # Initialize Guard::Jasmine.
@@ -93,19 +94,20 @@ module Guard
       options = DEFAULT_OPTIONS.merge(options)
 
       options[:spec_dir]    ||= File.exists?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec'
-      options[:port]        ||= Jasmine.find_free_server_port
       options[:server]      ||= :auto
-      options[:server]        = ::Guard::Jasmine::Server.detect_server(options[:spec_dir]) if options[:server] == :auto
+      options[:server]       =  ::Guard::Jasmine::Server.detect_server(options[:spec_dir]) if options[:server] == :auto
+      options[:port]        ||= ::Guard::Jasmine::Server.choose_server_port(options)
       options[:jasmine_url]   = "http://localhost:#{ options[:port] }#{ options[:server] == :jasmine_gem ? '/' : options[:server_mount] }" unless options[:jasmine_url]
       options[:specdoc]       = :failure if ![:always, :never, :failure].include? options[:specdoc]
       options[:phantomjs_bin] = Jasmine.which('phantomjs') unless options[:phantomjs_bin]
 
-      self.run_all_options = options.delete(:run_all) || { }
+      self.run_all_options = options.delete(:run_all) || {}
 
       super(options)
 
       self.last_run_failed   = false
       self.last_failed_paths = []
+      @runner = Runner.new( options.merge(self.run_all_options) )
     end
 
     # Gets called once when Guard starts.
@@ -147,36 +149,37 @@ module Guard
     # @raise [:task_has_failed] when run_all has failed
     #
     def run_all
-      passed, failed_specs = Runner.run([options[:spec_dir]], options.merge(self.run_all_options))
+      results = runner.run([options[:spec_dir]])
 
-      self.last_failed_paths = failed_specs
-      self.last_run_failed   = !passed
+      self.last_failed_paths = results.keys
+      self.last_run_failed   = !results.empty?
 
-      throw :task_has_failed unless passed
+      throw :task_has_failed if self.last_run_failed
     end
-
     # Gets called when watched paths and files have changes.
     #
     # @param [Array<String>] paths the changed paths and files
     # @raise [:task_has_failed] when run_on_modifications has failed
     #
     def run_on_modifications(paths)
+
       specs = options[:keep_failed] ? paths + self.last_failed_paths : paths
       specs = Inspector.clean(specs, options) if options[:clean]
+
       return false if specs.empty?
 
-      passed, failed_specs = Runner.run(specs, options)
+      results = runner.run(specs)
 
-      if passed
+      if results.empty?
         self.last_failed_paths = self.last_failed_paths - paths
         run_all if self.last_run_failed && options[:all_after_pass]
       else
-        self.last_failed_paths = self.last_failed_paths + failed_specs
+        self.last_failed_paths = self.last_failed_paths + results.keys
       end
 
-      self.last_run_failed = !passed
+      self.last_run_failed = !results.empty?
 
-      throw :task_has_failed unless passed
+      throw :task_has_failed if self.last_run_failed
     end
 
   end

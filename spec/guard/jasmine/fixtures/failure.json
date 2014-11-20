@@ -1,0 +1,74 @@
+{
+  "stats": {
+    "specs": 4,
+    "pending": 1,
+    "disabled": 0,
+    "failed": 2,
+    "time": 0.007
+  },
+  "suites": [
+    {
+      "description": "Failure suite",
+      "specs": [
+        {
+          "description": "Horribly Broken Spec",
+          "logs": [],
+          "errors": [],
+          "status": "pending"
+        },{
+          "description": "Failure spec tests something",
+          "logs": [
+            ["log","console.log message"]
+          ],
+          "errors": [
+            {
+              "message": "ReferenceError: Can't find variable: a in http://localhost:8888/assets/backbone/models/model_spec.js?body=1 (line 27)",
+              "actual": "", "expected": "", "matcherName": "", "passed": false,
+              "trace" : [{
+                "file": "/path/to/file.js",
+                "line": "255"
+              }]
+            }
+          ],
+          "status": "failed"
+        }
+      ],
+      "suites": [
+        {
+          "description": "Nested failure suite",
+          "specs": [
+            {
+              "description": "Failure spec 2 tests something",
+              "status": "failed"
+            },
+            {
+              "description": "Success spec tests something",
+              "status": "passed",
+              "logs": [
+                ["log","Another console.log message"],
+                ["warn","And even more console.log messages"]
+              ],
+              "errors": [
+                {
+                  "message": "Expected true to equal false.",
+                  "actual": true, "expected": false, "matcherName": "toEqual", "status": "failed",
+                  "trace" : [{
+                    "file": "/path/to/file.js",
+                    "line": "255"
+                  }]
+                },{
+                  "message": "undefined' is not an object (evaluating 'killer.deployRobots') in http://localhost:8888/__spec__/screens_spec.coffee (line 19)",
+                  "actual": "", "expected": "", "matcherName": "", "status": "failed",
+                  "trace" : [{
+                    "file": "model_spec.js",
+                    "line": "27"
+                  }]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

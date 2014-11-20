@@ -15,8 +15,8 @@ Ruby.
 * Fast headless testing on [PhantomJS][], a full featured WebKit browser with native support for
 various web standards: DOM handling, CSS selector, JSON, Canvas, and SVG.
 
-* Runs the standard Jasmine test runner, so you can use [Jasminerice][] or [jasmine-rails][] for integrating [Jasmine][] into the
-[Rails asset pipeline][] and write your specs in [CoffeeScript][].
+* Runs the standard Jasmine test runner, which can optionally integrate [Jasmine][] into the
+[Rails asset pipeline][], enabling you to write your specs in [CoffeeScript][].
 
 * Integrates [Istanbul](https://github.com/gotwarlost/istanbul) to instrument your code in the asset pipeline and
 generate coverage reports.
@@ -91,10 +91,10 @@ You can also build it from source for several other operating systems, please co
 ## Rails with the asset pipeline setup
 
 With Rails 3.1 and later you can write your Jasmine specs in addition to JavaScript with CoffeeScript, fully integrated
-into the Rails asset pipeline with [Jasminerice][]. You have full access to your running Rails app, but it's a good
+into the Rails asset pipeline. You have full access to your running Rails app, but it's a good
 practice to fake the server response. Check out the excellent [Sinon.JS][] documentation to learn more about this topic.
 
-Guard::Jasmine will start a Rails Rack server to run your specs.
+Guard::Jasmine will start a Rails Rack server to run your specs.  Step by step instructions on configuring this are below.
 
 ### How it works
 
@@ -111,228 +111,21 @@ Guard::Jasmine will start a Rails Rack server to run your specs.
 9. The PhantomJS script collects the Jasmine runner results and returns a JSON report.
 10. Guard::Jasmine reports the results to the console and system notifications.
 
-### Jasminerice
+#### Configuring Guard Jasmine to integrate with the asset pipeline.
 
-Please read the detailed installation and configuration instructions at [Jasminerice][].
+ * Install Guard Jasmine into the Rails project's Gemfile:
+ 
+   `gem "guard-jasmine", "~> 2.0"`
 
-In short, you add it to your `Gemfile`:
+ * Install Jasmine: `rails generate jasmine:install`
+ * (Optionally) install Jasmine examples: `rails generate jasmine:examples`
+ * (Optionally) Edit spec/javascripts/support/jasmine.yml to enable running CoffeeScript.
+   * Change the `spec_files:` section to `'**/*[sS]pec.{js,coffee}'`
+ * Install GuardJasmine's sample Guardfile `rails generate  guard_jasmine:install`
+ * Run GuardJasmine: `guard`
+ 
+A sample Rails project configured in this way is at https://github.com/nathanstitt/guard-jasmine-rails-test
 
-```ruby
-group :development, :test do
-  gem 'jasminerice'
-end
-```
-
-And run following from the Terminal:
-
-```bash
-mkdir -p spec/javascripts
-echo -e "#=require application\n#=require_tree ./" > spec/javascripts/spec.js.coffee
-echo -e "/*\n *=require application\n */" > spec/javascripts/spec.css
-```
-
-This creates the directory `spec/javascripts` where your CoffeeScript tests goes into. You define the Rails
-asset pipeline manifest in `spec/javascripts/spec.js.coffee`:
-
-```coffeescript
-#=require application
-#=require_tree ./
-```
-
-It also creates an empty `spec/javascripts/spec.css` file as it is always requested when running specs.
-
-Now you can access `/jasmine` when you start your Rails server normally.
-
-### Jasmine-Rails
-
-[jasmine-rails][] is another option for integrating your [Jasmine][] tests with an asset pipeline-enabled Rails application.  The quick-and-dirty recipe for this is:
-
-1. Add `jasmine-rails` to your `Gemfile`:
-
-    ```ruby
-    group :test do
-      gem "jasmine-rails"
-    end
-    ```
-
-2. Configure a mount point in your application's `routes.rb` (please refer to the [jasmine-rails][] documentation for more details):
-
-    ```ruby
-    mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
-    ```
-
-3. Configure **Guard::Jasmine** to reference the mount point in your `Guardfile`:
-
-    ```ruby
-    guard 'jasmine', :server => :webrick, :server_mount => '/specs' do
-      # watch stuff
-    end
-    ```
-
-4. Profit!  Seriously, you should be able to access the Jasmine runner at `/specs` within your Rails application, *and* **Guard::Jasmine** should run the same specs.  Now no more excuses, get that javascript tested!
-
-### Jasmine Stories acceptance tests
-
-[Jasmine Stories](https://github.com/DominikGuzei/jasmine-stories) is a Jasminerice clone and that serves
-[Jasmine-species](http://rudylattae.github.com/jasmine-species/) acceptance tests.
-
-In short, you add it to your `Gemfile`:
-
-```ruby
-group :development, :test do
-  gem 'jasmine-stories'
-end
-```
-
-And run following from the Terminal:
-
-```bash
-mkdir -p spec/javascripts/stories
-echo -e "#=require_tree ./stories" > spec/javascripts/stories.js.coffee
-echo -e "/*\n *=require application\n */" > spec/javascripts/spec.css
-```
-
-This creates the directory `spec/javascripts/stories` where your CoffeeScript acceptance tests goes into.
-
-Now you can access `/jasmine-stories` when you start your Rails server normally. You have to change the Jasmine runner
-accordingly:
-
-```ruby
-guard :jasmine, port: 8888, jasmine_url: 'http://127.0.0.1:8888/jasmine-stories' do
-  ...
-end
-```
-
-## Rails without the asset pipeline
-
-With Rails without the asset pipeline or a plain Ruby project, you can use [the Jasmine Gem][] to configure your Jasmine
-specs and server the Jasmine runner. You don't have full access to your running Rails app, but it's anyway a good
-practice to fake the server response. Check out the excellent [Sinon.JS][] documentation to learn more about this topic.
-
-Guard::Jasmine will start a Jasmine Gem Rack server to run your specs.
-
-### How it works
-
-![Guard Jasmine](https://github.com/guard/guard-jasmine/raw/master/resources/guard-jasmine-without-asset-pipeline.jpg)
-
-1. Guard is triggered by a file modification.
-2. Guard::Jasmine executes the [PhantomJS script][].
-3. The PhantomJS script requests the Jasmine test runner via HTTP.
-4. The Jasmine Gem reads your configuration and get the assets.
-5. The Jasmine Gem serves the the code to be tested and the specs.
-6. PhantomJS runs the Jasmine tests headless.
-7. The PhantomJS script collects the Jasmine runner results and returns a JSON report.
-8. Guard::Jasmine reports the results to the console and system notifications.
-
-### Jasmine Gem
-
-Please read the detailed installation and configuration instructions at [the Jasmine Gem][].
-
-In short, you add the Jasmine gem to your `Gemfile`:
-
-```ruby
-group :development, :test do
-  gem 'jasmine'
-end
-```
-
-and generate the configuration files.
-
-#### Rails 3 without the asset pipeline
-
-Install the Jasmine gem in your Rails 3 app with:
-
-```bash
-$ rails g jasmine:install
-```
-
-#### Rails 2
-
-Install the Jasmine gem in your Rails 2 app with:
-
-```bash
-$ script/generate jasmine
-```
-
-Now you can configure your spec suite in the Jasmine configuration file `specs/javascripts/support/jasmine.yml`.
-
-#### Writing CoffeeScript specs
-
-It is also possible to use CoffeeScript in this setup, by using [Guard::CoffeeScript][] to compile your code and even
-specs. Just add something like this *before* Guard::Jasmine:
-
-```ruby
-guard 'coffeescript', input: 'app/coffeescripts',  output: 'public/javascripts'
-guard 'coffeescript', input: 'spec/coffeescripts', output: 'spec/javascripts'
-```
-
-## Ruby projects
-
-If you like to use Guard::Jasmine with a plain Ruby project, you can create a Rack configuration file
-that starts a Rails instance with the asset pipeline and Jasminerice, having the full Rails testing
-comfort for non-Rails projects. Please have a look at the
-[Rails with the asset pipeline](https://github.com/guard/guard-jasmine#rails-with-the-asset-pipeline-setup)
-section to see how the setup works.
-
-First you have the add the needed Gems to your `Gemfile`:
-
-```Ruby
-group :assets do
-  gem 'coffee-script'
-end
-
-group :development, :test do
-  gem 'actionpack', '~> 3.2'
-  gem 'railties',   '~> 3.2'
-  gem 'tzinfo'
-
-  gem 'thin'
-
-  gem 'jasminerice'
-  gem 'jquery-rails'
-  gem 'guard-jasmine'
-end
-```
-
-We add support for CoffeeScript specs, using Thin as spec server and adding Jasminerice and jQuery
-(which is needed by Jasminerice) to the Gems. After installing the gems with `bundle`, we can
-create a Rack configuration to spin up a mini-Rails app for testing:
-
-```Ruby
-require 'action_controller/railtie'
-require 'jasminerice'
-require 'guard/jasmine'
-require 'sprockets/railtie'
-require 'jquery-rails'
-
-class JasmineTest < Rails::Application
-  routes.append do
-    mount Jasminerice::Engine, at: '/jasmine'
-  end
-
-  config.cache_classes = true
-  config.active_support.deprecation = :log
-  config.assets.enabled = true
-  config.assets.version = '1.0'
-  config.secret_token = '9696be98e32a5f213730cb7ed6161c79'
-end
-
-JasmineTest.initialize!
-run JasmineTest
-```
-
-The mini Rails app is now ready to start and serve the Jasmine specs. You only have to create
-`spec/javascripts/spec.js.coffee`, the Jasminerice asset pipeline manifest, and configure the
-assets:
-
-```CoffeeScript
-#= require jquery
-#= require_tree .
-```
-
-Start the test server manually with `bundle exec rackup -p 3000` and visit `http://localhost:3000/jasmine`
-to verify it works. If everything is fine, you can continue with adding Guard::Jasmine to your `Guardfile`
-and have your non-Rails app comfortably tested in a headless environment.
 
 ## Usage
 

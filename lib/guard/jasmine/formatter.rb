@@ -48,6 +48,16 @@ module Guard
           ::Guard::UI.info(color(message, ';32'), options)
         end
 
+        # Print a yellow pending message to the console.
+        #
+        # @param [String] message the message to print
+        # @param [Hash] options the output options
+        # @option options [Boolean] :reset reset the UI
+        #
+        def spec_pending(message, options = { })
+          ::Guard::UI.info(color(message, ';33'), options)
+        end
+
         # Print a red spec failed message to the console.
         #
         # @param [String] message the message to print
