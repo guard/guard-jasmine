@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.0beta1
+
+ - [#161](https://github.com/guard/guard-jasmine/issues/161): Jasmine 2.0 support.  GuardJasmine now only supports Jasmine 2.0.2 and above via a new Jasmine runner.
+ - [#174](https://github.com/guard/guard-jasmine/issues/174) Custom query parameters may be given to the runner.
+
+
 ## 1.19.2 - April 2, 2014
 
 - [#165](https://github.com/netzpirat/guard-jasmine/pull/165): Ensure PhantomJS check for a file and not directory. ([@jorgemanrubia][])
