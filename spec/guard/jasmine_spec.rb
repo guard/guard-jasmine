@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Guard::Jasmine do
+RSpec.describe Guard::Jasmine do
 
   let(:guard) { Guard::Jasmine.new }
 

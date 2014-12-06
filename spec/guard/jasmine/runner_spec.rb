@@ -1,12 +1,12 @@
 # coding: utf-8
 
-require 'spec_helper'
 require 'pathname'
+
 def read_fixture(name)
   Pathname.new(__FILE__).dirname.join('fixtures',name+'.json').read
 end
 
-describe Guard::Jasmine::Runner do
+RSpec.describe Guard::Jasmine::Runner do
 
   let(:formatter) { Guard::Jasmine::Formatter }
 
@@ -37,7 +37,6 @@ describe Guard::Jasmine::Runner do
     allow(formatter).to receive(:info)
     allow(formatter).to receive(:debug)
     allow(formatter).to receive(:error)
-    allow(formatter).to receive(:sucess)
     allow(formatter).to receive(:spec_failed)
     allow(formatter).to receive(:suite_name)
     allow(formatter).to receive(:notify)

@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Guard::Jasmine::Formatter do
+RSpec.describe Guard::Jasmine::Formatter do
 
   let(:formatter) { Guard::Jasmine::Formatter }
   let(:ui) { Guard::UI }

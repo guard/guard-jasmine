@@ -1,7 +1,6 @@
-require 'spec_helper'
 require 'guard/jasmine/cli'
 
-describe Guard::Jasmine::CLI do
+RSpec.describe Guard::Jasmine::CLI do
 
   let(:cli) { ::Guard::Jasmine::CLI }
   let(:runner) { ::Guard::Jasmine::Runner }
@@ -9,7 +8,6 @@ describe Guard::Jasmine::CLI do
 
   before do
     allow(Process).to receive(:exit)
-    allow(Process).to receive(:info)
     new_method = runner.method(:new)
     allow(runner).to receive(:new){ |*args| new_method.call(*args) }
     allow_any_instance_of(runner).to receive(:run).and_return({})

@@ -1,8 +1,6 @@
 # coding: utf-8
 
-require 'spec_helper'
-
-describe Guard::Jasmine::Server do
+RSpec.describe Guard::Jasmine::Server do
 
   let(:server) { Guard::Jasmine::Server }
 

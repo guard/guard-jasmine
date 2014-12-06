@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Guard::Jasmine::Util do
+RSpec.describe Guard::Jasmine::Util do
   let(:util) { Class.new { extend Guard::Jasmine::Util } }
 
   describe '.runner_available?' do

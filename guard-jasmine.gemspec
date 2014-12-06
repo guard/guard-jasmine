@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard-coffeescript'
   s.add_development_dependency 'guard-shell'
   s.add_development_dependency 'guard-rspec'
-  s.add_development_dependency 'rspec', '~> 3'
+  s.add_development_dependency 'rspec', '~> 3.1'
   s.add_development_dependency 'yard'
 
   s.files        = Dir.glob('{bin,lib}/**/*') + %w[LICENSE README.md]

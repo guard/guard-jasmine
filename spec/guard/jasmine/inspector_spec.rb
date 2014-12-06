@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Guard::Jasmine::Inspector do
+RSpec.describe Guard::Jasmine::Inspector do
   before do
     allow(File).to receive(:exists?) do |file|
       ['spec/javascripts/a_spec.js.coffee', 'spec/javascripts/b_spec.js', 'c_spec.coffee'].include?(file)
