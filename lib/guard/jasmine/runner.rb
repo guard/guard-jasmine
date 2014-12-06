@@ -145,7 +145,7 @@ module Guard
           if file != options[:spec_dir]
             params[:spec] = suite_from_line_number(file) || suite_from_first_describe(file)
           end
-          params.empty? ? "" : "?"+URI.encode_www_form(params)
+          params.empty? ? "" : "?"+URI.encode_www_form(params).gsub('+','%20')
         end
 
         # When providing a line number by either the option or by
