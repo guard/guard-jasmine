@@ -1,7 +1,7 @@
 require 'net/http'
 
-require 'guard'
-require 'guard/plugin'
+# Don't require "guard/plugin" here or in any other plugin's files
+require 'guard/compat/plugin'
 
 module Guard
 

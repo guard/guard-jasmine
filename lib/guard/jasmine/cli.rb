@@ -1,5 +1,4 @@
 require 'thor'
-require 'guard/ui'
 require 'guard/jasmine/version'
 require 'guard/jasmine/runner'
 require 'guard/jasmine/formatter'
@@ -206,8 +205,6 @@ module Guard
         runner_options[:junit_consolidate]        = options.junit_consolidate
         runner_options[:junit_save_path]          = options.junit_save_path
         runner_options[:is_cli]                   = true
-
-        ::Guard::UI.options = ::Guard::UI.options.merge({ :template => ':message' })
 
         paths = [runner_options[:spec_dir]] if paths.empty?
 

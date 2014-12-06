@@ -1,4 +1,6 @@
 require 'rspec'
+
+require 'guard/compat/test/helper'
 require 'guard/jasmine'
 
 RSpec.configure do |config|
@@ -17,6 +19,7 @@ RSpec.configure do |config|
     allow(Guard::UI).to receive(:success)
     allow(Guard::UI).to receive(:warning)
     allow(Guard::UI).to receive(:notify)
+    allow(Guard::UI).to receive(:color_enabled?).and_return(true)
   end
 
   config.after(:each) do
