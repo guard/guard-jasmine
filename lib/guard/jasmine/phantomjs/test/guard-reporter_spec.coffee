@@ -22,8 +22,6 @@ describe 'Reporter', ->
 
     it "reports counts", ->
         @reporter.suiteStarted({name:'Blank'})
-        console.log("A %s Logging", "Test")
-        console.warn("This is your last warning")
         @reporter.specDone( { status: 'passed', failedExpectations: [] } )
         @reporter.specDone( { status: 'failed', failedExpectations: [{
             matcherName:"toEqual",
