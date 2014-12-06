@@ -1,4 +1,12 @@
-guard :coffeescript, input: 'lib/guard/jasmine/phantomjs/src', output: 'lib/guard/jasmine/phantomjs'
+coffeescript_options = {
+  input: 'lib/guard/jasmine/phantomjs/src',
+  output: 'lib/guard/jasmine/phantomjs',
+  patterns: [%r{^lib/guard/jasmine/phantomjs/src/(.+\.(?:coffee|coffee\.md|litcoffee))$}]
+}
+
+guard 'coffeescript', coffeescript_options do
+  coffeescript_options[:patterns].each { |pattern| watch(pattern) }
+end
 
 mocha_cmd = 'mocha --compilers coffee:coffee-script/register --ui bdd --growl'
 guard :shell do

@@ -8,6 +8,9 @@ unless ENV['TRAVIS']
   gem 'redcarpet'
   gem 'yajl-ruby'
   gem 'rubocop', github: 'bbatsov/rubocop', branch: 'master'
+  gem 'guard-coffeescript', github: 'guard/guard-coffeescript', branch: 'master', require: false
+  gem 'guard-rspec', require: false
+  gem 'guard-shell', require: false
 end
 
 platforms :rbx do
