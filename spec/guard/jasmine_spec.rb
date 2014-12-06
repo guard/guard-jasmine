@@ -346,7 +346,7 @@ describe Guard::Jasmine do
       end
 
       it 'saves the run_all options' do
-        expect(guard.run_all_options).to eql({ test: true }) 
+        expect(guard.run_all_options).to eql({ test: true })
       end
 
     end
