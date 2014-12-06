@@ -4,11 +4,9 @@ require 'guard/jasmine/formatter'
 
 module Guard
   class Jasmine
-
     # Provider of some shared utility methods.
     #
     module Util
-
       # Verifies if the Jasmine test runner is available.
       # If the runner is not available within 15 seconds, then
       # the availability check will cancel.
@@ -40,7 +38,7 @@ module Guard
             available
           end
 
-        rescue Timeout::Error => e
+        rescue Timeout::Error
           ::Guard::Jasmine::Formatter.error 'Timeout waiting for the Jasmine test runner.'
           false
 
@@ -110,8 +108,6 @@ module Guard
 
         nil
       end
-
     end
-
   end
 end

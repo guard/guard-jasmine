@@ -4,12 +4,10 @@ require 'net/http'
 require 'guard/compat/plugin'
 
 module Guard
-
   # The Jasmine guard that gets notifications about the following
   # Guard events: `start`, `stop`, `reload`, `run_all` and `run_on_modifications`.
   #
   class Jasmine < Plugin
-
     require 'guard/jasmine/coverage'
     require 'guard/jasmine/inspector'
     require 'guard/jasmine/runner'
@@ -43,7 +41,7 @@ module Guard
       focus:                    true,
       coverage:                 false,
       coverage_html:            false,
-      coverage_html_dir:        "./coverage",
+      coverage_html_dir:        './coverage',
       coverage_summary:         false,
       statements_threshold:     0,
       functions_threshold:      0,
@@ -88,17 +86,17 @@ module Guard
     # @option options [Symbol] :lines_threshold options for the statement lines threshold
     # @option options [Hash] :run_all options overwrite options when run all specs
     #
-    def initialize(options = { })
+    def initialize(options = {})
       options[:server_mount] ||= defined?(JasmineRails) ? '/specs' : '/jasmine'
 
       options = DEFAULT_OPTIONS.merge(options)
 
-      options[:spec_dir]    ||= File.exists?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec'
+      options[:spec_dir]    ||= File.exist?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec'
       options[:server]      ||= :auto
       options[:server]       =  ::Guard::Jasmine::Server.detect_server(options[:spec_dir]) if options[:server] == :auto
       options[:port]        ||= ::Guard::Jasmine::Server.choose_server_port(options)
       options[:jasmine_url]   = "http://localhost:#{ options[:port] }#{ options[:server] == :jasmine_gem ? '/' : options[:server_mount] }" unless options[:jasmine_url]
-      options[:specdoc]       = :failure if ![:always, :never, :failure].include? options[:specdoc]
+      options[:specdoc]       = :failure unless [:always, :never, :failure].include? options[:specdoc]
       options[:phantomjs_bin] = Jasmine.which('phantomjs') unless options[:phantomjs_bin]
 
       self.run_all_options = options.delete(:run_all) || {}
@@ -107,7 +105,7 @@ module Guard
 
       self.last_run_failed   = false
       self.last_failed_paths = []
-      @runner = Runner.new( options.merge(self.run_all_options) )
+      @runner = Runner.new(options.merge(run_all_options))
     end
 
     # Gets called once when Guard starts.
@@ -119,9 +117,7 @@ module Guard
 
         Server.start(options) unless options[:server] == :none
 
-        if Jasmine.runner_available?(options)
-          run_all if options[:all_on_start]
-        end
+        run_all if Jasmine.runner_available?(options) && options[:all_on_start]
       else
         throw :task_has_failed
       end
@@ -154,7 +150,7 @@ module Guard
       self.last_failed_paths = results.keys
       self.last_run_failed   = !results.empty?
 
-      throw :task_has_failed if self.last_run_failed
+      throw :task_has_failed if last_run_failed
     end
     # Gets called when watched paths and files have changes.
     #
@@ -162,8 +158,7 @@ module Guard
     # @raise [:task_has_failed] when run_on_modifications has failed
     #
     def run_on_modifications(paths)
-
-      specs = options[:keep_failed] ? paths + self.last_failed_paths : paths
+      specs = options[:keep_failed] ? paths + last_failed_paths : paths
       specs = Inspector.clean(specs, options) if options[:clean]
 
       return false if specs.empty?
@@ -171,17 +166,15 @@ module Guard
       results = runner.run(specs)
 
       if results.empty?
-        self.last_failed_paths = self.last_failed_paths - paths
-        run_all if self.last_run_failed && options[:all_after_pass]
+        self.last_failed_paths = last_failed_paths - paths
+        run_all if last_run_failed && options[:all_after_pass]
       else
-        self.last_failed_paths = self.last_failed_paths + results.keys
+        self.last_failed_paths = last_failed_paths + results.keys
       end
 
       self.last_run_failed = !results.empty?
 
-      throw :task_has_failed if self.last_run_failed
+      throw :task_has_failed if last_run_failed
     end
-
   end
 end
-

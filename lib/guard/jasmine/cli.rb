@@ -8,7 +8,6 @@ require 'guard/jasmine/server'
 
 module Guard
   class Jasmine
-
     # Small helper class to run the Jasmine runner_options once from the
     # command line. This can be useful to integrate guard-jasmine
     # into a continuous integration server.
@@ -118,7 +117,7 @@ module Guard
 
       method_option :coverage_html_dir,
                     type:    :string,
-                    default: "./coverage",
+                    default: './coverage',
                     desc:    'Where to save html coverage reports. Defaults to ./coverage. Implies --coverage-html'
 
       method_option :coverage_summary,
@@ -128,7 +127,7 @@ module Guard
 
       method_option :ignore_instrumentation,
                     type:    :string,
-                    default: "",
+                    default: '',
                     desc:    'Files matching this regex will not be instrumented (e.g. vendor)'
 
       method_option :statements_threshold,
@@ -174,7 +173,7 @@ module Guard
       def spec(*paths)
         runner_options                            = {}
         runner_options[:port]                     = options.port || CLI.find_free_server_port
-        runner_options[:spec_dir]                 = options.spec_dir || (File.exists?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec')
+        runner_options[:spec_dir]                 = options.spec_dir || (File.exist?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec')
         runner_options[:line_number]              = options.line_number
         runner_options[:server]                   = options.server.to_sym == :auto ? ::Guard::Jasmine::Server.detect_server(runner_options[:spec_dir]) : options.server.to_sym
         runner_options[:server_mount]             = options.mount || (defined?(JasmineRails) ? '/specs' : '/jasmine')
@@ -189,8 +188,8 @@ module Guard
         runner_options[:errors]                   = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
         runner_options[:specdoc]                  = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
         runner_options[:focus]                    = options.focus
-        runner_options[:coverage]                 = options.coverage || options.coverage_html || options.coverage_summary || options.coverage_html_dir != "./coverage"
-        runner_options[:coverage_html]            = options.coverage_html || options.coverage_html_dir != "./coverage"
+        runner_options[:coverage]                 = options.coverage || options.coverage_html || options.coverage_summary || options.coverage_html_dir != './coverage'
+        runner_options[:coverage_html]            = options.coverage_html || options.coverage_html_dir != './coverage'
         runner_options[:coverage_html_dir]        = options.coverage_html_dir
         runner_options[:coverage_summary]         = options.coverage_summary
         runner_options[:ignore_instrumentation]   = options.ignore_instrumentation
@@ -242,7 +241,6 @@ module Guard
       def version
         ::Guard::UI.info "Guard::Jasmine version #{ ::Guard::JasmineVersion::VERSION }"
       end
-
     end
   end
 end

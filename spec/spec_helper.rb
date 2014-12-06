@@ -13,11 +13,11 @@ RSpec.configure do |config|
   end
 
   config.color = true
-  config.filter_run focus: ENV["CI"] != "true"
+  config.filter_run focus: ENV['CI'] != 'true'
   config.run_all_when_everything_filtered = true
 
   config.disable_monkey_patching!
-  config.default_formatter = "doc"
+  config.default_formatter = 'doc'
 
   config.order = :random
   Kernel.srand config.seed

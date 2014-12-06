@@ -1,7 +1,6 @@
 require 'guard/jasmine/cli'
 
 RSpec.describe Guard::Jasmine::CLI do
-
   let(:cli) { ::Guard::Jasmine::CLI }
   let(:runner) { ::Guard::Jasmine::Runner }
   let(:server) { ::Guard::Jasmine::Server }
@@ -9,7 +8,7 @@ RSpec.describe Guard::Jasmine::CLI do
   before do
     allow(Process).to receive(:exit)
     new_method = runner.method(:new)
-    allow(runner).to receive(:new){ |*args| new_method.call(*args) }
+    allow(runner).to receive(:new) { |*args| new_method.call(*args) }
     allow_any_instance_of(runner).to receive(:run).and_return({})
     allow(server).to receive(:start)
     allow(server).to receive(:stop)
@@ -49,7 +48,7 @@ RSpec.describe Guard::Jasmine::CLI do
         end
 
         it 'sets the line number' do
-          expect(runner).to receive(:new).with( hash_including(line_number: 1))
+          expect(runner).to receive(:new).with(hash_including(line_number: 1))
           cli.start(['spec', '--line-number', 1])
         end
 
@@ -64,7 +63,7 @@ RSpec.describe Guard::Jasmine::CLI do
         end
 
         it 'sets the jasmine url' do
-          expect(runner).to receive(:new).with( hash_including(jasmine_url: 'http://smackaho.st:3000/jasmine'))
+          expect(runner).to receive(:new).with(hash_including(jasmine_url: 'http://smackaho.st:3000/jasmine'))
           cli.start(['spec', '--url', 'http://smackaho.st:3000/jasmine'])
         end
 
@@ -74,106 +73,106 @@ RSpec.describe Guard::Jasmine::CLI do
         end
 
         it 'sets the PhantomJS binary' do
-          expect(runner).to receive(:new).with( hash_including(phantomjs_bin: '/bin/phantomjs'))
+          expect(runner).to receive(:new).with(hash_including(phantomjs_bin: '/bin/phantomjs'))
           cli.start(['spec', '--bin', '/bin/phantomjs'])
         end
 
         it 'sets the timeout' do
-          expect(runner).to receive(:new).with( hash_including(timeout: 20000))
+          expect(runner).to receive(:new).with(hash_including(timeout: 20_000))
           cli.start(['spec', '--timeout', '20000'])
         end
 
         it 'sets the verbose mode' do
-          expect(runner).to receive(:new).with( hash_including(verbose: true))
+          expect(runner).to receive(:new).with(hash_including(verbose: true))
           cli.start(['spec', '--verbose'])
         end
 
         it 'sets the server environment' do
-          expect(runner).to receive(:new).with( hash_including(server_env: 'development'))
+          expect(runner).to receive(:new).with(hash_including(server_env: 'development'))
           cli.start(['spec', '--server-env', 'development'])
         end
 
         it 'sets the coverage support' do
-          expect(runner).to receive(:new).with( hash_including(coverage: true))
+          expect(runner).to receive(:new).with(hash_including(coverage: true))
           cli.start(['spec', '--coverage', 'true'])
         end
 
         it 'sets the coverage and coverage html support' do
-          expect(runner).to receive(:new).with( hash_including(coverage: true, coverage_html: true))
+          expect(runner).to receive(:new).with(hash_including(coverage: true, coverage_html: true))
           cli.start(['spec', '--coverage-html', 'true'])
         end
 
         it 'sets the coverage and coverage html directory' do
-          expect(runner).to receive(:new).with( hash_including(coverage_html_dir: "./coverage/js"))
+          expect(runner).to receive(:new).with(hash_including(coverage_html_dir: './coverage/js'))
           cli.start(['spec', '--coverage-html-dir', './coverage/js'])
         end
 
         it 'sets the coverage and coverage summary support' do
-          expect(runner).to receive(:new).with( hash_including(coverage: true, coverage_summary: true))
+          expect(runner).to receive(:new).with(hash_including(coverage: true, coverage_summary: true))
           cli.start(['spec', '--coverage-summary', 'true'])
         end
 
         it 'sets the coverage statements threshold' do
-          expect(runner).to receive(:new).with( hash_including(statements_threshold: 90))
+          expect(runner).to receive(:new).with(hash_including(statements_threshold: 90))
           cli.start(['spec', '--statements-threshold', '90'])
         end
 
         it 'sets the coverage functions threshold' do
-          expect(runner).to receive(:new).with( hash_including(functions_threshold: 80))
+          expect(runner).to receive(:new).with(hash_including(functions_threshold: 80))
           cli.start(['spec', '--functions-threshold', '80'])
         end
 
         it 'sets the coverage branches threshold' do
-          expect(runner).to receive(:new).with( hash_including(branches_threshold: 85))
+          expect(runner).to receive(:new).with(hash_including(branches_threshold: 85))
           cli.start(['spec', '--branches-threshold', '85'])
         end
 
         it 'sets the coverage lines threshold' do
-          expect(runner).to receive(:new).with( hash_including(lines_threshold: 95))
+          expect(runner).to receive(:new).with(hash_including(lines_threshold: 95))
           cli.start(['spec', '--lines-threshold', '95'])
         end
 
         context 'for an invalid console option' do
           it 'sets the console option to failure' do
-            expect(runner).to receive(:new).with( hash_including(console: :failure))
+            expect(runner).to receive(:new).with(hash_including(console: :failure))
             cli.start(['spec', '--console', 'wrong'])
           end
         end
 
         context 'for a valid errors option' do
           it 'sets the errors option' do
-            expect(runner).to receive(:new).with( hash_including(errors: :always))
+            expect(runner).to receive(:new).with(hash_including(errors: :always))
             cli.start(['spec', '--errors', 'always'])
           end
         end
 
         context 'for an invalid errors option' do
           it 'sets the errors option to failure' do
-            expect(runner).to receive(:new).with( hash_including(errors: :failure))
+            expect(runner).to receive(:new).with(hash_including(errors: :failure))
             cli.start(['spec', '--errors', 'wrong'])
           end
         end
 
         context 'for the junit options' do
           it 'sets the junit options to false' do
-            expect(runner).to receive(:new).with( hash_including(junit: true))
+            expect(runner).to receive(:new).with(hash_including(junit: true))
             cli.start(['spec', '--junit'])
           end
 
           it 'sets the junit consolidate option' do
-            expect(runner).to receive(:new).with( hash_including(junit_consolidate: true))
+            expect(runner).to receive(:new).with(hash_including(junit_consolidate: true))
             cli.start(['spec', '--junit-consolidate'])
           end
 
           it 'sets the junit save path' do
-            expect(runner).to receive(:new).with( hash_including(junit_save_path: '/home/user'))
+            expect(runner).to receive(:new).with(hash_including(junit_save_path: '/home/user'))
             cli.start(['spec', '--junit-save-path', '/home/user'])
           end
         end
       end
     end
 
-     context 'without specified options' do
+    context 'without specified options' do
       context 'for the server' do
         it 'detects the server type' do
           expect(server).to receive(:detect_server).with('spec')
@@ -181,57 +180,56 @@ RSpec.describe Guard::Jasmine::CLI do
         end
 
         it 'sets the verbose mode' do
-          expect(runner).to receive(:new).with( hash_including(verbose: false))
+          expect(runner).to receive(:new).with(hash_including(verbose: false))
           cli.start(['spec'])
         end
 
         it 'sets the coverage support' do
-          expect(runner).to receive(:new).with( hash_including(coverage: false))
+          expect(runner).to receive(:new).with(hash_including(coverage: false))
           cli.start(['spec'])
         end
 
         it 'sets the coverage html support' do
-          expect(runner).to receive(:new).with( hash_including(coverage_html: false))
+          expect(runner).to receive(:new).with(hash_including(coverage_html: false))
           cli.start(['spec'])
         end
 
         it 'sets the coverage html directory' do
-          expect(runner).to receive(:new).with( hash_including(coverage_html_dir: "./coverage"))
+          expect(runner).to receive(:new).with(hash_including(coverage_html_dir: './coverage'))
           cli.start(['spec'])
         end
 
         it 'sets the coverage summary support' do
-          expect(runner).to receive(:new).with( hash_including(coverage_summary: false))
+          expect(runner).to receive(:new).with(hash_including(coverage_summary: false))
           cli.start(['spec'])
         end
 
         it 'sets the coverage statements threshold' do
-          expect(runner).to receive(:new).with( hash_including(statements_threshold: 0))
+          expect(runner).to receive(:new).with(hash_including(statements_threshold: 0))
           cli.start(['spec'])
         end
 
         it 'sets the coverage functions threshold' do
-          expect(runner).to receive(:new).with( hash_including(functions_threshold: 0))
+          expect(runner).to receive(:new).with(hash_including(functions_threshold: 0))
           cli.start(['spec'])
         end
 
         it 'sets the coverage branches threshold' do
-          expect(runner).to receive(:new).with( hash_including(branches_threshold: 0))
+          expect(runner).to receive(:new).with(hash_including(branches_threshold: 0))
           cli.start(['spec'])
         end
 
         it 'sets the coverage lines threshold' do
-          expect(runner).to receive(:new).with( hash_including(lines_threshold: 0))
+          expect(runner).to receive(:new).with(hash_including(lines_threshold: 0))
           cli.start(['spec'])
         end
-
       end
 
       context 'for the runner' do
         context 'without a specific spec dir' do
           context 'with a spec/javascripts folder' do
             before do
-              expect(File).to receive(:exists?).with('spec/javascripts').and_return true
+              expect(File).to receive(:exist?).with('spec/javascripts').and_return true
             end
 
             it 'runs all specs in the spec/javascripts folder' do
@@ -242,7 +240,7 @@ RSpec.describe Guard::Jasmine::CLI do
 
           context 'without a spec/javascripts folder' do
             before do
-              expect(File).to receive(:exists?).with('spec/javascripts').and_return false
+              expect(File).to receive(:exist?).with('spec/javascripts').and_return false
             end
 
             it 'runs all specs in the spec folder' do
@@ -261,81 +259,81 @@ RSpec.describe Guard::Jasmine::CLI do
 
         context 'with JasmineRails module available' do
           before do
-          stub_const 'JasmineRails', Module.new
+            stub_const 'JasmineRails', Module.new
           end
 
           it 'sets the server mount' do
-            expect(runner).to receive(:new).with( hash_including(server_mount: '/specs'))
+            expect(runner).to receive(:new).with(hash_including(server_mount: '/specs'))
             cli.start(['spec'])
           end
         end
 
         context 'without JasmineRails module available' do
           it 'sets the server mount' do
-            expect(runner).to receive(:new).with( hash_including(server_mount: '/jasmine'))
+            expect(runner).to receive(:new).with(hash_including(server_mount: '/jasmine'))
             cli.start(['spec'])
           end
         end
 
         it 'sets the spec dir' do
-          expect(runner).to receive(:new).with( hash_including(spec_dir: 'spec'))
+          expect(runner).to receive(:new).with(hash_including(spec_dir: 'spec'))
           cli.start(['spec'])
         end
 
         it 'sets the line number' do
-          expect(runner).to receive(:new).with( hash_including(line_number: nil))
+          expect(runner).to receive(:new).with(hash_including(line_number: nil))
           cli.start(['spec'])
         end
 
         it 'disables the focus mode' do
-          expect(runner).to receive(:new).with( hash_including(focus: false))
+          expect(runner).to receive(:new).with(hash_including(focus: false))
           cli.start(['spec', '-f', 'false'])
         end
 
         it 'auto detects the phantomjs binary' do
           expect(cli).to receive(:which).with('phantomjs').and_return '/tmp/phantomjs'
-          expect(runner).to receive(:new).with( hash_including(phantomjs_bin: '/tmp/phantomjs'))
+          expect(runner).to receive(:new).with(hash_including(phantomjs_bin: '/tmp/phantomjs'))
           cli.start(['spec'])
         end
 
         it 'sets the timeout' do
-          expect(runner).to receive(:new).with( hash_including(timeout: 60))
+          expect(runner).to receive(:new).with(hash_including(timeout: 60))
           cli.start(['spec'])
         end
 
         it 'sets the console' do
-          expect(runner).to receive(:new).with( hash_including(console: :failure))
+          expect(runner).to receive(:new).with(hash_including(console: :failure))
           cli.start(['spec'])
         end
 
         it 'sets the server environment' do
-          expect(runner).to receive(:new).with( hash_including(server_env: 'test'))
+          expect(runner).to receive(:new).with(hash_including(server_env: 'test'))
           cli.start(['spec'])
         end
 
         it 'sets the rackup config' do
-          expect(runner).to receive(:new).with( hash_including(rackup_config: 'custom.ru'))
+          expect(runner).to receive(:new).with(hash_including(rackup_config: 'custom.ru'))
           cli.start(['spec', '--rackup-config', 'custom.ru'])
         end
 
         it 'sets the specdoc to always by default' do
-          expect(runner).to receive(:new).with( hash_including(specdoc: :always))
+          expect(runner).to receive(:new).with(hash_including(specdoc: :always))
           cli.start(['spec'])
         end
 
         it 'sets the specdoc to failure' do
-          expect(runner).to receive(:new).with( hash_including(specdoc: :failure))
+          expect(runner).to receive(:new).with(hash_including(specdoc: :failure))
           cli.start(['spec', '--specdoc', 'failure'])
         end
 
         context 'with a defined port' do
           it 'uses the given port' do
-            expect(runner).to receive(:new).with( hash_including(port: 3333))
+            expect(runner).to receive(:new).with(hash_including(port: 3333))
             cli.start(['spec', '--port', '3333'])
           end
 
           it 'generates the default jasmine url with the given port' do
-            expect(runner).to receive(:new).with( hash_including(jasmine_url: 'http://localhost:9876/jasmine'))
+            expect(runner).to receive(:new).with(hash_including(jasmine_url: 'http://localhost:9876/jasmine'))
             cli.start(['spec', '--port', '9876'])
           end
         end
@@ -343,28 +341,28 @@ RSpec.describe Guard::Jasmine::CLI do
         context 'without a defined port' do
           it 'uses a free port' do
             expect(cli).to receive(:find_free_server_port).and_return 4321
-            expect(runner).to receive(:new).with( hash_including(port: 4321))
+            expect(runner).to receive(:new).with(hash_including(port: 4321))
             cli.start(['spec'])
           end
 
           it 'generates the default jasmine url with a free port' do
             expect(cli).to receive(:find_free_server_port).and_return 1234
-            expect(runner).to receive(:new).with( hash_including(jasmine_url: 'http://localhost:1234/jasmine'))
+            expect(runner).to receive(:new).with(hash_including(jasmine_url: 'http://localhost:1234/jasmine'))
             cli.start(['spec'])
           end
         end
-       end
+      end
 
       context 'when using the jasmine gem' do
         it 'generates the default jasmine url' do
-          expect(runner).to receive(:new).with( hash_including(jasmine_url: 'http://localhost:9876/'))
+          expect(runner).to receive(:new).with(hash_including(jasmine_url: 'http://localhost:9876/'))
           cli.start(['spec', '--port', '9876', '--server', 'jasmine_gem'])
         end
       end
 
       context 'when using the jasminerice gem' do
         it 'generates the default jasmine url' do
-          expect(runner).to receive(:new).with( hash_including(jasmine_url: 'http://localhost:9876/jasmine'))
+          expect(runner).to receive(:new).with(hash_including(jasmine_url: 'http://localhost:9876/jasmine'))
           cli.start(['spec', '--port', '9876', '--server', 'thin'])
         end
       end
@@ -372,25 +370,24 @@ RSpec.describe Guard::Jasmine::CLI do
 
     context 'for non changeable options' do
       it 'disables notifications' do
-        expect(runner).to receive(:new).with( hash_including(notification: false))
+        expect(runner).to receive(:new).with(hash_including(notification: false))
         cli.start(['spec'])
       end
 
       it 'hides success notifications' do
-        expect(runner).to receive(:new).with( hash_including(hide_success: true))
+        expect(runner).to receive(:new).with(hash_including(hide_success: true))
         cli.start(['spec'])
       end
 
       it 'sets the maximum error notifications to none' do
-        expect(runner).to receive(:new).with( hash_including(max_error_notify: 0))
+        expect(runner).to receive(:new).with(hash_including(max_error_notify: 0))
         cli.start(['spec'])
       end
 
       it 'sets :is_cli option to true' do
-        expect(runner).to receive(:new).with( hash_including(is_cli: true))
+        expect(runner).to receive(:new).with(hash_including(is_cli: true))
         cli.start(['spec'])
       end
-
     end
 
     context 'without a valid phantomjs executable' do
@@ -432,14 +429,14 @@ RSpec.describe Guard::Jasmine::CLI do
       it 'is 0 for a successful spec run' do
         expect(runner).to receive(:new).with(hash_including(spec_dir: 'specs'))
         expect(Process).to receive(:exit).with(0)
-        cli.start(['spec','--spec-dir', 'specs'])
+        cli.start(['spec', '--spec-dir', 'specs'])
       end
 
       it 'is 1 for a failed spec run' do
         expect(Process).to receive(:exit).with(1)
         allow_any_instance_of(runner).to receive(:run)
-            .and_return({'spec/javascript/a_failed_spec.js'=>['a bad error occured']})
-        cli.start(['spec','--spec-dir', 'specs'])
+          .and_return('spec/javascript/a_failed_spec.js' => ['a bad error occured'])
+        cli.start(['spec', '--spec-dir', 'specs'])
       end
     end
   end
@@ -451,4 +448,3 @@ RSpec.describe Guard::Jasmine::CLI do
     end
   end
 end
-
