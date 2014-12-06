@@ -100,6 +100,7 @@ module Guard
             "'#{ options[:junit_save_path] }'"
           ]
           cmd = "#{ phantomjs_command } \"#{ suite }\" #{ arguments.collect { |i| i.to_s }.join(' ')}"
+          puts cmd if options[:debug]
           IO.popen(cmd, 'r:UTF-8')
         end
 
