@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Michael Kessler', "Nathan Stitt"]
   s.email       = ['michi@flinkfinger.com', 'nathan@stitt.org']
-  s.homepage    = 'https://github.com/netzpirat/guard-jasmine'
+  s.homepage    = 'https://github.com/guard/guard-jasmine'
   s.summary     = 'Guard gem for headless testing with Jasmine'
   s.description = 'Guard::Jasmine automatically tests your Jasmine specs on PhantomJS'
   s.license     = 'MIT'
@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'multi_json',  '~>1.10'
   s.add_dependency 'childprocess','~>0.5'
   s.add_dependency 'thor',        '~>0.19'
-  s.add_dependency 'tilt',        '~>2.0'
+  s.add_dependency 'tilt'
 
   s.add_development_dependency 'bundler'
   s.add_development_dependency 'rake'
