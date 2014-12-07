@@ -28,7 +28,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'bundler'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rack'
-  s.add_development_dependency 'rspec', '~> 3.1'
   s.add_development_dependency 'yard'
 
   s.files        = Dir.glob('{bin,lib}/**/*') + %w(LICENSE README.md)
