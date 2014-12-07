@@ -6,12 +6,10 @@ require 'rake/tasklib'
 require 'guard/jasmine/cli'
 
 module Guard
-
   # Provides a method to define a Rake task that
   # runs the Jasmine specs.
   #
   class JasmineTask < ::Rake::TaskLib
-
     # Name of the main, top level task
     attr_accessor :name
 
@@ -39,14 +37,13 @@ module Guard
           rescue SystemExit => e
             case e.status
             when 1
-              fail 'Some specs have failed'
+              raise 'Some specs have failed'
             when 2
-              fail "The spec couldn't be run: #{ e.message }'"
+              raise "The spec couldn't be run: #{ e.message }'"
             end
           end
         end
       end
     end
-
   end
 end

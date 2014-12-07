@@ -7,13 +7,11 @@ require 'jasmine'
 
 module Guard
   class Jasmine
-
     # Start and stop a Jasmine test server for requesting the specs
     # from PhantomJS.
     #
     module Server
       class << self
-
         attr_accessor :process
 
         # Start the internal test server for getting the Jasmine runner.
@@ -32,14 +30,14 @@ module Guard
           timeout = options[:server_timeout]
 
           case server
-            when :webrick, :mongrel, :thin, :puma
-              start_rack_server(server, port, options)
-            when :unicorn
-              start_unicorn_server(port, options)
-            when :jasmine_gem
-              start_rake_server(port, 'jasmine', options)
-            else
-              start_rake_server(port, server.to_s, options) unless server == :none
+          when :webrick, :mongrel, :thin, :puma
+            start_rack_server(server, port, options)
+          when :unicorn
+            start_unicorn_server(port, options)
+          when :jasmine_gem
+            start_rake_server(port, 'jasmine', options)
+          else
+            start_rake_server(port, server.to_s, options) unless server == :none
           end
 
           wait_for_server(port, timeout) unless server == :none
@@ -48,9 +46,9 @@ module Guard
         # Stop the server thread.
         #
         def stop
-          if self.process
+          if process
             ::Guard::UI.info 'Guard::Jasmine stops server.'
-            self.process.stop(5)
+            process.stop(5)
           end
         end
 
@@ -72,9 +70,9 @@ module Guard
         # @return [Symbol] the server strategy
         #
         def detect_server(spec_dir)
-          if spec_dir && File.exists?(File.join(spec_dir, 'support','jasmine.yml'))
+          if spec_dir && File.exist?(File.join(spec_dir, 'support', 'jasmine.yml'))
             :jasmine_gem
-          elsif File.exists?('config.ru')
+          elsif File.exist?('config.ru')
             %w(unicorn thin mongrel puma).each do |server|
               begin
                 require server
@@ -110,10 +108,10 @@ module Guard
           ::Guard::UI.info "Guard::Jasmine starts #{ server } spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
 
           self.process = ChildProcess.build(*['rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s, rackup_config].compact)
-          self.process.environment['COVERAGE'] = options[:coverage].to_s
-          self.process.environment['IGNORE_INSTRUMENTATION'] = options[:ignore_instrumentation].to_s
-          self.process.io.inherit! if options[:verbose]
-          self.process.start
+          process.environment['COVERAGE'] = options[:coverage].to_s
+          process.environment['IGNORE_INSTRUMENTATION'] = options[:ignore_instrumentation].to_s
+          process.io.inherit! if options[:verbose]
+          process.start
 
         rescue => e
           ::Guard::UI.error "Cannot start Rack server: #{ e.message }"
@@ -134,9 +132,9 @@ module Guard
           ::Guard::UI.info "Guard::Jasmine starts Unicorn spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
 
           self.process = ChildProcess.build('unicorn_rails', '-E', environment.to_s, '-p', port.to_s)
-          self.process.environment['COVERAGE'] = options[:coverage].to_s
-          self.process.io.inherit! if options[:verbose]
-          self.process.start
+          process.environment['COVERAGE'] = options[:coverage].to_s
+          process.io.inherit! if options[:verbose]
+          process.start
 
         rescue => e
           ::Guard::UI.error "Cannot start Unicorn server: #{ e.message }"
@@ -149,12 +147,11 @@ module Guard
         # @option options [Symbol] server the rack server to use
         #
         def start_rake_server(port, task, options)
-
           ::Guard::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
 
           self.process = ChildProcess.build('ruby', '-S', 'rake', task, "JASMINE_PORT=#{ port }")
-          self.process.io.inherit! if options[:verbose]
-          self.process.start
+          process.io.inherit! if options[:verbose]
+          process.start
 
         rescue => e
           ::Guard::UI.error "Cannot start Rake task server: #{ e.message }"
@@ -166,8 +163,8 @@ module Guard
         # @param [Number] timeout the server wait timeout
         #
         def wait_for_server(port, timeout)
-          Timeout::timeout(timeout) do
-            while true
+          Timeout.timeout(timeout) do
+            loop do
               begin
                 ::TCPSocket.new('127.0.0.1', port).close
                 break
@@ -182,9 +179,7 @@ module Guard
           ::Guard::UI.warning 'Timeout while waiting for the server startup. You may need to increase the `:server_timeout` option.'
           throw :task_has_failed
         end
-
       end
     end
-
   end
 end

@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Guard::Jasmine::Util do
+RSpec.describe Guard::Jasmine::Util do
   let(:util) { Class.new { extend Guard::Jasmine::Util } }
 
   describe '.runner_available?' do
@@ -17,12 +15,12 @@ describe Guard::Jasmine::Util do
 
     context 'with the Jasmine runner available' do
       before do
-        allow(http).to receive_message_chain(:request, :code){ 200 }
+        allow(http).to receive_message_chain(:request, :code) { 200 }
       end
 
       it 'does show that the runner is available' do
         expect(Guard::Jasmine::Formatter).to receive(:info).with 'Waiting for Jasmine test runner at http://localhost:8888/jasmine'
-        util.runner_available?({ jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15 })
+        util.runner_available?(jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15)
       end
     end
 
@@ -34,7 +32,7 @@ describe Guard::Jasmine::Util do
 
         it 'does show that the runner is not available' do
           expect(Guard::Jasmine::Formatter).to receive(:error).with 'Jasmine test runner isn\'t available: Connection refused'
-          util.runner_available?({ jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15 })
+          util.runner_available?(jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15)
         end
       end
 
@@ -46,7 +44,7 @@ describe Guard::Jasmine::Util do
 
         it 'does show that the runner is not available' do
           expect(Guard::Jasmine::Formatter).to receive(:error).with 'Jasmine test runner failed with status 404'
-          util.runner_available?({ jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15 })
+          util.runner_available?(jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15)
         end
 
         context 'with a response body returned' do
@@ -57,7 +55,7 @@ describe Guard::Jasmine::Util do
           it 'outputs the body for further analysis' do
             expect(Guard::Jasmine::Formatter).to receive(:error).with 'Jasmine test runner failed with status 404'
             expect(Guard::Jasmine::Formatter).to receive(:error).with 'Please open the Jasmine runner in your browser for more information.'
-            util.runner_available?({ jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15 })
+            util.runner_available?(jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15)
           end
         end
       end
@@ -69,7 +67,7 @@ describe Guard::Jasmine::Util do
 
         it 'does show that the runner is not available' do
           expect(Guard::Jasmine::Formatter).to receive(:error).with 'Timeout waiting for the Jasmine test runner.'
-          util.runner_available?({ jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15 })
+          util.runner_available?(jasmine_url: 'http://localhost:8888/jasmine', server_timeout: 15)
         end
       end
     end
@@ -116,5 +114,4 @@ describe Guard::Jasmine::Util do
       end
     end
   end
-
 end

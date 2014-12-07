@@ -1,9 +1,6 @@
 # coding: utf-8
 
-require 'spec_helper'
-
-describe Guard::Jasmine::Server do
-
+RSpec.describe Guard::Jasmine::Server do
   let(:server) { Guard::Jasmine::Server }
 
   let(:defaults) do
@@ -24,7 +21,7 @@ describe Guard::Jasmine::Server do
   describe '.start' do
     context 'with the :thin strategy' do
       let(:options) do
-        defaults.merge({ server: :thin })
+        defaults.merge(server: :thin)
       end
 
       it 'does not auto detect a server' do
@@ -45,7 +42,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :puma strategy' do
       let(:options) do
-        defaults.merge({ server: :puma })
+        defaults.merge(server: :puma)
       end
 
       it 'does not auto detect a server' do
@@ -66,7 +63,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :mongrel strategy' do
       let(:options) do
-        defaults.merge({ server: :mongrel })
+        defaults.merge(server: :mongrel)
       end
 
       it 'does not auto detect a server' do
@@ -87,7 +84,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :webrick strategy' do
       let(:options) do
-        defaults.merge({ server: :webrick })
+        defaults.merge(server: :webrick)
       end
 
       it 'does not auto detect a server' do
@@ -108,7 +105,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :unicorn strategy' do
       let(:options) do
-        defaults.merge({ server: :unicorn })
+        defaults.merge(server: :unicorn)
       end
 
       it 'does not auto detect a server' do
@@ -129,7 +126,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :webrick strategy and a custom config.ru' do
       let(:options) do
-        defaults.merge({ server: :webrick, rackup_config: 'my/cool.ru' })
+        defaults.merge(server: :webrick, rackup_config: 'my/cool.ru')
       end
 
       it 'starts a :webrick rack server' do
@@ -140,7 +137,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :jasmine_gem strategy' do
       let(:options) do
-        defaults.merge({ server: :jasmine_gem })
+        defaults.merge(server: :jasmine_gem)
       end
 
       it 'does not auto detect a server' do
@@ -161,7 +158,7 @@ describe Guard::Jasmine::Server do
 
     context 'with a custom rake strategy' do
       let(:options) do
-        defaults.merge({ server: :custom_server_strategy })
+        defaults.merge(server: :custom_server_strategy)
       end
 
       it 'does not auto detect a server' do
@@ -182,7 +179,7 @@ describe Guard::Jasmine::Server do
 
     context 'with the :none strategy' do
       let(:options) do
-        defaults.merge({ server: :none })
+        defaults.merge(server: :none)
       end
 
       it 'does not auto detect a server' do
@@ -202,8 +199,8 @@ describe Guard::Jasmine::Server do
   describe '.detect_server' do
     context 'with a `config.ru` file' do
       before do
-        expect(File).to receive(:exists?).with(File.join('spec', 'javascripts', 'support', 'jasmine.yml')).and_return false
-        expect(File).to receive(:exists?).with('config.ru').and_return true
+        expect(File).to receive(:exist?).with(File.join('spec', 'javascripts', 'support', 'jasmine.yml')).and_return false
+        expect(File).to receive(:exist?).with('config.ru').and_return true
       end
 
       context 'with unicorn available' do
@@ -255,7 +252,7 @@ describe Guard::Jasmine::Server do
 
     context 'with a `support/jasmine.yml` file in the spec folder' do
       before do
-        expect(File).to receive(:exists?).with(File.join('spec', 'javascripts', 'support', 'jasmine.yml')).and_return true
+        expect(File).to receive(:exist?).with(File.join('spec', 'javascripts', 'support', 'jasmine.yml')).and_return true
       end
 
       it 'returns `:jasmine_gem` as server' do
