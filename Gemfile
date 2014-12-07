@@ -13,7 +13,7 @@ unless ENV['TRAVIS']
   gem 'guard-shell', require: false
 end
 
-group :test do
+group :test, :development do
   gem 'rspec', '~> 3.1'
 end
 
