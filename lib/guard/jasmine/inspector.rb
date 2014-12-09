@@ -1,6 +1,5 @@
 module Guard
   class Jasmine
-
     # The inspector verifies if the changed paths are valid
     # for Guard::Jasmine. Please note that request to {.clean}
     # paths keeps the current valid files cached until {.clear} is
@@ -8,7 +7,6 @@ module Guard
     #
     module Inspector
       class << self
-
         # Clean the changed paths and return only valid
         # Jasmine specs in either JavaScript or CoffeeScript.
         #
@@ -37,9 +35,8 @@ module Guard
         # @return [Boolean] when the file valid
         #
         def jasmine_spec?(path)
-          path =~ /(?:_s|S)pec\.(js|coffee|js\.coffee)$/ && File.exists?(path)
+          path =~ /(?:_s|S)pec\.(js|coffee|js\.coffee)$/ && File.exist?(path)
         end
-
       end
     end
   end

@@ -8,6 +8,13 @@ extendObject = (a, b)->
         a[key] = value if b.hasOwnProperty(key)
     return a
 
+isObject =(obj)->
+    type = typeof obj;
+    return type == 'function' || type == 'object' && !!obj;
+
+isFunction = (obj)->
+    return typeof obj == 'function' || false;
+
 
 class ConsoleCapture
     # Instead of attempting to de-activate the console dot reporter in hacky ways,
@@ -63,17 +70,28 @@ class GuardReporter
     specDone: (spec)->
         @resultReceived = true
         spec = extendObject({ logs: @console.captured, errors: [] }, spec )
-        for failure in spec.failedExpectations
+        for failure in spec.failedExpectations||[]
             error = extendObject({trace:[]}, failure )
             while match = GuardReporter.STACK_MATCHER.exec( failure.stack )
                 error.trace.push({ file: match[1], line: parseInt(match[2]) })
             delete error.stack
+            this.stringifyExpection(error)
             spec.errors.push( error )
         delete spec.failedExpectations
+        this.stringifyExpection(success) for success in spec.passedExpectations||[]
         @currentSuite.specs.push( spec )
-
         this.resetConsoleLog()
         spec
+
+    # if the expected object is very large, we don't want to
+    # include it in the JSON reply.  For instance a DOM Element
+    # will actually end up including the entire page (including script source)
+    stringifyExpection: (expected)->
+        for key in ['actual','expected']
+            if isFunction(expected[key])
+                expected[key] = expected[key].name || "function"
+            else if isObject(expected[key])
+                expected[key] = expected[key].toString()
 
     resetConsoleLog: ->
         @console.revert()

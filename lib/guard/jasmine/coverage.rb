@@ -15,32 +15,30 @@ class JasmineCoverage < Tilt::Template
 
   # Returns a coverage instrumented JavaScript file
   #
-  def evaluate(context, locals)
+  def evaluate(_context, _locals)
     return data if !ENV['IGNORE_INSTRUMENTATION'].to_s.empty? && file =~ Regexp.new(ENV['IGNORE_INSTRUMENTATION'])
     return data unless JasmineCoverage.coverage_bin
     return data unless file.include?(JasmineCoverage.app_asset_path)
 
     Dir.mktmpdir do |path|
       filename = File.basename(file)
-      input    = File.join(path, filename).sub /\.js.+/, '.js'
+      input    = File.join(path, filename).sub(/\.js.+/, '.js')
 
       File.write input, data
 
-      result = %x[#{JasmineCoverage.coverage_bin} instrument --embed-source #{input.shellescape}]
+      result = `#{JasmineCoverage.coverage_bin} instrument --embed-source #{input.shellescape}`
 
-      raise "Could not generate coverage instrumented file for #{ file }" unless $?.exitstatus == 0
+      fail "Could not generate coverage instrumented file for #{ file }" unless $CHILD_STATUS.exitstatus == 0
 
       result.gsub input, file
-
     end
   end
-
-  private
 
   # Get the absolute path to the projects assets path `/app/assets`.
   #
   # @return [String] the path to the Rails assets
   #
+  # @private
   def self.app_asset_path
     @app_asset_path ||= File.join(Rails.root, 'app', 'assets')
   end
@@ -49,13 +47,13 @@ class JasmineCoverage < Tilt::Template
   #
   # @return [String] the path
   #
+  # @private
   def self.coverage_bin
     @coverage_bin ||= which 'istanbul'
   end
-
 end
 
-if ENV['COVERAGE'] == 'true' and defined?(Rails)
+if ENV['COVERAGE'] == 'true' && defined?(Rails)
 
   # Guard::Jasmine engine to register coverage instrumented
   # Jasmine spec files.

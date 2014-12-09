@@ -1,16 +1,26 @@
-require 'bundler'
-Bundler::GemHelper.install_tasks
+require 'bundler/gem_tasks'
 
 require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec)
-task :default => :spec
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.verbose = false unless ENV.key?('CI')
+end
+
+if ENV['CI'] != 'true'
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new(:rubocop)
+  task default: [:spec, :rubocop]
+else
+  task default: [:spec]
+end
+
+task default: :spec
 
 namespace(:spec) do
-  desc "Run all specs on multiple ruby versions (requires rvm)"
+  desc 'Run all specs on multiple ruby versions (requires rvm)'
   task(:portability) do
-    travis_config_file = File.expand_path("../.travis.yml", __FILE__)
+    travis_config_file = File.expand_path('../.travis.yml', __FILE__)
     begin
-      travis_options ||= YAML::load_file(travis_config_file)
+      travis_options ||= YAML.load_file(travis_config_file)
     rescue => ex
       puts "Travis config file '#{travis_config_file}' could not be found: #{ex.message}"
       return
@@ -33,4 +43,3 @@ namespace(:spec) do
     end
   end
 end
-
