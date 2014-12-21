@@ -55,21 +55,31 @@ specsDone = ->
     result = page.evaluate ->
         window.reporter.resultComplete
 
+# Workaround for https://github.com/ariya/phantomjs/issues/12697 since
+# it doesn't seem like there will be another 1.9.x release fixing this
+phantomExit = (exitCode)->
+    page.close()
+    setTimeout( ->
+        phantom.exit(exitCode)
+    ,0)
+
+
 # We should end up here.  Logs the results as JSON and exits
 exitSuccessfully = ->
     results  = page.evaluate -> window.reporter.results()
     console.log JSON.stringify( results )
-    phantom.exit()
+    phantomExit()
 
 
 # Error message for when specs time out
 specsTimedout = ->
-  text = page.evaluate -> document.getElementsByTagName('body')[0]?.innerText
-  reportError """
+    text = page.evaluate -> document.getElementsByTagName('body')[0]?.innerText
+    reportError """
             Timeout waiting for the Jasmine test results!
 
             #{ text }
             """
+    return phantomExit(1)
 
 # Wait until the test condition is true or a timeout occurs.
 #
@@ -98,4 +108,4 @@ reportError = (msg, trace=[])->
         err = new Error();
         trace = err.stack
     console.log JSON.stringify({ error: msg, trace: trace })
-    phantom.exit(1)
+    return phantomExit(1)
