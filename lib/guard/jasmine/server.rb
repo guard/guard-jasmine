@@ -7,13 +7,15 @@ require 'jasmine'
 
 module Guard
   class Jasmine
+
     # Start and stop a Jasmine test server for requesting the specs
     # from PhantomJS.
     #
     module Server
       class << self
-        attr_accessor :process
 
+        attr_accessor :process
+        attr_accessor :cmd
         # Start the internal test server for getting the Jasmine runner.
         #
         # @param [Hash] options the server options
@@ -106,15 +108,7 @@ module Guard
           coverage      = options[:coverage] ? 'on' : 'off'
 
           ::Guard::UI.info "Guard::Jasmine starts #{ server } spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
-
-          self.process = ChildProcess.build(*['rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s, rackup_config].compact)
-          process.environment['COVERAGE'] = options[:coverage].to_s
-          process.environment['IGNORE_INSTRUMENTATION'] = options[:ignore_instrumentation].to_s
-          process.io.inherit! if options[:verbose]
-          process.start
-
-        rescue => e
-          ::Guard::UI.error "Cannot start Rack server: #{ e.message }"
+          self.start( ['rackup', '-E', environment.to_s, '-p', port.to_s,'-s', server.to_s, rackup_config] )
         end
 
         # Start the Rack server of the current project. This
@@ -130,14 +124,7 @@ module Guard
           coverage    = options[:coverage] ? 'on' : 'off'
 
           ::Guard::UI.info "Guard::Jasmine starts Unicorn spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
-
-          self.process = ChildProcess.build('unicorn_rails', '-E', environment.to_s, '-p', port.to_s)
-          process.environment['COVERAGE'] = options[:coverage].to_s
-          process.io.inherit! if options[:verbose]
-          process.start
-
-        rescue => e
-          ::Guard::UI.error "Cannot start Unicorn server: #{ e.message }"
+          execute(['unicorn_rails', '-E', environment.to_s, '-p', port.to_s])
         end
 
         # Start the Jasmine gem server of the current project.
@@ -148,15 +135,23 @@ module Guard
         #
         def start_rake_server(port, task, options)
           ::Guard::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
-
-          self.process = ChildProcess.build('ruby', '-S', 'rake', task, "JASMINE_PORT=#{ port }")
-          process.io.inherit! if options[:verbose]
-          process.start
-
-        rescue => e
-          ::Guard::UI.error "Cannot start Rake task server: #{ e.message }"
+          execute( ['ruby', '-S', 'rake', task, "JASMINE_PORT=#{ port }"] )
         end
 
+        # Builds a child process with the given command and arguments
+        # @param [Array<string>] array of arguments to send to ChildProcess
+        def execute(cmd)
+          self.cmd = cmd
+          self.process = ChildProcess.build(*self.cmd)
+          process.environment['COVERAGE'] = options[:coverage].to_s
+          process.environment['IGNORE_INSTRUMENTATION'] = options[:ignore_instrumentation].to_s
+          process.io.inherit! if options[:verbose]
+          process.start
+        rescue => e
+          ::Guard::UI.error "Cannot start server using command #{ cmd.join(' ') }."
+          ::Guard::UI.error "Error was: #{ e.message }"
+        end
+        
         # Wait until the Jasmine test server is running.
         #
         # @param [Number] port the server port
@@ -176,10 +171,18 @@ module Guard
           end
 
         rescue Timeout::Error
-          ::Guard::UI.warning 'Timeout while waiting for the server startup. You may need to increase the `:server_timeout` option.'
-          throw :task_has_failed
+            ::Guard::UI.warning "Timeout while waiting for the server to startup"
+            ::Guard::UI.warning  "Most likely there is a configuration error that's preventing the server from starting"
+            ::Guard::UI.warning "You may need to increase the `:server_timeout` option."
+            ::Guard::UI.warning "The commandline that was used to start the server was:"
+            ::Guard::UI.warning self.cmd.join(' ' )
+            ::Guard::UI.warning "You should attempt to run that and see if any errors occur"
+
+            throw :task_has_failed
         end
+
       end
     end
+
   end
 end
