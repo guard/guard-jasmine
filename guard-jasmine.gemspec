@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = 'guard-jasmine'
 
   s.add_dependency 'guard',       '~> 2.8'
-  s.add_dependency('guard-compat', '~> 0.3')
+  s.add_dependency('guard-compat', '~> 1.1')
 
   s.add_dependency 'jasmine',     '~> 2.1'
   s.add_dependency 'multi_json',  '~>1.10'
