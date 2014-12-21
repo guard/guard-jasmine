@@ -121,7 +121,7 @@ module Guard
           environment = options[:server_env]
           coverage    = options[:coverage] ? 'on' : 'off'
 
-          ::Guard::UI.info "Guard::Jasmine starts Unicorn spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
+          Compat::UI.info "Guard::Jasmine starts Unicorn spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
           execute(options, ['unicorn_rails', '-E', environment.to_s, '-p', port.to_s])
         end
 

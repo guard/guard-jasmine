@@ -28,11 +28,11 @@ RSpec.configure do |config|
     ENV['GUARD_ENV'] = 'test'
     @project_path    = Pathname.new(File.expand_path('../../', __FILE__))
 
-    allow(Guard::UI).to receive(:info)
-    allow(Guard::UI).to receive(:debug)
-    allow(Guard::UI).to receive(:error)
-    allow(Guard::UI).to receive(:warning)
-    allow(Guard::UI).to receive(:color_enabled?).and_return(true)
+    allow(Guard::Compat::UI).to receive(:info)
+    allow(Guard::Compat::UI).to receive(:debug)
+    allow(Guard::Compat::UI).to receive(:error)
+    allow(Guard::Compat::UI).to receive(:warning)
+    allow(Guard::Compat::UI).to receive(:color_enabled?).and_return(true)
   end
 
   config.after(:each) do
