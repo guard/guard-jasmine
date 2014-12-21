@@ -135,12 +135,17 @@ module Guard
         #
         def start_rake_server(port, task, options)
           ::Guard::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
-          execute( ['ruby', '-S', 'rake', task, "JASMINE_PORT=#{ port }"] )
+          execute( ['rake', task, "JASMINE_PORT=#{ port }"] )
         end
 
         # Builds a child process with the given command and arguments
         # @param [Array<string>] array of arguments to send to ChildProcess
         def execute(cmd)
+          if RUBY_PLATFORM == "java"
+            cmd.unshift("jruby","-S")
+          else
+            cmd.unshift('ruby', '-S')
+          end
           self.cmd = cmd
           self.process = ChildProcess.build(*self.cmd)
           process.environment['COVERAGE'] = options[:coverage].to_s
