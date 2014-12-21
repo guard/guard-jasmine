@@ -26,9 +26,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'tilt'
 
   s.add_development_dependency 'bundler'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'rack'
-  s.add_development_dependency 'yard'
 
   s.files        = Dir.glob('{bin,lib}/**/*') + %w(LICENSE README.md)
   s.executables  = ['guard-jasmine', 'guard-jasmine-debug']
