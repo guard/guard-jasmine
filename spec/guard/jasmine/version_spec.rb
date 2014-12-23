@@ -1,3 +1,5 @@
+require 'guard/jasmine/version'
+
 RSpec.describe Guard::JasmineVersion do
   describe 'VERSION' do
     it 'defines the version' do

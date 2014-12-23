@@ -1,3 +1,5 @@
+require 'guard/jasmine'
+
 RSpec.describe Guard::Jasmine::Util do
   let(:util) { Class.new { extend Guard::Jasmine::Util } }
 

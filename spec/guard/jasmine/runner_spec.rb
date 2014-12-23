@@ -6,6 +6,8 @@ def read_fixture(name)
   Pathname.new(__FILE__).dirname.join('fixtures', name + '.json').read
 end
 
+require 'guard/jasmine/runner'
+
 RSpec.describe Guard::Jasmine::Runner do
   let(:formatter) { Guard::Jasmine::Formatter }
 

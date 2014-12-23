@@ -1,5 +1,7 @@
+require 'guard/compat/plugin'
+
 module Guard
-  class Jasmine
+  class Jasmine < Plugin
     # The Guard::Jasmine formatter collects console and
     # system notification methods and enhances them with
     # some color information.
@@ -71,7 +73,7 @@ module Guard
         # @param [Hash] options the output options
         #
         def suite_name(message, options = {})
-          ::Guard::UI.info(color(message, ';33'), options)
+          Compat::UI.info(color(message, ';33'), options)
         end
 
         # Outputs a system notification.
@@ -93,7 +95,7 @@ module Guard
         # @param [String] color_code the color code
         #
         def color(text, color_code)
-          Compat::UI.send(:color_enabled?) ? "\e[0#{ color_code }m#{ text }\e[0m" : text
+          Compat::UI.color_enabled? ? "\e[0#{ color_code }m#{ text }\e[0m" : text
         end
       end
     end

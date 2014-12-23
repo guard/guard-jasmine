@@ -1,6 +1,16 @@
+require 'guard/jasmine/formatter'
+
 RSpec.describe Guard::Jasmine::Formatter do
   let(:formatter) { Guard::Jasmine::Formatter }
+
   let(:ui) { Guard::Compat::UI }
+  before do
+    allow(ui).to receive(:info)
+    allow(ui).to receive(:debug)
+    allow(ui).to receive(:error)
+    allow(ui).to receive(:warning)
+    allow(ui).to receive(:color_enabled?).and_return(true)
+  end
 
   describe '.info' do
     it 'shows an info message' do

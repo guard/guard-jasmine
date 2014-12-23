@@ -7,7 +7,7 @@ require 'guard/jasmine/util'
 require 'guard/jasmine/server'
 
 module Guard
-  class Jasmine
+  class Jasmine < Plugin
     # Small helper class to run the Jasmine runner_options once from the
     # command line. This can be useful to integrate guard-jasmine
     # into a continuous integration server.

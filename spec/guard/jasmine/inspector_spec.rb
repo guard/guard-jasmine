@@ -1,3 +1,5 @@
+require 'guard/jasmine/inspector'
+
 RSpec.describe Guard::Jasmine::Inspector do
   before do
     allow(File).to receive(:exist?) do |file|
