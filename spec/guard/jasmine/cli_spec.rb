@@ -16,6 +16,8 @@ RSpec.describe Guard::Jasmine::CLI do
     allow(cli).to receive(:which).and_return '/usr/local/bin/phantomjs'
     allow(cli).to receive(:phantomjs_bin_valid?).and_return true
     allow(cli).to receive(:runner_available?).and_return true
+
+    allow(Guard::Compat::UI).to receive(:error)
   end
 
   describe '.spec' do

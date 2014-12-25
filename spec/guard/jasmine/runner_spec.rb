@@ -46,6 +46,9 @@ RSpec.describe Guard::Jasmine::Runner do
 
     allow(runner).to receive(:`) # `
     allow(runner).to receive(:update_coverage)
+
+    allow(Guard::Compat::UI).to receive(:color_enabled?).and_return(true)
+    allow(Guard::Compat::UI).to receive(:info)
   end
 
   describe '#run' do

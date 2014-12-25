@@ -3,6 +3,10 @@ require 'guard/jasmine'
 RSpec.describe Guard::Jasmine::Util do
   let(:util) { Class.new { extend Guard::Jasmine::Util } }
 
+  before do
+    allow(Guard::Compat::UI).to receive(:info)
+  end
+
   describe '.runner_available?' do
     let(:http) do
       double('http').tap do |http|
