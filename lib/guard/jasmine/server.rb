@@ -5,8 +5,10 @@ require 'timeout'
 require 'childprocess'
 require 'jasmine'
 
+require 'guard/compat/plugin'
+
 module Guard
-  class Jasmine
+  class Jasmine < Plugin
     # Start and stop a Jasmine test server for requesting the specs
     # from PhantomJS.
     #
@@ -47,7 +49,7 @@ module Guard
         #
         def stop
           if process
-            ::Guard::UI.info 'Guard::Jasmine stops server.'
+            Compat::UI.info 'Guard::Jasmine stops server.'
             process.stop(5)
           end
         end
@@ -105,7 +107,7 @@ module Guard
           rackup_config = options[:rackup_config]
           coverage      = options[:coverage] ? 'on' : 'off'
 
-          ::Guard::UI.info "Guard::Jasmine starts #{ server } spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
+          Compat::UI.info "Guard::Jasmine starts #{ server } spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
           execute(options, ['rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s, rackup_config])
         end
 
@@ -121,7 +123,7 @@ module Guard
           environment = options[:server_env]
           coverage    = options[:coverage] ? 'on' : 'off'
 
-          ::Guard::UI.info "Guard::Jasmine starts Unicorn spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
+          Compat::UI.info "Guard::Jasmine starts Unicorn spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
           execute(options, ['unicorn_rails', '-E', environment.to_s, '-p', port.to_s])
         end
 
@@ -132,7 +134,7 @@ module Guard
         # @option options [Symbol] server the rack server to use
         #
         def start_rake_server(port, task, options)
-          ::Guard::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
+          Compat::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
           execute(options, ['rake', task, "JASMINE_PORT=#{ port }"])
         end
 
@@ -151,8 +153,8 @@ module Guard
           process.io.inherit! if options[:verbose]
           process.start
         rescue => e
-          ::Guard::UI.error "Cannot start server using command #{ cmd.join(' ') }."
-          ::Guard::UI.error "Error was: #{ e.message }"
+          Compat::UI.error "Cannot start server using command #{ cmd.join(' ') }."
+          Compat::UI.error "Error was: #{ e.message }"
         end
 
         # Wait until the Jasmine test server is running.
@@ -174,12 +176,12 @@ module Guard
           end
 
         rescue Timeout::Error
-          ::Guard::UI.warning "Timeout while waiting for the server to startup"
-          ::Guard::UI.warning "Most likely there is a configuration error that's preventing the server from starting"
-          ::Guard::UI.warning "You may need to increase the `:server_timeout` option."
-          ::Guard::UI.warning "The commandline that was used to start the server was:"
-          ::Guard::UI.warning cmd.join(' ')
-          ::Guard::UI.warning "You should attempt to run that and see if any errors occur"
+          Compat::UI.warning "Timeout while waiting for the server to startup"
+          Compat::UI.warning "Most likely there is a configuration error that's preventing the server from starting"
+          Compat::UI.warning "You may need to increase the `:server_timeout` option."
+          Compat::UI.warning "The commandline that was used to start the server was:"
+          Compat::UI.warning cmd.join(' ')
+          Compat::UI.warning "You should attempt to run that and see if any errors occur"
 
           throw :task_has_failed
         end

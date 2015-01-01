@@ -1,9 +1,10 @@
 require 'net/http'
 require 'timeout'
+require 'guard/compat/plugin'
 require 'guard/jasmine/formatter'
 
 module Guard
-  class Jasmine
+  class Jasmine < Plugin
     # Provider of some shared utility methods.
     #
     module Util

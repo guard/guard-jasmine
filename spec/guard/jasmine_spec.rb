@@ -1,3 +1,6 @@
+require 'guard/compat/test/helper'
+require 'guard/jasmine'
+
 RSpec.describe Guard::Jasmine do
   let(:guard) { Guard::Jasmine.new }
 
@@ -8,7 +11,15 @@ RSpec.describe Guard::Jasmine do
 
   let(:defaults) { Guard::Jasmine::DEFAULT_OPTIONS }
 
+  let(:ui) { Guard::Compat::UI }
+
   before do
+    allow(ui).to receive(:info)
+    allow(ui).to receive(:debug)
+    allow(ui).to receive(:error)
+    allow(ui).to receive(:warning)
+    allow(ui).to receive(:color_enabled?).and_return(true)
+
     allow(inspector).to receive(:clean) { |specs, _options| specs }
     allow(guard.runner).to receive(:run).and_return({})
     allow(formatter).to receive(:notify)

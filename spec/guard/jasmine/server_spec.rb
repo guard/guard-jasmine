@@ -1,5 +1,7 @@
 # coding: utf-8
 
+require 'guard/jasmine/server'
+
 RSpec.describe Guard::Jasmine::Server do
   let(:server) { Guard::Jasmine::Server }
 
@@ -16,6 +18,8 @@ RSpec.describe Guard::Jasmine::Server do
     allow(server).to receive(:start_rack_server)
     allow(server).to receive(:start_rake_server)
     allow(server).to receive(:wait_for_server)
+
+    allow(Guard::Compat::UI).to receive(:info)
   end
 
   describe '.start' do

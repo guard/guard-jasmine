@@ -7,7 +7,7 @@ require 'guard/jasmine/util'
 require 'guard/jasmine/server'
 
 module Guard
-  class Jasmine
+  class Jasmine < Plugin
     # Small helper class to run the Jasmine runner_options once from the
     # command line. This can be useful to integrate guard-jasmine
     # into a continuous integration server.
@@ -225,7 +225,7 @@ module Guard
         end
 
       rescue => e
-        ::Guard::UI.error "Something went wrong: #{e.message}"
+        Compat::UI.error "Something went wrong: #{e.message}"
         Process.exit 2
       ensure
         ::Guard::Jasmine::Server.stop
@@ -239,7 +239,7 @@ module Guard
       # @see Guard::Jasmine::VERSION
       #
       def version
-        ::Guard::UI.info "Guard::Jasmine version #{ ::Guard::JasmineVersion::VERSION }"
+        Compat::UI.info "Guard::Jasmine version #{ ::Guard::JasmineVersion::VERSION }"
       end
     end
   end

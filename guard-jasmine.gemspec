@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = 'guard-jasmine'
 
   s.add_dependency 'guard',       '~> 2.8'
-  s.add_dependency('guard-compat', '~> 0.3')
+  s.add_dependency('guard-compat', '~> 1.2')
 
   s.add_dependency 'jasmine',     '~> 2.1'
   s.add_dependency 'multi_json',  '~>1.10'
@@ -26,9 +26,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'tilt'
 
   s.add_development_dependency 'bundler'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'rack'
-  s.add_development_dependency 'yard'
 
   s.files        = Dir.glob('{bin,lib}/**/*') + %w(LICENSE README.md)
   s.executables  = ['guard-jasmine', 'guard-jasmine-debug']

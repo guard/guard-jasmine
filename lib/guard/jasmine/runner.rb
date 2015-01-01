@@ -2,10 +2,13 @@
 
 require 'multi_json'
 require 'fileutils'
+
+require 'guard/compat/plugin'
+require 'guard/jasmine'
 require 'guard/jasmine/util'
 
 module Guard
-  class Jasmine
+  class Jasmine < Plugin
     # The Jasmine runner handles the execution of the spec through the PhantomJS binary,
     # evaluates the JSON response from the PhantomJS Script `guard_jasmine.coffee`,
     # writes the result to the console and triggers optional system notifications.

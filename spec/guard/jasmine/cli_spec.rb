@@ -16,6 +16,8 @@ RSpec.describe Guard::Jasmine::CLI do
     allow(cli).to receive(:which).and_return '/usr/local/bin/phantomjs'
     allow(cli).to receive(:phantomjs_bin_valid?).and_return true
     allow(cli).to receive(:runner_available?).and_return true
+
+    allow(Guard::Compat::UI).to receive(:error)
   end
 
   describe '.spec' do
@@ -419,7 +421,7 @@ RSpec.describe Guard::Jasmine::CLI do
 
     context 'with a runner exception' do
       it 'shows the error message' do
-        expect(::Guard::UI).to receive(:error).with('Something went wrong: BANG!')
+        expect(Guard::Compat::UI).to receive(:error).with('Something went wrong: BANG!')
         allow_any_instance_of(runner).to receive(:run).and_raise 'BANG!'
         cli.start(['spec'])
       end
@@ -443,7 +445,7 @@ RSpec.describe Guard::Jasmine::CLI do
 
   describe '.version' do
     it 'outputs the Guard::Jasmine version' do
-      expect(::Guard::UI).to receive(:info).with("Guard::Jasmine version #{ ::Guard::JasmineVersion::VERSION }")
+      expect(Guard::Compat::UI).to receive(:info).with("Guard::Jasmine version #{ ::Guard::JasmineVersion::VERSION }")
       cli.start(['-v'])
     end
   end
