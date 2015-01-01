@@ -166,7 +166,7 @@ module Guard
           Timeout.timeout(timeout) do
             loop do
               begin
-                ::TCPSocket.new('127.0.0.1', port).close
+                ::TCPSocket.new('localhost', port).close
                 break
               rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
                 # Ignore, server still not available

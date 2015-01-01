@@ -1,7 +1,7 @@
 
 # Set default values
 options =
-  url: phantom.args[0] || 'http://127.0.0.1:3000/jasmine'
+  url: phantom.args[0] || 'http://localhost:3000/jasmine'
   timeout: parseInt(phantom.args[1] || 10000)
 
 # Create the web page.
