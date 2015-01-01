@@ -12,6 +12,10 @@ page = require('webpage').create()
 page.onError = (message, trace) ->
     reportError "Javascript error encountered on Jasmine test page: #{ message }", trace
 
+page.onResourceError = (error)->
+    page.reason = error.errorString
+    page.reason_url = error.url
+ 
 # Once the page is initialized, setup the script for
 # the GuardReporter class
 page.onInitialized = ->
@@ -24,7 +28,7 @@ page.onInitialized = ->
 # Once the page is finished loading
 page.onLoadFinished = (status)->
     if status isnt 'success'
-        reportError "Unable to access Jasmine specs at #{ options.url }, page returned status: #{status}"
+        reportError "Unable to access Jasmine specs at #{page.reason_url}. #{page.reason}"
     else
         waitFor reporterReady, jasmineAvailable, options.timeout, reporterMissing
 
