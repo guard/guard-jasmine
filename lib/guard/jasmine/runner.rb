@@ -242,7 +242,7 @@ module Guard
           pp result if options[:debug]
           if result['error']
             if options[:is_cli]
-              fail 'An error occurred in the Jasmine runner'
+              fail "Runner error: #{result['error']}"
             else
               notify_runtime_error(result)
             end
