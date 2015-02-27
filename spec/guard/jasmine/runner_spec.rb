@@ -220,7 +220,7 @@ RSpec.describe Guard::Jasmine::Runner do
 
         expect do
           runner.run(['spec/javascripts/x/b.js.coffee'], is_cli: true)
-        end.to raise_error 'An error occurred in the Jasmine runner'
+        end.to raise_error 'Runner error: Cannot request Jasmine specs'
       end
     end
 
