@@ -39,10 +39,11 @@ class ConsoleCapture
         my = this
         console[level] = ->
             args = Array.prototype.slice.call(arguments, 0)
-            return if args[0] && args[0].toString && args[0].toString().match( ConsoleCapture.DOT_REPORTER_MATCH )
+            return if args[0] &&
+                args[0].toString &&
+                args[0].toString().match( ConsoleCapture.DOT_REPORTER_MATCH )
             my.captured.push( [ level ].concat( args ) )
             ConsoleCapture.original_levels[ level ].apply( ConsoleCapture.original, arguments )
-
 
 # Implements a Jasmine reporter
 class GuardReporter
