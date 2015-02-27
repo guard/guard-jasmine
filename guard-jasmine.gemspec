@@ -16,14 +16,14 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.6'
   s.rubyforge_project = 'guard-jasmine'
 
-  s.add_dependency 'guard',       '~> 2.8'
-  s.add_dependency('guard-compat', '~> 1.2')
-
-  s.add_dependency 'jasmine',     '~> 2.1'
-  s.add_dependency 'multi_json',  '~>1.10'
+  s.add_dependency 'guard',        '~> 2.8'
+  s.add_dependency 'guard-compat', '~> 1.2'
+  s.add_dependency 'jasmine',      '~>2.2'
+  s.add_dependency 'multi_json',   '~>1.1'
   s.add_dependency 'childprocess', '~>0.5'
-  s.add_dependency 'thor',        '~>0.19'
-  s.add_dependency 'tilt'
+  s.add_dependency 'thor',         '~>0.19'
+  # Coverage uses tilt for spec files
+  s.add_dependency 'tilt',         '~>2.0'
 
   s.add_development_dependency 'bundler'
 
