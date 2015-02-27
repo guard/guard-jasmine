@@ -1,8 +1,9 @@
+system = require('system');
 
 # Set default values
 options =
-  url: phantom.args[0] || 'http://localhost:3000/jasmine'
-  timeout: parseInt(phantom.args[1] || 10000)
+  url: system.args[0] || 'http://localhost:3000/jasmine'
+  timeout: parseInt(system.args.args[1] || 10000)
 
 # Create the web page.
 page = require('webpage').create()
@@ -15,7 +16,7 @@ page.onError = (message, trace) ->
 page.onResourceError = (error)->
     page.reason = error.errorString
     page.reason_url = error.url
- 
+
 # Once the page is initialized, setup the script for
 # the GuardReporter class
 page.onInitialized = ->
@@ -74,6 +75,10 @@ exitSuccessfully = ->
     console.log JSON.stringify( results )
     phantomExit()
 
+exitError = (message)->
+    console.log JSON.stringify({error: message})
+    phantomExit(1)
+
 
 # Error message for when specs time out
 specsTimedout = ->
@@ -97,7 +102,10 @@ waitFor = (test, ready, timeout = 10000, timeoutFunction)->
     start = Date.now(0)
     wait = ->
         if !condition && (Date.now() - start < timeout)
-            condition = test()
+            try
+                condition = test()
+            catch e
+                exitError(e)
         else
           clearInterval interval
           if condition
