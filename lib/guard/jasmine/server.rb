@@ -147,6 +147,9 @@ module Guard
             cmd.unshift("ruby", "-S")
           end
           self.cmd = cmd
+          if options[:debug]
+            puts "Starting server using: #{cmd.join(' ')}"
+          end
           self.process = ChildProcess.build(*cmd.compact)
           process.environment['COVERAGE'] = options[:coverage].to_s
           process.environment['IGNORE_INSTRUMENTATION'] = options[:ignore_instrumentation].to_s
