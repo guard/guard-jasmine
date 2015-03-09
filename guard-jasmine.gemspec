@@ -22,8 +22,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'multi_json',   '~>1.1'
   s.add_dependency 'childprocess', '~>0.5'
   s.add_dependency 'thor',         '~>0.19'
-  # Coverage uses tilt for spec files
-  s.add_dependency 'tilt',         '~>2.0'
+  # Coverage uses tilt for spec files.  Works with Tilt both
+  # version 1 and 2, so we don't bother to lock the versions
+  s.add_dependency 'tilt'
 
   s.add_development_dependency 'bundler'
 
