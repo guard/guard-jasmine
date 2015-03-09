@@ -114,7 +114,7 @@ Guard::Jasmine will start a Rails Rack server to run your specs.  Step by step i
 #### Configuring Guard Jasmine to integrate with the asset pipeline.
 
  * Install Guard Jasmine into the Rails project's Gemfile:
- 
+
    `gem "guard-jasmine", "~> 2.0"`
 
  * Install Jasmine: `rails generate jasmine:install`
@@ -123,7 +123,7 @@ Guard::Jasmine will start a Rails Rack server to run your specs.  Step by step i
    * Change the `spec_files:` section to `'**/*[sS]pec.{js,coffee}'`
  * Install GuardJasmine's sample Guardfile `rails generate  guard_jasmine:install`
  * Run GuardJasmine: `guard`
- 
+
 A sample Rails project configured in this way is at https://github.com/nathanstitt/guard-jasmine-rails-test
 
 
@@ -608,7 +608,7 @@ When you file an issue, please try to follow to these simple rules if applicable
 
 * Make sure you have study the README carefully.
 * Make sure you run Guard with `bundle exec` first.
-* Add debug information to the issue by running Guard with the `--verbose` option.
+* Add debug information to the issue by running Guard with `debug: true` set in the options.
 * Add your `Guardfile` and `Gemfile` to the issue.
 * Make sure that the issue is reproducible with your description.
 
