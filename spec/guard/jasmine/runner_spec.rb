@@ -89,34 +89,34 @@ RSpec.describe Guard::Jasmine::Runner do
       end
       context 'with custom parameters' do
         it 'sets the url query parmeters' do
-          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?debug=true&myval=1&spec=ErrorTest\" 60000 failure true failure failure false true ''", 'r:UTF-8')
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?debug=true&myval=1&spec=ErrorTest\" 60000", 'r:UTF-8')
           runner.run(['spec/javascripts/a.js.coffee'], query_params: { debug: true, myval: 1 })
         end
       end
       context 'with the spec file name' do
         it 'executes the example for line number on example' do
-          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", 'r:UTF-8')
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000", 'r:UTF-8')
           runner.run(['spec/javascripts/a.js.coffee:7'])
         end
 
         it 'executes the example for line number within example' do
-          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", 'r:UTF-8')
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000", 'r:UTF-8')
           runner.run(['spec/javascripts/a.js.coffee:8'])
         end
 
         it 'executes all examples within describe' do
-          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext\" 60000 failure true failure failure false true ''", 'r:UTF-8')
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext\" 60000", 'r:UTF-8')
           runner.run(['spec/javascripts/a.js.coffee:1'])
         end
       end
 
       context 'with the cli argument' do
         it 'executes the example for line number on example' do
-          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", 'r:UTF-8')
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000", 'r:UTF-8')
           runner.run(['spec/javascripts/a.js.coffee'], line_number: 7)
         end
         it 'also sets custom parameters' do
-          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?debug=true&spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000 failure true failure failure false true ''", 'r:UTF-8')
+          expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?debug=true&spec=TestContext%20Inner%20TestContext%20does%20something%20else\" 60000", 'r:UTF-8')
           runner.run(['spec/javascripts/a.js.coffee'], line_number: 7, query_params: { debug: true })
         end
       end
@@ -124,7 +124,7 @@ RSpec.describe Guard::Jasmine::Runner do
 
     context 'when passed the spec directory' do
       it 'requests all jasmine specs from the server' do
-        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false true ''", 'r:UTF-8')
+        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000", 'r:UTF-8')
         runner.run(['spec/javascripts'], notification: false)
       end
 
@@ -134,26 +134,9 @@ RSpec.describe Guard::Jasmine::Runner do
       end
     end
 
-    context 'when passing junit options' do
-      it 'passes the junit option to the runner' do
-        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure true true ''", 'r:UTF-8')
-        runner.run(['spec/javascripts'],  junit: true)
-      end
-
-      it 'passes the junit consolidate option' do
-        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false false ''", 'r:UTF-8')
-        runner.run(['spec/javascripts'],  junit_consolidate: false)
-      end
-
-      it 'passes the junit save path' do
-        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine\" 60000 failure true failure failure false true '/home/user'", 'r:UTF-8')
-        runner.run(['spec/javascripts'],  junit_save_path: '/home/user')
-      end
-    end
-
     context 'for an erroneous Jasmine runner' do
       it 'requests the jasmine specs from the server' do
-        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=ErrorTest\" 60000 failure true failure failure false true ''", 'r:UTF-8')
+        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=ErrorTest\" 60000", 'r:UTF-8')
         runner.run(['spec/javascripts/a.js.coffee'])
       end
 
@@ -232,7 +215,7 @@ RSpec.describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         expect(File).to receive(:foreach).with('spec/javascripts/x/b.js.coffee').and_yield 'describe "FailureTest", ->'
-        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=FailureTest\" 60000 failure true failure failure false true ''", 'r:UTF-8')
+        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=FailureTest\" 60000", 'r:UTF-8')
         runner.run(['spec/javascripts/x/b.js.coffee'])
       end
 
@@ -528,7 +511,7 @@ RSpec.describe Guard::Jasmine::Runner do
 
       it 'requests the jasmine specs from the server' do
         expect(File).to receive(:foreach).with('spec/javascripts/t.js').and_yield 'describe("SuccessTest", function() {'
-        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=SuccessTest\" 60000 failure true failure failure false true ''", 'r:UTF-8')
+        expect(IO).to receive(:popen).with("#{ phantomjs_command } \"http://localhost:8888/jasmine?spec=SuccessTest\" 60000", 'r:UTF-8')
 
         runner.run(['spec/javascripts/t.js'])
       end

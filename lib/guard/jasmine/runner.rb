@@ -92,14 +92,7 @@ module Guard
         suite = jasmine_suite(file)
 
         arguments = [
-          options[:timeout] * 1000,
-          options[:specdoc],
-          options[:focus],
-          options[:console],
-          options[:errors],
-          options[:junit],
-          options[:junit_consolidate],
-          "'#{ options[:junit_save_path] }'"
+          options[:timeout] * 1000
         ]
         cmd = "#{ phantomjs_command } \"#{ suite }\" #{ arguments.collect(&:to_s).join(' ')}"
         puts cmd if options[:debug]
