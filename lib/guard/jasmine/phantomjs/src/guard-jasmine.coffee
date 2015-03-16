@@ -1,9 +1,10 @@
 system = require('system');
 
+#console.log system.args
 # Set default values
 options =
-  url: system.args[0] || 'http://localhost:3000/jasmine'
-  timeout: parseInt(system.args.args[1] || 10000)
+  url: system.args[1] || 'http://localhost:3000/jasmine'
+  timeout: parseInt(system.args[2] || 10000)
 
 # Create the web page.
 page = require('webpage').create()
