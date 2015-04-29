@@ -116,9 +116,12 @@ waitFor = (test, ready, timeout = 10000, timeoutFunction)->
     interval = setInterval( wait, 250 )
 
 # Logs the error to the console as JSON and exits with status '1'
+hasLoggedError = false
 reportError = (msg, trace=[])->
+    return if hasLoggedError
     if 0 == trace.length
         err = new Error();
         trace = err.stack
     console.log JSON.stringify({ error: msg, trace: trace })
+    hasLoggedError = true
     return phantomExit(1)
