@@ -37,7 +37,7 @@ module Guard
         # @return [Boolean] when the file valid
         #
         def jasmine_spec?(path)
-          path =~ /(?:_s|S)pec\.(js|coffee|js\.coffee)$/ && File.exist?(path)
+          path =~ /(?:_s|S)pec\.(js|coffee|js\.coffee|cjsx|js\.cjsx)$/ && File.exist?(path)
         end
       end
     end
