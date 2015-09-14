@@ -155,20 +155,10 @@ RSpec.describe Guard::Jasmine::CLI do
           end
         end
 
-        context 'for the junit options' do
-          it 'sets the junit options to false' do
-            expect(runner).to receive(:new).with(hash_including(junit: true))
-            cli.start(['spec', '--junit'])
-          end
-
-          it 'sets the junit consolidate option' do
-            expect(runner).to receive(:new).with(hash_including(junit_consolidate: true))
-            cli.start(['spec', '--junit-consolidate'])
-          end
-
-          it 'sets the junit save path' do
-            expect(runner).to receive(:new).with(hash_including(junit_save_path: '/home/user'))
-            cli.start(['spec', '--junit-save-path', '/home/user'])
+        context 'for the reports option' do
+          it 'sets the correct query parameters option' do
+            expect(runner).to receive(:new).with(hash_including(query_params: {reporters: 'console'}))
+            cli.start(['spec', '--reporters', 'console'])
           end
         end
       end

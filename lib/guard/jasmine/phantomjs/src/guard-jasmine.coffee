@@ -9,6 +9,9 @@ options =
 # Create the web page.
 page = require('webpage').create()
 
+# Define fs to write files for custom reporters
+fs = require('fs')
+
 # Catch JavaScript errors
 # abort the request and return the error
 page.onError = (message, trace) ->
@@ -22,17 +25,27 @@ page.onResourceError = (error)->
 # the GuardReporter class
 page.onInitialized = ->
     page.injectJs 'guard-reporter.js'
-    page.evaluate ->
+    injectReporter = (pathSeparator) ->
         window.onload = ->
             window.reporter = new GuardReporter()
+            window.fs_path_separator = "#{pathSeparator}"
+            window.__phantom_writeFile = (filename, text) ->
+                window.callPhantom({event: 'writeFile', filename: filename, text: text})
             window.jasmine.getEnv().addReporter(window.reporter) if window.jasmine
+    page.evaluate injectReporter, fs.separator
 
 # Once the page is finished loading
-page.onLoadFinished = (status)->
+page.onLoadFinished = (status) ->
     if status isnt 'success'
         reportError "Unable to access Jasmine specs at #{page.reason_url}. #{page.reason}"
     else
         waitFor reporterReady, jasmineAvailable, options.timeout, reporterMissing
+
+page.onCallback = (data) ->
+    if data.event is 'writeFile'
+        fs.write(data.filename, data.text, 'w')
+    else
+        console.log('unknown event callback: ' + data.event)
 
 # Open web page, which will kick off the Jasmine test runner
 page.open options.url

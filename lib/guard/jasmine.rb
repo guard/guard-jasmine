@@ -47,9 +47,7 @@ module Guard
       functions_threshold:      0,
       branches_threshold:       0,
       lines_threshold:          0,
-      junit:                    false,
-      junit_consolidate:        true,
-      junit_save_path:          '',
+      reporters:                nil,
       debug:                    false
     }
 
