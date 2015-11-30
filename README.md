@@ -721,9 +721,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [Jasmine]: http://pivotal.github.com/jasmine/
 [the Jasmine Gem]: https://github.com/pivotal/jasmine-gem
 [Jeremy Ashkenas]: https://twitter.com/#!/jashkenas
-[CoffeeScript]: http://jashkenas.github.io/coffee-script/
+[CoffeeScript]: http://coffeescript.org/
 [Rails 3.1 asset pipeline]: http://guides.rubyonrails.org/asset_pipeline.html
-[Homebrew]: http://mxcl.github.io/homebrew/
+[Homebrew]: http://brew.sh/
 [PhantomJS script]: https://github.com/netzpirat/guard-jasmine/blob/master/lib/guard/jasmine/phantomjs/guard-jasmine.coffee
 [Guard::CoffeeScript]: https://github.com/guard/guard-coffeescript
 [Sinon.JS]: http://sinonjs.org
