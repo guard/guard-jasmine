@@ -1,4 +1,4 @@
-# Guard::Jasmine [![Build Status](https://secure.travis-ci.org/guard/guard-jasmine.png)](http://travis-ci.org/guard/guard-jasmine)
+# Guard::Jasmine [![Build Status](https://secure.travis-ci.org/guard/guard-jasmine.png)](https://travis-ci.org/guard/guard-jasmine)
 
 Guard::Jasmine automatically tests your Jasmine specs when files are modified.
 
@@ -23,7 +23,7 @@ generate coverage reports.
 
 * Custom console logger implementation for pretty printing JavaScript objects and DOM elements.
 
-* Can be used to run [Jasmine-species](http://rudylattae.github.com/jasmine-species/) acceptance tests provided by
+* Can be used to run [Jasmine-species](http://rudylattae.github.io/jasmine-species/) acceptance tests provided by
 [Jasmine Stories](https://github.com/DominikGuzei/jasmine-stories).
 
 * Thor and Rake command line helper for CI server integration.
@@ -40,7 +40,7 @@ for an introduction to Jasmine, Jasminerice and Guard::Jasmine.
 
 ### Guard and Guard::Jasmine
 
-The simplest way to install Guard is to use [Bundler](http://gembundler.com/).
+The simplest way to install Guard is to use [Bundler](http://bundler.io).
 Please make sure to have [Guard][] installed.
 
 Add Guard::Jasmine to your `Gemfile`:
@@ -330,7 +330,7 @@ coverage: true                                # Enable/disable JavaScript covera
 Istanbul needs to instrument the implementation files so that the execution path can be detected. Guard::Jasmine comes
 with a tilt template that generates instrumented implementation files when using in the asset pipeline. If you do not
 use asset pipeline, than you need to instrument your files on your own, either manually (basic example: `istanbul instrument --output instrumented_scripts scripts`) or by using something like
-[Guard::Process](https://github.com/socialreferral/guard-process). You can get more information about the
+[Guard::Process](https://github.com/guard/guard-process). You can get more information about the
 instrumentation with `istanbul help instrument`. You'll also need to update your `:spec_dir` or `jasmine.yml/src_dir` settings to point Guard::Jasmine to these instrumented source files.
 
 **Important**: You need to clear the asset cache when you change this setting, so that already compiled assets will be
@@ -545,7 +545,7 @@ $ rake guard:jasmine
 
 ### Travis CI integration
 
-With the given `guard-jasmine` script you're able to configure [Travis CI](http://travis-ci.org/) to run Guard::Jasmine.
+With the given `guard-jasmine` script you're able to configure [Travis CI](https://travis-ci.org/) to run Guard::Jasmine.
 Simply use the `script` setting in your `.travis.yml`:
 
 ```yaml
@@ -614,7 +614,7 @@ When you file an issue, please try to follow to these simple rules if applicable
 
 ## Development information
 
-- Documentation hosted at [RubyDoc](http://rubydoc.info/github/guard/guard-jasmine/master/frames).
+- Documentation hosted at [RubyDoc](http://www.rubydoc.info/github/guard/guard-jasmine/master/frames).
 - Source hosted at [GitHub](https://github.com/guard/guard-jasmine).
 
 Pull requests are very welcome! Please try to follow these simple rules if applicable:
@@ -710,20 +710,20 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [Guard]: https://github.com/guard/guard
 [Guards]: https://github.com/guard
 [Guard Team]: https://github.com/guard/guard/contributors
-[Ariya Hidayat]: http://twitter.com/#!/AriyaHidayat
+[Ariya Hidayat]: https://twitter.com/#!/AriyaHidayat
 [PhantomJS]: http://www.phantomjs.org/
 [the PhantomJS download section]: http://code.google.com/p/phantomjs/downloads/list
 [PhantomJS build instructions]: http://code.google.com/p/phantomjs/wiki/BuildInstructions
-[Brad Phelan]: http://twitter.com/#!/bradgonesurfing
+[Brad Phelan]: https://twitter.com/#!/bradgonesurfing
 [Jasminerice]: https://github.com/bradphelan/jasminerice
 [jasmine-rails]: https://github.com/searls/jasmine-rails
 [Pivotal Labs]: http://pivotallabs.com/
 [Jasmine]: http://pivotal.github.com/jasmine/
 [the Jasmine Gem]: https://github.com/pivotal/jasmine-gem
-[Jeremy Ashkenas]: http://twitter.com/#!/jashkenas
-[CoffeeScript]: http://jashkenas.github.com/coffee-script/
+[Jeremy Ashkenas]: https://twitter.com/#!/jashkenas
+[CoffeeScript]: http://jashkenas.github.io/coffee-script/
 [Rails 3.1 asset pipeline]: http://guides.rubyonrails.org/asset_pipeline.html
-[Homebrew]: http://mxcl.github.com/homebrew/
+[Homebrew]: http://mxcl.github.io/homebrew/
 [PhantomJS script]: https://github.com/netzpirat/guard-jasmine/blob/master/lib/guard/jasmine/phantomjs/guard-jasmine.coffee
 [Guard::CoffeeScript]: https://github.com/guard/guard-coffeescript
 [Sinon.JS]: http://sinonjs.org
@@ -731,5 +731,5 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [guard-konacha]: https://github.com/alexgb/guard-konacha
 [konacha]: https://github.com/jfirebaugh/konacha
 [Karma]: https://github.com/karma-runner/karma
-[guard-teabag]: https://github.com/modeset/guard-teabag
-[Teabag]: https://github.com/modeset/teabag
+[guard-teabag]: https://github.com/modeset/guard-teaspoon
+[Teabag]: https://github.com/modeset/teaspoon
