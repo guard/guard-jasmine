@@ -413,7 +413,7 @@ end
 These options affects what system notifications are shown after a spec run:
 
 ```ruby
-notifications: false                          # Show success and error notifications.
+notification: false                           # Show success and error notifications.
                                               # default: true
 
 hide_success: true                            # Disable successful spec run notification.
