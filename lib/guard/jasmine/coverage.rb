@@ -60,7 +60,9 @@ if ENV['COVERAGE'] == 'true' && defined?(Rails)
   #
   class GuardJasmineCoverageEngine < ::Rails::Engine
     initializer 'guard-jasmine.initialize' do |app|
-      app.assets.register_postprocessor 'application/javascript', JasmineCoverage
+      app.config.assets.configure do |env|
+        env.register_postprocessor 'application/javascript', JasmineCoverage
+      end
     end
   end
 
