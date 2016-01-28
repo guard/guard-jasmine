@@ -229,6 +229,7 @@ module Guard
       def evaluate_response(output, file)
         json = output.read
         json = json.encode('UTF-8') if json.respond_to?(:encode)
+        json = json.gsub(/Unsafe JavaScript.*/, '')
         begin
           result = MultiJson.decode(json,  max_nesting: false)
           fail 'No response from Jasmine runner' if !result && options[:is_cli]

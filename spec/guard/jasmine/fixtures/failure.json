@@ -72,3 +72,4 @@
     }
   ]
 }
+Unsafe JavaScript attempt to access frame with URL about:blank from frame with URL file:///phantom-script.js. Domains, protocols and ports must match.
