@@ -14,8 +14,7 @@ module Guard
     #
     module Server
       class << self
-        attr_accessor :process
-        attr_accessor :cmd
+        attr_accessor :process, :cmd
         # Start the internal test server for getting the Jasmine runner.
         #
         # @param [Hash] options the server options
@@ -27,13 +26,11 @@ module Guard
         # @option options [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
         def start(options)
-          server  = options[:server]
-          port    = options[:port]
-          timeout = options[:server_timeout]
+          port = options[:port]
 
-          case server
+          case options[:server]
           when :webrick, :mongrel, :thin, :puma
-            start_rack_server(server, port, options)
+            start_rack_server(options[:server], port, options)
           when :unicorn
             start_unicorn_server(port, options)
           when :jasmine_gem
@@ -42,16 +39,15 @@ module Guard
             start_rake_server(port, server.to_s, options) unless server == :none
           end
 
-          wait_for_server(port, timeout) unless server == :none
+          wait_for_server(port, options[:server_timeout]) unless server == :none
         end
 
         # Stop the server thread.
         #
         def stop
-          if process
-            Compat::UI.info 'Guard::Jasmine stops server.'
-            process.stop(5)
-          end
+          return unless process
+          Compat::UI.info 'Guard::Jasmine stops server.'
+          process.stop(5)
         end
 
         # A port was not specified, therefore we attempt to detect the best port to use
@@ -103,12 +99,9 @@ module Guard
         # @option options [String] rackup_config custom rackup config to use (i.e. spec/dummy/config.ru for mountable engines)
         #
         def start_rack_server(server, port, options)
-          environment   = options[:server_env]
-          rackup_config = options[:rackup_config]
-          coverage      = options[:coverage] ? 'on' : 'off'
-
-          Compat::UI.info "Guard::Jasmine starts #{ server } spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
-          execute(options, ['rackup', '-E', environment.to_s, '-p', port.to_s, '-s', server.to_s, rackup_config])
+          coverage = options[:coverage] ? 'on' : 'off'
+          Compat::UI.info "Guard::Jasmine starts #{server} spec server on port #{port} in #{options[:server_env]} environment (coverage #{coverage})."
+          execute(options, ['rackup', '-E', options[:server_env].to_s, '-p', port.to_s, '-s', server.to_s, options[:rackup_config]])
         end
 
         # Start the Rack server of the current project. This
@@ -120,11 +113,9 @@ module Guard
         # @option options [Number] port the server port
         #
         def start_unicorn_server(port, options)
-          environment = options[:server_env]
-          coverage    = options[:coverage] ? 'on' : 'off'
-
-          Compat::UI.info "Guard::Jasmine starts Unicorn spec server on port #{ port } in #{ environment } environment (coverage #{ coverage })."
-          execute(options, ['unicorn_rails', '-E', environment.to_s, '-p', port.to_s])
+          coverage = options[:coverage] ? 'on' : 'off'
+          Compat::UI.info "Guard::Jasmine starts Unicorn spec server on port #{port} in #{options[:server_env]} environment (coverage #{coverage})."
+          execute(options, ['unicorn_rails', '-E', options[:server_env].to_s, '-p', port.to_s])
         end
 
         # Start the Jasmine gem server of the current project.
@@ -134,8 +125,8 @@ module Guard
         # @option options [Symbol] server the rack server to use
         #
         def start_rake_server(port, task, options)
-          Compat::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{ port }."
-          execute(options, ['rake', task, "JASMINE_PORT=#{ port }"])
+          Compat::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{port}."
+          execute(options, ['rake', task, "JASMINE_PORT=#{port}"])
         end
 
         # Builds a child process with the given command and arguments
@@ -147,17 +138,15 @@ module Guard
             cmd.unshift("ruby", "-S")
           end
           self.cmd = cmd
-          if options[:debug]
-            puts "Starting server using: #{cmd.join(' ')}"
-          end
+          puts "Starting server using: #{cmd.join(' ')}" if options[:debug]
           self.process = ChildProcess.build(*cmd.compact)
           process.environment['COVERAGE'] = options[:coverage].to_s
           process.environment['IGNORE_INSTRUMENTATION'] = options[:ignore_instrumentation].to_s
           process.io.inherit! if options[:verbose]
           process.start
         rescue => e
-          Compat::UI.error "Cannot start server using command #{ cmd.join(' ') }."
-          Compat::UI.error "Error was: #{ e.message }"
+          Compat::UI.error "Cannot start server using command #{cmd.join(' ')}."
+          Compat::UI.error "Error was: #{e.message}"
         end
 
         # Wait until the Jasmine test server is running.

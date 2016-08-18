@@ -39,7 +39,7 @@ module Guard
             when 1
               raise 'Some specs have failed'
             when 2
-              raise "The spec couldn't be run: #{ e.message }'"
+              raise "The spec couldn't be run: #{e.message}'"
             end
           end
         end

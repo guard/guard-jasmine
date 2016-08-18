@@ -28,7 +28,7 @@ class JasmineCoverage < Tilt::Template
 
       result = `#{JasmineCoverage.coverage_bin} instrument --embed-source #{input.shellescape}`
 
-      fail "Could not generate coverage instrumented file for #{ file }" unless $CHILD_STATUS.exitstatus == 0
+      raise "Could not generate coverage instrumented file for #{file}" unless $CHILD_STATUS.exitstatus.zero?
 
       result.gsub input, file
     end

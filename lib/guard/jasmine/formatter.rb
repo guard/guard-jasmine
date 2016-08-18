@@ -95,7 +95,7 @@ module Guard
         # @param [String] color_code the color code
         #
         def color(text, color_code)
-          Compat::UI.color_enabled? ? "\e[0#{ color_code }m#{ text }\e[0m" : text
+          Compat::UI.color_enabled? ? "\e[0#{color_code}m#{text}\e[0m" : text
         end
       end
     end

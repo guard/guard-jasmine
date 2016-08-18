@@ -20,11 +20,11 @@ module Guard
         def clean(paths, options)
           paths.uniq!
           paths.compact!
-          if paths.include?(options[:spec_dir])
-            paths = [options[:spec_dir]]
-          else
-            paths = paths.select { |p| jasmine_spec?(p) }
-          end
+          paths = if paths.include?(options[:spec_dir])
+                    [options[:spec_dir]]
+                  else
+                    paths.select { |p| jasmine_spec?(p) }
+                  end
 
           paths
         end

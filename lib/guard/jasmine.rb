@@ -22,7 +22,7 @@ module Guard
       server:                   :auto,
       server_env:               ENV['RAILS_ENV'] || 'development',
       server_timeout:           60,
-      server_mount:             '/jasmine',  # set here for documentation purposes; actually determiend at runtime by presence (or lack thereof) of the JasmineRails constant
+      server_mount:             '/jasmine', # set here for documentation purposes; actually determiend at runtime by presence (or lack thereof) of the JasmineRails constant
       port:                     nil,
       rackup_config:            nil,
       jasmine_url:              nil,
@@ -49,7 +49,7 @@ module Guard
       lines_threshold:          0,
       reporters:                nil,
       debug:                    false
-    }
+    }.freeze
 
     # Initialize Guard::Jasmine.
     #
@@ -91,9 +91,9 @@ module Guard
 
       options[:spec_dir]    ||= File.exist?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec'
       options[:server]      ||= :auto
-      options[:server]       =  ::Guard::Jasmine::Server.detect_server(options[:spec_dir]) if options[:server] == :auto
+      options[:server] = ::Guard::Jasmine::Server.detect_server(options[:spec_dir]) if options[:server] == :auto
       options[:port]        ||= ::Guard::Jasmine::Server.choose_server_port(options)
-      options[:jasmine_url]   = "http://localhost:#{ options[:port] }#{ options[:server] == :jasmine_gem ? '/' : options[:server_mount] }" unless options[:jasmine_url]
+      options[:jasmine_url]   = "http://localhost:#{options[:port]}#{options[:server] == :jasmine_gem ? '/' : options[:server_mount]}" unless options[:jasmine_url]
       options[:specdoc]       = :failure unless [:always, :never, :failure].include? options[:specdoc]
       options[:phantomjs_bin] = Jasmine.which('phantomjs') unless options[:phantomjs_bin]
 
@@ -150,6 +150,7 @@ module Guard
 
       throw :task_has_failed if last_run_failed
     end
+
     # Gets called when watched paths and files have changes.
     #
     # @param [Array<String>] paths the changed paths and files

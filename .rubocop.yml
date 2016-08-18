@@ -1,1 +1,9 @@
-inherit_from: .rubocop_todo.yml
+inherit_from:
+  - .rubocop_todo.yml
+
+# Files you want to exclude
+AllCops:
+  TargetRubyVersion: 2.2
+  Exclude:
+    - Guardfile
+    - config/Guardfile

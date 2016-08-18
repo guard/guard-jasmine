@@ -21,7 +21,7 @@ module Guard
         url = URI.parse(options[:jasmine_url])
 
         begin
-          ::Guard::Jasmine::Formatter.info "Waiting for Jasmine test runner at #{ url }"
+          ::Guard::Jasmine::Formatter.info "Waiting for Jasmine test runner at #{url}"
 
           http = Net::HTTP.new(url.host, url.port)
           http.read_timeout = options[:server_timeout]
@@ -30,7 +30,7 @@ module Guard
             available = response.code.to_i == 200
 
             unless available
-              ::Guard::Jasmine::Formatter.error "Jasmine test runner failed with status #{ response.code }"
+              ::Guard::Jasmine::Formatter.error "Jasmine test runner failed with status #{response.code}"
               if response.body
                 ::Guard::Jasmine::Formatter.error 'Please open the Jasmine runner in your browser for more information.'
               end
@@ -44,7 +44,7 @@ module Guard
           false
 
         rescue => e
-          ::Guard::Jasmine::Formatter.error "Jasmine test runner isn't available: #{ e.message }"
+          ::Guard::Jasmine::Formatter.error "Jasmine test runner isn't available: #{e.message}"
           false
         end
       end
@@ -65,15 +65,15 @@ module Guard
 
             if cleaned_version
               if Gem::Version.new(cleaned_version[0]) < Gem::Version.new('1.3.0')
-                ::Guard::Jasmine::Formatter.error "PhantomJS executable at #{ bin } must be at least version 1.3.0"
+                ::Guard::Jasmine::Formatter.error "PhantomJS executable at #{bin} must be at least version 1.3.0"
               else
                 true
               end
             else
-              ::Guard::Jasmine::Formatter.error "PhantomJS reports unknown version format: #{ version }"
+              ::Guard::Jasmine::Formatter.error "PhantomJS reports unknown version format: #{version}"
             end
           else
-            ::Guard::Jasmine::Formatter.error "PhantomJS executable doesn't exist at #{ bin }"
+            ::Guard::Jasmine::Formatter.error "PhantomJS executable doesn't exist at #{bin}"
           end
         else
           ::Guard::Jasmine::Formatter.error 'PhantomJS executable couldn\'t be auto detected.'
@@ -102,7 +102,7 @@ module Guard
 
         ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
           exts.each do |ext|
-            exe = "#{ path }/#{ cmd }#{ ext }"
+            exe = "#{path}/#{cmd}#{ext}"
             return exe if File.file?(exe) && File.executable?(exe)
           end
         end

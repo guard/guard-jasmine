@@ -157,7 +157,7 @@ RSpec.describe Guard::Jasmine::CLI do
 
         context 'for the reports option' do
           it 'sets the correct query parameters option' do
-            expect(runner).to receive(:new).with(hash_including(query_params: {reporters: 'console'}))
+            expect(runner).to receive(:new).with(hash_including(query_params: { reporters: 'console' }))
             cli.start(['spec', '--reporters', 'console'])
           end
         end
@@ -435,7 +435,7 @@ RSpec.describe Guard::Jasmine::CLI do
 
   describe '.version' do
     it 'outputs the Guard::Jasmine version' do
-      expect(Guard::Compat::UI).to receive(:info).with("Guard::Jasmine version #{ ::Guard::JasmineVersion::VERSION }")
+      expect(Guard::Compat::UI).to receive(:info).with("Guard::Jasmine version #{::Guard::JasmineVersion::VERSION}")
       cli.start(['-v'])
     end
   end
