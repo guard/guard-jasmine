@@ -45,7 +45,7 @@ RSpec.describe Guard::Jasmine::Runner do
     allow(formatter).to receive(:suite_name)
     allow(formatter).to receive(:notify)
 
-    allow(runner).to receive(:`) # `
+    allow(runner).to receive(:'`')
     allow(runner).to receive(:update_coverage)
 
     allow(Guard::Compat::UI).to receive(:color_enabled?).and_return(true)
@@ -542,28 +542,28 @@ RSpec.describe Guard::Jasmine::Runner do
             end
 
             it 'can check for statements coverage' do
-              expect(runner).to receive(:`).with('/bin/istanbul check-coverage --statements 12 tmp/coverage.json 2>&1').and_return '' # `
+              expect(runner).to receive(:'`').with('/bin/istanbul check-coverage --statements 12 tmp/coverage.json 2>&1').and_return ''
               runner.run(['spec/javascripts/t.js.coffee'], coverage: true, statements_threshold: 12)
             end
 
             it 'can check for functions coverage' do
-              expect(runner).to receive(:`).with('/bin/istanbul check-coverage --functions 12 tmp/coverage.json 2>&1').and_return '' # `
+              expect(runner).to receive(:'`').with('/bin/istanbul check-coverage --functions 12 tmp/coverage.json 2>&1').and_return ''
               runner.run(['spec/javascripts/t.js.coffee'], coverage: true, functions_threshold: 12)
             end
 
             it 'can check for branches coverage' do
-              expect(runner).to receive(:`).with('/bin/istanbul check-coverage --branches 12 tmp/coverage.json 2>&1').and_return '' # `
+              expect(runner).to receive(:'`').with('/bin/istanbul check-coverage --branches 12 tmp/coverage.json 2>&1').and_return ''
               runner.run(['spec/javascripts/t.js.coffee'], coverage: true, branches_threshold: 12)
             end
 
             it 'can check for lines coverage' do
-              expect(runner).to receive(:`).with('/bin/istanbul check-coverage --lines 12 tmp/coverage.json 2>&1').and_return ''
+              expect(runner).to receive(:'`').with('/bin/istanbul check-coverage --lines 12 tmp/coverage.json 2>&1').and_return ''
               runner.run(['spec/javascripts/t.js.coffee'], coverage: true, lines_threshold: 12)
             end
 
             context 'when enough is covered' do
               before do
-                expect(runner).to receive(:`).and_return '' # `
+                expect(runner).to receive(:'`').and_return ''
               end
 
               it 'shows the success message' do
@@ -598,7 +598,7 @@ done
             end
 
             before do
-              expect(runner).to receive(:`).with('/bin/istanbul report --root /projects/secret text tmp/coverage.json').and_return text_report # `
+              expect(runner).to receive(:'`').with('/bin/istanbul report --root /projects/secret text tmp/coverage.json').and_return text_report
               allow(runner).to receive(:check_coverage)
               allow(runner).to receive(:puts)
             end
@@ -656,7 +656,7 @@ done
             end
 
             before do
-              expect(runner).to receive(:`).with('/bin/istanbul report --root /projects/secret text-summary tmp/coverage.json').and_return text_summary_report # `
+              expect(runner).to receive(:'`').with('/bin/istanbul report --root /projects/secret text-summary tmp/coverage.json').and_return text_summary_report
               allow(runner).to receive(:check_coverage)
               allow(runner).to receive(:puts)
             end
@@ -680,13 +680,13 @@ done
           context 'with coverage html report enabled' do
             before do
               allow(runner).to receive(:generate_text_report)
-              allow(runner).to receive(:`) # `
+              allow(runner).to receive(:'`')
               allow(runner).to receive(:check_coverage)
               allow(runner).to receive(:coverage_report_directory).and_return('/coverage/report/directory')
             end
 
             it 'generates the html report' do
-              expect(runner).to receive(:`).with('/bin/istanbul report --dir /coverage/report/directory --root /projects/secret html tmp/coverage.json') # `
+              expect(runner).to receive(:'`').with('/bin/istanbul report --dir /coverage/report/directory --root /projects/secret html tmp/coverage.json')
               runner.run(['app/test1.js.coffee'], coverage: true, coverage_html: true)
             end
 
@@ -699,7 +699,7 @@ done
           context 'with the coverage html directory set' do
             before do
               allow(runner).to receive(:generate_text_report)
-              allow(runner).to receive(:`) # `
+              allow(runner).to receive(:'`')
               allow(runner).to receive(:check_coverage)
             end
 
