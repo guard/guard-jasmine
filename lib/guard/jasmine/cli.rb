@@ -155,40 +155,6 @@ module Guard
                     default: nil,
                     desc:    'Comma separated list of jasmine reporters to use'
 
-      def runner_options
-        options                            = {}
-        options[:port]                     = options.port || CLI.find_free_server_port
-        options[:spec_dir]                 = options.spec_dir || (File.exist?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec')
-        options[:line_number]              = options.line_number
-        options[:server]                   = options.server.to_sym == :auto ? ::Guard::Jasmine::Server.detect_server(options[:spec_dir]) : options.server.to_sym
-        options[:server_mount]             = options.mount || (defined?(JasmineRails) ? '/specs' : '/jasmine')
-        options[:jasmine_url]              = options.url || "http://localhost:#{options[:port]}#{options.server.to_sym == :jasmine_gem ? '/' : options[:server_mount]}"
-        options[:phantomjs_bin]            = options.bin || CLI.which('phantomjs')
-        options[:timeout]                  = options.timeout
-        options[:verbose]                  = options.verbose
-        options[:server_env]               = options.server_env
-        options[:server_timeout]           = options.server_timeout
-        options[:rackup_config]            = options.rackup_config
-        options[:console]                  = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
-        options[:errors]                   = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
-        options[:specdoc]                  = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
-        options[:focus]                    = options.focus
-        options[:coverage]                 = options.coverage || options.coverage_html || options.coverage_summary || options.coverage_html_dir != './coverage'
-        options[:coverage_html]            = options.coverage_html || options.coverage_html_dir != './coverage'
-        options[:coverage_html_dir]        = options.coverage_html_dir
-        options[:coverage_summary]         = options.coverage_summary
-        options[:ignore_instrumentation]   = options.ignore_instrumentation
-        options[:statements_threshold]     = options.statements_threshold
-        options[:functions_threshold]      = options.functions_threshold
-        options[:branches_threshold]       = options.branches_threshold
-        options[:lines_threshold]          = options.lines_threshold
-        options[:notification]             = false
-        options[:hide_success]             = true
-        options[:max_error_notify]         = 0
-        options[:query_params]             = options.reporters ? { reporters: options.reporters } : nil
-        options[:is_cli]                   = true
-        options
-      end
 
       # Run the Guard::Jasmine::Runner with options from
       # the command line.
@@ -198,14 +164,12 @@ module Guard
       def spec(*paths)
         options = runner_options
         paths = [options[:spec_dir]] if paths.empty?
-
         if CLI.phantomjs_bin_valid?(options[:phantomjs_bin])
           catch(:task_has_failed) do
-            ::Guard::Jasmine::Server.start(runner_options) unless options[:server] == :none
+            ::Guard::Jasmine::Server.start(options) unless options[:server] == :none
           end
-
-          if CLI.runner_available?(runner_options)
-            result = ::Guard::Jasmine::Runner.new(runner_options).run(paths)
+          if CLI.runner_available?(options)
+            result = ::Guard::Jasmine::Runner.new(options).run(paths)
             ::Guard::Jasmine::Server.stop
             Process.exit result.empty? ? 0 : 1
           else
@@ -233,6 +197,44 @@ module Guard
       def version
         Compat::UI.info "Guard::Jasmine version #{::Guard::JasmineVersion::VERSION}"
       end
+
+      private
+
+      def runner_options
+        ro                            = {}
+        ro[:port]                     = options.port || CLI.find_free_server_port
+        ro[:spec_dir]                 = options.spec_dir || (File.exist?(File.join('spec', 'javascripts')) ? File.join('spec', 'javascripts') : 'spec')
+        ro[:line_number]              = options.line_number
+        ro[:server]                   = options.server.to_sym == :auto ? ::Guard::Jasmine::Server.detect_server(ro[:spec_dir]) : options.server.to_sym
+        ro[:server_mount]             = options.mount || (defined?(JasmineRails) ? '/specs' : '/jasmine')
+        ro[:jasmine_url]              = options.url || "http://localhost:#{ro[:port]}#{options.server.to_sym == :jasmine_gem ? '/' : ro[:server_mount]}"
+        ro[:phantomjs_bin]            = options.bin || CLI.which('phantomjs')
+        ro[:timeout]                  = options.timeout
+        ro[:verbose]                  = options.verbose
+        ro[:server_env]               = options.server_env
+        ro[:server_timeout]           = options.server_timeout
+        ro[:rackup_config]            = options.rackup_config
+        ro[:console]                  = [:always, :never, :failure].include?(options.console.to_sym) ? options.console.to_sym : :failure
+        ro[:errors]                   = [:always, :never, :failure].include?(options.errors.to_sym) ? options.errors.to_sym : :failure
+        ro[:specdoc]                  = [:always, :never, :failure].include?(options.specdoc.to_sym) ? options.specdoc.to_sym : :always
+        ro[:focus]                    = options.focus
+        ro[:coverage]                 = options.coverage || options.coverage_html || options.coverage_summary || options.coverage_html_dir != './coverage'
+        ro[:coverage_html]            = options.coverage_html || options.coverage_html_dir != './coverage'
+        ro[:coverage_html_dir]        = options.coverage_html_dir
+        ro[:coverage_summary]         = options.coverage_summary
+        ro[:ignore_instrumentation]   = options.ignore_instrumentation
+        ro[:statements_threshold]     = options.statements_threshold
+        ro[:functions_threshold]      = options.functions_threshold
+        ro[:branches_threshold]       = options.branches_threshold
+        ro[:lines_threshold]          = options.lines_threshold
+        ro[:notification]             = false
+        ro[:hide_success]             = true
+        ro[:max_error_notify]         = 0
+        ro[:query_params]             = options.reporters ? { reporters: options.reporters } : nil
+        ro[:is_cli]                   = true
+        ro
+      end
+
     end
   end
 end

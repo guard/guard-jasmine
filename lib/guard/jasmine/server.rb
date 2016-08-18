@@ -35,11 +35,12 @@ module Guard
             start_unicorn_server(port, options)
           when :jasmine_gem
             start_rake_server(port, 'jasmine', options)
+          when :none # noop
           else
-            start_rake_server(port, server.to_s, options) unless server == :none
+            start_rake_server(port, options[:server], options)
           end
 
-          wait_for_server(port, options[:server_timeout]) unless server == :none
+          wait_for_server(port, options[:server_timeout]) unless options[:server] == :none
         end
 
         # Stop the server thread.
