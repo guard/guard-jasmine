@@ -19,7 +19,7 @@ module Guard
       attr_reader :options
 
       # Name of the coverage threshold options
-      THRESHOLDS = [:statements_threshold, :functions_threshold, :branches_threshold, :lines_threshold]
+      THRESHOLDS = [:statements_threshold, :functions_threshold, :branches_threshold, :lines_threshold].freeze
 
       # Run the supplied specs.
       #
@@ -58,7 +58,7 @@ module Guard
           end
         end
         # return the errors
-        return run_results.each_with_object({}) do | spec_run, hash |
+        return run_results.each_with_object({}) do |spec_run, hash|
           file, r = spec_run
           errors = collect_spec_errors(r['suites'] || [])
           errors.push(r['error']) if r.key? 'error'
@@ -78,7 +78,7 @@ module Guard
         message = if paths == [options[:spec_dir]]
                     'Run all Jasmine suites'
                   else
-                    "Run Jasmine suite#{ paths.size == 1 ? '' : 's' } #{ paths.join(' ') }"
+                    "Run Jasmine suite#{paths.size == 1 ? '' : 's'} #{paths.join(' ')}"
                   end
 
         Formatter.info(message, reset: true)
@@ -94,7 +94,7 @@ module Guard
         arguments = [
           options[:timeout] * 1000
         ]
-        cmd = "#{ phantomjs_command } \"#{ suite }\" #{ arguments.collect(&:to_s).join(' ')}"
+        cmd = "#{phantomjs_command} \"#{suite}\" #{arguments.collect(&:to_s).join(' ')}"
         puts cmd if options[:debug]
         IO.popen(cmd, 'r:UTF-8')
       end
@@ -206,7 +206,7 @@ module Guard
       #
       def it_and_describe_lines(file, from, to)
         File.readlines(file)[from, to]
-          .select { |x| x =~ /^\s*(it|describe)/ }
+            .select { |x| x =~ /^\s*(it|describe)/ }
       end
 
       # Extracts the title of a 'description' or a 'it' declaration.
@@ -231,12 +231,12 @@ module Guard
         json = json.encode('UTF-8') if json.respond_to?(:encode)
         json = json.gsub(/Unsafe JavaScript.*/, '')
         begin
-          result = MultiJson.decode(json,  max_nesting: false)
-          fail 'No response from Jasmine runner' if !result && options[:is_cli]
+          result = MultiJson.decode(json, max_nesting: false)
+          raise 'No response from Jasmine runner' if !result && options[:is_cli]
           pp result if options[:debug]
           if result['error']
             if options[:is_cli]
-              fail "Runner error: #{result['error']}"
+              raise "Runner error: #{result['error']}"
             else
               notify_runtime_error(result)
             end
@@ -258,14 +258,12 @@ module Guard
             else
               Formatter.error('No response from the Jasmine runner!')
             end
+          elsif options[:is_cli]
+            raise "Cannot decode JSON from PhantomJS runner, message received was:\n#{json}"
           else
-            if options[:is_cli]
-              raise "Cannot decode JSON from PhantomJS runner, message received was:\n#{json}"
-            else
-              Formatter.error("Cannot decode JSON from PhantomJS runner: #{ e.message }")
-              Formatter.error("JSON response: #{ e.data }")
-              Formatter.error("message received was:\n#{json}")
-            end
+            Formatter.error("Cannot decode JSON from PhantomJS runner: #{e.message}")
+            Formatter.error("JSON response: #{e.data}")
+            Formatter.error("message received was:\n#{json}")
           end
         ensure
           output.close
@@ -278,7 +276,7 @@ module Guard
       # @param [Hash] result the suite result
       #
       def notify_runtime_error(result)
-        message = "An error occurred: #{ result['error'] }"
+        message = "An error occurred: #{result['error']}"
         Formatter.error(message)
         Formatter.error(result['trace']) if result['trace']
         Formatter.notify(message, title: 'Jasmine error', image: :failed, priority: 2) if options[:notification]
@@ -292,14 +290,14 @@ module Guard
       def notify_spec_result(result)
         specs         = result['stats']['specs'] - result['stats']['disabled']
         failed        = result['stats']['failed']
-        time          = sprintf('%0.2f', result['stats']['time'])
+        time          = format('%0.2f', result['stats']['time'])
         specs_plural  = specs == 1 ? '' : 's'
         failed_plural = failed == 1 ? '' : 's'
-        Formatter.info("Finished in #{ time } seconds")
+        Formatter.info("Finished in #{time} seconds")
         pending = result['stats']['pending'].to_i > 0 ? " #{result['stats']['pending']} pending," : ''
-        message      = "#{ specs } spec#{ specs_plural },#{pending} #{ failed } failure#{ failed_plural }"
-        full_message = "#{ message }\nin #{ time } seconds"
-        passed       = failed == 0
+        message      = "#{specs} spec#{specs_plural},#{pending} #{failed} failure#{failed_plural}"
+        full_message = "#{message}\nin #{time} seconds"
+        passed       = failed.zero?
 
         report_specdoc(result, passed) if specdoc_shown?(passed)
 
@@ -375,7 +373,7 @@ module Guard
         if any_coverage_threshold?
           coverage = `#{coverage_bin} check-coverage #{ istanbul_coverage_options } #{ coverage_file } 2>&1`
           coverage = coverage.split("\n").grep(/ERROR/).join.sub('ERROR:', '')
-          failed   = $CHILD_STATUS && $CHILD_STATUS.exitstatus != 0
+          failed   = $CHILD_STATUS && $CHILD_STATUS.exitstatus.nonzero?
 
           if failed
             Formatter.error coverage
@@ -393,7 +391,7 @@ module Guard
       def generate_html_report
         report_directory = coverage_report_directory
         `#{coverage_bin} report --dir #{ report_directory } --root #{ coverage_root } html #{ coverage_file }`
-        Formatter.info "Updated HTML report available at: #{ report_directory }/index.html"
+        Formatter.info "Updated HTML report available at: #{report_directory}/index.html"
       end
 
       # Uses the Istanbul text-summary reporter to output the
@@ -438,11 +436,11 @@ module Guard
           # If the focus option is set, then only failing tests are shown
           next unless :always == options[:specdoc] || spec['status'] == 'failed' || (!run_passed && !options[:focus])
           if spec['status'] == 'passed'
-            Formatter.success(indent("  ✔ #{ spec['description'] }", level))
+            Formatter.success(indent("  ✔ #{spec['description']}", level))
           elsif spec['status'] == 'failed'
-            Formatter.spec_failed(indent("  ✘ #{ spec['description'] }", level))
+            Formatter.spec_failed(indent("  ✘ #{spec['description']}", level))
           else
-            Formatter.spec_pending(indent("  ○ #{ spec['description'] }", level))
+            Formatter.spec_pending(indent("  ○ #{spec['description']}", level))
           end
           report_specdoc_errors(spec, level)
           report_specdoc_logs(spec, level)
@@ -494,7 +492,7 @@ module Guard
         if console_for_spec?(spec)
           spec['logs'].each do |log_level, message|
             log_level = log_level == 'log' ? '' : "#{log_level.upcase}: "
-            Formatter.info(indent("    • #{log_level}#{ message }", level))
+            Formatter.info(indent("    • #{log_level}#{message}", level))
           end
         end
       end
@@ -508,11 +506,11 @@ module Guard
         return unless spec['errors'] && (options[:errors] == :always || (options[:errors] == :failure && spec['status'] == 'failed'))
 
         spec['errors'].each do |error|
-          Formatter.spec_failed(indent("    ➤ #{ format_error(error, true)  }", level))
+          Formatter.spec_failed(indent("    ➤ #{format_error(error, true)}", level))
           next unless error['trace']
 
           error['trace'].each do |trace|
-            Formatter.spec_failed(indent("    ➜ #{ trace['file'] } on line #{ trace['line'] }", level + 2))
+            Formatter.spec_failed(indent("    ➜ #{trace['file']} on line #{trace['line']}", level + 2))
           end
         end
       end
@@ -566,7 +564,7 @@ module Guard
       #
       def format_error(error, short)
         message = error['message'].gsub(%r{ in http.*\(line \d+\)$}, '')
-        if !short && error['trace'] && error['trace'].length > 0
+        if !short && error['trace'] && !error['trace'].empty?
           location = error['trace'][0]
           "#{message} in #{location['file']}:#{location['line']}"
         else
@@ -582,20 +580,18 @@ module Guard
       #
       def update_coverage(coverage, file)
         if file == options[:spec_dir]
-          File.write(coverage_file, MultiJson.encode(coverage,  max_nesting: false))
-        else
-          if File.exist?(coverage_file)
-            impl     = file.sub('_spec', '').sub(options[:spec_dir], '')
-            coverage = MultiJson.decode(File.read(coverage_file),  max_nesting: false)
+          File.write(coverage_file, MultiJson.encode(coverage, max_nesting: false))
+        elsif File.exist?(coverage_file)
+          impl     = file.sub('_spec', '').sub(options[:spec_dir], '')
+          coverage = MultiJson.decode(File.read(coverage_file), max_nesting: false)
 
-            coverage.each do |coverage_file, data|
-              coverage[coverage_file] = data if coverage_file == impl
-            end
-
-            File.write(coverage_file, MultiJson.encode(coverage,  max_nesting: false))
-          else
-            File.write(coverage_file, MultiJson.encode({}))
+          coverage.each do |coverage_file, data|
+            coverage[coverage_file] = data if coverage_file == impl
           end
+
+          File.write(coverage_file, MultiJson.encode(coverage, max_nesting: false))
+        else
+          File.write(coverage_file, MultiJson.encode({}))
         end
       end
 
@@ -604,7 +600,7 @@ module Guard
       # @return [Boolean] true if any coverage threshold is set
       #
       def any_coverage_threshold?
-        THRESHOLDS.any? { |threshold| options[threshold] != 0 }
+        THRESHOLDS.any? { |threshold| options[threshold].nonzero? }
       end
 
       # Converts the options to Istanbul recognized options
@@ -614,7 +610,7 @@ module Guard
       def istanbul_coverage_options
         THRESHOLDS.inject([]) do |coverage, name|
           threshold = options[name]
-          coverage << (threshold != 0 ? "--#{ name.to_s.sub('_threshold', '') } #{ threshold }" : '')
+          coverage << (threshold.nonzero? ? "--#{name.to_s.sub('_threshold', '')} #{threshold}" : '')
         end.reject(&:empty?).join(' ')
       end
 

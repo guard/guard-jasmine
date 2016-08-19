@@ -2,7 +2,7 @@
   "failed": false,
   "stats": {
     "specs": 1,
-    "failures": 0,
+    "failed": 0,
     "disabled": 0,
     "time": 0.009
   },

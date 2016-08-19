@@ -176,7 +176,7 @@ RSpec.describe Guard::Jasmine::Server do
       end
 
       it 'starts a custom rake task server' do
-        expect(server).to receive(:start_rake_server).with(8888, 'custom_server_strategy', options)
+        expect(server).to receive(:start_rake_server).with(8888, :custom_server_strategy, options)
         server.start(options)
       end
     end

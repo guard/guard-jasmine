@@ -1,6 +1,15 @@
 # Changelog
 
-## 2.0.0beta1
+
+## 2.1.0
+
+ - [#193](https://github.com/guard/guard-jasmine/pull/193) Custom Jasmine Reporters.  Contributed by @juanger, this option allows supporting any reports that work with Jasmine.  https://github.com/guard/guard-jasmine#custom-report-options
+
+ - [#196](https://github.com/guard/guard-jasmine/pull/196) Rails 4.2 and Sprockets 3+ support.  Fixes bugs with those versions and should set up for the eventual release of Sprockets 4.
+
+ - Bumps recommended version of Jasmine to 2.4, and Guard to 2.1.4
+
+## 2.0.0
 
  - [#161](https://github.com/guard/guard-jasmine/issues/161): Jasmine 2.0 support.  GuardJasmine now only supports Jasmine 2.0.2 and above via a new Jasmine runner.
  - [#174](https://github.com/guard/guard-jasmine/issues/174) Custom query parameters may be given to the runner.

@@ -1,4 +1,5 @@
 require 'rspec'
+require 'pathname'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -22,6 +23,6 @@ RSpec.configure do |config|
   config.raise_errors_for_deprecations!
 
   config.before(:each) do
-    @project_path    = Pathname.new(File.expand_path('../../', __FILE__))
+    @project_path = Pathname.new(File.expand_path('../../', __FILE__))
   end
 end
