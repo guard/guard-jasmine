@@ -479,6 +479,12 @@ Guard::Jasmine includes a little command line utility to run your specs once and
 $ guard-jasmine
 ```
 
+If you're running your specs with the `jasmine` gem, remember to set the `--server` option to `:jasmine_gem`.
+
+```bash
+guard-jasmine spec --server=jasmine_gem
+```
+
 You can get help on the available options with the `help` task:
 
 ```bash
