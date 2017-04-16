@@ -1,4 +1,5 @@
 require 'thor'
+require 'guard'
 require 'guard/jasmine/version'
 require 'guard/jasmine/runner'
 require 'guard/jasmine/formatter'
