@@ -750,8 +750,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [Jasminerice]: https://github.com/bradphelan/jasminerice
 [jasmine-rails]: https://github.com/searls/jasmine-rails
 [Pivotal Labs]: http://pivotallabs.com/
-[Jasmine]: http://pivotal.github.com/jasmine/
-[the Jasmine Gem]: https://github.com/pivotal/jasmine-gem
+[Jasmine]: https://jasmine.github.io/
+[the Jasmine Gem]: https://github.com/jasmine/jasmine-gem
 [Jeremy Ashkenas]: https://twitter.com/#!/jashkenas
 [CoffeeScript]: http://coffeescript.org/
 [Rails 3.1 asset pipeline]: http://guides.rubyonrails.org/asset_pipeline.html
