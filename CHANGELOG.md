@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0
+
+ - Bumps version of Jasmine to 3.x
+ - [#201](https://github.com/guard/guard-jasmine/pull/202) No longer set Jasmine port using JASMINE_PORT unsupported environment variable.
 
 ## 2.1.0
 
