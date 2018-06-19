@@ -49,6 +49,14 @@ RSpec.describe Guard::Jasmine do
         expect(guard.options[:port]).to eql 9999
       end
 
+      it 'port can be set' do
+        mock_config = OpenStruct.new
+        expect(::Jasmine).to receive(:configure).and_yield mock_config
+        guard = Guard::Jasmine.new(port: 12345)
+        expect(guard.options[:port]).to eql 12345
+        expect(mock_config.server_port).to eql 12345
+      end
+
       it 'sets a default :rackup_config option' do
         expect(guard.options[:rackup_config]).to eql nil
       end

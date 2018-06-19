@@ -103,6 +103,9 @@ module Guard
 
       self.last_run_failed   = false
       self.last_failed_paths = []
+      ::Jasmine.configure do |config|
+        config.server_port = options[:port] if options[:port]
+      end
       @runner = Runner.new(options.merge(run_all_options))
     end
 
