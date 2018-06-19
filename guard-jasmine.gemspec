@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'guard',        '~> 2.14'
   s.add_dependency 'guard-compat', '~> 1.2'
-  s.add_dependency 'jasmine',      '~> 2.4'
+  s.add_dependency 'jasmine',      '~> 3.1'
   s.add_dependency 'multi_json',   '~> 1.12'
   s.add_dependency 'childprocess', '~> 0.5'
   s.add_dependency 'thor',         '~> 0.19'

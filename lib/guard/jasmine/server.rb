@@ -127,7 +127,7 @@ module Guard
         #
         def start_rake_server(port, task, options)
           Compat::UI.info "Guard::Jasmine starts Jasmine Gem test server on port #{port}."
-          execute(options, ['rake', task, "JASMINE_PORT=#{port}"])
+          execute(options, ['rake', task])
         end
 
         # Builds a child process with the given command and arguments

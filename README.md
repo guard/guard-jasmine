@@ -620,6 +620,28 @@ Given your configuration, you could also need to set:
 
 * the server url in the command line: `bundle exec guard-jasmine -u http://localhost:8888/`
 
+
+## Notes
+
+Rails 5 ships with a puma configuration that may conflict with Guard Jasmine if they're both running concurrently.
+
+To work around this, the `tmp_restart` plugin in config/puma.rb needs to be disabled for development mode.
+
+```ruby
+# Allow puma to be restarted by `rails restart` command.
+plugin :tmp_restart
+```
+
+To:
+
+```ruby
+# Allow puma to be restarted by `rails restart` command.
+plugin :tmp_restart unless ENV['RAILS_ENV'] == 'development'
+```
+
+Thanks to `quolpr` for investigating and suggesting the fix in: https://github.com/guard/guard-jasmine/issues/199#issuecomment-292648860
+
+
 ## Alternatives
 
 There are many ways to get your Jasmine specs run within a headless environment. If Guard::Jasmine isn't for you,
