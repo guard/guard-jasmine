@@ -778,7 +778,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [CoffeeScript]: http://coffeescript.org/
 [Rails 3.1 asset pipeline]: http://guides.rubyonrails.org/asset_pipeline.html
 [Homebrew]: http://brew.sh/
-[PhantomJS script]: https://github.com/netzpirat/guard-jasmine/blob/master/lib/guard/jasmine/phantomjs/guard-jasmine.coffee
+[PhantomJS script]: https://github.com/netzpirat/guard-jasmine/blob/master/lib/guard/jasmine/phantomjs/guard-jasmine.js
 [Guard::CoffeeScript]: https://github.com/guard/guard-coffeescript
 [Sinon.JS]: http://sinonjs.org
 [Rails asset pipeline]: http://guides.rubyonrails.org/asset_pipeline.html
