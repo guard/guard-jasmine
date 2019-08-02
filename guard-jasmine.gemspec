@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'guard-compat', '~> 1.2'
   s.add_dependency 'jasmine',      '~> 3.1'
   s.add_dependency 'multi_json',   '~> 1.12'
-  s.add_dependency 'childprocess', '~> 1.0'
+  s.add_dependency 'childprocess', '~> 2.0'
   s.add_dependency 'thor',         '~> 0.19'
   # Coverage uses tilt for spec files.  Works with Tilt both
   # version 1 and 2, so we don't bother to lock the versions
